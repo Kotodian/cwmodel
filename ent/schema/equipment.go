@@ -19,9 +19,8 @@ type Equipment struct {
 func (Equipment) Mixins() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
-	}	
+	}
 }
-
 
 func (Equipment) Annotations() []schema.Annotation {
 	return []schema.Annotation{
@@ -34,6 +33,7 @@ func (Equipment) Fields() []ent.Field {
 	return []ent.Field{
 		field.Uint64("id").GoType(datasource.UUID(0)).DefaultFunc(id.Next()).Immutable().Comment("主键"),
 		field.String("sn").NotEmpty().Comment("桩序列号"),
+		field.String("sn2").NotEmpty().Comment("桩序列号2"),
 		field.Enum("category").GoType(enums.EquipmentCategory(0)).Comment("桩类型"),
 		field.Uint64("operator_id").GoType(datasource.UUID(0)).Comment("运营商id"),
 		field.Uint64("station_id").GoType(datasource.UUID(0)).Comment("站点id"),
