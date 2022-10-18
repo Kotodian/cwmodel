@@ -4,7 +4,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
-	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -28,11 +27,5 @@ func (Manufacturer) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("code").Comment("产商代码"),
 		field.String("name").Optional().Comment("产商名称"),
-	}
-}
-
-func (Manufacturer) Edges() []ent.Edge {
-	return []ent.Edge{
-		edge.To("equipment", Equipment.Type),
 	}
 }

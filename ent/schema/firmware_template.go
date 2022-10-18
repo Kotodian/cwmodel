@@ -32,7 +32,6 @@ func (Firmware) Fields() []ent.Field {
 
 func (Firmware) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("equipment", Equipment.Type),
-		edge.To("equipment_firmware_effect", EquipmentFirmwareEffect.Type),
+		edge.To("equipment_firmware_effect", EquipmentFirmwareEffect.Type).StorageKey(edge.Column("firmware_id")),
 	}
 }
