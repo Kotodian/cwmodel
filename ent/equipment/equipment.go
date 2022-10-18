@@ -5,8 +5,7 @@ package equipment
 import (
 	"fmt"
 
-	"github.com/Kotodian/ent-practice/ent/enums"
-	"github.com/Kotodian/gokit/datasource"
+	"github.com/Kotodian/ent-practice/ent/types"
 )
 
 const (
@@ -16,20 +15,59 @@ const (
 	FieldID = "id"
 	// FieldSn holds the string denoting the sn field in the database.
 	FieldSn = "sn"
+	// FieldSn2 holds the string denoting the sn2 field in the database.
+	FieldSn2 = "sn2"
 	// FieldCategory holds the string denoting the category field in the database.
 	FieldCategory = "category"
 	// FieldOperatorID holds the string denoting the operator_id field in the database.
 	FieldOperatorID = "operator_id"
 	// FieldStationID holds the string denoting the station_id field in the database.
 	FieldStationID = "station_id"
+	// EdgeModel holds the string denoting the model edge name in mutations.
+	EdgeModel = "model"
+	// EdgeFirmware holds the string denoting the firmware edge name in mutations.
+	EdgeFirmware = "firmware"
+	// EdgeManufacturer holds the string denoting the manufacturer edge name in mutations.
+	EdgeManufacturer = "manufacturer"
 	// EdgeEquipmentInfo holds the string denoting the equipment_info edge name in mutations.
 	EdgeEquipmentInfo = "equipment_info"
-	// EdgeEvses holds the string denoting the evses edge name in mutations.
-	EdgeEvses = "evses"
-	// EdgeConnectors holds the string denoting the connectors edge name in mutations.
-	EdgeConnectors = "connectors"
+	// EdgeEvse holds the string denoting the evse edge name in mutations.
+	EdgeEvse = "evse"
+	// EdgeConnector holds the string denoting the connector edge name in mutations.
+	EdgeConnector = "connector"
+	// EdgeEquipmentAlarm holds the string denoting the equipment_alarm edge name in mutations.
+	EdgeEquipmentAlarm = "equipment_alarm"
+	// EdgeEquipmentIot holds the string denoting the equipment_iot edge name in mutations.
+	EdgeEquipmentIot = "equipment_iot"
+	// EdgeEquipmentFirmwareEffect holds the string denoting the equipment_firmware_effect edge name in mutations.
+	EdgeEquipmentFirmwareEffect = "equipment_firmware_effect"
+	// EdgeOrderInfo holds the string denoting the order_info edge name in mutations.
+	EdgeOrderInfo = "order_info"
+	// EdgeReservation holds the string denoting the reservation edge name in mutations.
+	EdgeReservation = "reservation"
 	// Table holds the table name of the equipment in the database.
 	Table = "base_equipment"
+	// ModelTable is the table that holds the model relation/edge.
+	ModelTable = "base_equipment"
+	// ModelInverseTable is the table name for the Model entity.
+	// It exists in this package in order to avoid circular dependency with the "model" package.
+	ModelInverseTable = "equip_model"
+	// ModelColumn is the table column denoting the model relation/edge.
+	ModelColumn = "model_equipment"
+	// FirmwareTable is the table that holds the firmware relation/edge.
+	FirmwareTable = "base_equipment"
+	// FirmwareInverseTable is the table name for the Firmware entity.
+	// It exists in this package in order to avoid circular dependency with the "firmware" package.
+	FirmwareInverseTable = "equip_firmware_template"
+	// FirmwareColumn is the table column denoting the firmware relation/edge.
+	FirmwareColumn = "firmware_equipment"
+	// ManufacturerTable is the table that holds the manufacturer relation/edge.
+	ManufacturerTable = "base_equipment"
+	// ManufacturerInverseTable is the table name for the Manufacturer entity.
+	// It exists in this package in order to avoid circular dependency with the "manufacturer" package.
+	ManufacturerInverseTable = "equip_manufacturer"
+	// ManufacturerColumn is the table column denoting the manufacturer relation/edge.
+	ManufacturerColumn = "manufacturer_equipment"
 	// EquipmentInfoTable is the table that holds the equipment_info relation/edge.
 	EquipmentInfoTable = "base_equipment_extra"
 	// EquipmentInfoInverseTable is the table name for the EquipmentInfo entity.
@@ -37,29 +75,73 @@ const (
 	EquipmentInfoInverseTable = "base_equipment_extra"
 	// EquipmentInfoColumn is the table column denoting the equipment_info relation/edge.
 	EquipmentInfoColumn = "equipment_equipment_info"
-	// EvsesTable is the table that holds the evses relation/edge.
-	EvsesTable = "base_evse"
-	// EvsesInverseTable is the table name for the Evse entity.
+	// EvseTable is the table that holds the evse relation/edge.
+	EvseTable = "base_evse"
+	// EvseInverseTable is the table name for the Evse entity.
 	// It exists in this package in order to avoid circular dependency with the "evse" package.
-	EvsesInverseTable = "base_evse"
-	// EvsesColumn is the table column denoting the evses relation/edge.
-	EvsesColumn = "equipment_evses"
-	// ConnectorsTable is the table that holds the connectors relation/edge.
-	ConnectorsTable = "base_connector"
-	// ConnectorsInverseTable is the table name for the Connector entity.
+	EvseInverseTable = "base_evse"
+	// EvseColumn is the table column denoting the evse relation/edge.
+	EvseColumn = "equipment_evse"
+	// ConnectorTable is the table that holds the connector relation/edge.
+	ConnectorTable = "base_connector"
+	// ConnectorInverseTable is the table name for the Connector entity.
 	// It exists in this package in order to avoid circular dependency with the "connector" package.
-	ConnectorsInverseTable = "base_connector"
-	// ConnectorsColumn is the table column denoting the connectors relation/edge.
-	ConnectorsColumn = "equipment_connectors"
+	ConnectorInverseTable = "base_connector"
+	// ConnectorColumn is the table column denoting the connector relation/edge.
+	ConnectorColumn = "equipment_connector"
+	// EquipmentAlarmTable is the table that holds the equipment_alarm relation/edge.
+	EquipmentAlarmTable = "base_equipment_alarm"
+	// EquipmentAlarmInverseTable is the table name for the EquipmentAlarm entity.
+	// It exists in this package in order to avoid circular dependency with the "equipmentalarm" package.
+	EquipmentAlarmInverseTable = "base_equipment_alarm"
+	// EquipmentAlarmColumn is the table column denoting the equipment_alarm relation/edge.
+	EquipmentAlarmColumn = "equipment_equipment_alarm"
+	// EquipmentIotTable is the table that holds the equipment_iot relation/edge.
+	EquipmentIotTable = "equip_iot"
+	// EquipmentIotInverseTable is the table name for the EquipmentIot entity.
+	// It exists in this package in order to avoid circular dependency with the "equipmentiot" package.
+	EquipmentIotInverseTable = "equip_iot"
+	// EquipmentIotColumn is the table column denoting the equipment_iot relation/edge.
+	EquipmentIotColumn = "equipment_equipment_iot"
+	// EquipmentFirmwareEffectTable is the table that holds the equipment_firmware_effect relation/edge.
+	EquipmentFirmwareEffectTable = "equipment_firmware_effects"
+	// EquipmentFirmwareEffectInverseTable is the table name for the EquipmentFirmwareEffect entity.
+	// It exists in this package in order to avoid circular dependency with the "equipmentfirmwareeffect" package.
+	EquipmentFirmwareEffectInverseTable = "equipment_firmware_effects"
+	// EquipmentFirmwareEffectColumn is the table column denoting the equipment_firmware_effect relation/edge.
+	EquipmentFirmwareEffectColumn = "equipment_equipment_firmware_effect"
+	// OrderInfoTable is the table that holds the order_info relation/edge.
+	OrderInfoTable = "order_info"
+	// OrderInfoInverseTable is the table name for the OrderInfo entity.
+	// It exists in this package in order to avoid circular dependency with the "orderinfo" package.
+	OrderInfoInverseTable = "order_info"
+	// OrderInfoColumn is the table column denoting the order_info relation/edge.
+	OrderInfoColumn = "equipment_order_info"
+	// ReservationTable is the table that holds the reservation relation/edge.
+	ReservationTable = "reservation_charging_release"
+	// ReservationInverseTable is the table name for the Reservation entity.
+	// It exists in this package in order to avoid circular dependency with the "reservation" package.
+	ReservationInverseTable = "reservation_charging_release"
+	// ReservationColumn is the table column denoting the reservation relation/edge.
+	ReservationColumn = "equipment_reservation"
 )
 
 // Columns holds all SQL columns for equipment fields.
 var Columns = []string{
 	FieldID,
 	FieldSn,
+	FieldSn2,
 	FieldCategory,
 	FieldOperatorID,
 	FieldStationID,
+}
+
+// ForeignKeys holds the SQL foreign-keys that are owned by the "base_equipment"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"firmware_equipment",
+	"manufacturer_equipment",
+	"model_equipment",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -69,18 +151,23 @@ func ValidColumn(column string) bool {
 			return true
 		}
 	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
+			return true
+		}
+	}
 	return false
 }
 
 var (
 	// SnValidator is a validator for the "sn" field. It is called by the builders before save.
 	SnValidator func(string) error
-	// DefaultID holds the default value on creation for the "id" field.
-	DefaultID datasource.UUID
+	// Sn2Validator is a validator for the "sn2" field. It is called by the builders before save.
+	Sn2Validator func(string) error
 )
 
 // CategoryValidator is a validator for the "category" field enum values. It is called by the builders before save.
-func CategoryValidator(c enums.EquipmentCategory) error {
+func CategoryValidator(c types.EquipmentCategory) error {
 	switch c.String() {
 	case "private", "public":
 		return nil

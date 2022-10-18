@@ -8,18 +8,16 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/Kotodian/ent-practice/ent/connector"
-	"github.com/Kotodian/ent-practice/ent/enums"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/evse"
-	"github.com/Kotodian/gokit/datasource"
+	"github.com/Kotodian/ent-practice/ent/types"
 )
 
 // Connector is the model entity for the Connector schema.
 type Connector struct {
 	config `json:"-"`
 	// ID of the ent.
-	// 主键
-	ID datasource.UUID `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	// EquipmentSn holds the value of the "equipment_sn" field.
 	// 桩序列号
 	EquipmentSn string `json:"equipment_sn,omitempty"`
@@ -31,15 +29,15 @@ type Connector struct {
 	Serial string `json:"serial,omitempty"`
 	// CurrentState holds the value of the "current_state" field.
 	// 当前状态
-	CurrentState enums.ConnectorState `json:"current_state,omitempty"`
+	CurrentState types.ConnectorState `json:"current_state,omitempty"`
 	// BeforeState holds the value of the "before_state" field.
 	// 之前状态
-	BeforeState enums.ConnectorState `json:"before_state,omitempty"`
+	BeforeState types.ConnectorState `json:"before_state,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ConnectorQuery when eager-loading is set.
-	Edges                ConnectorEdges `json:"edges"`
-	equipment_connectors *datasource.UUID
-	evse_connectors      *datasource.UUID
+	Edges               ConnectorEdges `json:"edges"`
+	equipment_connector *int
+	evse_connector      *int
 }
 
 // ConnectorEdges holds the relations/edges for other nodes in the graph.
@@ -48,9 +46,13 @@ type ConnectorEdges struct {
 	Evse *Evse `json:"evse,omitempty"`
 	// Equipment holds the value of the equipment edge.
 	Equipment *Equipment `json:"equipment,omitempty"`
+	// OrderInfo holds the value of the order_info edge.
+	OrderInfo []*OrderInfo `json:"order_info,omitempty"`
+	// Reservation holds the value of the reservation edge.
+	Reservation []*Reservation `json:"reservation,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [4]bool
 }
 
 // EvseOrErr returns the Evse value or an error if the edge
@@ -81,20 +83,38 @@ func (e ConnectorEdges) EquipmentOrErr() (*Equipment, error) {
 	return nil, &NotLoadedError{edge: "equipment"}
 }
 
+// OrderInfoOrErr returns the OrderInfo value or an error if the edge
+// was not loaded in eager-loading.
+func (e ConnectorEdges) OrderInfoOrErr() ([]*OrderInfo, error) {
+	if e.loadedTypes[2] {
+		return e.OrderInfo, nil
+	}
+	return nil, &NotLoadedError{edge: "order_info"}
+}
+
+// ReservationOrErr returns the Reservation value or an error if the edge
+// was not loaded in eager-loading.
+func (e ConnectorEdges) ReservationOrErr() ([]*Reservation, error) {
+	if e.loadedTypes[3] {
+		return e.Reservation, nil
+	}
+	return nil, &NotLoadedError{edge: "reservation"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Connector) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case connector.FieldCurrentState, connector.FieldBeforeState:
-			values[i] = new(enums.ConnectorState)
 		case connector.FieldID:
 			values[i] = new(sql.NullInt64)
 		case connector.FieldEquipmentSn, connector.FieldEvseSerial, connector.FieldSerial:
 			values[i] = new(sql.NullString)
-		case connector.ForeignKeys[0]: // equipment_connectors
+		case connector.FieldCurrentState, connector.FieldBeforeState:
+			values[i] = new(types.ConnectorState)
+		case connector.ForeignKeys[0]: // equipment_connector
 			values[i] = new(sql.NullInt64)
-		case connector.ForeignKeys[1]: // evse_connectors
+		case connector.ForeignKeys[1]: // evse_connector
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Connector", columns[i])
@@ -116,7 +136,7 @@ func (c *Connector) assignValues(columns []string, values []interface{}) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			c.ID = datasource.UUID(value.Int64)
+			c.ID = int(value.Int64)
 		case connector.FieldEquipmentSn:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field equipment_sn", values[i])
@@ -136,30 +156,30 @@ func (c *Connector) assignValues(columns []string, values []interface{}) error {
 				c.Serial = value.String
 			}
 		case connector.FieldCurrentState:
-			if value, ok := values[i].(*enums.ConnectorState); !ok {
+			if value, ok := values[i].(*types.ConnectorState); !ok {
 				return fmt.Errorf("unexpected type %T for field current_state", values[i])
 			} else if value != nil {
 				c.CurrentState = *value
 			}
 		case connector.FieldBeforeState:
-			if value, ok := values[i].(*enums.ConnectorState); !ok {
+			if value, ok := values[i].(*types.ConnectorState); !ok {
 				return fmt.Errorf("unexpected type %T for field before_state", values[i])
 			} else if value != nil {
 				c.BeforeState = *value
 			}
 		case connector.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field equipment_connectors", value)
+				return fmt.Errorf("unexpected type %T for edge-field equipment_connector", value)
 			} else if value.Valid {
-				c.equipment_connectors = new(datasource.UUID)
-				*c.equipment_connectors = datasource.UUID(value.Int64)
+				c.equipment_connector = new(int)
+				*c.equipment_connector = int(value.Int64)
 			}
 		case connector.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field evse_connectors", value)
+				return fmt.Errorf("unexpected type %T for edge-field evse_connector", value)
 			} else if value.Valid {
-				c.evse_connectors = new(datasource.UUID)
-				*c.evse_connectors = datasource.UUID(value.Int64)
+				c.evse_connector = new(int)
+				*c.evse_connector = int(value.Int64)
 			}
 		}
 	}
@@ -174,6 +194,16 @@ func (c *Connector) QueryEvse() *EvseQuery {
 // QueryEquipment queries the "equipment" edge of the Connector entity.
 func (c *Connector) QueryEquipment() *EquipmentQuery {
 	return (&ConnectorClient{config: c.config}).QueryEquipment(c)
+}
+
+// QueryOrderInfo queries the "order_info" edge of the Connector entity.
+func (c *Connector) QueryOrderInfo() *OrderInfoQuery {
+	return (&ConnectorClient{config: c.config}).QueryOrderInfo(c)
+}
+
+// QueryReservation queries the "reservation" edge of the Connector entity.
+func (c *Connector) QueryReservation() *ReservationQuery {
+	return (&ConnectorClient{config: c.config}).QueryReservation(c)
 }
 
 // Update returns a builder for updating this Connector.

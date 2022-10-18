@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
-	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentInfoCreate is the builder for creating a EquipmentInfo entity.
@@ -39,22 +38,8 @@ func (eic *EquipmentInfoCreate) SetState(b bool) *EquipmentInfoCreate {
 	return eic
 }
 
-// SetID sets the "id" field.
-func (eic *EquipmentInfoCreate) SetID(d datasource.UUID) *EquipmentInfoCreate {
-	eic.mutation.SetID(d)
-	return eic
-}
-
-// SetNillableID sets the "id" field if the given value is not nil.
-func (eic *EquipmentInfoCreate) SetNillableID(d *datasource.UUID) *EquipmentInfoCreate {
-	if d != nil {
-		eic.SetID(*d)
-	}
-	return eic
-}
-
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eic *EquipmentInfoCreate) SetEquipmentID(id datasource.UUID) *EquipmentInfoCreate {
+func (eic *EquipmentInfoCreate) SetEquipmentID(id int) *EquipmentInfoCreate {
 	eic.mutation.SetEquipmentID(id)
 	return eic
 }
@@ -75,7 +60,6 @@ func (eic *EquipmentInfoCreate) Save(ctx context.Context) (*EquipmentInfo, error
 		err  error
 		node *EquipmentInfo
 	)
-	eic.defaults()
 	if len(eic.hooks) == 0 {
 		if err = eic.check(); err != nil {
 			return nil, err
@@ -133,14 +117,6 @@ func (eic *EquipmentInfoCreate) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (eic *EquipmentInfoCreate) defaults() {
-	if _, ok := eic.mutation.ID(); !ok {
-		v := equipmentinfo.DefaultID
-		eic.mutation.SetID(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (eic *EquipmentInfoCreate) check() error {
 	if _, ok := eic.mutation.EquipmentSn(); !ok {
@@ -166,10 +142,8 @@ func (eic *EquipmentInfoCreate) sqlSave(ctx context.Context) (*EquipmentInfo, er
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != _node.ID {
-		id := _spec.ID.Value.(int64)
-		_node.ID = datasource.UUID(id)
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	return _node, nil
 }
 
@@ -179,15 +153,11 @@ func (eic *EquipmentInfoCreate) createSpec() (*EquipmentInfo, *sqlgraph.CreateSp
 		_spec = &sqlgraph.CreateSpec{
 			Table: equipmentinfo.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt,
 				Column: equipmentinfo.FieldID,
 			},
 		}
 	)
-	if id, ok := eic.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
-	}
 	if value, ok := eic.mutation.EquipmentSn(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -221,7 +191,7 @@ func (eic *EquipmentInfoCreate) createSpec() (*EquipmentInfo, *sqlgraph.CreateSp
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},
@@ -249,7 +219,6 @@ func (eicb *EquipmentInfoCreateBulk) Save(ctx context.Context) ([]*EquipmentInfo
 	for i := range eicb.builders {
 		func(i int, root context.Context) {
 			builder := eicb.builders[i]
-			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*EquipmentInfoMutation)
 				if !ok {
@@ -277,9 +246,9 @@ func (eicb *EquipmentInfoCreateBulk) Save(ctx context.Context) ([]*EquipmentInfo
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
-				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+				if specs[i].ID.Value != nil {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = datasource.UUID(id)
+					nodes[i].ID = int(id)
 				}
 				return nodes[i], nil
 			})

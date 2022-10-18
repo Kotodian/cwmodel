@@ -9,15 +9,13 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/evse"
-	"github.com/Kotodian/gokit/datasource"
 )
 
 // Evse is the model entity for the Evse schema.
 type Evse struct {
 	config `json:"-"`
 	// ID of the ent.
-	// 主键
-	ID datasource.UUID `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	// Serial holds the value of the "serial" field.
 	// 设备序列号
 	Serial string `json:"serial,omitempty"`
@@ -26,16 +24,16 @@ type Evse struct {
 	ConnectorNumber int `json:"connector_number,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EvseQuery when eager-loading is set.
-	Edges           EvseEdges `json:"edges"`
-	equipment_evses *datasource.UUID
+	Edges          EvseEdges `json:"edges"`
+	equipment_evse *int
 }
 
 // EvseEdges holds the relations/edges for other nodes in the graph.
 type EvseEdges struct {
 	// Equipment holds the value of the equipment edge.
 	Equipment *Equipment `json:"equipment,omitempty"`
-	// Connectors holds the value of the connectors edge.
-	Connectors []*Connector `json:"connectors,omitempty"`
+	// Connector holds the value of the connector edge.
+	Connector []*Connector `json:"connector,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
@@ -55,13 +53,13 @@ func (e EvseEdges) EquipmentOrErr() (*Equipment, error) {
 	return nil, &NotLoadedError{edge: "equipment"}
 }
 
-// ConnectorsOrErr returns the Connectors value or an error if the edge
+// ConnectorOrErr returns the Connector value or an error if the edge
 // was not loaded in eager-loading.
-func (e EvseEdges) ConnectorsOrErr() ([]*Connector, error) {
+func (e EvseEdges) ConnectorOrErr() ([]*Connector, error) {
 	if e.loadedTypes[1] {
-		return e.Connectors, nil
+		return e.Connector, nil
 	}
-	return nil, &NotLoadedError{edge: "connectors"}
+	return nil, &NotLoadedError{edge: "connector"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -73,7 +71,7 @@ func (*Evse) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case evse.FieldSerial:
 			values[i] = new(sql.NullString)
-		case evse.ForeignKeys[0]: // equipment_evses
+		case evse.ForeignKeys[0]: // equipment_evse
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Evse", columns[i])
@@ -95,7 +93,7 @@ func (e *Evse) assignValues(columns []string, values []interface{}) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			e.ID = datasource.UUID(value.Int64)
+			e.ID = int(value.Int64)
 		case evse.FieldSerial:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field serial", values[i])
@@ -110,10 +108,10 @@ func (e *Evse) assignValues(columns []string, values []interface{}) error {
 			}
 		case evse.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field equipment_evses", value)
+				return fmt.Errorf("unexpected type %T for edge-field equipment_evse", value)
 			} else if value.Valid {
-				e.equipment_evses = new(datasource.UUID)
-				*e.equipment_evses = datasource.UUID(value.Int64)
+				e.equipment_evse = new(int)
+				*e.equipment_evse = int(value.Int64)
 			}
 		}
 	}
@@ -125,9 +123,9 @@ func (e *Evse) QueryEquipment() *EquipmentQuery {
 	return (&EvseClient{config: e.config}).QueryEquipment(e)
 }
 
-// QueryConnectors queries the "connectors" edge of the Evse entity.
-func (e *Evse) QueryConnectors() *ConnectorQuery {
-	return (&EvseClient{config: e.config}).QueryConnectors(e)
+// QueryConnector queries the "connector" edge of the Evse entity.
+func (e *Evse) QueryConnector() *ConnectorQuery {
+	return (&EvseClient{config: e.config}).QueryConnector(e)
 }
 
 // Update returns a builder for updating this Evse.

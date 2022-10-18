@@ -2,10 +2,6 @@
 
 package evse
 
-import (
-	"github.com/Kotodian/gokit/datasource"
-)
-
 const (
 	// Label holds the string label denoting the evse type in the database.
 	Label = "evse"
@@ -17,8 +13,8 @@ const (
 	FieldConnectorNumber = "connector_number"
 	// EdgeEquipment holds the string denoting the equipment edge name in mutations.
 	EdgeEquipment = "equipment"
-	// EdgeConnectors holds the string denoting the connectors edge name in mutations.
-	EdgeConnectors = "connectors"
+	// EdgeConnector holds the string denoting the connector edge name in mutations.
+	EdgeConnector = "connector"
 	// Table holds the table name of the evse in the database.
 	Table = "base_evse"
 	// EquipmentTable is the table that holds the equipment relation/edge.
@@ -27,14 +23,14 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "equipment" package.
 	EquipmentInverseTable = "base_equipment"
 	// EquipmentColumn is the table column denoting the equipment relation/edge.
-	EquipmentColumn = "equipment_evses"
-	// ConnectorsTable is the table that holds the connectors relation/edge.
-	ConnectorsTable = "base_connector"
-	// ConnectorsInverseTable is the table name for the Connector entity.
+	EquipmentColumn = "equipment_evse"
+	// ConnectorTable is the table that holds the connector relation/edge.
+	ConnectorTable = "base_connector"
+	// ConnectorInverseTable is the table name for the Connector entity.
 	// It exists in this package in order to avoid circular dependency with the "connector" package.
-	ConnectorsInverseTable = "base_connector"
-	// ConnectorsColumn is the table column denoting the connectors relation/edge.
-	ConnectorsColumn = "evse_connectors"
+	ConnectorInverseTable = "base_connector"
+	// ConnectorColumn is the table column denoting the connector relation/edge.
+	ConnectorColumn = "evse_connector"
 )
 
 // Columns holds all SQL columns for evse fields.
@@ -47,7 +43,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "base_evse"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"equipment_evses",
+	"equipment_evse",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -64,8 +60,3 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
-
-var (
-	// DefaultID holds the default value on creation for the "id" field.
-	DefaultID datasource.UUID
-)

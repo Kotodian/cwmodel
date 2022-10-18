@@ -10,10 +10,18 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/connector"
-	"github.com/Kotodian/ent-practice/ent/enums"
 	"github.com/Kotodian/ent-practice/ent/equipment"
+	"github.com/Kotodian/ent-practice/ent/equipmentalarm"
+	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
+	"github.com/Kotodian/ent-practice/ent/equipmentiot"
 	"github.com/Kotodian/ent-practice/ent/evse"
+	"github.com/Kotodian/ent-practice/ent/firmware"
+	"github.com/Kotodian/ent-practice/ent/manufacturer"
+	"github.com/Kotodian/ent-practice/ent/model"
+	"github.com/Kotodian/ent-practice/ent/orderinfo"
+	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/ent-practice/ent/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -30,9 +38,15 @@ func (ec *EquipmentCreate) SetSn(s string) *EquipmentCreate {
 	return ec
 }
 
+// SetSn2 sets the "sn2" field.
+func (ec *EquipmentCreate) SetSn2(s string) *EquipmentCreate {
+	ec.mutation.SetSn2(s)
+	return ec
+}
+
 // SetCategory sets the "category" field.
-func (ec *EquipmentCreate) SetCategory(value enums.EquipmentCategory) *EquipmentCreate {
-	ec.mutation.SetCategory(value)
+func (ec *EquipmentCreate) SetCategory(tc types.EquipmentCategory) *EquipmentCreate {
+	ec.mutation.SetCategory(tc)
 	return ec
 }
 
@@ -48,28 +62,71 @@ func (ec *EquipmentCreate) SetStationID(d datasource.UUID) *EquipmentCreate {
 	return ec
 }
 
-// SetID sets the "id" field.
-func (ec *EquipmentCreate) SetID(d datasource.UUID) *EquipmentCreate {
-	ec.mutation.SetID(d)
+// SetModelID sets the "model" edge to the Model entity by ID.
+func (ec *EquipmentCreate) SetModelID(id int) *EquipmentCreate {
+	ec.mutation.SetModelID(id)
 	return ec
 }
 
-// SetNillableID sets the "id" field if the given value is not nil.
-func (ec *EquipmentCreate) SetNillableID(d *datasource.UUID) *EquipmentCreate {
-	if d != nil {
-		ec.SetID(*d)
+// SetNillableModelID sets the "model" edge to the Model entity by ID if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableModelID(id *int) *EquipmentCreate {
+	if id != nil {
+		ec = ec.SetModelID(*id)
 	}
 	return ec
 }
 
+// SetModel sets the "model" edge to the Model entity.
+func (ec *EquipmentCreate) SetModel(m *Model) *EquipmentCreate {
+	return ec.SetModelID(m.ID)
+}
+
+// SetFirmwareID sets the "firmware" edge to the Firmware entity by ID.
+func (ec *EquipmentCreate) SetFirmwareID(id int) *EquipmentCreate {
+	ec.mutation.SetFirmwareID(id)
+	return ec
+}
+
+// SetNillableFirmwareID sets the "firmware" edge to the Firmware entity by ID if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableFirmwareID(id *int) *EquipmentCreate {
+	if id != nil {
+		ec = ec.SetFirmwareID(*id)
+	}
+	return ec
+}
+
+// SetFirmware sets the "firmware" edge to the Firmware entity.
+func (ec *EquipmentCreate) SetFirmware(f *Firmware) *EquipmentCreate {
+	return ec.SetFirmwareID(f.ID)
+}
+
+// SetManufacturerID sets the "manufacturer" edge to the Manufacturer entity by ID.
+func (ec *EquipmentCreate) SetManufacturerID(id int) *EquipmentCreate {
+	ec.mutation.SetManufacturerID(id)
+	return ec
+}
+
+// SetNillableManufacturerID sets the "manufacturer" edge to the Manufacturer entity by ID if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableManufacturerID(id *int) *EquipmentCreate {
+	if id != nil {
+		ec = ec.SetManufacturerID(*id)
+	}
+	return ec
+}
+
+// SetManufacturer sets the "manufacturer" edge to the Manufacturer entity.
+func (ec *EquipmentCreate) SetManufacturer(m *Manufacturer) *EquipmentCreate {
+	return ec.SetManufacturerID(m.ID)
+}
+
 // SetEquipmentInfoID sets the "equipment_info" edge to the EquipmentInfo entity by ID.
-func (ec *EquipmentCreate) SetEquipmentInfoID(id datasource.UUID) *EquipmentCreate {
+func (ec *EquipmentCreate) SetEquipmentInfoID(id int) *EquipmentCreate {
 	ec.mutation.SetEquipmentInfoID(id)
 	return ec
 }
 
 // SetNillableEquipmentInfoID sets the "equipment_info" edge to the EquipmentInfo entity by ID if the given value is not nil.
-func (ec *EquipmentCreate) SetNillableEquipmentInfoID(id *datasource.UUID) *EquipmentCreate {
+func (ec *EquipmentCreate) SetNillableEquipmentInfoID(id *int) *EquipmentCreate {
 	if id != nil {
 		ec = ec.SetEquipmentInfoID(*id)
 	}
@@ -81,34 +138,113 @@ func (ec *EquipmentCreate) SetEquipmentInfo(e *EquipmentInfo) *EquipmentCreate {
 	return ec.SetEquipmentInfoID(e.ID)
 }
 
-// AddEvseIDs adds the "evses" edge to the Evse entity by IDs.
-func (ec *EquipmentCreate) AddEvseIDs(ids ...datasource.UUID) *EquipmentCreate {
+// AddEvseIDs adds the "evse" edge to the Evse entity by IDs.
+func (ec *EquipmentCreate) AddEvseIDs(ids ...int) *EquipmentCreate {
 	ec.mutation.AddEvseIDs(ids...)
 	return ec
 }
 
-// AddEvses adds the "evses" edges to the Evse entity.
-func (ec *EquipmentCreate) AddEvses(e ...*Evse) *EquipmentCreate {
-	ids := make([]datasource.UUID, len(e))
+// AddEvse adds the "evse" edges to the Evse entity.
+func (ec *EquipmentCreate) AddEvse(e ...*Evse) *EquipmentCreate {
+	ids := make([]int, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
 	return ec.AddEvseIDs(ids...)
 }
 
-// AddConnectorIDs adds the "connectors" edge to the Connector entity by IDs.
-func (ec *EquipmentCreate) AddConnectorIDs(ids ...datasource.UUID) *EquipmentCreate {
+// AddConnectorIDs adds the "connector" edge to the Connector entity by IDs.
+func (ec *EquipmentCreate) AddConnectorIDs(ids ...int) *EquipmentCreate {
 	ec.mutation.AddConnectorIDs(ids...)
 	return ec
 }
 
-// AddConnectors adds the "connectors" edges to the Connector entity.
-func (ec *EquipmentCreate) AddConnectors(c ...*Connector) *EquipmentCreate {
-	ids := make([]datasource.UUID, len(c))
+// AddConnector adds the "connector" edges to the Connector entity.
+func (ec *EquipmentCreate) AddConnector(c ...*Connector) *EquipmentCreate {
+	ids := make([]int, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
 	return ec.AddConnectorIDs(ids...)
+}
+
+// AddEquipmentAlarmIDs adds the "equipment_alarm" edge to the EquipmentAlarm entity by IDs.
+func (ec *EquipmentCreate) AddEquipmentAlarmIDs(ids ...int) *EquipmentCreate {
+	ec.mutation.AddEquipmentAlarmIDs(ids...)
+	return ec
+}
+
+// AddEquipmentAlarm adds the "equipment_alarm" edges to the EquipmentAlarm entity.
+func (ec *EquipmentCreate) AddEquipmentAlarm(e ...*EquipmentAlarm) *EquipmentCreate {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return ec.AddEquipmentAlarmIDs(ids...)
+}
+
+// SetEquipmentIotID sets the "equipment_iot" edge to the EquipmentIot entity by ID.
+func (ec *EquipmentCreate) SetEquipmentIotID(id int) *EquipmentCreate {
+	ec.mutation.SetEquipmentIotID(id)
+	return ec
+}
+
+// SetNillableEquipmentIotID sets the "equipment_iot" edge to the EquipmentIot entity by ID if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableEquipmentIotID(id *int) *EquipmentCreate {
+	if id != nil {
+		ec = ec.SetEquipmentIotID(*id)
+	}
+	return ec
+}
+
+// SetEquipmentIot sets the "equipment_iot" edge to the EquipmentIot entity.
+func (ec *EquipmentCreate) SetEquipmentIot(e *EquipmentIot) *EquipmentCreate {
+	return ec.SetEquipmentIotID(e.ID)
+}
+
+// AddEquipmentFirmwareEffectIDs adds the "equipment_firmware_effect" edge to the EquipmentFirmwareEffect entity by IDs.
+func (ec *EquipmentCreate) AddEquipmentFirmwareEffectIDs(ids ...int) *EquipmentCreate {
+	ec.mutation.AddEquipmentFirmwareEffectIDs(ids...)
+	return ec
+}
+
+// AddEquipmentFirmwareEffect adds the "equipment_firmware_effect" edges to the EquipmentFirmwareEffect entity.
+func (ec *EquipmentCreate) AddEquipmentFirmwareEffect(e ...*EquipmentFirmwareEffect) *EquipmentCreate {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return ec.AddEquipmentFirmwareEffectIDs(ids...)
+}
+
+// AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
+func (ec *EquipmentCreate) AddOrderInfoIDs(ids ...int) *EquipmentCreate {
+	ec.mutation.AddOrderInfoIDs(ids...)
+	return ec
+}
+
+// AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
+func (ec *EquipmentCreate) AddOrderInfo(o ...*OrderInfo) *EquipmentCreate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return ec.AddOrderInfoIDs(ids...)
+}
+
+// AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
+func (ec *EquipmentCreate) AddReservationIDs(ids ...int) *EquipmentCreate {
+	ec.mutation.AddReservationIDs(ids...)
+	return ec
+}
+
+// AddReservation adds the "reservation" edges to the Reservation entity.
+func (ec *EquipmentCreate) AddReservation(r ...*Reservation) *EquipmentCreate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return ec.AddReservationIDs(ids...)
 }
 
 // Mutation returns the EquipmentMutation object of the builder.
@@ -122,7 +258,6 @@ func (ec *EquipmentCreate) Save(ctx context.Context) (*Equipment, error) {
 		err  error
 		node *Equipment
 	)
-	ec.defaults()
 	if len(ec.hooks) == 0 {
 		if err = ec.check(); err != nil {
 			return nil, err
@@ -180,14 +315,6 @@ func (ec *EquipmentCreate) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (ec *EquipmentCreate) defaults() {
-	if _, ok := ec.mutation.ID(); !ok {
-		v := equipment.DefaultID
-		ec.mutation.SetID(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (ec *EquipmentCreate) check() error {
 	if _, ok := ec.mutation.Sn(); !ok {
@@ -196,6 +323,14 @@ func (ec *EquipmentCreate) check() error {
 	if v, ok := ec.mutation.Sn(); ok {
 		if err := equipment.SnValidator(v); err != nil {
 			return &ValidationError{Name: "sn", err: fmt.Errorf(`ent: validator failed for field "Equipment.sn": %w`, err)}
+		}
+	}
+	if _, ok := ec.mutation.Sn2(); !ok {
+		return &ValidationError{Name: "sn2", err: errors.New(`ent: missing required field "Equipment.sn2"`)}
+	}
+	if v, ok := ec.mutation.Sn2(); ok {
+		if err := equipment.Sn2Validator(v); err != nil {
+			return &ValidationError{Name: "sn2", err: fmt.Errorf(`ent: validator failed for field "Equipment.sn2": %w`, err)}
 		}
 	}
 	if _, ok := ec.mutation.Category(); !ok {
@@ -223,10 +358,8 @@ func (ec *EquipmentCreate) sqlSave(ctx context.Context) (*Equipment, error) {
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != _node.ID {
-		id := _spec.ID.Value.(int64)
-		_node.ID = datasource.UUID(id)
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	return _node, nil
 }
 
@@ -236,15 +369,11 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: equipment.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt,
 				Column: equipment.FieldID,
 			},
 		}
 	)
-	if id, ok := ec.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
-	}
 	if value, ok := ec.mutation.Sn(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -252,6 +381,14 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 			Column: equipment.FieldSn,
 		})
 		_node.Sn = value
+	}
+	if value, ok := ec.mutation.Sn2(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: equipment.FieldSn2,
+		})
+		_node.Sn2 = value
 	}
 	if value, ok := ec.mutation.Category(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -277,6 +414,66 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 		})
 		_node.StationID = value
 	}
+	if nodes := ec.mutation.ModelIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.ModelTable,
+			Columns: []string{equipment.ModelColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: model.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.model_equipment = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ec.mutation.FirmwareIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.FirmwareTable,
+			Columns: []string{equipment.FirmwareColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: firmware.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.firmware_equipment = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ec.mutation.ManufacturerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.ManufacturerTable,
+			Columns: []string{equipment.ManufacturerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: manufacturer.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.manufacturer_equipment = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	if nodes := ec.mutation.EquipmentInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -286,7 +483,7 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipmentinfo.FieldID,
 				},
 			},
@@ -296,16 +493,16 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ec.mutation.EvsesIDs(); len(nodes) > 0 {
+	if nodes := ec.mutation.EvseIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   equipment.EvsesTable,
-			Columns: []string{equipment.EvsesColumn},
+			Table:   equipment.EvseTable,
+			Columns: []string{equipment.EvseColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: evse.FieldID,
 				},
 			},
@@ -315,17 +512,112 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ec.mutation.ConnectorsIDs(); len(nodes) > 0 {
+	if nodes := ec.mutation.ConnectorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   equipment.ConnectorsTable,
-			Columns: []string{equipment.ConnectorsColumn},
+			Table:   equipment.ConnectorTable,
+			Columns: []string{equipment.ConnectorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: connector.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ec.mutation.EquipmentAlarmIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.EquipmentAlarmTable,
+			Columns: []string{equipment.EquipmentAlarmColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipmentalarm.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ec.mutation.EquipmentIotIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   equipment.EquipmentIotTable,
+			Columns: []string{equipment.EquipmentIotColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipmentiot.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ec.mutation.EquipmentFirmwareEffectIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.EquipmentFirmwareEffectTable,
+			Columns: []string{equipment.EquipmentFirmwareEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipmentfirmwareeffect.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ec.mutation.OrderInfoIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.OrderInfoTable,
+			Columns: []string{equipment.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ec.mutation.ReservationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.ReservationTable,
+			Columns: []string{equipment.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: reservation.FieldID,
 				},
 			},
 		}
@@ -351,7 +643,6 @@ func (ecb *EquipmentCreateBulk) Save(ctx context.Context) ([]*Equipment, error) 
 	for i := range ecb.builders {
 		func(i int, root context.Context) {
 			builder := ecb.builders[i]
-			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*EquipmentMutation)
 				if !ok {
@@ -379,9 +670,9 @@ func (ecb *EquipmentCreateBulk) Save(ctx context.Context) ([]*Equipment, error) 
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
-				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+				if specs[i].ID.Value != nil {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = datasource.UUID(id)
+					nodes[i].ID = int(id)
 				}
 				return nodes[i], nil
 			})

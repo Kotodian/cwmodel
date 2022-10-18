@@ -5,8 +5,7 @@ package connector
 import (
 	"fmt"
 
-	"github.com/Kotodian/ent-practice/ent/enums"
-	"github.com/Kotodian/gokit/datasource"
+	"github.com/Kotodian/ent-practice/ent/types"
 )
 
 const (
@@ -28,6 +27,10 @@ const (
 	EdgeEvse = "evse"
 	// EdgeEquipment holds the string denoting the equipment edge name in mutations.
 	EdgeEquipment = "equipment"
+	// EdgeOrderInfo holds the string denoting the order_info edge name in mutations.
+	EdgeOrderInfo = "order_info"
+	// EdgeReservation holds the string denoting the reservation edge name in mutations.
+	EdgeReservation = "reservation"
 	// Table holds the table name of the connector in the database.
 	Table = "base_connector"
 	// EvseTable is the table that holds the evse relation/edge.
@@ -36,14 +39,28 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "evse" package.
 	EvseInverseTable = "base_evse"
 	// EvseColumn is the table column denoting the evse relation/edge.
-	EvseColumn = "evse_connectors"
+	EvseColumn = "evse_connector"
 	// EquipmentTable is the table that holds the equipment relation/edge.
 	EquipmentTable = "base_connector"
 	// EquipmentInverseTable is the table name for the Equipment entity.
 	// It exists in this package in order to avoid circular dependency with the "equipment" package.
 	EquipmentInverseTable = "base_equipment"
 	// EquipmentColumn is the table column denoting the equipment relation/edge.
-	EquipmentColumn = "equipment_connectors"
+	EquipmentColumn = "equipment_connector"
+	// OrderInfoTable is the table that holds the order_info relation/edge.
+	OrderInfoTable = "order_info"
+	// OrderInfoInverseTable is the table name for the OrderInfo entity.
+	// It exists in this package in order to avoid circular dependency with the "orderinfo" package.
+	OrderInfoInverseTable = "order_info"
+	// OrderInfoColumn is the table column denoting the order_info relation/edge.
+	OrderInfoColumn = "connector_order_info"
+	// ReservationTable is the table that holds the reservation relation/edge.
+	ReservationTable = "reservation_charging_release"
+	// ReservationInverseTable is the table name for the Reservation entity.
+	// It exists in this package in order to avoid circular dependency with the "reservation" package.
+	ReservationInverseTable = "reservation_charging_release"
+	// ReservationColumn is the table column denoting the reservation relation/edge.
+	ReservationColumn = "connector_reservation"
 )
 
 // Columns holds all SQL columns for connector fields.
@@ -59,8 +76,8 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "base_connector"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"equipment_connectors",
-	"evse_connectors",
+	"equipment_connector",
+	"evse_connector",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -78,13 +95,8 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-var (
-	// DefaultID holds the default value on creation for the "id" field.
-	DefaultID datasource.UUID
-)
-
 // CurrentStateValidator is a validator for the "current_state" field enum values. It is called by the builders before save.
-func CurrentStateValidator(cs enums.ConnectorState) error {
+func CurrentStateValidator(cs types.ConnectorState) error {
 	switch cs.String() {
 	case "unavailable", "available", "occcupied", "reserved", "faulted":
 		return nil
@@ -94,7 +106,7 @@ func CurrentStateValidator(cs enums.ConnectorState) error {
 }
 
 // BeforeStateValidator is a validator for the "before_state" field enum values. It is called by the builders before save.
-func BeforeStateValidator(bs enums.ConnectorState) error {
+func BeforeStateValidator(bs types.ConnectorState) error {
 	switch bs.String() {
 	case "unavailable", "available", "occcupied", "reserved", "faulted":
 		return nil

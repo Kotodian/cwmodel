@@ -8,12 +8,22 @@ import (
 	"log"
 
 	"github.com/Kotodian/ent-practice/ent/migrate"
-	"github.com/Kotodian/gokit/datasource"
 
+	"github.com/Kotodian/ent-practice/ent/appmoduleinfo"
 	"github.com/Kotodian/ent-practice/ent/connector"
 	"github.com/Kotodian/ent-practice/ent/equipment"
+	"github.com/Kotodian/ent-practice/ent/equipmentalarm"
+	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
+	"github.com/Kotodian/ent-practice/ent/equipmentiot"
 	"github.com/Kotodian/ent-practice/ent/evse"
+	"github.com/Kotodian/ent-practice/ent/firmware"
+	"github.com/Kotodian/ent-practice/ent/manufacturer"
+	"github.com/Kotodian/ent-practice/ent/model"
+	"github.com/Kotodian/ent-practice/ent/orderevent"
+	"github.com/Kotodian/ent-practice/ent/orderinfo"
+	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/ent-practice/ent/smartchargingevent"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -25,14 +35,36 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// AppModuleInfo is the client for interacting with the AppModuleInfo builders.
+	AppModuleInfo *AppModuleInfoClient
 	// Connector is the client for interacting with the Connector builders.
 	Connector *ConnectorClient
 	// Equipment is the client for interacting with the Equipment builders.
 	Equipment *EquipmentClient
+	// EquipmentAlarm is the client for interacting with the EquipmentAlarm builders.
+	EquipmentAlarm *EquipmentAlarmClient
+	// EquipmentFirmwareEffect is the client for interacting with the EquipmentFirmwareEffect builders.
+	EquipmentFirmwareEffect *EquipmentFirmwareEffectClient
 	// EquipmentInfo is the client for interacting with the EquipmentInfo builders.
 	EquipmentInfo *EquipmentInfoClient
+	// EquipmentIot is the client for interacting with the EquipmentIot builders.
+	EquipmentIot *EquipmentIotClient
 	// Evse is the client for interacting with the Evse builders.
 	Evse *EvseClient
+	// Firmware is the client for interacting with the Firmware builders.
+	Firmware *FirmwareClient
+	// Manufacturer is the client for interacting with the Manufacturer builders.
+	Manufacturer *ManufacturerClient
+	// Model is the client for interacting with the Model builders.
+	Model *ModelClient
+	// OrderEvent is the client for interacting with the OrderEvent builders.
+	OrderEvent *OrderEventClient
+	// OrderInfo is the client for interacting with the OrderInfo builders.
+	OrderInfo *OrderInfoClient
+	// Reservation is the client for interacting with the Reservation builders.
+	Reservation *ReservationClient
+	// SmartChargingEvent is the client for interacting with the SmartChargingEvent builders.
+	SmartChargingEvent *SmartChargingEventClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -46,10 +78,21 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.AppModuleInfo = NewAppModuleInfoClient(c.config)
 	c.Connector = NewConnectorClient(c.config)
 	c.Equipment = NewEquipmentClient(c.config)
+	c.EquipmentAlarm = NewEquipmentAlarmClient(c.config)
+	c.EquipmentFirmwareEffect = NewEquipmentFirmwareEffectClient(c.config)
 	c.EquipmentInfo = NewEquipmentInfoClient(c.config)
+	c.EquipmentIot = NewEquipmentIotClient(c.config)
 	c.Evse = NewEvseClient(c.config)
+	c.Firmware = NewFirmwareClient(c.config)
+	c.Manufacturer = NewManufacturerClient(c.config)
+	c.Model = NewModelClient(c.config)
+	c.OrderEvent = NewOrderEventClient(c.config)
+	c.OrderInfo = NewOrderInfoClient(c.config)
+	c.Reservation = NewReservationClient(c.config)
+	c.SmartChargingEvent = NewSmartChargingEventClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -81,12 +124,23 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:           ctx,
-		config:        cfg,
-		Connector:     NewConnectorClient(cfg),
-		Equipment:     NewEquipmentClient(cfg),
-		EquipmentInfo: NewEquipmentInfoClient(cfg),
-		Evse:          NewEvseClient(cfg),
+		ctx:                     ctx,
+		config:                  cfg,
+		AppModuleInfo:           NewAppModuleInfoClient(cfg),
+		Connector:               NewConnectorClient(cfg),
+		Equipment:               NewEquipmentClient(cfg),
+		EquipmentAlarm:          NewEquipmentAlarmClient(cfg),
+		EquipmentFirmwareEffect: NewEquipmentFirmwareEffectClient(cfg),
+		EquipmentInfo:           NewEquipmentInfoClient(cfg),
+		EquipmentIot:            NewEquipmentIotClient(cfg),
+		Evse:                    NewEvseClient(cfg),
+		Firmware:                NewFirmwareClient(cfg),
+		Manufacturer:            NewManufacturerClient(cfg),
+		Model:                   NewModelClient(cfg),
+		OrderEvent:              NewOrderEventClient(cfg),
+		OrderInfo:               NewOrderInfoClient(cfg),
+		Reservation:             NewReservationClient(cfg),
+		SmartChargingEvent:      NewSmartChargingEventClient(cfg),
 	}, nil
 }
 
@@ -104,22 +158,32 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:           ctx,
-		config:        cfg,
-		Connector:     NewConnectorClient(cfg),
-		Equipment:     NewEquipmentClient(cfg),
-		EquipmentInfo: NewEquipmentInfoClient(cfg),
-		Evse:          NewEvseClient(cfg),
+		ctx:                     ctx,
+		config:                  cfg,
+		AppModuleInfo:           NewAppModuleInfoClient(cfg),
+		Connector:               NewConnectorClient(cfg),
+		Equipment:               NewEquipmentClient(cfg),
+		EquipmentAlarm:          NewEquipmentAlarmClient(cfg),
+		EquipmentFirmwareEffect: NewEquipmentFirmwareEffectClient(cfg),
+		EquipmentInfo:           NewEquipmentInfoClient(cfg),
+		EquipmentIot:            NewEquipmentIotClient(cfg),
+		Evse:                    NewEvseClient(cfg),
+		Firmware:                NewFirmwareClient(cfg),
+		Manufacturer:            NewManufacturerClient(cfg),
+		Model:                   NewModelClient(cfg),
+		OrderEvent:              NewOrderEventClient(cfg),
+		OrderInfo:               NewOrderInfoClient(cfg),
+		Reservation:             NewReservationClient(cfg),
+		SmartChargingEvent:      NewSmartChargingEventClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Connector.
+//		AppModuleInfo.
 //		Query().
 //		Count(ctx)
-//
 func (c *Client) Debug() *Client {
 	if c.debug {
 		return c
@@ -139,10 +203,111 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.AppModuleInfo.Use(hooks...)
 	c.Connector.Use(hooks...)
 	c.Equipment.Use(hooks...)
+	c.EquipmentAlarm.Use(hooks...)
+	c.EquipmentFirmwareEffect.Use(hooks...)
 	c.EquipmentInfo.Use(hooks...)
+	c.EquipmentIot.Use(hooks...)
 	c.Evse.Use(hooks...)
+	c.Firmware.Use(hooks...)
+	c.Manufacturer.Use(hooks...)
+	c.Model.Use(hooks...)
+	c.OrderEvent.Use(hooks...)
+	c.OrderInfo.Use(hooks...)
+	c.Reservation.Use(hooks...)
+	c.SmartChargingEvent.Use(hooks...)
+}
+
+// AppModuleInfoClient is a client for the AppModuleInfo schema.
+type AppModuleInfoClient struct {
+	config
+}
+
+// NewAppModuleInfoClient returns a client for the AppModuleInfo from the given config.
+func NewAppModuleInfoClient(c config) *AppModuleInfoClient {
+	return &AppModuleInfoClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `appmoduleinfo.Hooks(f(g(h())))`.
+func (c *AppModuleInfoClient) Use(hooks ...Hook) {
+	c.hooks.AppModuleInfo = append(c.hooks.AppModuleInfo, hooks...)
+}
+
+// Create returns a create builder for AppModuleInfo.
+func (c *AppModuleInfoClient) Create() *AppModuleInfoCreate {
+	mutation := newAppModuleInfoMutation(c.config, OpCreate)
+	return &AppModuleInfoCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AppModuleInfo entities.
+func (c *AppModuleInfoClient) CreateBulk(builders ...*AppModuleInfoCreate) *AppModuleInfoCreateBulk {
+	return &AppModuleInfoCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AppModuleInfo.
+func (c *AppModuleInfoClient) Update() *AppModuleInfoUpdate {
+	mutation := newAppModuleInfoMutation(c.config, OpUpdate)
+	return &AppModuleInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AppModuleInfoClient) UpdateOne(ami *AppModuleInfo) *AppModuleInfoUpdateOne {
+	mutation := newAppModuleInfoMutation(c.config, OpUpdateOne, withAppModuleInfo(ami))
+	return &AppModuleInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AppModuleInfoClient) UpdateOneID(id int) *AppModuleInfoUpdateOne {
+	mutation := newAppModuleInfoMutation(c.config, OpUpdateOne, withAppModuleInfoID(id))
+	return &AppModuleInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AppModuleInfo.
+func (c *AppModuleInfoClient) Delete() *AppModuleInfoDelete {
+	mutation := newAppModuleInfoMutation(c.config, OpDelete)
+	return &AppModuleInfoDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *AppModuleInfoClient) DeleteOne(ami *AppModuleInfo) *AppModuleInfoDeleteOne {
+	return c.DeleteOneID(ami.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *AppModuleInfoClient) DeleteOneID(id int) *AppModuleInfoDeleteOne {
+	builder := c.Delete().Where(appmoduleinfo.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AppModuleInfoDeleteOne{builder}
+}
+
+// Query returns a query builder for AppModuleInfo.
+func (c *AppModuleInfoClient) Query() *AppModuleInfoQuery {
+	return &AppModuleInfoQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a AppModuleInfo entity by its id.
+func (c *AppModuleInfoClient) Get(ctx context.Context, id int) (*AppModuleInfo, error) {
+	return c.Query().Where(appmoduleinfo.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AppModuleInfoClient) GetX(ctx context.Context, id int) *AppModuleInfo {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AppModuleInfoClient) Hooks() []Hook {
+	return c.hooks.AppModuleInfo
 }
 
 // ConnectorClient is a client for the Connector schema.
@@ -185,7 +350,7 @@ func (c *ConnectorClient) UpdateOne(co *Connector) *ConnectorUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *ConnectorClient) UpdateOneID(id datasource.UUID) *ConnectorUpdateOne {
+func (c *ConnectorClient) UpdateOneID(id int) *ConnectorUpdateOne {
 	mutation := newConnectorMutation(c.config, OpUpdateOne, withConnectorID(id))
 	return &ConnectorUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -202,7 +367,7 @@ func (c *ConnectorClient) DeleteOne(co *Connector) *ConnectorDeleteOne {
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *ConnectorClient) DeleteOneID(id datasource.UUID) *ConnectorDeleteOne {
+func (c *ConnectorClient) DeleteOneID(id int) *ConnectorDeleteOne {
 	builder := c.Delete().Where(connector.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -217,12 +382,12 @@ func (c *ConnectorClient) Query() *ConnectorQuery {
 }
 
 // Get returns a Connector entity by its id.
-func (c *ConnectorClient) Get(ctx context.Context, id datasource.UUID) (*Connector, error) {
+func (c *ConnectorClient) Get(ctx context.Context, id int) (*Connector, error) {
 	return c.Query().Where(connector.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *ConnectorClient) GetX(ctx context.Context, id datasource.UUID) *Connector {
+func (c *ConnectorClient) GetX(ctx context.Context, id int) *Connector {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -255,6 +420,38 @@ func (c *ConnectorClient) QueryEquipment(co *Connector) *EquipmentQuery {
 			sqlgraph.From(connector.Table, connector.FieldID, id),
 			sqlgraph.To(equipment.Table, equipment.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, connector.EquipmentTable, connector.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrderInfo queries the order_info edge of a Connector.
+func (c *ConnectorClient) QueryOrderInfo(co *Connector) *OrderInfoQuery {
+	query := &OrderInfoQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(connector.Table, connector.FieldID, id),
+			sqlgraph.To(orderinfo.Table, orderinfo.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, connector.OrderInfoTable, connector.OrderInfoColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryReservation queries the reservation edge of a Connector.
+func (c *ConnectorClient) QueryReservation(co *Connector) *ReservationQuery {
+	query := &ReservationQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(connector.Table, connector.FieldID, id),
+			sqlgraph.To(reservation.Table, reservation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, connector.ReservationTable, connector.ReservationColumn),
 		)
 		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
 		return fromV, nil
@@ -307,7 +504,7 @@ func (c *EquipmentClient) UpdateOne(e *Equipment) *EquipmentUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *EquipmentClient) UpdateOneID(id datasource.UUID) *EquipmentUpdateOne {
+func (c *EquipmentClient) UpdateOneID(id int) *EquipmentUpdateOne {
 	mutation := newEquipmentMutation(c.config, OpUpdateOne, withEquipmentID(id))
 	return &EquipmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -324,7 +521,7 @@ func (c *EquipmentClient) DeleteOne(e *Equipment) *EquipmentDeleteOne {
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *EquipmentClient) DeleteOneID(id datasource.UUID) *EquipmentDeleteOne {
+func (c *EquipmentClient) DeleteOneID(id int) *EquipmentDeleteOne {
 	builder := c.Delete().Where(equipment.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -339,17 +536,65 @@ func (c *EquipmentClient) Query() *EquipmentQuery {
 }
 
 // Get returns a Equipment entity by its id.
-func (c *EquipmentClient) Get(ctx context.Context, id datasource.UUID) (*Equipment, error) {
+func (c *EquipmentClient) Get(ctx context.Context, id int) (*Equipment, error) {
 	return c.Query().Where(equipment.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *EquipmentClient) GetX(ctx context.Context, id datasource.UUID) *Equipment {
+func (c *EquipmentClient) GetX(ctx context.Context, id int) *Equipment {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryModel queries the model edge of a Equipment.
+func (c *EquipmentClient) QueryModel(e *Equipment) *ModelQuery {
+	query := &ModelQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := e.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipment.Table, equipment.FieldID, id),
+			sqlgraph.To(model.Table, model.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, equipment.ModelTable, equipment.ModelColumn),
+		)
+		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFirmware queries the firmware edge of a Equipment.
+func (c *EquipmentClient) QueryFirmware(e *Equipment) *FirmwareQuery {
+	query := &FirmwareQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := e.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipment.Table, equipment.FieldID, id),
+			sqlgraph.To(firmware.Table, firmware.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, equipment.FirmwareTable, equipment.FirmwareColumn),
+		)
+		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryManufacturer queries the manufacturer edge of a Equipment.
+func (c *EquipmentClient) QueryManufacturer(e *Equipment) *ManufacturerQuery {
+	query := &ManufacturerQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := e.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipment.Table, equipment.FieldID, id),
+			sqlgraph.To(manufacturer.Table, manufacturer.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, equipment.ManufacturerTable, equipment.ManufacturerColumn),
+		)
+		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // QueryEquipmentInfo queries the equipment_info edge of a Equipment.
@@ -368,15 +613,15 @@ func (c *EquipmentClient) QueryEquipmentInfo(e *Equipment) *EquipmentInfoQuery {
 	return query
 }
 
-// QueryEvses queries the evses edge of a Equipment.
-func (c *EquipmentClient) QueryEvses(e *Equipment) *EvseQuery {
+// QueryEvse queries the evse edge of a Equipment.
+func (c *EquipmentClient) QueryEvse(e *Equipment) *EvseQuery {
 	query := &EvseQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipment.Table, equipment.FieldID, id),
 			sqlgraph.To(evse.Table, evse.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, equipment.EvsesTable, equipment.EvsesColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, equipment.EvseTable, equipment.EvseColumn),
 		)
 		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
 		return fromV, nil
@@ -384,15 +629,95 @@ func (c *EquipmentClient) QueryEvses(e *Equipment) *EvseQuery {
 	return query
 }
 
-// QueryConnectors queries the connectors edge of a Equipment.
-func (c *EquipmentClient) QueryConnectors(e *Equipment) *ConnectorQuery {
+// QueryConnector queries the connector edge of a Equipment.
+func (c *EquipmentClient) QueryConnector(e *Equipment) *ConnectorQuery {
 	query := &ConnectorQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipment.Table, equipment.FieldID, id),
 			sqlgraph.To(connector.Table, connector.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, equipment.ConnectorsTable, equipment.ConnectorsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, equipment.ConnectorTable, equipment.ConnectorColumn),
+		)
+		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryEquipmentAlarm queries the equipment_alarm edge of a Equipment.
+func (c *EquipmentClient) QueryEquipmentAlarm(e *Equipment) *EquipmentAlarmQuery {
+	query := &EquipmentAlarmQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := e.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipment.Table, equipment.FieldID, id),
+			sqlgraph.To(equipmentalarm.Table, equipmentalarm.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, equipment.EquipmentAlarmTable, equipment.EquipmentAlarmColumn),
+		)
+		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryEquipmentIot queries the equipment_iot edge of a Equipment.
+func (c *EquipmentClient) QueryEquipmentIot(e *Equipment) *EquipmentIotQuery {
+	query := &EquipmentIotQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := e.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipment.Table, equipment.FieldID, id),
+			sqlgraph.To(equipmentiot.Table, equipmentiot.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, equipment.EquipmentIotTable, equipment.EquipmentIotColumn),
+		)
+		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryEquipmentFirmwareEffect queries the equipment_firmware_effect edge of a Equipment.
+func (c *EquipmentClient) QueryEquipmentFirmwareEffect(e *Equipment) *EquipmentFirmwareEffectQuery {
+	query := &EquipmentFirmwareEffectQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := e.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipment.Table, equipment.FieldID, id),
+			sqlgraph.To(equipmentfirmwareeffect.Table, equipmentfirmwareeffect.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, equipment.EquipmentFirmwareEffectTable, equipment.EquipmentFirmwareEffectColumn),
+		)
+		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrderInfo queries the order_info edge of a Equipment.
+func (c *EquipmentClient) QueryOrderInfo(e *Equipment) *OrderInfoQuery {
+	query := &OrderInfoQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := e.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipment.Table, equipment.FieldID, id),
+			sqlgraph.To(orderinfo.Table, orderinfo.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, equipment.OrderInfoTable, equipment.OrderInfoColumn),
+		)
+		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryReservation queries the reservation edge of a Equipment.
+func (c *EquipmentClient) QueryReservation(e *Equipment) *ReservationQuery {
+	query := &ReservationQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := e.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipment.Table, equipment.FieldID, id),
+			sqlgraph.To(reservation.Table, reservation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, equipment.ReservationTable, equipment.ReservationColumn),
 		)
 		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
 		return fromV, nil
@@ -403,6 +728,234 @@ func (c *EquipmentClient) QueryConnectors(e *Equipment) *ConnectorQuery {
 // Hooks returns the client hooks.
 func (c *EquipmentClient) Hooks() []Hook {
 	return c.hooks.Equipment
+}
+
+// EquipmentAlarmClient is a client for the EquipmentAlarm schema.
+type EquipmentAlarmClient struct {
+	config
+}
+
+// NewEquipmentAlarmClient returns a client for the EquipmentAlarm from the given config.
+func NewEquipmentAlarmClient(c config) *EquipmentAlarmClient {
+	return &EquipmentAlarmClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `equipmentalarm.Hooks(f(g(h())))`.
+func (c *EquipmentAlarmClient) Use(hooks ...Hook) {
+	c.hooks.EquipmentAlarm = append(c.hooks.EquipmentAlarm, hooks...)
+}
+
+// Create returns a create builder for EquipmentAlarm.
+func (c *EquipmentAlarmClient) Create() *EquipmentAlarmCreate {
+	mutation := newEquipmentAlarmMutation(c.config, OpCreate)
+	return &EquipmentAlarmCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of EquipmentAlarm entities.
+func (c *EquipmentAlarmClient) CreateBulk(builders ...*EquipmentAlarmCreate) *EquipmentAlarmCreateBulk {
+	return &EquipmentAlarmCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for EquipmentAlarm.
+func (c *EquipmentAlarmClient) Update() *EquipmentAlarmUpdate {
+	mutation := newEquipmentAlarmMutation(c.config, OpUpdate)
+	return &EquipmentAlarmUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *EquipmentAlarmClient) UpdateOne(ea *EquipmentAlarm) *EquipmentAlarmUpdateOne {
+	mutation := newEquipmentAlarmMutation(c.config, OpUpdateOne, withEquipmentAlarm(ea))
+	return &EquipmentAlarmUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *EquipmentAlarmClient) UpdateOneID(id int) *EquipmentAlarmUpdateOne {
+	mutation := newEquipmentAlarmMutation(c.config, OpUpdateOne, withEquipmentAlarmID(id))
+	return &EquipmentAlarmUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for EquipmentAlarm.
+func (c *EquipmentAlarmClient) Delete() *EquipmentAlarmDelete {
+	mutation := newEquipmentAlarmMutation(c.config, OpDelete)
+	return &EquipmentAlarmDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *EquipmentAlarmClient) DeleteOne(ea *EquipmentAlarm) *EquipmentAlarmDeleteOne {
+	return c.DeleteOneID(ea.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *EquipmentAlarmClient) DeleteOneID(id int) *EquipmentAlarmDeleteOne {
+	builder := c.Delete().Where(equipmentalarm.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &EquipmentAlarmDeleteOne{builder}
+}
+
+// Query returns a query builder for EquipmentAlarm.
+func (c *EquipmentAlarmClient) Query() *EquipmentAlarmQuery {
+	return &EquipmentAlarmQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a EquipmentAlarm entity by its id.
+func (c *EquipmentAlarmClient) Get(ctx context.Context, id int) (*EquipmentAlarm, error) {
+	return c.Query().Where(equipmentalarm.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *EquipmentAlarmClient) GetX(ctx context.Context, id int) *EquipmentAlarm {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryEquipment queries the equipment edge of a EquipmentAlarm.
+func (c *EquipmentAlarmClient) QueryEquipment(ea *EquipmentAlarm) *EquipmentQuery {
+	query := &EquipmentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := ea.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipmentalarm.Table, equipmentalarm.FieldID, id),
+			sqlgraph.To(equipment.Table, equipment.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, equipmentalarm.EquipmentTable, equipmentalarm.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(ea.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *EquipmentAlarmClient) Hooks() []Hook {
+	return c.hooks.EquipmentAlarm
+}
+
+// EquipmentFirmwareEffectClient is a client for the EquipmentFirmwareEffect schema.
+type EquipmentFirmwareEffectClient struct {
+	config
+}
+
+// NewEquipmentFirmwareEffectClient returns a client for the EquipmentFirmwareEffect from the given config.
+func NewEquipmentFirmwareEffectClient(c config) *EquipmentFirmwareEffectClient {
+	return &EquipmentFirmwareEffectClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `equipmentfirmwareeffect.Hooks(f(g(h())))`.
+func (c *EquipmentFirmwareEffectClient) Use(hooks ...Hook) {
+	c.hooks.EquipmentFirmwareEffect = append(c.hooks.EquipmentFirmwareEffect, hooks...)
+}
+
+// Create returns a create builder for EquipmentFirmwareEffect.
+func (c *EquipmentFirmwareEffectClient) Create() *EquipmentFirmwareEffectCreate {
+	mutation := newEquipmentFirmwareEffectMutation(c.config, OpCreate)
+	return &EquipmentFirmwareEffectCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of EquipmentFirmwareEffect entities.
+func (c *EquipmentFirmwareEffectClient) CreateBulk(builders ...*EquipmentFirmwareEffectCreate) *EquipmentFirmwareEffectCreateBulk {
+	return &EquipmentFirmwareEffectCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for EquipmentFirmwareEffect.
+func (c *EquipmentFirmwareEffectClient) Update() *EquipmentFirmwareEffectUpdate {
+	mutation := newEquipmentFirmwareEffectMutation(c.config, OpUpdate)
+	return &EquipmentFirmwareEffectUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *EquipmentFirmwareEffectClient) UpdateOne(efe *EquipmentFirmwareEffect) *EquipmentFirmwareEffectUpdateOne {
+	mutation := newEquipmentFirmwareEffectMutation(c.config, OpUpdateOne, withEquipmentFirmwareEffect(efe))
+	return &EquipmentFirmwareEffectUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *EquipmentFirmwareEffectClient) UpdateOneID(id int) *EquipmentFirmwareEffectUpdateOne {
+	mutation := newEquipmentFirmwareEffectMutation(c.config, OpUpdateOne, withEquipmentFirmwareEffectID(id))
+	return &EquipmentFirmwareEffectUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for EquipmentFirmwareEffect.
+func (c *EquipmentFirmwareEffectClient) Delete() *EquipmentFirmwareEffectDelete {
+	mutation := newEquipmentFirmwareEffectMutation(c.config, OpDelete)
+	return &EquipmentFirmwareEffectDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *EquipmentFirmwareEffectClient) DeleteOne(efe *EquipmentFirmwareEffect) *EquipmentFirmwareEffectDeleteOne {
+	return c.DeleteOneID(efe.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *EquipmentFirmwareEffectClient) DeleteOneID(id int) *EquipmentFirmwareEffectDeleteOne {
+	builder := c.Delete().Where(equipmentfirmwareeffect.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &EquipmentFirmwareEffectDeleteOne{builder}
+}
+
+// Query returns a query builder for EquipmentFirmwareEffect.
+func (c *EquipmentFirmwareEffectClient) Query() *EquipmentFirmwareEffectQuery {
+	return &EquipmentFirmwareEffectQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a EquipmentFirmwareEffect entity by its id.
+func (c *EquipmentFirmwareEffectClient) Get(ctx context.Context, id int) (*EquipmentFirmwareEffect, error) {
+	return c.Query().Where(equipmentfirmwareeffect.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *EquipmentFirmwareEffectClient) GetX(ctx context.Context, id int) *EquipmentFirmwareEffect {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryEquipment queries the equipment edge of a EquipmentFirmwareEffect.
+func (c *EquipmentFirmwareEffectClient) QueryEquipment(efe *EquipmentFirmwareEffect) *EquipmentQuery {
+	query := &EquipmentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := efe.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipmentfirmwareeffect.Table, equipmentfirmwareeffect.FieldID, id),
+			sqlgraph.To(equipment.Table, equipment.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, equipmentfirmwareeffect.EquipmentTable, equipmentfirmwareeffect.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(efe.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFirmware queries the firmware edge of a EquipmentFirmwareEffect.
+func (c *EquipmentFirmwareEffectClient) QueryFirmware(efe *EquipmentFirmwareEffect) *FirmwareQuery {
+	query := &FirmwareQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := efe.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipmentfirmwareeffect.Table, equipmentfirmwareeffect.FieldID, id),
+			sqlgraph.To(firmware.Table, firmware.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, equipmentfirmwareeffect.FirmwareTable, equipmentfirmwareeffect.FirmwareColumn),
+		)
+		fromV = sqlgraph.Neighbors(efe.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *EquipmentFirmwareEffectClient) Hooks() []Hook {
+	return c.hooks.EquipmentFirmwareEffect
 }
 
 // EquipmentInfoClient is a client for the EquipmentInfo schema.
@@ -445,7 +998,7 @@ func (c *EquipmentInfoClient) UpdateOne(ei *EquipmentInfo) *EquipmentInfoUpdateO
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *EquipmentInfoClient) UpdateOneID(id datasource.UUID) *EquipmentInfoUpdateOne {
+func (c *EquipmentInfoClient) UpdateOneID(id int) *EquipmentInfoUpdateOne {
 	mutation := newEquipmentInfoMutation(c.config, OpUpdateOne, withEquipmentInfoID(id))
 	return &EquipmentInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -462,7 +1015,7 @@ func (c *EquipmentInfoClient) DeleteOne(ei *EquipmentInfo) *EquipmentInfoDeleteO
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *EquipmentInfoClient) DeleteOneID(id datasource.UUID) *EquipmentInfoDeleteOne {
+func (c *EquipmentInfoClient) DeleteOneID(id int) *EquipmentInfoDeleteOne {
 	builder := c.Delete().Where(equipmentinfo.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -477,12 +1030,12 @@ func (c *EquipmentInfoClient) Query() *EquipmentInfoQuery {
 }
 
 // Get returns a EquipmentInfo entity by its id.
-func (c *EquipmentInfoClient) Get(ctx context.Context, id datasource.UUID) (*EquipmentInfo, error) {
+func (c *EquipmentInfoClient) Get(ctx context.Context, id int) (*EquipmentInfo, error) {
 	return c.Query().Where(equipmentinfo.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *EquipmentInfoClient) GetX(ctx context.Context, id datasource.UUID) *EquipmentInfo {
+func (c *EquipmentInfoClient) GetX(ctx context.Context, id int) *EquipmentInfo {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -509,6 +1062,112 @@ func (c *EquipmentInfoClient) QueryEquipment(ei *EquipmentInfo) *EquipmentQuery 
 // Hooks returns the client hooks.
 func (c *EquipmentInfoClient) Hooks() []Hook {
 	return c.hooks.EquipmentInfo
+}
+
+// EquipmentIotClient is a client for the EquipmentIot schema.
+type EquipmentIotClient struct {
+	config
+}
+
+// NewEquipmentIotClient returns a client for the EquipmentIot from the given config.
+func NewEquipmentIotClient(c config) *EquipmentIotClient {
+	return &EquipmentIotClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `equipmentiot.Hooks(f(g(h())))`.
+func (c *EquipmentIotClient) Use(hooks ...Hook) {
+	c.hooks.EquipmentIot = append(c.hooks.EquipmentIot, hooks...)
+}
+
+// Create returns a create builder for EquipmentIot.
+func (c *EquipmentIotClient) Create() *EquipmentIotCreate {
+	mutation := newEquipmentIotMutation(c.config, OpCreate)
+	return &EquipmentIotCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of EquipmentIot entities.
+func (c *EquipmentIotClient) CreateBulk(builders ...*EquipmentIotCreate) *EquipmentIotCreateBulk {
+	return &EquipmentIotCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for EquipmentIot.
+func (c *EquipmentIotClient) Update() *EquipmentIotUpdate {
+	mutation := newEquipmentIotMutation(c.config, OpUpdate)
+	return &EquipmentIotUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *EquipmentIotClient) UpdateOne(ei *EquipmentIot) *EquipmentIotUpdateOne {
+	mutation := newEquipmentIotMutation(c.config, OpUpdateOne, withEquipmentIot(ei))
+	return &EquipmentIotUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *EquipmentIotClient) UpdateOneID(id int) *EquipmentIotUpdateOne {
+	mutation := newEquipmentIotMutation(c.config, OpUpdateOne, withEquipmentIotID(id))
+	return &EquipmentIotUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for EquipmentIot.
+func (c *EquipmentIotClient) Delete() *EquipmentIotDelete {
+	mutation := newEquipmentIotMutation(c.config, OpDelete)
+	return &EquipmentIotDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *EquipmentIotClient) DeleteOne(ei *EquipmentIot) *EquipmentIotDeleteOne {
+	return c.DeleteOneID(ei.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *EquipmentIotClient) DeleteOneID(id int) *EquipmentIotDeleteOne {
+	builder := c.Delete().Where(equipmentiot.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &EquipmentIotDeleteOne{builder}
+}
+
+// Query returns a query builder for EquipmentIot.
+func (c *EquipmentIotClient) Query() *EquipmentIotQuery {
+	return &EquipmentIotQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a EquipmentIot entity by its id.
+func (c *EquipmentIotClient) Get(ctx context.Context, id int) (*EquipmentIot, error) {
+	return c.Query().Where(equipmentiot.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *EquipmentIotClient) GetX(ctx context.Context, id int) *EquipmentIot {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryEquipment queries the equipment edge of a EquipmentIot.
+func (c *EquipmentIotClient) QueryEquipment(ei *EquipmentIot) *EquipmentQuery {
+	query := &EquipmentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := ei.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipmentiot.Table, equipmentiot.FieldID, id),
+			sqlgraph.To(equipment.Table, equipment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, equipmentiot.EquipmentTable, equipmentiot.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(ei.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *EquipmentIotClient) Hooks() []Hook {
+	return c.hooks.EquipmentIot
 }
 
 // EvseClient is a client for the Evse schema.
@@ -551,7 +1210,7 @@ func (c *EvseClient) UpdateOne(e *Evse) *EvseUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *EvseClient) UpdateOneID(id datasource.UUID) *EvseUpdateOne {
+func (c *EvseClient) UpdateOneID(id int) *EvseUpdateOne {
 	mutation := newEvseMutation(c.config, OpUpdateOne, withEvseID(id))
 	return &EvseUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -568,7 +1227,7 @@ func (c *EvseClient) DeleteOne(e *Evse) *EvseDeleteOne {
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *EvseClient) DeleteOneID(id datasource.UUID) *EvseDeleteOne {
+func (c *EvseClient) DeleteOneID(id int) *EvseDeleteOne {
 	builder := c.Delete().Where(evse.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -583,12 +1242,12 @@ func (c *EvseClient) Query() *EvseQuery {
 }
 
 // Get returns a Evse entity by its id.
-func (c *EvseClient) Get(ctx context.Context, id datasource.UUID) (*Evse, error) {
+func (c *EvseClient) Get(ctx context.Context, id int) (*Evse, error) {
 	return c.Query().Where(evse.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *EvseClient) GetX(ctx context.Context, id datasource.UUID) *Evse {
+func (c *EvseClient) GetX(ctx context.Context, id int) *Evse {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -612,15 +1271,15 @@ func (c *EvseClient) QueryEquipment(e *Evse) *EquipmentQuery {
 	return query
 }
 
-// QueryConnectors queries the connectors edge of a Evse.
-func (c *EvseClient) QueryConnectors(e *Evse) *ConnectorQuery {
+// QueryConnector queries the connector edge of a Evse.
+func (c *EvseClient) QueryConnector(e *Evse) *ConnectorQuery {
 	query := &ConnectorQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(evse.Table, evse.FieldID, id),
 			sqlgraph.To(connector.Table, connector.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, evse.ConnectorsTable, evse.ConnectorsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, evse.ConnectorTable, evse.ConnectorColumn),
 		)
 		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
 		return fromV, nil
@@ -631,4 +1290,794 @@ func (c *EvseClient) QueryConnectors(e *Evse) *ConnectorQuery {
 // Hooks returns the client hooks.
 func (c *EvseClient) Hooks() []Hook {
 	return c.hooks.Evse
+}
+
+// FirmwareClient is a client for the Firmware schema.
+type FirmwareClient struct {
+	config
+}
+
+// NewFirmwareClient returns a client for the Firmware from the given config.
+func NewFirmwareClient(c config) *FirmwareClient {
+	return &FirmwareClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `firmware.Hooks(f(g(h())))`.
+func (c *FirmwareClient) Use(hooks ...Hook) {
+	c.hooks.Firmware = append(c.hooks.Firmware, hooks...)
+}
+
+// Create returns a create builder for Firmware.
+func (c *FirmwareClient) Create() *FirmwareCreate {
+	mutation := newFirmwareMutation(c.config, OpCreate)
+	return &FirmwareCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Firmware entities.
+func (c *FirmwareClient) CreateBulk(builders ...*FirmwareCreate) *FirmwareCreateBulk {
+	return &FirmwareCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Firmware.
+func (c *FirmwareClient) Update() *FirmwareUpdate {
+	mutation := newFirmwareMutation(c.config, OpUpdate)
+	return &FirmwareUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FirmwareClient) UpdateOne(f *Firmware) *FirmwareUpdateOne {
+	mutation := newFirmwareMutation(c.config, OpUpdateOne, withFirmware(f))
+	return &FirmwareUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FirmwareClient) UpdateOneID(id int) *FirmwareUpdateOne {
+	mutation := newFirmwareMutation(c.config, OpUpdateOne, withFirmwareID(id))
+	return &FirmwareUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Firmware.
+func (c *FirmwareClient) Delete() *FirmwareDelete {
+	mutation := newFirmwareMutation(c.config, OpDelete)
+	return &FirmwareDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *FirmwareClient) DeleteOne(f *Firmware) *FirmwareDeleteOne {
+	return c.DeleteOneID(f.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *FirmwareClient) DeleteOneID(id int) *FirmwareDeleteOne {
+	builder := c.Delete().Where(firmware.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FirmwareDeleteOne{builder}
+}
+
+// Query returns a query builder for Firmware.
+func (c *FirmwareClient) Query() *FirmwareQuery {
+	return &FirmwareQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Firmware entity by its id.
+func (c *FirmwareClient) Get(ctx context.Context, id int) (*Firmware, error) {
+	return c.Query().Where(firmware.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FirmwareClient) GetX(ctx context.Context, id int) *Firmware {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryEquipment queries the equipment edge of a Firmware.
+func (c *FirmwareClient) QueryEquipment(f *Firmware) *EquipmentQuery {
+	query := &EquipmentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := f.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(firmware.Table, firmware.FieldID, id),
+			sqlgraph.To(equipment.Table, equipment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, firmware.EquipmentTable, firmware.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(f.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryEquipmentFirmwareEffect queries the equipment_firmware_effect edge of a Firmware.
+func (c *FirmwareClient) QueryEquipmentFirmwareEffect(f *Firmware) *EquipmentFirmwareEffectQuery {
+	query := &EquipmentFirmwareEffectQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := f.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(firmware.Table, firmware.FieldID, id),
+			sqlgraph.To(equipmentfirmwareeffect.Table, equipmentfirmwareeffect.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, firmware.EquipmentFirmwareEffectTable, firmware.EquipmentFirmwareEffectColumn),
+		)
+		fromV = sqlgraph.Neighbors(f.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *FirmwareClient) Hooks() []Hook {
+	return c.hooks.Firmware
+}
+
+// ManufacturerClient is a client for the Manufacturer schema.
+type ManufacturerClient struct {
+	config
+}
+
+// NewManufacturerClient returns a client for the Manufacturer from the given config.
+func NewManufacturerClient(c config) *ManufacturerClient {
+	return &ManufacturerClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `manufacturer.Hooks(f(g(h())))`.
+func (c *ManufacturerClient) Use(hooks ...Hook) {
+	c.hooks.Manufacturer = append(c.hooks.Manufacturer, hooks...)
+}
+
+// Create returns a create builder for Manufacturer.
+func (c *ManufacturerClient) Create() *ManufacturerCreate {
+	mutation := newManufacturerMutation(c.config, OpCreate)
+	return &ManufacturerCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Manufacturer entities.
+func (c *ManufacturerClient) CreateBulk(builders ...*ManufacturerCreate) *ManufacturerCreateBulk {
+	return &ManufacturerCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Manufacturer.
+func (c *ManufacturerClient) Update() *ManufacturerUpdate {
+	mutation := newManufacturerMutation(c.config, OpUpdate)
+	return &ManufacturerUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ManufacturerClient) UpdateOne(m *Manufacturer) *ManufacturerUpdateOne {
+	mutation := newManufacturerMutation(c.config, OpUpdateOne, withManufacturer(m))
+	return &ManufacturerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ManufacturerClient) UpdateOneID(id int) *ManufacturerUpdateOne {
+	mutation := newManufacturerMutation(c.config, OpUpdateOne, withManufacturerID(id))
+	return &ManufacturerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Manufacturer.
+func (c *ManufacturerClient) Delete() *ManufacturerDelete {
+	mutation := newManufacturerMutation(c.config, OpDelete)
+	return &ManufacturerDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *ManufacturerClient) DeleteOne(m *Manufacturer) *ManufacturerDeleteOne {
+	return c.DeleteOneID(m.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *ManufacturerClient) DeleteOneID(id int) *ManufacturerDeleteOne {
+	builder := c.Delete().Where(manufacturer.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ManufacturerDeleteOne{builder}
+}
+
+// Query returns a query builder for Manufacturer.
+func (c *ManufacturerClient) Query() *ManufacturerQuery {
+	return &ManufacturerQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Manufacturer entity by its id.
+func (c *ManufacturerClient) Get(ctx context.Context, id int) (*Manufacturer, error) {
+	return c.Query().Where(manufacturer.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ManufacturerClient) GetX(ctx context.Context, id int) *Manufacturer {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryEquipment queries the equipment edge of a Manufacturer.
+func (c *ManufacturerClient) QueryEquipment(m *Manufacturer) *EquipmentQuery {
+	query := &EquipmentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(manufacturer.Table, manufacturer.FieldID, id),
+			sqlgraph.To(equipment.Table, equipment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, manufacturer.EquipmentTable, manufacturer.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ManufacturerClient) Hooks() []Hook {
+	return c.hooks.Manufacturer
+}
+
+// ModelClient is a client for the Model schema.
+type ModelClient struct {
+	config
+}
+
+// NewModelClient returns a client for the Model from the given config.
+func NewModelClient(c config) *ModelClient {
+	return &ModelClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `model.Hooks(f(g(h())))`.
+func (c *ModelClient) Use(hooks ...Hook) {
+	c.hooks.Model = append(c.hooks.Model, hooks...)
+}
+
+// Create returns a create builder for Model.
+func (c *ModelClient) Create() *ModelCreate {
+	mutation := newModelMutation(c.config, OpCreate)
+	return &ModelCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Model entities.
+func (c *ModelClient) CreateBulk(builders ...*ModelCreate) *ModelCreateBulk {
+	return &ModelCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Model.
+func (c *ModelClient) Update() *ModelUpdate {
+	mutation := newModelMutation(c.config, OpUpdate)
+	return &ModelUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ModelClient) UpdateOne(m *Model) *ModelUpdateOne {
+	mutation := newModelMutation(c.config, OpUpdateOne, withModel(m))
+	return &ModelUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ModelClient) UpdateOneID(id int) *ModelUpdateOne {
+	mutation := newModelMutation(c.config, OpUpdateOne, withModelID(id))
+	return &ModelUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Model.
+func (c *ModelClient) Delete() *ModelDelete {
+	mutation := newModelMutation(c.config, OpDelete)
+	return &ModelDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *ModelClient) DeleteOne(m *Model) *ModelDeleteOne {
+	return c.DeleteOneID(m.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *ModelClient) DeleteOneID(id int) *ModelDeleteOne {
+	builder := c.Delete().Where(model.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ModelDeleteOne{builder}
+}
+
+// Query returns a query builder for Model.
+func (c *ModelClient) Query() *ModelQuery {
+	return &ModelQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Model entity by its id.
+func (c *ModelClient) Get(ctx context.Context, id int) (*Model, error) {
+	return c.Query().Where(model.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ModelClient) GetX(ctx context.Context, id int) *Model {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryEquipment queries the equipment edge of a Model.
+func (c *ModelClient) QueryEquipment(m *Model) *EquipmentQuery {
+	query := &EquipmentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(model.Table, model.FieldID, id),
+			sqlgraph.To(equipment.Table, equipment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, model.EquipmentTable, model.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ModelClient) Hooks() []Hook {
+	return c.hooks.Model
+}
+
+// OrderEventClient is a client for the OrderEvent schema.
+type OrderEventClient struct {
+	config
+}
+
+// NewOrderEventClient returns a client for the OrderEvent from the given config.
+func NewOrderEventClient(c config) *OrderEventClient {
+	return &OrderEventClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `orderevent.Hooks(f(g(h())))`.
+func (c *OrderEventClient) Use(hooks ...Hook) {
+	c.hooks.OrderEvent = append(c.hooks.OrderEvent, hooks...)
+}
+
+// Create returns a create builder for OrderEvent.
+func (c *OrderEventClient) Create() *OrderEventCreate {
+	mutation := newOrderEventMutation(c.config, OpCreate)
+	return &OrderEventCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OrderEvent entities.
+func (c *OrderEventClient) CreateBulk(builders ...*OrderEventCreate) *OrderEventCreateBulk {
+	return &OrderEventCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OrderEvent.
+func (c *OrderEventClient) Update() *OrderEventUpdate {
+	mutation := newOrderEventMutation(c.config, OpUpdate)
+	return &OrderEventUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OrderEventClient) UpdateOne(oe *OrderEvent) *OrderEventUpdateOne {
+	mutation := newOrderEventMutation(c.config, OpUpdateOne, withOrderEvent(oe))
+	return &OrderEventUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OrderEventClient) UpdateOneID(id int) *OrderEventUpdateOne {
+	mutation := newOrderEventMutation(c.config, OpUpdateOne, withOrderEventID(id))
+	return &OrderEventUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OrderEvent.
+func (c *OrderEventClient) Delete() *OrderEventDelete {
+	mutation := newOrderEventMutation(c.config, OpDelete)
+	return &OrderEventDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *OrderEventClient) DeleteOne(oe *OrderEvent) *OrderEventDeleteOne {
+	return c.DeleteOneID(oe.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *OrderEventClient) DeleteOneID(id int) *OrderEventDeleteOne {
+	builder := c.Delete().Where(orderevent.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OrderEventDeleteOne{builder}
+}
+
+// Query returns a query builder for OrderEvent.
+func (c *OrderEventClient) Query() *OrderEventQuery {
+	return &OrderEventQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a OrderEvent entity by its id.
+func (c *OrderEventClient) Get(ctx context.Context, id int) (*OrderEvent, error) {
+	return c.Query().Where(orderevent.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OrderEventClient) GetX(ctx context.Context, id int) *OrderEvent {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOrderInfo queries the order_info edge of a OrderEvent.
+func (c *OrderEventClient) QueryOrderInfo(oe *OrderEvent) *OrderInfoQuery {
+	query := &OrderInfoQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := oe.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orderevent.Table, orderevent.FieldID, id),
+			sqlgraph.To(orderinfo.Table, orderinfo.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, orderevent.OrderInfoTable, orderevent.OrderInfoColumn),
+		)
+		fromV = sqlgraph.Neighbors(oe.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *OrderEventClient) Hooks() []Hook {
+	return c.hooks.OrderEvent
+}
+
+// OrderInfoClient is a client for the OrderInfo schema.
+type OrderInfoClient struct {
+	config
+}
+
+// NewOrderInfoClient returns a client for the OrderInfo from the given config.
+func NewOrderInfoClient(c config) *OrderInfoClient {
+	return &OrderInfoClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `orderinfo.Hooks(f(g(h())))`.
+func (c *OrderInfoClient) Use(hooks ...Hook) {
+	c.hooks.OrderInfo = append(c.hooks.OrderInfo, hooks...)
+}
+
+// Create returns a create builder for OrderInfo.
+func (c *OrderInfoClient) Create() *OrderInfoCreate {
+	mutation := newOrderInfoMutation(c.config, OpCreate)
+	return &OrderInfoCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OrderInfo entities.
+func (c *OrderInfoClient) CreateBulk(builders ...*OrderInfoCreate) *OrderInfoCreateBulk {
+	return &OrderInfoCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OrderInfo.
+func (c *OrderInfoClient) Update() *OrderInfoUpdate {
+	mutation := newOrderInfoMutation(c.config, OpUpdate)
+	return &OrderInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OrderInfoClient) UpdateOne(oi *OrderInfo) *OrderInfoUpdateOne {
+	mutation := newOrderInfoMutation(c.config, OpUpdateOne, withOrderInfo(oi))
+	return &OrderInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OrderInfoClient) UpdateOneID(id int) *OrderInfoUpdateOne {
+	mutation := newOrderInfoMutation(c.config, OpUpdateOne, withOrderInfoID(id))
+	return &OrderInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OrderInfo.
+func (c *OrderInfoClient) Delete() *OrderInfoDelete {
+	mutation := newOrderInfoMutation(c.config, OpDelete)
+	return &OrderInfoDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *OrderInfoClient) DeleteOne(oi *OrderInfo) *OrderInfoDeleteOne {
+	return c.DeleteOneID(oi.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *OrderInfoClient) DeleteOneID(id int) *OrderInfoDeleteOne {
+	builder := c.Delete().Where(orderinfo.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OrderInfoDeleteOne{builder}
+}
+
+// Query returns a query builder for OrderInfo.
+func (c *OrderInfoClient) Query() *OrderInfoQuery {
+	return &OrderInfoQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a OrderInfo entity by its id.
+func (c *OrderInfoClient) Get(ctx context.Context, id int) (*OrderInfo, error) {
+	return c.Query().Where(orderinfo.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OrderInfoClient) GetX(ctx context.Context, id int) *OrderInfo {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryConnector queries the connector edge of a OrderInfo.
+func (c *OrderInfoClient) QueryConnector(oi *OrderInfo) *ConnectorQuery {
+	query := &ConnectorQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := oi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orderinfo.Table, orderinfo.FieldID, id),
+			sqlgraph.To(connector.Table, connector.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, orderinfo.ConnectorTable, orderinfo.ConnectorColumn),
+		)
+		fromV = sqlgraph.Neighbors(oi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryEquipment queries the equipment edge of a OrderInfo.
+func (c *OrderInfoClient) QueryEquipment(oi *OrderInfo) *EquipmentQuery {
+	query := &EquipmentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := oi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orderinfo.Table, orderinfo.FieldID, id),
+			sqlgraph.To(equipment.Table, equipment.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, orderinfo.EquipmentTable, orderinfo.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(oi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrderEvent queries the order_event edge of a OrderInfo.
+func (c *OrderInfoClient) QueryOrderEvent(oi *OrderInfo) *OrderEventQuery {
+	query := &OrderEventQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := oi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orderinfo.Table, orderinfo.FieldID, id),
+			sqlgraph.To(orderevent.Table, orderevent.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, orderinfo.OrderEventTable, orderinfo.OrderEventColumn),
+		)
+		fromV = sqlgraph.Neighbors(oi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *OrderInfoClient) Hooks() []Hook {
+	return c.hooks.OrderInfo
+}
+
+// ReservationClient is a client for the Reservation schema.
+type ReservationClient struct {
+	config
+}
+
+// NewReservationClient returns a client for the Reservation from the given config.
+func NewReservationClient(c config) *ReservationClient {
+	return &ReservationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `reservation.Hooks(f(g(h())))`.
+func (c *ReservationClient) Use(hooks ...Hook) {
+	c.hooks.Reservation = append(c.hooks.Reservation, hooks...)
+}
+
+// Create returns a create builder for Reservation.
+func (c *ReservationClient) Create() *ReservationCreate {
+	mutation := newReservationMutation(c.config, OpCreate)
+	return &ReservationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Reservation entities.
+func (c *ReservationClient) CreateBulk(builders ...*ReservationCreate) *ReservationCreateBulk {
+	return &ReservationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Reservation.
+func (c *ReservationClient) Update() *ReservationUpdate {
+	mutation := newReservationMutation(c.config, OpUpdate)
+	return &ReservationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ReservationClient) UpdateOne(r *Reservation) *ReservationUpdateOne {
+	mutation := newReservationMutation(c.config, OpUpdateOne, withReservation(r))
+	return &ReservationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ReservationClient) UpdateOneID(id int) *ReservationUpdateOne {
+	mutation := newReservationMutation(c.config, OpUpdateOne, withReservationID(id))
+	return &ReservationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Reservation.
+func (c *ReservationClient) Delete() *ReservationDelete {
+	mutation := newReservationMutation(c.config, OpDelete)
+	return &ReservationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *ReservationClient) DeleteOne(r *Reservation) *ReservationDeleteOne {
+	return c.DeleteOneID(r.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *ReservationClient) DeleteOneID(id int) *ReservationDeleteOne {
+	builder := c.Delete().Where(reservation.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ReservationDeleteOne{builder}
+}
+
+// Query returns a query builder for Reservation.
+func (c *ReservationClient) Query() *ReservationQuery {
+	return &ReservationQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Reservation entity by its id.
+func (c *ReservationClient) Get(ctx context.Context, id int) (*Reservation, error) {
+	return c.Query().Where(reservation.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ReservationClient) GetX(ctx context.Context, id int) *Reservation {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryEquipment queries the equipment edge of a Reservation.
+func (c *ReservationClient) QueryEquipment(r *Reservation) *EquipmentQuery {
+	query := &EquipmentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(reservation.Table, reservation.FieldID, id),
+			sqlgraph.To(equipment.Table, equipment.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, reservation.EquipmentTable, reservation.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryConnector queries the connector edge of a Reservation.
+func (c *ReservationClient) QueryConnector(r *Reservation) *ConnectorQuery {
+	query := &ConnectorQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(reservation.Table, reservation.FieldID, id),
+			sqlgraph.To(connector.Table, connector.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, reservation.ConnectorTable, reservation.ConnectorColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ReservationClient) Hooks() []Hook {
+	return c.hooks.Reservation
+}
+
+// SmartChargingEventClient is a client for the SmartChargingEvent schema.
+type SmartChargingEventClient struct {
+	config
+}
+
+// NewSmartChargingEventClient returns a client for the SmartChargingEvent from the given config.
+func NewSmartChargingEventClient(c config) *SmartChargingEventClient {
+	return &SmartChargingEventClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `smartchargingevent.Hooks(f(g(h())))`.
+func (c *SmartChargingEventClient) Use(hooks ...Hook) {
+	c.hooks.SmartChargingEvent = append(c.hooks.SmartChargingEvent, hooks...)
+}
+
+// Create returns a create builder for SmartChargingEvent.
+func (c *SmartChargingEventClient) Create() *SmartChargingEventCreate {
+	mutation := newSmartChargingEventMutation(c.config, OpCreate)
+	return &SmartChargingEventCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SmartChargingEvent entities.
+func (c *SmartChargingEventClient) CreateBulk(builders ...*SmartChargingEventCreate) *SmartChargingEventCreateBulk {
+	return &SmartChargingEventCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SmartChargingEvent.
+func (c *SmartChargingEventClient) Update() *SmartChargingEventUpdate {
+	mutation := newSmartChargingEventMutation(c.config, OpUpdate)
+	return &SmartChargingEventUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SmartChargingEventClient) UpdateOne(sce *SmartChargingEvent) *SmartChargingEventUpdateOne {
+	mutation := newSmartChargingEventMutation(c.config, OpUpdateOne, withSmartChargingEvent(sce))
+	return &SmartChargingEventUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SmartChargingEventClient) UpdateOneID(id int) *SmartChargingEventUpdateOne {
+	mutation := newSmartChargingEventMutation(c.config, OpUpdateOne, withSmartChargingEventID(id))
+	return &SmartChargingEventUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SmartChargingEvent.
+func (c *SmartChargingEventClient) Delete() *SmartChargingEventDelete {
+	mutation := newSmartChargingEventMutation(c.config, OpDelete)
+	return &SmartChargingEventDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *SmartChargingEventClient) DeleteOne(sce *SmartChargingEvent) *SmartChargingEventDeleteOne {
+	return c.DeleteOneID(sce.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *SmartChargingEventClient) DeleteOneID(id int) *SmartChargingEventDeleteOne {
+	builder := c.Delete().Where(smartchargingevent.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SmartChargingEventDeleteOne{builder}
+}
+
+// Query returns a query builder for SmartChargingEvent.
+func (c *SmartChargingEventClient) Query() *SmartChargingEventQuery {
+	return &SmartChargingEventQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a SmartChargingEvent entity by its id.
+func (c *SmartChargingEventClient) Get(ctx context.Context, id int) (*SmartChargingEvent, error) {
+	return c.Query().Where(smartchargingevent.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SmartChargingEventClient) GetX(ctx context.Context, id int) *SmartChargingEvent {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SmartChargingEventClient) Hooks() []Hook {
+	return c.hooks.SmartChargingEvent
 }

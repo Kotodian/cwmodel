@@ -10,10 +10,11 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/connector"
-	"github.com/Kotodian/ent-practice/ent/enums"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/evse"
-	"github.com/Kotodian/gokit/datasource"
+	"github.com/Kotodian/ent-practice/ent/orderinfo"
+	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/ent-practice/ent/types"
 )
 
 // ConnectorCreate is the builder for creating a Connector entity.
@@ -42,33 +43,19 @@ func (cc *ConnectorCreate) SetSerial(s string) *ConnectorCreate {
 }
 
 // SetCurrentState sets the "current_state" field.
-func (cc *ConnectorCreate) SetCurrentState(es enums.ConnectorState) *ConnectorCreate {
-	cc.mutation.SetCurrentState(es)
+func (cc *ConnectorCreate) SetCurrentState(ts types.ConnectorState) *ConnectorCreate {
+	cc.mutation.SetCurrentState(ts)
 	return cc
 }
 
 // SetBeforeState sets the "before_state" field.
-func (cc *ConnectorCreate) SetBeforeState(es enums.ConnectorState) *ConnectorCreate {
-	cc.mutation.SetBeforeState(es)
-	return cc
-}
-
-// SetID sets the "id" field.
-func (cc *ConnectorCreate) SetID(d datasource.UUID) *ConnectorCreate {
-	cc.mutation.SetID(d)
-	return cc
-}
-
-// SetNillableID sets the "id" field if the given value is not nil.
-func (cc *ConnectorCreate) SetNillableID(d *datasource.UUID) *ConnectorCreate {
-	if d != nil {
-		cc.SetID(*d)
-	}
+func (cc *ConnectorCreate) SetBeforeState(ts types.ConnectorState) *ConnectorCreate {
+	cc.mutation.SetBeforeState(ts)
 	return cc
 }
 
 // SetEvseID sets the "evse" edge to the Evse entity by ID.
-func (cc *ConnectorCreate) SetEvseID(id datasource.UUID) *ConnectorCreate {
+func (cc *ConnectorCreate) SetEvseID(id int) *ConnectorCreate {
 	cc.mutation.SetEvseID(id)
 	return cc
 }
@@ -79,7 +66,7 @@ func (cc *ConnectorCreate) SetEvse(e *Evse) *ConnectorCreate {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (cc *ConnectorCreate) SetEquipmentID(id datasource.UUID) *ConnectorCreate {
+func (cc *ConnectorCreate) SetEquipmentID(id int) *ConnectorCreate {
 	cc.mutation.SetEquipmentID(id)
 	return cc
 }
@@ -87,6 +74,36 @@ func (cc *ConnectorCreate) SetEquipmentID(id datasource.UUID) *ConnectorCreate {
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (cc *ConnectorCreate) SetEquipment(e *Equipment) *ConnectorCreate {
 	return cc.SetEquipmentID(e.ID)
+}
+
+// AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
+func (cc *ConnectorCreate) AddOrderInfoIDs(ids ...int) *ConnectorCreate {
+	cc.mutation.AddOrderInfoIDs(ids...)
+	return cc
+}
+
+// AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
+func (cc *ConnectorCreate) AddOrderInfo(o ...*OrderInfo) *ConnectorCreate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return cc.AddOrderInfoIDs(ids...)
+}
+
+// AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
+func (cc *ConnectorCreate) AddReservationIDs(ids ...int) *ConnectorCreate {
+	cc.mutation.AddReservationIDs(ids...)
+	return cc
+}
+
+// AddReservation adds the "reservation" edges to the Reservation entity.
+func (cc *ConnectorCreate) AddReservation(r ...*Reservation) *ConnectorCreate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return cc.AddReservationIDs(ids...)
 }
 
 // Mutation returns the ConnectorMutation object of the builder.
@@ -100,7 +117,6 @@ func (cc *ConnectorCreate) Save(ctx context.Context) (*Connector, error) {
 		err  error
 		node *Connector
 	)
-	cc.defaults()
 	if len(cc.hooks) == 0 {
 		if err = cc.check(); err != nil {
 			return nil, err
@@ -158,14 +174,6 @@ func (cc *ConnectorCreate) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (cc *ConnectorCreate) defaults() {
-	if _, ok := cc.mutation.ID(); !ok {
-		v := connector.DefaultID
-		cc.mutation.SetID(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (cc *ConnectorCreate) check() error {
 	if _, ok := cc.mutation.EquipmentSn(); !ok {
@@ -210,10 +218,8 @@ func (cc *ConnectorCreate) sqlSave(ctx context.Context) (*Connector, error) {
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != _node.ID {
-		id := _spec.ID.Value.(int64)
-		_node.ID = datasource.UUID(id)
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	return _node, nil
 }
 
@@ -223,15 +229,11 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: connector.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt,
 				Column: connector.FieldID,
 			},
 		}
 	)
-	if id, ok := cc.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
-	}
 	if value, ok := cc.mutation.EquipmentSn(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -281,7 +283,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: evse.FieldID,
 				},
 			},
@@ -289,7 +291,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.evse_connectors = &nodes[0]
+		_node.evse_connector = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := cc.mutation.EquipmentIDs(); len(nodes) > 0 {
@@ -301,7 +303,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},
@@ -309,7 +311,45 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.equipment_connectors = &nodes[0]
+		_node.equipment_connector = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.OrderInfoIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.ReservationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: reservation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -329,7 +369,6 @@ func (ccb *ConnectorCreateBulk) Save(ctx context.Context) ([]*Connector, error) 
 	for i := range ccb.builders {
 		func(i int, root context.Context) {
 			builder := ccb.builders[i]
-			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ConnectorMutation)
 				if !ok {
@@ -357,9 +396,9 @@ func (ccb *ConnectorCreateBulk) Save(ctx context.Context) ([]*Connector, error) 
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
-				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+				if specs[i].ID.Value != nil {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = datasource.UUID(id)
+					nodes[i].ID = int(id)
 				}
 				return nodes[i], nil
 			})

@@ -13,7 +13,6 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
-	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentInfoUpdate is the builder for updating EquipmentInfo entities.
@@ -48,7 +47,7 @@ func (eiu *EquipmentInfoUpdate) SetState(b bool) *EquipmentInfoUpdate {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eiu *EquipmentInfoUpdate) SetEquipmentID(id datasource.UUID) *EquipmentInfoUpdate {
+func (eiu *EquipmentInfoUpdate) SetEquipmentID(id int) *EquipmentInfoUpdate {
 	eiu.mutation.SetEquipmentID(id)
 	return eiu
 }
@@ -143,7 +142,7 @@ func (eiu *EquipmentInfoUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Table:   equipmentinfo.Table,
 			Columns: equipmentinfo.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt,
 				Column: equipmentinfo.FieldID,
 			},
 		},
@@ -185,7 +184,7 @@ func (eiu *EquipmentInfoUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},
@@ -201,7 +200,7 @@ func (eiu *EquipmentInfoUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},
@@ -249,7 +248,7 @@ func (eiuo *EquipmentInfoUpdateOne) SetState(b bool) *EquipmentInfoUpdateOne {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eiuo *EquipmentInfoUpdateOne) SetEquipmentID(id datasource.UUID) *EquipmentInfoUpdateOne {
+func (eiuo *EquipmentInfoUpdateOne) SetEquipmentID(id int) *EquipmentInfoUpdateOne {
 	eiuo.mutation.SetEquipmentID(id)
 	return eiuo
 }
@@ -351,7 +350,7 @@ func (eiuo *EquipmentInfoUpdateOne) sqlSave(ctx context.Context) (_node *Equipme
 			Table:   equipmentinfo.Table,
 			Columns: equipmentinfo.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt,
 				Column: equipmentinfo.FieldID,
 			},
 		},
@@ -410,7 +409,7 @@ func (eiuo *EquipmentInfoUpdateOne) sqlSave(ctx context.Context) (_node *Equipme
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},
@@ -426,7 +425,7 @@ func (eiuo *EquipmentInfoUpdateOne) sqlSave(ctx context.Context) (_node *Equipme
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},

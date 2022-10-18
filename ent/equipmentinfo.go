@@ -9,15 +9,13 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
-	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentInfo is the model entity for the EquipmentInfo schema.
 type EquipmentInfo struct {
 	config `json:"-"`
 	// ID of the ent.
-	// 主键
-	ID datasource.UUID `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	// EquipmentSn holds the value of the "equipment_sn" field.
 	// 桩序列号
 	EquipmentSn string `json:"equipment_sn,omitempty"`
@@ -30,7 +28,7 @@ type EquipmentInfo struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentInfoQuery when eager-loading is set.
 	Edges                    EquipmentInfoEdges `json:"edges"`
-	equipment_equipment_info *datasource.UUID
+	equipment_equipment_info *int
 }
 
 // EquipmentInfoEdges holds the relations/edges for other nodes in the graph.
@@ -89,7 +87,7 @@ func (ei *EquipmentInfo) assignValues(columns []string, values []interface{}) er
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ei.ID = datasource.UUID(value.Int64)
+			ei.ID = int(value.Int64)
 		case equipmentinfo.FieldEquipmentSn:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field equipment_sn", values[i])
@@ -112,8 +110,8 @@ func (ei *EquipmentInfo) assignValues(columns []string, values []interface{}) er
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field equipment_equipment_info", value)
 			} else if value.Valid {
-				ei.equipment_equipment_info = new(datasource.UUID)
-				*ei.equipment_equipment_info = datasource.UUID(value.Int64)
+				ei.equipment_equipment_info = new(int)
+				*ei.equipment_equipment_info = int(value.Int64)
 			}
 		}
 	}

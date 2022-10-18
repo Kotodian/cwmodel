@@ -11,11 +11,12 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/connector"
-	"github.com/Kotodian/ent-practice/ent/enums"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/evse"
+	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
-	"github.com/Kotodian/gokit/datasource"
+	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/ent-practice/ent/types"
 )
 
 // ConnectorUpdate is the builder for updating Connector entities.
@@ -50,19 +51,19 @@ func (cu *ConnectorUpdate) SetSerial(s string) *ConnectorUpdate {
 }
 
 // SetCurrentState sets the "current_state" field.
-func (cu *ConnectorUpdate) SetCurrentState(es enums.ConnectorState) *ConnectorUpdate {
-	cu.mutation.SetCurrentState(es)
+func (cu *ConnectorUpdate) SetCurrentState(ts types.ConnectorState) *ConnectorUpdate {
+	cu.mutation.SetCurrentState(ts)
 	return cu
 }
 
 // SetBeforeState sets the "before_state" field.
-func (cu *ConnectorUpdate) SetBeforeState(es enums.ConnectorState) *ConnectorUpdate {
-	cu.mutation.SetBeforeState(es)
+func (cu *ConnectorUpdate) SetBeforeState(ts types.ConnectorState) *ConnectorUpdate {
+	cu.mutation.SetBeforeState(ts)
 	return cu
 }
 
 // SetEvseID sets the "evse" edge to the Evse entity by ID.
-func (cu *ConnectorUpdate) SetEvseID(id datasource.UUID) *ConnectorUpdate {
+func (cu *ConnectorUpdate) SetEvseID(id int) *ConnectorUpdate {
 	cu.mutation.SetEvseID(id)
 	return cu
 }
@@ -73,7 +74,7 @@ func (cu *ConnectorUpdate) SetEvse(e *Evse) *ConnectorUpdate {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (cu *ConnectorUpdate) SetEquipmentID(id datasource.UUID) *ConnectorUpdate {
+func (cu *ConnectorUpdate) SetEquipmentID(id int) *ConnectorUpdate {
 	cu.mutation.SetEquipmentID(id)
 	return cu
 }
@@ -81,6 +82,36 @@ func (cu *ConnectorUpdate) SetEquipmentID(id datasource.UUID) *ConnectorUpdate {
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (cu *ConnectorUpdate) SetEquipment(e *Equipment) *ConnectorUpdate {
 	return cu.SetEquipmentID(e.ID)
+}
+
+// AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
+func (cu *ConnectorUpdate) AddOrderInfoIDs(ids ...int) *ConnectorUpdate {
+	cu.mutation.AddOrderInfoIDs(ids...)
+	return cu
+}
+
+// AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
+func (cu *ConnectorUpdate) AddOrderInfo(o ...*OrderInfo) *ConnectorUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return cu.AddOrderInfoIDs(ids...)
+}
+
+// AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
+func (cu *ConnectorUpdate) AddReservationIDs(ids ...int) *ConnectorUpdate {
+	cu.mutation.AddReservationIDs(ids...)
+	return cu
+}
+
+// AddReservation adds the "reservation" edges to the Reservation entity.
+func (cu *ConnectorUpdate) AddReservation(r ...*Reservation) *ConnectorUpdate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return cu.AddReservationIDs(ids...)
 }
 
 // Mutation returns the ConnectorMutation object of the builder.
@@ -98,6 +129,48 @@ func (cu *ConnectorUpdate) ClearEvse() *ConnectorUpdate {
 func (cu *ConnectorUpdate) ClearEquipment() *ConnectorUpdate {
 	cu.mutation.ClearEquipment()
 	return cu
+}
+
+// ClearOrderInfo clears all "order_info" edges to the OrderInfo entity.
+func (cu *ConnectorUpdate) ClearOrderInfo() *ConnectorUpdate {
+	cu.mutation.ClearOrderInfo()
+	return cu
+}
+
+// RemoveOrderInfoIDs removes the "order_info" edge to OrderInfo entities by IDs.
+func (cu *ConnectorUpdate) RemoveOrderInfoIDs(ids ...int) *ConnectorUpdate {
+	cu.mutation.RemoveOrderInfoIDs(ids...)
+	return cu
+}
+
+// RemoveOrderInfo removes "order_info" edges to OrderInfo entities.
+func (cu *ConnectorUpdate) RemoveOrderInfo(o ...*OrderInfo) *ConnectorUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return cu.RemoveOrderInfoIDs(ids...)
+}
+
+// ClearReservation clears all "reservation" edges to the Reservation entity.
+func (cu *ConnectorUpdate) ClearReservation() *ConnectorUpdate {
+	cu.mutation.ClearReservation()
+	return cu
+}
+
+// RemoveReservationIDs removes the "reservation" edge to Reservation entities by IDs.
+func (cu *ConnectorUpdate) RemoveReservationIDs(ids ...int) *ConnectorUpdate {
+	cu.mutation.RemoveReservationIDs(ids...)
+	return cu
+}
+
+// RemoveReservation removes "reservation" edges to Reservation entities.
+func (cu *ConnectorUpdate) RemoveReservation(r ...*Reservation) *ConnectorUpdate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return cu.RemoveReservationIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -187,7 +260,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   connector.Table,
 			Columns: connector.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt,
 				Column: connector.FieldID,
 			},
 		},
@@ -243,7 +316,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: evse.FieldID,
 				},
 			},
@@ -259,7 +332,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: evse.FieldID,
 				},
 			},
@@ -278,7 +351,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},
@@ -294,8 +367,116 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cu.mutation.OrderInfoCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.RemovedOrderInfoIDs(); len(nodes) > 0 && !cu.mutation.OrderInfoCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.OrderInfoIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cu.mutation.ReservationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: reservation.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.RemovedReservationIDs(); len(nodes) > 0 && !cu.mutation.ReservationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: reservation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.ReservationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: reservation.FieldID,
 				},
 			},
 		}
@@ -342,19 +523,19 @@ func (cuo *ConnectorUpdateOne) SetSerial(s string) *ConnectorUpdateOne {
 }
 
 // SetCurrentState sets the "current_state" field.
-func (cuo *ConnectorUpdateOne) SetCurrentState(es enums.ConnectorState) *ConnectorUpdateOne {
-	cuo.mutation.SetCurrentState(es)
+func (cuo *ConnectorUpdateOne) SetCurrentState(ts types.ConnectorState) *ConnectorUpdateOne {
+	cuo.mutation.SetCurrentState(ts)
 	return cuo
 }
 
 // SetBeforeState sets the "before_state" field.
-func (cuo *ConnectorUpdateOne) SetBeforeState(es enums.ConnectorState) *ConnectorUpdateOne {
-	cuo.mutation.SetBeforeState(es)
+func (cuo *ConnectorUpdateOne) SetBeforeState(ts types.ConnectorState) *ConnectorUpdateOne {
+	cuo.mutation.SetBeforeState(ts)
 	return cuo
 }
 
 // SetEvseID sets the "evse" edge to the Evse entity by ID.
-func (cuo *ConnectorUpdateOne) SetEvseID(id datasource.UUID) *ConnectorUpdateOne {
+func (cuo *ConnectorUpdateOne) SetEvseID(id int) *ConnectorUpdateOne {
 	cuo.mutation.SetEvseID(id)
 	return cuo
 }
@@ -365,7 +546,7 @@ func (cuo *ConnectorUpdateOne) SetEvse(e *Evse) *ConnectorUpdateOne {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (cuo *ConnectorUpdateOne) SetEquipmentID(id datasource.UUID) *ConnectorUpdateOne {
+func (cuo *ConnectorUpdateOne) SetEquipmentID(id int) *ConnectorUpdateOne {
 	cuo.mutation.SetEquipmentID(id)
 	return cuo
 }
@@ -373,6 +554,36 @@ func (cuo *ConnectorUpdateOne) SetEquipmentID(id datasource.UUID) *ConnectorUpda
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (cuo *ConnectorUpdateOne) SetEquipment(e *Equipment) *ConnectorUpdateOne {
 	return cuo.SetEquipmentID(e.ID)
+}
+
+// AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
+func (cuo *ConnectorUpdateOne) AddOrderInfoIDs(ids ...int) *ConnectorUpdateOne {
+	cuo.mutation.AddOrderInfoIDs(ids...)
+	return cuo
+}
+
+// AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
+func (cuo *ConnectorUpdateOne) AddOrderInfo(o ...*OrderInfo) *ConnectorUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return cuo.AddOrderInfoIDs(ids...)
+}
+
+// AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
+func (cuo *ConnectorUpdateOne) AddReservationIDs(ids ...int) *ConnectorUpdateOne {
+	cuo.mutation.AddReservationIDs(ids...)
+	return cuo
+}
+
+// AddReservation adds the "reservation" edges to the Reservation entity.
+func (cuo *ConnectorUpdateOne) AddReservation(r ...*Reservation) *ConnectorUpdateOne {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return cuo.AddReservationIDs(ids...)
 }
 
 // Mutation returns the ConnectorMutation object of the builder.
@@ -390,6 +601,48 @@ func (cuo *ConnectorUpdateOne) ClearEvse() *ConnectorUpdateOne {
 func (cuo *ConnectorUpdateOne) ClearEquipment() *ConnectorUpdateOne {
 	cuo.mutation.ClearEquipment()
 	return cuo
+}
+
+// ClearOrderInfo clears all "order_info" edges to the OrderInfo entity.
+func (cuo *ConnectorUpdateOne) ClearOrderInfo() *ConnectorUpdateOne {
+	cuo.mutation.ClearOrderInfo()
+	return cuo
+}
+
+// RemoveOrderInfoIDs removes the "order_info" edge to OrderInfo entities by IDs.
+func (cuo *ConnectorUpdateOne) RemoveOrderInfoIDs(ids ...int) *ConnectorUpdateOne {
+	cuo.mutation.RemoveOrderInfoIDs(ids...)
+	return cuo
+}
+
+// RemoveOrderInfo removes "order_info" edges to OrderInfo entities.
+func (cuo *ConnectorUpdateOne) RemoveOrderInfo(o ...*OrderInfo) *ConnectorUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return cuo.RemoveOrderInfoIDs(ids...)
+}
+
+// ClearReservation clears all "reservation" edges to the Reservation entity.
+func (cuo *ConnectorUpdateOne) ClearReservation() *ConnectorUpdateOne {
+	cuo.mutation.ClearReservation()
+	return cuo
+}
+
+// RemoveReservationIDs removes the "reservation" edge to Reservation entities by IDs.
+func (cuo *ConnectorUpdateOne) RemoveReservationIDs(ids ...int) *ConnectorUpdateOne {
+	cuo.mutation.RemoveReservationIDs(ids...)
+	return cuo
+}
+
+// RemoveReservation removes "reservation" edges to Reservation entities.
+func (cuo *ConnectorUpdateOne) RemoveReservation(r ...*Reservation) *ConnectorUpdateOne {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return cuo.RemoveReservationIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -486,7 +739,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Table:   connector.Table,
 			Columns: connector.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt,
 				Column: connector.FieldID,
 			},
 		},
@@ -559,7 +812,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: evse.FieldID,
 				},
 			},
@@ -575,7 +828,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: evse.FieldID,
 				},
 			},
@@ -594,7 +847,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},
@@ -610,8 +863,116 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cuo.mutation.OrderInfoCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.RemovedOrderInfoIDs(); len(nodes) > 0 && !cuo.mutation.OrderInfoCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.OrderInfoIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cuo.mutation.ReservationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: reservation.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.RemovedReservationIDs(); len(nodes) > 0 && !cuo.mutation.ReservationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: reservation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.ReservationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: reservation.FieldID,
 				},
 			},
 		}

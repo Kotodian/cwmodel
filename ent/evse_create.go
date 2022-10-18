@@ -12,7 +12,6 @@ import (
 	"github.com/Kotodian/ent-practice/ent/connector"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/evse"
-	"github.com/Kotodian/gokit/datasource"
 )
 
 // EvseCreate is the builder for creating a Evse entity.
@@ -34,22 +33,8 @@ func (ec *EvseCreate) SetConnectorNumber(i int) *EvseCreate {
 	return ec
 }
 
-// SetID sets the "id" field.
-func (ec *EvseCreate) SetID(d datasource.UUID) *EvseCreate {
-	ec.mutation.SetID(d)
-	return ec
-}
-
-// SetNillableID sets the "id" field if the given value is not nil.
-func (ec *EvseCreate) SetNillableID(d *datasource.UUID) *EvseCreate {
-	if d != nil {
-		ec.SetID(*d)
-	}
-	return ec
-}
-
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (ec *EvseCreate) SetEquipmentID(id datasource.UUID) *EvseCreate {
+func (ec *EvseCreate) SetEquipmentID(id int) *EvseCreate {
 	ec.mutation.SetEquipmentID(id)
 	return ec
 }
@@ -59,15 +44,15 @@ func (ec *EvseCreate) SetEquipment(e *Equipment) *EvseCreate {
 	return ec.SetEquipmentID(e.ID)
 }
 
-// AddConnectorIDs adds the "connectors" edge to the Connector entity by IDs.
-func (ec *EvseCreate) AddConnectorIDs(ids ...datasource.UUID) *EvseCreate {
+// AddConnectorIDs adds the "connector" edge to the Connector entity by IDs.
+func (ec *EvseCreate) AddConnectorIDs(ids ...int) *EvseCreate {
 	ec.mutation.AddConnectorIDs(ids...)
 	return ec
 }
 
-// AddConnectors adds the "connectors" edges to the Connector entity.
-func (ec *EvseCreate) AddConnectors(c ...*Connector) *EvseCreate {
-	ids := make([]datasource.UUID, len(c))
+// AddConnector adds the "connector" edges to the Connector entity.
+func (ec *EvseCreate) AddConnector(c ...*Connector) *EvseCreate {
+	ids := make([]int, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -85,7 +70,6 @@ func (ec *EvseCreate) Save(ctx context.Context) (*Evse, error) {
 		err  error
 		node *Evse
 	)
-	ec.defaults()
 	if len(ec.hooks) == 0 {
 		if err = ec.check(); err != nil {
 			return nil, err
@@ -143,14 +127,6 @@ func (ec *EvseCreate) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (ec *EvseCreate) defaults() {
-	if _, ok := ec.mutation.ID(); !ok {
-		v := evse.DefaultID
-		ec.mutation.SetID(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (ec *EvseCreate) check() error {
 	if _, ok := ec.mutation.Serial(); !ok {
@@ -173,10 +149,8 @@ func (ec *EvseCreate) sqlSave(ctx context.Context) (*Evse, error) {
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != _node.ID {
-		id := _spec.ID.Value.(int64)
-		_node.ID = datasource.UUID(id)
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	return _node, nil
 }
 
@@ -186,15 +160,11 @@ func (ec *EvseCreate) createSpec() (*Evse, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: evse.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt,
 				Column: evse.FieldID,
 			},
 		}
 	)
-	if id, ok := ec.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
-	}
 	if value, ok := ec.mutation.Serial(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -220,7 +190,7 @@ func (ec *EvseCreate) createSpec() (*Evse, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},
@@ -228,19 +198,19 @@ func (ec *EvseCreate) createSpec() (*Evse, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.equipment_evses = &nodes[0]
+		_node.equipment_evse = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ec.mutation.ConnectorsIDs(); len(nodes) > 0 {
+	if nodes := ec.mutation.ConnectorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   evse.ConnectorsTable,
-			Columns: []string{evse.ConnectorsColumn},
+			Table:   evse.ConnectorTable,
+			Columns: []string{evse.ConnectorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: connector.FieldID,
 				},
 			},
@@ -267,7 +237,6 @@ func (ecb *EvseCreateBulk) Save(ctx context.Context) ([]*Evse, error) {
 	for i := range ecb.builders {
 		func(i int, root context.Context) {
 			builder := ecb.builders[i]
-			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*EvseMutation)
 				if !ok {
@@ -295,9 +264,9 @@ func (ecb *EvseCreateBulk) Save(ctx context.Context) ([]*Evse, error) {
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
-				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+				if specs[i].ID.Value != nil {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = datasource.UUID(id)
+					nodes[i].ID = int(id)
 				}
 				return nodes[i], nil
 			})

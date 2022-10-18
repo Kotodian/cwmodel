@@ -14,7 +14,6 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
-	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentInfoQuery is the builder for querying EquipmentInfo entities.
@@ -111,8 +110,8 @@ func (eiq *EquipmentInfoQuery) FirstX(ctx context.Context) *EquipmentInfo {
 
 // FirstID returns the first EquipmentInfo ID from the query.
 // Returns a *NotFoundError when no EquipmentInfo ID was found.
-func (eiq *EquipmentInfoQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
-	var ids []datasource.UUID
+func (eiq *EquipmentInfoQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = eiq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -124,7 +123,7 @@ func (eiq *EquipmentInfoQuery) FirstID(ctx context.Context) (id datasource.UUID,
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (eiq *EquipmentInfoQuery) FirstIDX(ctx context.Context) datasource.UUID {
+func (eiq *EquipmentInfoQuery) FirstIDX(ctx context.Context) int {
 	id, err := eiq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -162,8 +161,8 @@ func (eiq *EquipmentInfoQuery) OnlyX(ctx context.Context) *EquipmentInfo {
 // OnlyID is like Only, but returns the only EquipmentInfo ID in the query.
 // Returns a *NotSingularError when more than one EquipmentInfo ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (eiq *EquipmentInfoQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
-	var ids []datasource.UUID
+func (eiq *EquipmentInfoQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = eiq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -179,7 +178,7 @@ func (eiq *EquipmentInfoQuery) OnlyID(ctx context.Context) (id datasource.UUID, 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (eiq *EquipmentInfoQuery) OnlyIDX(ctx context.Context) datasource.UUID {
+func (eiq *EquipmentInfoQuery) OnlyIDX(ctx context.Context) int {
 	id, err := eiq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,8 +204,8 @@ func (eiq *EquipmentInfoQuery) AllX(ctx context.Context) []*EquipmentInfo {
 }
 
 // IDs executes the query and returns a list of EquipmentInfo IDs.
-func (eiq *EquipmentInfoQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
-	var ids []datasource.UUID
+func (eiq *EquipmentInfoQuery) IDs(ctx context.Context) ([]int, error) {
+	var ids []int
 	if err := eiq.Select(equipmentinfo.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -214,7 +213,7 @@ func (eiq *EquipmentInfoQuery) IDs(ctx context.Context) ([]datasource.UUID, erro
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (eiq *EquipmentInfoQuery) IDsX(ctx context.Context) []datasource.UUID {
+func (eiq *EquipmentInfoQuery) IDsX(ctx context.Context) []int {
 	ids, err := eiq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -301,7 +300,6 @@ func (eiq *EquipmentInfoQuery) WithEquipment(opts ...func(*EquipmentQuery)) *Equ
 //		GroupBy(equipmentinfo.FieldEquipmentSn).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (eiq *EquipmentInfoQuery) GroupBy(field string, fields ...string) *EquipmentInfoGroupBy {
 	group := &EquipmentInfoGroupBy{config: eiq.config}
 	group.fields = append([]string{field}, fields...)
@@ -326,7 +324,6 @@ func (eiq *EquipmentInfoQuery) GroupBy(field string, fields ...string) *Equipmen
 //	client.EquipmentInfo.Query().
 //		Select(equipmentinfo.FieldEquipmentSn).
 //		Scan(ctx, &v)
-//
 func (eiq *EquipmentInfoQuery) Select(fields ...string) *EquipmentInfoSelect {
 	eiq.fields = append(eiq.fields, fields...)
 	return &EquipmentInfoSelect{EquipmentInfoQuery: eiq}
@@ -384,8 +381,8 @@ func (eiq *EquipmentInfoQuery) sqlAll(ctx context.Context) ([]*EquipmentInfo, er
 	}
 
 	if query := eiq.withEquipment; query != nil {
-		ids := make([]datasource.UUID, 0, len(nodes))
-		nodeids := make(map[datasource.UUID][]*EquipmentInfo)
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*EquipmentInfo)
 		for i := range nodes {
 			if nodes[i].equipment_equipment_info == nil {
 				continue
@@ -438,7 +435,7 @@ func (eiq *EquipmentInfoQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   equipmentinfo.Table,
 			Columns: equipmentinfo.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt,
 				Column: equipmentinfo.FieldID,
 			},
 		},

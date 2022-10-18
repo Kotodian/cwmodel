@@ -24,10 +24,21 @@ type config struct {
 
 // hooks per client, for fast access.
 type hooks struct {
-	Connector     []ent.Hook
-	Equipment     []ent.Hook
-	EquipmentInfo []ent.Hook
-	Evse          []ent.Hook
+	AppModuleInfo           []ent.Hook
+	Connector               []ent.Hook
+	Equipment               []ent.Hook
+	EquipmentAlarm          []ent.Hook
+	EquipmentFirmwareEffect []ent.Hook
+	EquipmentInfo           []ent.Hook
+	EquipmentIot            []ent.Hook
+	Evse                    []ent.Hook
+	Firmware                []ent.Hook
+	Manufacturer            []ent.Hook
+	Model                   []ent.Hook
+	OrderEvent              []ent.Hook
+	OrderInfo               []ent.Hook
+	Reservation             []ent.Hook
+	SmartChargingEvent      []ent.Hook
 }
 
 // Options applies the options on the config object.

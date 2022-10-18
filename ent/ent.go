@@ -8,10 +8,21 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/Kotodian/ent-practice/ent/appmoduleinfo"
 	"github.com/Kotodian/ent-practice/ent/connector"
 	"github.com/Kotodian/ent-practice/ent/equipment"
+	"github.com/Kotodian/ent-practice/ent/equipmentalarm"
+	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
+	"github.com/Kotodian/ent-practice/ent/equipmentiot"
 	"github.com/Kotodian/ent-practice/ent/evse"
+	"github.com/Kotodian/ent-practice/ent/firmware"
+	"github.com/Kotodian/ent-practice/ent/manufacturer"
+	"github.com/Kotodian/ent-practice/ent/model"
+	"github.com/Kotodian/ent-practice/ent/orderevent"
+	"github.com/Kotodian/ent-practice/ent/orderinfo"
+	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/ent-practice/ent/smartchargingevent"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -32,10 +43,21 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		connector.Table:     connector.ValidColumn,
-		equipment.Table:     equipment.ValidColumn,
-		equipmentinfo.Table: equipmentinfo.ValidColumn,
-		evse.Table:          evse.ValidColumn,
+		appmoduleinfo.Table:           appmoduleinfo.ValidColumn,
+		connector.Table:               connector.ValidColumn,
+		equipment.Table:               equipment.ValidColumn,
+		equipmentalarm.Table:          equipmentalarm.ValidColumn,
+		equipmentfirmwareeffect.Table: equipmentfirmwareeffect.ValidColumn,
+		equipmentinfo.Table:           equipmentinfo.ValidColumn,
+		equipmentiot.Table:            equipmentiot.ValidColumn,
+		evse.Table:                    evse.ValidColumn,
+		firmware.Table:                firmware.ValidColumn,
+		manufacturer.Table:            manufacturer.ValidColumn,
+		model.Table:                   model.ValidColumn,
+		orderevent.Table:              orderevent.ValidColumn,
+		orderinfo.Table:               orderinfo.ValidColumn,
+		reservation.Table:             reservation.ValidColumn,
+		smartchargingevent.Table:      smartchargingevent.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {
@@ -85,7 +107,6 @@ type AggregateFunc func(*sql.Selector) string
 //	GroupBy(field1, field2).
 //	Aggregate(ent.As(ent.Sum(field1), "sum_field1"), (ent.As(ent.Sum(field2), "sum_field2")).
 //	Scan(ctx, &v)
-//
 func As(fn AggregateFunc, end string) AggregateFunc {
 	return func(s *sql.Selector) string {
 		return sql.As(fn(s), end)

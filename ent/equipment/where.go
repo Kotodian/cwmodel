@@ -5,34 +5,34 @@ package equipment
 import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/Kotodian/ent-practice/ent/enums"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/ent-practice/ent/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id datasource.UUID) predicate.Equipment {
+func ID(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
 	})
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id datasource.UUID) predicate.Equipment {
+func IDEQ(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
 	})
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id datasource.UUID) predicate.Equipment {
+func IDNEQ(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldID), id))
 	})
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...datasource.UUID) predicate.Equipment {
+func IDIn(ids ...int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
@@ -49,7 +49,7 @@ func IDIn(ids ...datasource.UUID) predicate.Equipment {
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...datasource.UUID) predicate.Equipment {
+func IDNotIn(ids ...int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
@@ -66,28 +66,28 @@ func IDNotIn(ids ...datasource.UUID) predicate.Equipment {
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id datasource.UUID) predicate.Equipment {
+func IDGT(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldID), id))
 	})
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id datasource.UUID) predicate.Equipment {
+func IDGTE(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldID), id))
 	})
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id datasource.UUID) predicate.Equipment {
+func IDLT(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldID), id))
 	})
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id datasource.UUID) predicate.Equipment {
+func IDLTE(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
 	})
@@ -97,6 +97,13 @@ func IDLTE(id datasource.UUID) predicate.Equipment {
 func Sn(v string) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldSn), v))
+	})
+}
+
+// Sn2 applies equality check predicate on the "sn2" field. It's identical to Sn2EQ.
+func Sn2(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSn2), v))
 	})
 }
 
@@ -227,22 +234,133 @@ func SnContainsFold(v string) predicate.Equipment {
 	})
 }
 
+// Sn2EQ applies the EQ predicate on the "sn2" field.
+func Sn2EQ(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSn2), v))
+	})
+}
+
+// Sn2NEQ applies the NEQ predicate on the "sn2" field.
+func Sn2NEQ(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldSn2), v))
+	})
+}
+
+// Sn2In applies the In predicate on the "sn2" field.
+func Sn2In(vs ...string) predicate.Equipment {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Equipment(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldSn2), v...))
+	})
+}
+
+// Sn2NotIn applies the NotIn predicate on the "sn2" field.
+func Sn2NotIn(vs ...string) predicate.Equipment {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Equipment(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldSn2), v...))
+	})
+}
+
+// Sn2GT applies the GT predicate on the "sn2" field.
+func Sn2GT(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldSn2), v))
+	})
+}
+
+// Sn2GTE applies the GTE predicate on the "sn2" field.
+func Sn2GTE(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldSn2), v))
+	})
+}
+
+// Sn2LT applies the LT predicate on the "sn2" field.
+func Sn2LT(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldSn2), v))
+	})
+}
+
+// Sn2LTE applies the LTE predicate on the "sn2" field.
+func Sn2LTE(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldSn2), v))
+	})
+}
+
+// Sn2Contains applies the Contains predicate on the "sn2" field.
+func Sn2Contains(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldSn2), v))
+	})
+}
+
+// Sn2HasPrefix applies the HasPrefix predicate on the "sn2" field.
+func Sn2HasPrefix(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldSn2), v))
+	})
+}
+
+// Sn2HasSuffix applies the HasSuffix predicate on the "sn2" field.
+func Sn2HasSuffix(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldSn2), v))
+	})
+}
+
+// Sn2EqualFold applies the EqualFold predicate on the "sn2" field.
+func Sn2EqualFold(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldSn2), v))
+	})
+}
+
+// Sn2ContainsFold applies the ContainsFold predicate on the "sn2" field.
+func Sn2ContainsFold(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldSn2), v))
+	})
+}
+
 // CategoryEQ applies the EQ predicate on the "category" field.
-func CategoryEQ(v enums.EquipmentCategory) predicate.Equipment {
+func CategoryEQ(v types.EquipmentCategory) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldCategory), v))
 	})
 }
 
 // CategoryNEQ applies the NEQ predicate on the "category" field.
-func CategoryNEQ(v enums.EquipmentCategory) predicate.Equipment {
+func CategoryNEQ(v types.EquipmentCategory) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldCategory), v))
 	})
 }
 
 // CategoryIn applies the In predicate on the "category" field.
-func CategoryIn(vs ...enums.EquipmentCategory) predicate.Equipment {
+func CategoryIn(vs ...types.EquipmentCategory) predicate.Equipment {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -259,7 +377,7 @@ func CategoryIn(vs ...enums.EquipmentCategory) predicate.Equipment {
 }
 
 // CategoryNotIn applies the NotIn predicate on the "category" field.
-func CategoryNotIn(vs ...enums.EquipmentCategory) predicate.Equipment {
+func CategoryNotIn(vs ...types.EquipmentCategory) predicate.Equipment {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -439,6 +557,90 @@ func StationIDLTE(v datasource.UUID) predicate.Equipment {
 	})
 }
 
+// HasModel applies the HasEdge predicate on the "model" edge.
+func HasModel() predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ModelTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ModelTable, ModelColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasModelWith applies the HasEdge predicate on the "model" edge with a given conditions (other predicates).
+func HasModelWith(preds ...predicate.Model) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ModelInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ModelTable, ModelColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasFirmware applies the HasEdge predicate on the "firmware" edge.
+func HasFirmware() predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(FirmwareTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, FirmwareTable, FirmwareColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFirmwareWith applies the HasEdge predicate on the "firmware" edge with a given conditions (other predicates).
+func HasFirmwareWith(preds ...predicate.Firmware) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(FirmwareInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, FirmwareTable, FirmwareColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasManufacturer applies the HasEdge predicate on the "manufacturer" edge.
+func HasManufacturer() predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ManufacturerTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ManufacturerTable, ManufacturerColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasManufacturerWith applies the HasEdge predicate on the "manufacturer" edge with a given conditions (other predicates).
+func HasManufacturerWith(preds ...predicate.Manufacturer) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ManufacturerInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ManufacturerTable, ManufacturerColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasEquipmentInfo applies the HasEdge predicate on the "equipment_info" edge.
 func HasEquipmentInfo() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
@@ -467,25 +669,25 @@ func HasEquipmentInfoWith(preds ...predicate.EquipmentInfo) predicate.Equipment 
 	})
 }
 
-// HasEvses applies the HasEdge predicate on the "evses" edge.
-func HasEvses() predicate.Equipment {
+// HasEvse applies the HasEdge predicate on the "evse" edge.
+func HasEvse() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EvsesTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, EvsesTable, EvsesColumn),
+			sqlgraph.To(EvseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, EvseTable, EvseColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasEvsesWith applies the HasEdge predicate on the "evses" edge with a given conditions (other predicates).
-func HasEvsesWith(preds ...predicate.Evse) predicate.Equipment {
+// HasEvseWith applies the HasEdge predicate on the "evse" edge with a given conditions (other predicates).
+func HasEvseWith(preds ...predicate.Evse) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EvsesInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, EvsesTable, EvsesColumn),
+			sqlgraph.To(EvseInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, EvseTable, EvseColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
@@ -495,25 +697,165 @@ func HasEvsesWith(preds ...predicate.Evse) predicate.Equipment {
 	})
 }
 
-// HasConnectors applies the HasEdge predicate on the "connectors" edge.
-func HasConnectors() predicate.Equipment {
+// HasConnector applies the HasEdge predicate on the "connector" edge.
+func HasConnector() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ConnectorsTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ConnectorsTable, ConnectorsColumn),
+			sqlgraph.To(ConnectorTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ConnectorTable, ConnectorColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasConnectorsWith applies the HasEdge predicate on the "connectors" edge with a given conditions (other predicates).
-func HasConnectorsWith(preds ...predicate.Connector) predicate.Equipment {
+// HasConnectorWith applies the HasEdge predicate on the "connector" edge with a given conditions (other predicates).
+func HasConnectorWith(preds ...predicate.Connector) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ConnectorsInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ConnectorsTable, ConnectorsColumn),
+			sqlgraph.To(ConnectorInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ConnectorTable, ConnectorColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasEquipmentAlarm applies the HasEdge predicate on the "equipment_alarm" edge.
+func HasEquipmentAlarm() predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(EquipmentAlarmTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, EquipmentAlarmTable, EquipmentAlarmColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasEquipmentAlarmWith applies the HasEdge predicate on the "equipment_alarm" edge with a given conditions (other predicates).
+func HasEquipmentAlarmWith(preds ...predicate.EquipmentAlarm) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(EquipmentAlarmInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, EquipmentAlarmTable, EquipmentAlarmColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasEquipmentIot applies the HasEdge predicate on the "equipment_iot" edge.
+func HasEquipmentIot() predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(EquipmentIotTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, EquipmentIotTable, EquipmentIotColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasEquipmentIotWith applies the HasEdge predicate on the "equipment_iot" edge with a given conditions (other predicates).
+func HasEquipmentIotWith(preds ...predicate.EquipmentIot) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(EquipmentIotInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, EquipmentIotTable, EquipmentIotColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasEquipmentFirmwareEffect applies the HasEdge predicate on the "equipment_firmware_effect" edge.
+func HasEquipmentFirmwareEffect() predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(EquipmentFirmwareEffectTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, EquipmentFirmwareEffectTable, EquipmentFirmwareEffectColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasEquipmentFirmwareEffectWith applies the HasEdge predicate on the "equipment_firmware_effect" edge with a given conditions (other predicates).
+func HasEquipmentFirmwareEffectWith(preds ...predicate.EquipmentFirmwareEffect) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(EquipmentFirmwareEffectInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, EquipmentFirmwareEffectTable, EquipmentFirmwareEffectColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasOrderInfo applies the HasEdge predicate on the "order_info" edge.
+func HasOrderInfo() predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrderInfoTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, OrderInfoTable, OrderInfoColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrderInfoWith applies the HasEdge predicate on the "order_info" edge with a given conditions (other predicates).
+func HasOrderInfoWith(preds ...predicate.OrderInfo) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrderInfoInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, OrderInfoTable, OrderInfoColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasReservation applies the HasEdge predicate on the "reservation" edge.
+func HasReservation() predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ReservationTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ReservationTable, ReservationColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasReservationWith applies the HasEdge predicate on the "reservation" edge with a given conditions (other predicates).
+func HasReservationWith(preds ...predicate.Reservation) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ReservationInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ReservationTable, ReservationColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

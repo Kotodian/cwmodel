@@ -14,7 +14,6 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/predicate"
-	"github.com/Kotodian/gokit/datasource"
 )
 
 // EvseUpdate is the builder for updating Evse entities.
@@ -50,7 +49,7 @@ func (eu *EvseUpdate) AddConnectorNumber(i int) *EvseUpdate {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eu *EvseUpdate) SetEquipmentID(id datasource.UUID) *EvseUpdate {
+func (eu *EvseUpdate) SetEquipmentID(id int) *EvseUpdate {
 	eu.mutation.SetEquipmentID(id)
 	return eu
 }
@@ -60,15 +59,15 @@ func (eu *EvseUpdate) SetEquipment(e *Equipment) *EvseUpdate {
 	return eu.SetEquipmentID(e.ID)
 }
 
-// AddConnectorIDs adds the "connectors" edge to the Connector entity by IDs.
-func (eu *EvseUpdate) AddConnectorIDs(ids ...datasource.UUID) *EvseUpdate {
+// AddConnectorIDs adds the "connector" edge to the Connector entity by IDs.
+func (eu *EvseUpdate) AddConnectorIDs(ids ...int) *EvseUpdate {
 	eu.mutation.AddConnectorIDs(ids...)
 	return eu
 }
 
-// AddConnectors adds the "connectors" edges to the Connector entity.
-func (eu *EvseUpdate) AddConnectors(c ...*Connector) *EvseUpdate {
-	ids := make([]datasource.UUID, len(c))
+// AddConnector adds the "connector" edges to the Connector entity.
+func (eu *EvseUpdate) AddConnector(c ...*Connector) *EvseUpdate {
+	ids := make([]int, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -86,21 +85,21 @@ func (eu *EvseUpdate) ClearEquipment() *EvseUpdate {
 	return eu
 }
 
-// ClearConnectors clears all "connectors" edges to the Connector entity.
-func (eu *EvseUpdate) ClearConnectors() *EvseUpdate {
-	eu.mutation.ClearConnectors()
+// ClearConnector clears all "connector" edges to the Connector entity.
+func (eu *EvseUpdate) ClearConnector() *EvseUpdate {
+	eu.mutation.ClearConnector()
 	return eu
 }
 
-// RemoveConnectorIDs removes the "connectors" edge to Connector entities by IDs.
-func (eu *EvseUpdate) RemoveConnectorIDs(ids ...datasource.UUID) *EvseUpdate {
+// RemoveConnectorIDs removes the "connector" edge to Connector entities by IDs.
+func (eu *EvseUpdate) RemoveConnectorIDs(ids ...int) *EvseUpdate {
 	eu.mutation.RemoveConnectorIDs(ids...)
 	return eu
 }
 
-// RemoveConnectors removes "connectors" edges to Connector entities.
-func (eu *EvseUpdate) RemoveConnectors(c ...*Connector) *EvseUpdate {
-	ids := make([]datasource.UUID, len(c))
+// RemoveConnector removes "connector" edges to Connector entities.
+func (eu *EvseUpdate) RemoveConnector(c ...*Connector) *EvseUpdate {
+	ids := make([]int, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -181,7 +180,7 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   evse.Table,
 			Columns: evse.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt,
 				Column: evse.FieldID,
 			},
 		},
@@ -223,7 +222,7 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},
@@ -239,7 +238,7 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},
@@ -249,32 +248,32 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if eu.mutation.ConnectorsCleared() {
+	if eu.mutation.ConnectorCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   evse.ConnectorsTable,
-			Columns: []string{evse.ConnectorsColumn},
+			Table:   evse.ConnectorTable,
+			Columns: []string{evse.ConnectorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: connector.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := eu.mutation.RemovedConnectorsIDs(); len(nodes) > 0 && !eu.mutation.ConnectorsCleared() {
+	if nodes := eu.mutation.RemovedConnectorIDs(); len(nodes) > 0 && !eu.mutation.ConnectorCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   evse.ConnectorsTable,
-			Columns: []string{evse.ConnectorsColumn},
+			Table:   evse.ConnectorTable,
+			Columns: []string{evse.ConnectorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: connector.FieldID,
 				},
 			},
@@ -284,16 +283,16 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := eu.mutation.ConnectorsIDs(); len(nodes) > 0 {
+	if nodes := eu.mutation.ConnectorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   evse.ConnectorsTable,
-			Columns: []string{evse.ConnectorsColumn},
+			Table:   evse.ConnectorTable,
+			Columns: []string{evse.ConnectorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: connector.FieldID,
 				},
 			},
@@ -342,7 +341,7 @@ func (euo *EvseUpdateOne) AddConnectorNumber(i int) *EvseUpdateOne {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (euo *EvseUpdateOne) SetEquipmentID(id datasource.UUID) *EvseUpdateOne {
+func (euo *EvseUpdateOne) SetEquipmentID(id int) *EvseUpdateOne {
 	euo.mutation.SetEquipmentID(id)
 	return euo
 }
@@ -352,15 +351,15 @@ func (euo *EvseUpdateOne) SetEquipment(e *Equipment) *EvseUpdateOne {
 	return euo.SetEquipmentID(e.ID)
 }
 
-// AddConnectorIDs adds the "connectors" edge to the Connector entity by IDs.
-func (euo *EvseUpdateOne) AddConnectorIDs(ids ...datasource.UUID) *EvseUpdateOne {
+// AddConnectorIDs adds the "connector" edge to the Connector entity by IDs.
+func (euo *EvseUpdateOne) AddConnectorIDs(ids ...int) *EvseUpdateOne {
 	euo.mutation.AddConnectorIDs(ids...)
 	return euo
 }
 
-// AddConnectors adds the "connectors" edges to the Connector entity.
-func (euo *EvseUpdateOne) AddConnectors(c ...*Connector) *EvseUpdateOne {
-	ids := make([]datasource.UUID, len(c))
+// AddConnector adds the "connector" edges to the Connector entity.
+func (euo *EvseUpdateOne) AddConnector(c ...*Connector) *EvseUpdateOne {
+	ids := make([]int, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -378,21 +377,21 @@ func (euo *EvseUpdateOne) ClearEquipment() *EvseUpdateOne {
 	return euo
 }
 
-// ClearConnectors clears all "connectors" edges to the Connector entity.
-func (euo *EvseUpdateOne) ClearConnectors() *EvseUpdateOne {
-	euo.mutation.ClearConnectors()
+// ClearConnector clears all "connector" edges to the Connector entity.
+func (euo *EvseUpdateOne) ClearConnector() *EvseUpdateOne {
+	euo.mutation.ClearConnector()
 	return euo
 }
 
-// RemoveConnectorIDs removes the "connectors" edge to Connector entities by IDs.
-func (euo *EvseUpdateOne) RemoveConnectorIDs(ids ...datasource.UUID) *EvseUpdateOne {
+// RemoveConnectorIDs removes the "connector" edge to Connector entities by IDs.
+func (euo *EvseUpdateOne) RemoveConnectorIDs(ids ...int) *EvseUpdateOne {
 	euo.mutation.RemoveConnectorIDs(ids...)
 	return euo
 }
 
-// RemoveConnectors removes "connectors" edges to Connector entities.
-func (euo *EvseUpdateOne) RemoveConnectors(c ...*Connector) *EvseUpdateOne {
-	ids := make([]datasource.UUID, len(c))
+// RemoveConnector removes "connector" edges to Connector entities.
+func (euo *EvseUpdateOne) RemoveConnector(c ...*Connector) *EvseUpdateOne {
+	ids := make([]int, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -480,7 +479,7 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 			Table:   evse.Table,
 			Columns: evse.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt,
 				Column: evse.FieldID,
 			},
 		},
@@ -539,7 +538,7 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},
@@ -555,7 +554,7 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: equipment.FieldID,
 				},
 			},
@@ -565,32 +564,32 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if euo.mutation.ConnectorsCleared() {
+	if euo.mutation.ConnectorCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   evse.ConnectorsTable,
-			Columns: []string{evse.ConnectorsColumn},
+			Table:   evse.ConnectorTable,
+			Columns: []string{evse.ConnectorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: connector.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := euo.mutation.RemovedConnectorsIDs(); len(nodes) > 0 && !euo.mutation.ConnectorsCleared() {
+	if nodes := euo.mutation.RemovedConnectorIDs(); len(nodes) > 0 && !euo.mutation.ConnectorCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   evse.ConnectorsTable,
-			Columns: []string{evse.ConnectorsColumn},
+			Table:   evse.ConnectorTable,
+			Columns: []string{evse.ConnectorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: connector.FieldID,
 				},
 			},
@@ -600,16 +599,16 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := euo.mutation.ConnectorsIDs(); len(nodes) > 0 {
+	if nodes := euo.mutation.ConnectorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   evse.ConnectorsTable,
-			Columns: []string{evse.ConnectorsColumn},
+			Table:   evse.ConnectorTable,
+			Columns: []string{evse.ConnectorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
+					Type:   field.TypeInt,
 					Column: connector.FieldID,
 				},
 			},

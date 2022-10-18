@@ -9,6 +9,19 @@ import (
 	"github.com/Kotodian/ent-practice/ent"
 )
 
+// The AppModuleInfoFunc type is an adapter to allow the use of ordinary
+// function as AppModuleInfo mutator.
+type AppModuleInfoFunc func(context.Context, *ent.AppModuleInfoMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AppModuleInfoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.AppModuleInfoMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppModuleInfoMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The ConnectorFunc type is an adapter to allow the use of ordinary
 // function as Connector mutator.
 type ConnectorFunc func(context.Context, *ent.ConnectorMutation) (ent.Value, error)
@@ -35,6 +48,32 @@ func (f EquipmentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, e
 	return f(ctx, mv)
 }
 
+// The EquipmentAlarmFunc type is an adapter to allow the use of ordinary
+// function as EquipmentAlarm mutator.
+type EquipmentAlarmFunc func(context.Context, *ent.EquipmentAlarmMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f EquipmentAlarmFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.EquipmentAlarmMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EquipmentAlarmMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The EquipmentFirmwareEffectFunc type is an adapter to allow the use of ordinary
+// function as EquipmentFirmwareEffect mutator.
+type EquipmentFirmwareEffectFunc func(context.Context, *ent.EquipmentFirmwareEffectMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f EquipmentFirmwareEffectFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.EquipmentFirmwareEffectMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EquipmentFirmwareEffectMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The EquipmentInfoFunc type is an adapter to allow the use of ordinary
 // function as EquipmentInfo mutator.
 type EquipmentInfoFunc func(context.Context, *ent.EquipmentInfoMutation) (ent.Value, error)
@@ -48,6 +87,19 @@ func (f EquipmentInfoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Valu
 	return f(ctx, mv)
 }
 
+// The EquipmentIotFunc type is an adapter to allow the use of ordinary
+// function as EquipmentIot mutator.
+type EquipmentIotFunc func(context.Context, *ent.EquipmentIotMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f EquipmentIotFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.EquipmentIotMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EquipmentIotMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The EvseFunc type is an adapter to allow the use of ordinary
 // function as Evse mutator.
 type EvseFunc func(context.Context, *ent.EvseMutation) (ent.Value, error)
@@ -57,6 +109,97 @@ func (f EvseFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 	mv, ok := m.(*ent.EvseMutation)
 	if !ok {
 		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EvseMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The FirmwareFunc type is an adapter to allow the use of ordinary
+// function as Firmware mutator.
+type FirmwareFunc func(context.Context, *ent.FirmwareMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FirmwareFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.FirmwareMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FirmwareMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The ManufacturerFunc type is an adapter to allow the use of ordinary
+// function as Manufacturer mutator.
+type ManufacturerFunc func(context.Context, *ent.ManufacturerMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ManufacturerFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ManufacturerMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ManufacturerMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The ModelFunc type is an adapter to allow the use of ordinary
+// function as Model mutator.
+type ModelFunc func(context.Context, *ent.ModelMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ModelFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ModelMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ModelMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The OrderEventFunc type is an adapter to allow the use of ordinary
+// function as OrderEvent mutator.
+type OrderEventFunc func(context.Context, *ent.OrderEventMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f OrderEventFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.OrderEventMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrderEventMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The OrderInfoFunc type is an adapter to allow the use of ordinary
+// function as OrderInfo mutator.
+type OrderInfoFunc func(context.Context, *ent.OrderInfoMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f OrderInfoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.OrderInfoMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrderInfoMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The ReservationFunc type is an adapter to allow the use of ordinary
+// function as Reservation mutator.
+type ReservationFunc func(context.Context, *ent.ReservationMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ReservationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ReservationMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ReservationMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The SmartChargingEventFunc type is an adapter to allow the use of ordinary
+// function as SmartChargingEvent mutator.
+type SmartChargingEventFunc func(context.Context, *ent.SmartChargingEventMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SmartChargingEventFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.SmartChargingEventMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SmartChargingEventMutation", m)
 	}
 	return f(ctx, mv)
 }
@@ -156,7 +299,6 @@ func HasFields(field string, fields ...string) Condition {
 // If executes the given hook under condition.
 //
 //	hook.If(ComputeAverage, And(HasFields(...), HasAddedFields(...)))
-//
 func If(hk ent.Hook, cond Condition) ent.Hook {
 	return func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
@@ -171,7 +313,6 @@ func If(hk ent.Hook, cond Condition) ent.Hook {
 // On executes the given hook only for the given operation.
 //
 //	hook.On(Log, ent.Delete|ent.Create)
-//
 func On(hk ent.Hook, op ent.Op) ent.Hook {
 	return If(hk, HasOp(op))
 }
@@ -179,7 +320,6 @@ func On(hk ent.Hook, op ent.Op) ent.Hook {
 // Unless skips the given hook only for the given operation.
 //
 //	hook.Unless(Log, ent.Update|ent.UpdateOne)
-//
 func Unless(hk ent.Hook, op ent.Op) ent.Hook {
 	return If(hk, Not(HasOp(op)))
 }
@@ -200,7 +340,6 @@ func FixedError(err error) ent.Hook {
 //			Reject(ent.Delete|ent.Update),
 //		}
 //	}
-//
 func Reject(op ent.Op) ent.Hook {
 	hk := FixedError(fmt.Errorf("%s operation is not allowed", op))
 	return On(hk, op)

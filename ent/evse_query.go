@@ -16,7 +16,6 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/predicate"
-	"github.com/Kotodian/gokit/datasource"
 )
 
 // EvseQuery is the builder for querying Evse entities.
@@ -29,9 +28,9 @@ type EvseQuery struct {
 	fields     []string
 	predicates []predicate.Evse
 	// eager-loading edges.
-	withEquipment  *EquipmentQuery
-	withConnectors *ConnectorQuery
-	withFKs        bool
+	withEquipment *EquipmentQuery
+	withConnector *ConnectorQuery
+	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -90,8 +89,8 @@ func (eq *EvseQuery) QueryEquipment() *EquipmentQuery {
 	return query
 }
 
-// QueryConnectors chains the current query on the "connectors" edge.
-func (eq *EvseQuery) QueryConnectors() *ConnectorQuery {
+// QueryConnector chains the current query on the "connector" edge.
+func (eq *EvseQuery) QueryConnector() *ConnectorQuery {
 	query := &ConnectorQuery{config: eq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := eq.prepareQuery(ctx); err != nil {
@@ -104,7 +103,7 @@ func (eq *EvseQuery) QueryConnectors() *ConnectorQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(evse.Table, evse.FieldID, selector),
 			sqlgraph.To(connector.Table, connector.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, evse.ConnectorsTable, evse.ConnectorsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, evse.ConnectorTable, evse.ConnectorColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(eq.driver.Dialect(), step)
 		return fromU, nil
@@ -136,8 +135,8 @@ func (eq *EvseQuery) FirstX(ctx context.Context) *Evse {
 
 // FirstID returns the first Evse ID from the query.
 // Returns a *NotFoundError when no Evse ID was found.
-func (eq *EvseQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
-	var ids []datasource.UUID
+func (eq *EvseQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = eq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -149,7 +148,7 @@ func (eq *EvseQuery) FirstID(ctx context.Context) (id datasource.UUID, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (eq *EvseQuery) FirstIDX(ctx context.Context) datasource.UUID {
+func (eq *EvseQuery) FirstIDX(ctx context.Context) int {
 	id, err := eq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -187,8 +186,8 @@ func (eq *EvseQuery) OnlyX(ctx context.Context) *Evse {
 // OnlyID is like Only, but returns the only Evse ID in the query.
 // Returns a *NotSingularError when more than one Evse ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (eq *EvseQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
-	var ids []datasource.UUID
+func (eq *EvseQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = eq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -204,7 +203,7 @@ func (eq *EvseQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (eq *EvseQuery) OnlyIDX(ctx context.Context) datasource.UUID {
+func (eq *EvseQuery) OnlyIDX(ctx context.Context) int {
 	id, err := eq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -230,8 +229,8 @@ func (eq *EvseQuery) AllX(ctx context.Context) []*Evse {
 }
 
 // IDs executes the query and returns a list of Evse IDs.
-func (eq *EvseQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
-	var ids []datasource.UUID
+func (eq *EvseQuery) IDs(ctx context.Context) ([]int, error) {
+	var ids []int
 	if err := eq.Select(evse.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -239,7 +238,7 @@ func (eq *EvseQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (eq *EvseQuery) IDsX(ctx context.Context) []datasource.UUID {
+func (eq *EvseQuery) IDsX(ctx context.Context) []int {
 	ids, err := eq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -288,13 +287,13 @@ func (eq *EvseQuery) Clone() *EvseQuery {
 		return nil
 	}
 	return &EvseQuery{
-		config:         eq.config,
-		limit:          eq.limit,
-		offset:         eq.offset,
-		order:          append([]OrderFunc{}, eq.order...),
-		predicates:     append([]predicate.Evse{}, eq.predicates...),
-		withEquipment:  eq.withEquipment.Clone(),
-		withConnectors: eq.withConnectors.Clone(),
+		config:        eq.config,
+		limit:         eq.limit,
+		offset:        eq.offset,
+		order:         append([]OrderFunc{}, eq.order...),
+		predicates:    append([]predicate.Evse{}, eq.predicates...),
+		withEquipment: eq.withEquipment.Clone(),
+		withConnector: eq.withConnector.Clone(),
 		// clone intermediate query.
 		sql:    eq.sql.Clone(),
 		path:   eq.path,
@@ -313,14 +312,14 @@ func (eq *EvseQuery) WithEquipment(opts ...func(*EquipmentQuery)) *EvseQuery {
 	return eq
 }
 
-// WithConnectors tells the query-builder to eager-load the nodes that are connected to
-// the "connectors" edge. The optional arguments are used to configure the query builder of the edge.
-func (eq *EvseQuery) WithConnectors(opts ...func(*ConnectorQuery)) *EvseQuery {
+// WithConnector tells the query-builder to eager-load the nodes that are connected to
+// the "connector" edge. The optional arguments are used to configure the query builder of the edge.
+func (eq *EvseQuery) WithConnector(opts ...func(*ConnectorQuery)) *EvseQuery {
 	query := &ConnectorQuery{config: eq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	eq.withConnectors = query
+	eq.withConnector = query
 	return eq
 }
 
@@ -338,7 +337,6 @@ func (eq *EvseQuery) WithConnectors(opts ...func(*ConnectorQuery)) *EvseQuery {
 //		GroupBy(evse.FieldSerial).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (eq *EvseQuery) GroupBy(field string, fields ...string) *EvseGroupBy {
 	group := &EvseGroupBy{config: eq.config}
 	group.fields = append([]string{field}, fields...)
@@ -363,7 +361,6 @@ func (eq *EvseQuery) GroupBy(field string, fields ...string) *EvseGroupBy {
 //	client.Evse.Query().
 //		Select(evse.FieldSerial).
 //		Scan(ctx, &v)
-//
 func (eq *EvseQuery) Select(fields ...string) *EvseSelect {
 	eq.fields = append(eq.fields, fields...)
 	return &EvseSelect{EvseQuery: eq}
@@ -392,7 +389,7 @@ func (eq *EvseQuery) sqlAll(ctx context.Context) ([]*Evse, error) {
 		_spec       = eq.querySpec()
 		loadedTypes = [2]bool{
 			eq.withEquipment != nil,
-			eq.withConnectors != nil,
+			eq.withConnector != nil,
 		}
 	)
 	if eq.withEquipment != nil {
@@ -422,13 +419,13 @@ func (eq *EvseQuery) sqlAll(ctx context.Context) ([]*Evse, error) {
 	}
 
 	if query := eq.withEquipment; query != nil {
-		ids := make([]datasource.UUID, 0, len(nodes))
-		nodeids := make(map[datasource.UUID][]*Evse)
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Evse)
 		for i := range nodes {
-			if nodes[i].equipment_evses == nil {
+			if nodes[i].equipment_evse == nil {
 				continue
 			}
-			fk := *nodes[i].equipment_evses
+			fk := *nodes[i].equipment_evse
 			if _, ok := nodeids[fk]; !ok {
 				ids = append(ids, fk)
 			}
@@ -442,7 +439,7 @@ func (eq *EvseQuery) sqlAll(ctx context.Context) ([]*Evse, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "equipment_evses" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "equipment_evse" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.Equipment = n
@@ -450,32 +447,32 @@ func (eq *EvseQuery) sqlAll(ctx context.Context) ([]*Evse, error) {
 		}
 	}
 
-	if query := eq.withConnectors; query != nil {
+	if query := eq.withConnector; query != nil {
 		fks := make([]driver.Value, 0, len(nodes))
-		nodeids := make(map[datasource.UUID]*Evse)
+		nodeids := make(map[int]*Evse)
 		for i := range nodes {
 			fks = append(fks, nodes[i].ID)
 			nodeids[nodes[i].ID] = nodes[i]
-			nodes[i].Edges.Connectors = []*Connector{}
+			nodes[i].Edges.Connector = []*Connector{}
 		}
 		query.withFKs = true
 		query.Where(predicate.Connector(func(s *sql.Selector) {
-			s.Where(sql.InValues(evse.ConnectorsColumn, fks...))
+			s.Where(sql.InValues(evse.ConnectorColumn, fks...))
 		}))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.evse_connectors
+			fk := n.evse_connector
 			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "evse_connectors" is nil for node %v`, n.ID)
+				return nil, fmt.Errorf(`foreign-key "evse_connector" is nil for node %v`, n.ID)
 			}
 			node, ok := nodeids[*fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "evse_connectors" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "evse_connector" returned %v for node %v`, *fk, n.ID)
 			}
-			node.Edges.Connectors = append(node.Edges.Connectors, n)
+			node.Edges.Connector = append(node.Edges.Connector, n)
 		}
 	}
 
@@ -505,7 +502,7 @@ func (eq *EvseQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   evse.Table,
 			Columns: evse.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt,
 				Column: evse.FieldID,
 			},
 		},

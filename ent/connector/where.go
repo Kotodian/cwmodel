@@ -5,34 +5,33 @@ package connector
 import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/Kotodian/ent-practice/ent/enums"
 	"github.com/Kotodian/ent-practice/ent/predicate"
-	"github.com/Kotodian/gokit/datasource"
+	"github.com/Kotodian/ent-practice/ent/types"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id datasource.UUID) predicate.Connector {
+func ID(id int) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
 	})
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id datasource.UUID) predicate.Connector {
+func IDEQ(id int) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
 	})
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id datasource.UUID) predicate.Connector {
+func IDNEQ(id int) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldID), id))
 	})
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...datasource.UUID) predicate.Connector {
+func IDIn(ids ...int) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
@@ -49,7 +48,7 @@ func IDIn(ids ...datasource.UUID) predicate.Connector {
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...datasource.UUID) predicate.Connector {
+func IDNotIn(ids ...int) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
@@ -66,28 +65,28 @@ func IDNotIn(ids ...datasource.UUID) predicate.Connector {
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id datasource.UUID) predicate.Connector {
+func IDGT(id int) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldID), id))
 	})
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id datasource.UUID) predicate.Connector {
+func IDGTE(id int) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldID), id))
 	})
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id datasource.UUID) predicate.Connector {
+func IDLT(id int) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldID), id))
 	})
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id datasource.UUID) predicate.Connector {
+func IDLTE(id int) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
 	})
@@ -448,21 +447,21 @@ func SerialContainsFold(v string) predicate.Connector {
 }
 
 // CurrentStateEQ applies the EQ predicate on the "current_state" field.
-func CurrentStateEQ(v enums.ConnectorState) predicate.Connector {
+func CurrentStateEQ(v types.ConnectorState) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldCurrentState), v))
 	})
 }
 
 // CurrentStateNEQ applies the NEQ predicate on the "current_state" field.
-func CurrentStateNEQ(v enums.ConnectorState) predicate.Connector {
+func CurrentStateNEQ(v types.ConnectorState) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldCurrentState), v))
 	})
 }
 
 // CurrentStateIn applies the In predicate on the "current_state" field.
-func CurrentStateIn(vs ...enums.ConnectorState) predicate.Connector {
+func CurrentStateIn(vs ...types.ConnectorState) predicate.Connector {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -479,7 +478,7 @@ func CurrentStateIn(vs ...enums.ConnectorState) predicate.Connector {
 }
 
 // CurrentStateNotIn applies the NotIn predicate on the "current_state" field.
-func CurrentStateNotIn(vs ...enums.ConnectorState) predicate.Connector {
+func CurrentStateNotIn(vs ...types.ConnectorState) predicate.Connector {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -496,21 +495,21 @@ func CurrentStateNotIn(vs ...enums.ConnectorState) predicate.Connector {
 }
 
 // BeforeStateEQ applies the EQ predicate on the "before_state" field.
-func BeforeStateEQ(v enums.ConnectorState) predicate.Connector {
+func BeforeStateEQ(v types.ConnectorState) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldBeforeState), v))
 	})
 }
 
 // BeforeStateNEQ applies the NEQ predicate on the "before_state" field.
-func BeforeStateNEQ(v enums.ConnectorState) predicate.Connector {
+func BeforeStateNEQ(v types.ConnectorState) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldBeforeState), v))
 	})
 }
 
 // BeforeStateIn applies the In predicate on the "before_state" field.
-func BeforeStateIn(vs ...enums.ConnectorState) predicate.Connector {
+func BeforeStateIn(vs ...types.ConnectorState) predicate.Connector {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -527,7 +526,7 @@ func BeforeStateIn(vs ...enums.ConnectorState) predicate.Connector {
 }
 
 // BeforeStateNotIn applies the NotIn predicate on the "before_state" field.
-func BeforeStateNotIn(vs ...enums.ConnectorState) predicate.Connector {
+func BeforeStateNotIn(vs ...types.ConnectorState) predicate.Connector {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -590,6 +589,62 @@ func HasEquipmentWith(preds ...predicate.Equipment) predicate.Connector {
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(EquipmentInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, EquipmentTable, EquipmentColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasOrderInfo applies the HasEdge predicate on the "order_info" edge.
+func HasOrderInfo() predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrderInfoTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, OrderInfoTable, OrderInfoColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrderInfoWith applies the HasEdge predicate on the "order_info" edge with a given conditions (other predicates).
+func HasOrderInfoWith(preds ...predicate.OrderInfo) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrderInfoInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, OrderInfoTable, OrderInfoColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasReservation applies the HasEdge predicate on the "reservation" edge.
+func HasReservation() predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ReservationTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ReservationTable, ReservationColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasReservationWith applies the HasEdge predicate on the "reservation" edge with a given conditions (other predicates).
+func HasReservationWith(preds ...predicate.Reservation) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ReservationInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ReservationTable, ReservationColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

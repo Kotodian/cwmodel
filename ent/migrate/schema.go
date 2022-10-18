@@ -9,16 +9,28 @@ import (
 )
 
 var (
+	// AppModuleInfoColumns holds the columns for the "app_module_info" table.
+	AppModuleInfoColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "desc", Type: field.TypeString},
+	}
+	// AppModuleInfoTable holds the schema information for the "app_module_info" table.
+	AppModuleInfoTable = &schema.Table{
+		Name:       "app_module_info",
+		Columns:    AppModuleInfoColumns,
+		PrimaryKey: []*schema.Column{AppModuleInfoColumns[0]},
+	}
 	// BaseConnectorColumns holds the columns for the "base_connector" table.
 	BaseConnectorColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "equipment_sn", Type: field.TypeString},
 		{Name: "evse_serial", Type: field.TypeString},
 		{Name: "serial", Type: field.TypeString},
 		{Name: "current_state", Type: field.TypeEnum, Enums: []string{"unavailable", "available", "occcupied", "reserved", "faulted"}},
 		{Name: "before_state", Type: field.TypeEnum, Enums: []string{"unavailable", "available", "occcupied", "reserved", "faulted"}},
-		{Name: "equipment_connectors", Type: field.TypeUint64},
-		{Name: "evse_connectors", Type: field.TypeUint64},
+		{Name: "equipment_connector", Type: field.TypeInt},
+		{Name: "evse_connector", Type: field.TypeInt},
 	}
 	// BaseConnectorTable holds the schema information for the "base_connector" table.
 	BaseConnectorTable = &schema.Table{
@@ -27,47 +39,116 @@ var (
 		PrimaryKey: []*schema.Column{BaseConnectorColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "base_connector_base_equipment_connectors",
+				Symbol:     "base_connector_base_equipment_connector",
 				Columns:    []*schema.Column{BaseConnectorColumns[6]},
 				RefColumns: []*schema.Column{BaseEquipmentColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
-				Symbol:     "base_connector_base_evse_connectors",
+				Symbol:     "base_connector_base_evse_connector",
 				Columns:    []*schema.Column{BaseConnectorColumns[7]},
 				RefColumns: []*schema.Column{BaseEvseColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "connector_serial_evse_connectors",
-				Unique:  true,
-				Columns: []*schema.Column{BaseConnectorColumns[3], BaseConnectorColumns[7]},
-			},
-		},
 	}
 	// BaseEquipmentColumns holds the columns for the "base_equipment" table.
 	BaseEquipmentColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "sn", Type: field.TypeString},
+		{Name: "sn2", Type: field.TypeString},
 		{Name: "category", Type: field.TypeEnum, Enums: []string{"private", "public"}},
 		{Name: "operator_id", Type: field.TypeUint64},
 		{Name: "station_id", Type: field.TypeUint64},
+		{Name: "firmware_equipment", Type: field.TypeInt, Nullable: true},
+		{Name: "manufacturer_equipment", Type: field.TypeInt, Nullable: true},
+		{Name: "model_equipment", Type: field.TypeInt, Nullable: true},
 	}
 	// BaseEquipmentTable holds the schema information for the "base_equipment" table.
 	BaseEquipmentTable = &schema.Table{
 		Name:       "base_equipment",
 		Columns:    BaseEquipmentColumns,
 		PrimaryKey: []*schema.Column{BaseEquipmentColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "base_equipment_equip_firmware_template_equipment",
+				Columns:    []*schema.Column{BaseEquipmentColumns[6]},
+				RefColumns: []*schema.Column{EquipFirmwareTemplateColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "base_equipment_equip_manufacturer_equipment",
+				Columns:    []*schema.Column{BaseEquipmentColumns[7]},
+				RefColumns: []*schema.Column{EquipManufacturerColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "base_equipment_equip_model_equipment",
+				Columns:    []*schema.Column{BaseEquipmentColumns[8]},
+				RefColumns: []*schema.Column{EquipModelColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// BaseEquipmentAlarmColumns holds the columns for the "base_equipment_alarm" table.
+	BaseEquipmentAlarmColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "dtc_code", Type: field.TypeInt64},
+		{Name: "remote_address", Type: field.TypeString},
+		{Name: "trigger_time", Type: field.TypeInt64, Nullable: true},
+		{Name: "final_time", Type: field.TypeInt64, Nullable: true},
+		{Name: "count", Type: field.TypeInt, Default: 0},
+		{Name: "equipment_equipment_alarm", Type: field.TypeInt},
+	}
+	// BaseEquipmentAlarmTable holds the schema information for the "base_equipment_alarm" table.
+	BaseEquipmentAlarmTable = &schema.Table{
+		Name:       "base_equipment_alarm",
+		Columns:    BaseEquipmentAlarmColumns,
+		PrimaryKey: []*schema.Column{BaseEquipmentAlarmColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "base_equipment_alarm_base_equipment_equipment_alarm",
+				Columns:    []*schema.Column{BaseEquipmentAlarmColumns[6]},
+				RefColumns: []*schema.Column{BaseEquipmentColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
+	// EquipmentFirmwareEffectsColumns holds the columns for the "equipment_firmware_effects" table.
+	EquipmentFirmwareEffectsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "request_id", Type: field.TypeInt64},
+		{Name: "state", Type: field.TypeInt},
+		{Name: "equipment_equipment_firmware_effect", Type: field.TypeInt, Nullable: true},
+		{Name: "firmware_equipment_firmware_effect", Type: field.TypeInt, Nullable: true},
+	}
+	// EquipmentFirmwareEffectsTable holds the schema information for the "equipment_firmware_effects" table.
+	EquipmentFirmwareEffectsTable = &schema.Table{
+		Name:       "equipment_firmware_effects",
+		Columns:    EquipmentFirmwareEffectsColumns,
+		PrimaryKey: []*schema.Column{EquipmentFirmwareEffectsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "equipment_firmware_effects_base_equipment_equipment_firmware_effect",
+				Columns:    []*schema.Column{EquipmentFirmwareEffectsColumns[3]},
+				RefColumns: []*schema.Column{BaseEquipmentColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "equipment_firmware_effects_equip_firmware_template_equipment_firmware_effect",
+				Columns:    []*schema.Column{EquipmentFirmwareEffectsColumns[4]},
+				RefColumns: []*schema.Column{EquipFirmwareTemplateColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// BaseEquipmentExtraColumns holds the columns for the "base_equipment_extra" table.
 	BaseEquipmentExtraColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "equipment_sn", Type: field.TypeString},
 		{Name: "access_pod", Type: field.TypeString},
 		{Name: "state", Type: field.TypeBool},
-		{Name: "equipment_equipment_info", Type: field.TypeUint64, Unique: true},
+		{Name: "equipment_equipment_info", Type: field.TypeInt, Unique: true},
 	}
 	// BaseEquipmentExtraTable holds the schema information for the "base_equipment_extra" table.
 	BaseEquipmentExtraTable = &schema.Table{
@@ -83,12 +164,34 @@ var (
 			},
 		},
 	}
+	// EquipIotColumns holds the columns for the "equip_iot" table.
+	EquipIotColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "iccid", Type: field.TypeString, Nullable: true},
+		{Name: "imei", Type: field.TypeString, Nullable: true},
+		{Name: "remote_address", Type: field.TypeString, Nullable: true},
+		{Name: "equipment_equipment_iot", Type: field.TypeInt, Unique: true, Nullable: true},
+	}
+	// EquipIotTable holds the schema information for the "equip_iot" table.
+	EquipIotTable = &schema.Table{
+		Name:       "equip_iot",
+		Columns:    EquipIotColumns,
+		PrimaryKey: []*schema.Column{EquipIotColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "equip_iot_base_equipment_equipment_iot",
+				Columns:    []*schema.Column{EquipIotColumns[4]},
+				RefColumns: []*schema.Column{BaseEquipmentColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// BaseEvseColumns holds the columns for the "base_evse" table.
 	BaseEvseColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "serial", Type: field.TypeString},
 		{Name: "connector_number", Type: field.TypeInt},
-		{Name: "equipment_evses", Type: field.TypeUint64},
+		{Name: "equipment_evse", Type: field.TypeInt},
 	}
 	// BaseEvseTable holds the schema information for the "base_evse" table.
 	BaseEvseTable = &schema.Table{
@@ -97,44 +200,248 @@ var (
 		PrimaryKey: []*schema.Column{BaseEvseColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "base_evse_base_equipment_evses",
+				Symbol:     "base_evse_base_equipment_evse",
 				Columns:    []*schema.Column{BaseEvseColumns[3]},
 				RefColumns: []*schema.Column{BaseEquipmentColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
-		Indexes: []*schema.Index{
+	}
+	// EquipFirmwareTemplateColumns holds the columns for the "equip_firmware_template" table.
+	EquipFirmwareTemplateColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "equip_version", Type: field.TypeString},
+	}
+	// EquipFirmwareTemplateTable holds the schema information for the "equip_firmware_template" table.
+	EquipFirmwareTemplateTable = &schema.Table{
+		Name:       "equip_firmware_template",
+		Columns:    EquipFirmwareTemplateColumns,
+		PrimaryKey: []*schema.Column{EquipFirmwareTemplateColumns[0]},
+	}
+	// EquipManufacturerColumns holds the columns for the "equip_manufacturer" table.
+	EquipManufacturerColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "code", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+	}
+	// EquipManufacturerTable holds the schema information for the "equip_manufacturer" table.
+	EquipManufacturerTable = &schema.Table{
+		Name:       "equip_manufacturer",
+		Columns:    EquipManufacturerColumns,
+		PrimaryKey: []*schema.Column{EquipManufacturerColumns[0]},
+	}
+	// EquipModelColumns holds the columns for the "equip_model" table.
+	EquipModelColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "code", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString},
+		{Name: "phase_category", Type: field.TypeString},
+		{Name: "current_category", Type: field.TypeString},
+	}
+	// EquipModelTable holds the schema information for the "equip_model" table.
+	EquipModelTable = &schema.Table{
+		Name:       "equip_model",
+		Columns:    EquipModelColumns,
+		PrimaryKey: []*schema.Column{EquipModelColumns[0]},
+	}
+	// OrderEventColumns holds the columns for the "order_event" table.
+	OrderEventColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "order_id", Type: field.TypeUint64},
+		{Name: "content", Type: field.TypeString},
+		{Name: "occurrence", Type: field.TypeInt64},
+		{Name: "order_info_order_event", Type: field.TypeInt, Nullable: true},
+	}
+	// OrderEventTable holds the schema information for the "order_event" table.
+	OrderEventTable = &schema.Table{
+		Name:       "order_event",
+		Columns:    OrderEventColumns,
+		PrimaryKey: []*schema.Column{OrderEventColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
 			{
-				Name:    "evse_serial_equipment_evses",
-				Unique:  true,
-				Columns: []*schema.Column{BaseEvseColumns[1], BaseEvseColumns[3]},
+				Symbol:     "order_event_order_info_order_event",
+				Columns:    []*schema.Column{OrderEventColumns[4]},
+				RefColumns: []*schema.Column{OrderInfoColumns[0]},
+				OnDelete:   schema.SetNull,
 			},
 		},
 	}
+	// OrderInfoColumns holds the columns for the "order_info" table.
+	OrderInfoColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "remote_start_id", Type: field.TypeInt64, Nullable: true},
+		{Name: "transaction_id", Type: field.TypeString},
+		{Name: "authorization_id", Type: field.TypeString, Nullable: true},
+		{Name: "customer_id", Type: field.TypeString, Nullable: true},
+		{Name: "caller_order_id", Type: field.TypeString, Nullable: true},
+		{Name: "total_electricity", Type: field.TypeFloat64, Nullable: true},
+		{Name: "charge_start_electricity", Type: field.TypeFloat64, Nullable: true},
+		{Name: "charge_stop_electricity", Type: field.TypeFloat64, Nullable: true},
+		{Name: "sharp_electricity", Type: field.TypeFloat64, Nullable: true},
+		{Name: "peak_electricity", Type: field.TypeFloat64, Nullable: true},
+		{Name: "flat_electricity", Type: field.TypeFloat64, Nullable: true},
+		{Name: "valley_electricity", Type: field.TypeFloat64, Nullable: true},
+		{Name: "stop_reason_code", Type: field.TypeInt32, Nullable: true},
+		{Name: "offline", Type: field.TypeBool},
+		{Name: "price_scheme_release_id", Type: field.TypeInt64},
+		{Name: "order_start_time", Type: field.TypeInt64, Nullable: true},
+		{Name: "order_final_time", Type: field.TypeInt64, Nullable: true},
+		{Name: "charge_start_time", Type: field.TypeInt64, Nullable: true},
+		{Name: "charge_final_time", Type: field.TypeInt64, Nullable: true},
+		{Name: "intellect_id", Type: field.TypeInt64, Nullable: true},
+		{Name: "station_id", Type: field.TypeUint64, Nullable: true},
+		{Name: "operator_id", Type: field.TypeUint64, Nullable: true},
+		{Name: "connector_order_info", Type: field.TypeInt, Nullable: true},
+		{Name: "equipment_order_info", Type: field.TypeInt, Nullable: true},
+	}
+	// OrderInfoTable holds the schema information for the "order_info" table.
+	OrderInfoTable = &schema.Table{
+		Name:       "order_info",
+		Columns:    OrderInfoColumns,
+		PrimaryKey: []*schema.Column{OrderInfoColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "order_info_base_connector_order_info",
+				Columns:    []*schema.Column{OrderInfoColumns[23]},
+				RefColumns: []*schema.Column{BaseConnectorColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "order_info_base_equipment_order_info",
+				Columns:    []*schema.Column{OrderInfoColumns[24]},
+				RefColumns: []*schema.Column{BaseEquipmentColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ReservationChargingReleaseColumns holds the columns for the "reservation_charging_release" table.
+	ReservationChargingReleaseColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "reservation_id", Type: field.TypeInt64},
+		{Name: "authorization_mode", Type: field.TypeInt},
+		{Name: "authorization_id", Type: field.TypeString},
+		{Name: "additional", Type: field.TypeString, Nullable: true},
+		{Name: "customer_id", Type: field.TypeString, Nullable: true},
+		{Name: "expired", Type: field.TypeInt64},
+		{Name: "state", Type: field.TypeInt},
+		{Name: "connector_reservation", Type: field.TypeInt, Nullable: true},
+		{Name: "equipment_reservation", Type: field.TypeInt, Nullable: true},
+	}
+	// ReservationChargingReleaseTable holds the schema information for the "reservation_charging_release" table.
+	ReservationChargingReleaseTable = &schema.Table{
+		Name:       "reservation_charging_release",
+		Columns:    ReservationChargingReleaseColumns,
+		PrimaryKey: []*schema.Column{ReservationChargingReleaseColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "reservation_charging_release_base_connector_reservation",
+				Columns:    []*schema.Column{ReservationChargingReleaseColumns[8]},
+				RefColumns: []*schema.Column{BaseConnectorColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "reservation_charging_release_base_equipment_reservation",
+				Columns:    []*schema.Column{ReservationChargingReleaseColumns[9]},
+				RefColumns: []*schema.Column{BaseEquipmentColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// SmartChargingEffectColumns holds the columns for the "smart_charging_effect" table.
+	SmartChargingEffectColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "smart_id", Type: field.TypeUint64},
+		{Name: "equipment_id", Type: field.TypeUint64},
+		{Name: "connector_id", Type: field.TypeUint64},
+		{Name: "order_id", Type: field.TypeUint64, Nullable: true},
+		{Name: "unit", Type: field.TypeString},
+		{Name: "valid_from", Type: field.TypeInt64, Nullable: true},
+		{Name: "valid_to", Type: field.TypeInt64, Nullable: true},
+		{Name: "spec", Type: field.TypeJSON},
+	}
+	// SmartChargingEffectTable holds the schema information for the "smart_charging_effect" table.
+	SmartChargingEffectTable = &schema.Table{
+		Name:       "smart_charging_effect",
+		Columns:    SmartChargingEffectColumns,
+		PrimaryKey: []*schema.Column{SmartChargingEffectColumns[0]},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		AppModuleInfoTable,
 		BaseConnectorTable,
 		BaseEquipmentTable,
+		BaseEquipmentAlarmTable,
+		EquipmentFirmwareEffectsTable,
 		BaseEquipmentExtraTable,
+		EquipIotTable,
 		BaseEvseTable,
+		EquipFirmwareTemplateTable,
+		EquipManufacturerTable,
+		EquipModelTable,
+		OrderEventTable,
+		OrderInfoTable,
+		ReservationChargingReleaseTable,
+		SmartChargingEffectTable,
 	}
 )
 
 func init() {
+	AppModuleInfoTable.Annotation = &entsql.Annotation{
+		Table: "app_module_info",
+	}
 	BaseConnectorTable.ForeignKeys[0].RefTable = BaseEquipmentTable
 	BaseConnectorTable.ForeignKeys[1].RefTable = BaseEvseTable
 	BaseConnectorTable.Annotation = &entsql.Annotation{
 		Table: "base_connector",
 	}
+	BaseEquipmentTable.ForeignKeys[0].RefTable = EquipFirmwareTemplateTable
+	BaseEquipmentTable.ForeignKeys[1].RefTable = EquipManufacturerTable
+	BaseEquipmentTable.ForeignKeys[2].RefTable = EquipModelTable
 	BaseEquipmentTable.Annotation = &entsql.Annotation{
 		Table: "base_equipment",
 	}
+	BaseEquipmentAlarmTable.ForeignKeys[0].RefTable = BaseEquipmentTable
+	BaseEquipmentAlarmTable.Annotation = &entsql.Annotation{
+		Table: "base_equipment_alarm",
+	}
+	EquipmentFirmwareEffectsTable.ForeignKeys[0].RefTable = BaseEquipmentTable
+	EquipmentFirmwareEffectsTable.ForeignKeys[1].RefTable = EquipFirmwareTemplateTable
 	BaseEquipmentExtraTable.ForeignKeys[0].RefTable = BaseEquipmentTable
 	BaseEquipmentExtraTable.Annotation = &entsql.Annotation{
 		Table: "base_equipment_extra",
 	}
+	EquipIotTable.ForeignKeys[0].RefTable = BaseEquipmentTable
+	EquipIotTable.Annotation = &entsql.Annotation{
+		Table: "equip_iot",
+	}
 	BaseEvseTable.ForeignKeys[0].RefTable = BaseEquipmentTable
 	BaseEvseTable.Annotation = &entsql.Annotation{
 		Table: "base_evse",
+	}
+	EquipFirmwareTemplateTable.Annotation = &entsql.Annotation{
+		Table: "equip_firmware_template",
+	}
+	EquipManufacturerTable.Annotation = &entsql.Annotation{
+		Table: "equip_manufacturer",
+	}
+	EquipModelTable.Annotation = &entsql.Annotation{
+		Table: "equip_model",
+	}
+	OrderEventTable.ForeignKeys[0].RefTable = OrderInfoTable
+	OrderEventTable.Annotation = &entsql.Annotation{
+		Table: "order_event",
+	}
+	OrderInfoTable.ForeignKeys[0].RefTable = BaseConnectorTable
+	OrderInfoTable.ForeignKeys[1].RefTable = BaseEquipmentTable
+	OrderInfoTable.Annotation = &entsql.Annotation{
+		Table: "order_info",
+	}
+	ReservationChargingReleaseTable.ForeignKeys[0].RefTable = BaseConnectorTable
+	ReservationChargingReleaseTable.ForeignKeys[1].RefTable = BaseEquipmentTable
+	ReservationChargingReleaseTable.Annotation = &entsql.Annotation{
+		Table: "reservation_charging_release",
+	}
+	SmartChargingEffectTable.Annotation = &entsql.Annotation{
+		Table: "smart_charging_effect",
 	}
 }

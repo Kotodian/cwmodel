@@ -7,9 +7,13 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/Kotodian/ent-practice/ent/enums"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
+	"github.com/Kotodian/ent-practice/ent/equipmentiot"
+	"github.com/Kotodian/ent-practice/ent/firmware"
+	"github.com/Kotodian/ent-practice/ent/manufacturer"
+	"github.com/Kotodian/ent-practice/ent/model"
+	"github.com/Kotodian/ent-practice/ent/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -17,14 +21,16 @@ import (
 type Equipment struct {
 	config `json:"-"`
 	// ID of the ent.
-	// 主键
-	ID datasource.UUID `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	// Sn holds the value of the "sn" field.
 	// 桩序列号
 	Sn string `json:"sn,omitempty"`
+	// Sn2 holds the value of the "sn2" field.
+	// 桩序列号2
+	Sn2 string `json:"sn2,omitempty"`
 	// Category holds the value of the "category" field.
 	// 桩类型
-	Category enums.EquipmentCategory `json:"category,omitempty"`
+	Category types.EquipmentCategory `json:"category,omitempty"`
 	// OperatorID holds the value of the "operator_id" field.
 	// 运营商id
 	OperatorID datasource.UUID `json:"operator_id,omitempty"`
@@ -33,26 +39,87 @@ type Equipment struct {
 	StationID datasource.UUID `json:"station_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentQuery when eager-loading is set.
-	Edges EquipmentEdges `json:"edges"`
+	Edges                  EquipmentEdges `json:"edges"`
+	firmware_equipment     *int
+	manufacturer_equipment *int
+	model_equipment        *int
 }
 
 // EquipmentEdges holds the relations/edges for other nodes in the graph.
 type EquipmentEdges struct {
+	// Model holds the value of the model edge.
+	Model *Model `json:"model,omitempty"`
+	// Firmware holds the value of the firmware edge.
+	Firmware *Firmware `json:"firmware,omitempty"`
+	// Manufacturer holds the value of the manufacturer edge.
+	Manufacturer *Manufacturer `json:"manufacturer,omitempty"`
 	// EquipmentInfo holds the value of the equipment_info edge.
 	EquipmentInfo *EquipmentInfo `json:"equipment_info,omitempty"`
-	// Evses holds the value of the evses edge.
-	Evses []*Evse `json:"evses,omitempty"`
-	// Connectors holds the value of the connectors edge.
-	Connectors []*Connector `json:"connectors,omitempty"`
+	// Evse holds the value of the evse edge.
+	Evse []*Evse `json:"evse,omitempty"`
+	// Connector holds the value of the connector edge.
+	Connector []*Connector `json:"connector,omitempty"`
+	// EquipmentAlarm holds the value of the equipment_alarm edge.
+	EquipmentAlarm []*EquipmentAlarm `json:"equipment_alarm,omitempty"`
+	// EquipmentIot holds the value of the equipment_iot edge.
+	EquipmentIot *EquipmentIot `json:"equipment_iot,omitempty"`
+	// EquipmentFirmwareEffect holds the value of the equipment_firmware_effect edge.
+	EquipmentFirmwareEffect []*EquipmentFirmwareEffect `json:"equipment_firmware_effect,omitempty"`
+	// OrderInfo holds the value of the order_info edge.
+	OrderInfo []*OrderInfo `json:"order_info,omitempty"`
+	// Reservation holds the value of the reservation edge.
+	Reservation []*Reservation `json:"reservation,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [11]bool
+}
+
+// ModelOrErr returns the Model value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e EquipmentEdges) ModelOrErr() (*Model, error) {
+	if e.loadedTypes[0] {
+		if e.Model == nil {
+			// The edge model was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: model.Label}
+		}
+		return e.Model, nil
+	}
+	return nil, &NotLoadedError{edge: "model"}
+}
+
+// FirmwareOrErr returns the Firmware value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e EquipmentEdges) FirmwareOrErr() (*Firmware, error) {
+	if e.loadedTypes[1] {
+		if e.Firmware == nil {
+			// The edge firmware was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: firmware.Label}
+		}
+		return e.Firmware, nil
+	}
+	return nil, &NotLoadedError{edge: "firmware"}
+}
+
+// ManufacturerOrErr returns the Manufacturer value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e EquipmentEdges) ManufacturerOrErr() (*Manufacturer, error) {
+	if e.loadedTypes[2] {
+		if e.Manufacturer == nil {
+			// The edge manufacturer was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: manufacturer.Label}
+		}
+		return e.Manufacturer, nil
+	}
+	return nil, &NotLoadedError{edge: "manufacturer"}
 }
 
 // EquipmentInfoOrErr returns the EquipmentInfo value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e EquipmentEdges) EquipmentInfoOrErr() (*EquipmentInfo, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[3] {
 		if e.EquipmentInfo == nil {
 			// The edge equipment_info was loaded in eager-loading,
 			// but was not found.
@@ -63,22 +130,72 @@ func (e EquipmentEdges) EquipmentInfoOrErr() (*EquipmentInfo, error) {
 	return nil, &NotLoadedError{edge: "equipment_info"}
 }
 
-// EvsesOrErr returns the Evses value or an error if the edge
+// EvseOrErr returns the Evse value or an error if the edge
 // was not loaded in eager-loading.
-func (e EquipmentEdges) EvsesOrErr() ([]*Evse, error) {
-	if e.loadedTypes[1] {
-		return e.Evses, nil
+func (e EquipmentEdges) EvseOrErr() ([]*Evse, error) {
+	if e.loadedTypes[4] {
+		return e.Evse, nil
 	}
-	return nil, &NotLoadedError{edge: "evses"}
+	return nil, &NotLoadedError{edge: "evse"}
 }
 
-// ConnectorsOrErr returns the Connectors value or an error if the edge
+// ConnectorOrErr returns the Connector value or an error if the edge
 // was not loaded in eager-loading.
-func (e EquipmentEdges) ConnectorsOrErr() ([]*Connector, error) {
-	if e.loadedTypes[2] {
-		return e.Connectors, nil
+func (e EquipmentEdges) ConnectorOrErr() ([]*Connector, error) {
+	if e.loadedTypes[5] {
+		return e.Connector, nil
 	}
-	return nil, &NotLoadedError{edge: "connectors"}
+	return nil, &NotLoadedError{edge: "connector"}
+}
+
+// EquipmentAlarmOrErr returns the EquipmentAlarm value or an error if the edge
+// was not loaded in eager-loading.
+func (e EquipmentEdges) EquipmentAlarmOrErr() ([]*EquipmentAlarm, error) {
+	if e.loadedTypes[6] {
+		return e.EquipmentAlarm, nil
+	}
+	return nil, &NotLoadedError{edge: "equipment_alarm"}
+}
+
+// EquipmentIotOrErr returns the EquipmentIot value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e EquipmentEdges) EquipmentIotOrErr() (*EquipmentIot, error) {
+	if e.loadedTypes[7] {
+		if e.EquipmentIot == nil {
+			// The edge equipment_iot was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: equipmentiot.Label}
+		}
+		return e.EquipmentIot, nil
+	}
+	return nil, &NotLoadedError{edge: "equipment_iot"}
+}
+
+// EquipmentFirmwareEffectOrErr returns the EquipmentFirmwareEffect value or an error if the edge
+// was not loaded in eager-loading.
+func (e EquipmentEdges) EquipmentFirmwareEffectOrErr() ([]*EquipmentFirmwareEffect, error) {
+	if e.loadedTypes[8] {
+		return e.EquipmentFirmwareEffect, nil
+	}
+	return nil, &NotLoadedError{edge: "equipment_firmware_effect"}
+}
+
+// OrderInfoOrErr returns the OrderInfo value or an error if the edge
+// was not loaded in eager-loading.
+func (e EquipmentEdges) OrderInfoOrErr() ([]*OrderInfo, error) {
+	if e.loadedTypes[9] {
+		return e.OrderInfo, nil
+	}
+	return nil, &NotLoadedError{edge: "order_info"}
+}
+
+// ReservationOrErr returns the Reservation value or an error if the edge
+// was not loaded in eager-loading.
+func (e EquipmentEdges) ReservationOrErr() ([]*Reservation, error) {
+	if e.loadedTypes[10] {
+		return e.Reservation, nil
+	}
+	return nil, &NotLoadedError{edge: "reservation"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -86,12 +203,18 @@ func (*Equipment) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case equipment.FieldCategory:
-			values[i] = new(enums.EquipmentCategory)
 		case equipment.FieldID, equipment.FieldOperatorID, equipment.FieldStationID:
 			values[i] = new(sql.NullInt64)
-		case equipment.FieldSn:
+		case equipment.FieldSn, equipment.FieldSn2:
 			values[i] = new(sql.NullString)
+		case equipment.FieldCategory:
+			values[i] = new(types.EquipmentCategory)
+		case equipment.ForeignKeys[0]: // firmware_equipment
+			values[i] = new(sql.NullInt64)
+		case equipment.ForeignKeys[1]: // manufacturer_equipment
+			values[i] = new(sql.NullInt64)
+		case equipment.ForeignKeys[2]: // model_equipment
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Equipment", columns[i])
 		}
@@ -112,15 +235,21 @@ func (e *Equipment) assignValues(columns []string, values []interface{}) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			e.ID = datasource.UUID(value.Int64)
+			e.ID = int(value.Int64)
 		case equipment.FieldSn:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field sn", values[i])
 			} else if value.Valid {
 				e.Sn = value.String
 			}
+		case equipment.FieldSn2:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field sn2", values[i])
+			} else if value.Valid {
+				e.Sn2 = value.String
+			}
 		case equipment.FieldCategory:
-			if value, ok := values[i].(*enums.EquipmentCategory); !ok {
+			if value, ok := values[i].(*types.EquipmentCategory); !ok {
 				return fmt.Errorf("unexpected type %T for field category", values[i])
 			} else if value != nil {
 				e.Category = *value
@@ -137,9 +266,45 @@ func (e *Equipment) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				e.StationID = datasource.UUID(value.Int64)
 			}
+		case equipment.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field firmware_equipment", value)
+			} else if value.Valid {
+				e.firmware_equipment = new(int)
+				*e.firmware_equipment = int(value.Int64)
+			}
+		case equipment.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field manufacturer_equipment", value)
+			} else if value.Valid {
+				e.manufacturer_equipment = new(int)
+				*e.manufacturer_equipment = int(value.Int64)
+			}
+		case equipment.ForeignKeys[2]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field model_equipment", value)
+			} else if value.Valid {
+				e.model_equipment = new(int)
+				*e.model_equipment = int(value.Int64)
+			}
 		}
 	}
 	return nil
+}
+
+// QueryModel queries the "model" edge of the Equipment entity.
+func (e *Equipment) QueryModel() *ModelQuery {
+	return (&EquipmentClient{config: e.config}).QueryModel(e)
+}
+
+// QueryFirmware queries the "firmware" edge of the Equipment entity.
+func (e *Equipment) QueryFirmware() *FirmwareQuery {
+	return (&EquipmentClient{config: e.config}).QueryFirmware(e)
+}
+
+// QueryManufacturer queries the "manufacturer" edge of the Equipment entity.
+func (e *Equipment) QueryManufacturer() *ManufacturerQuery {
+	return (&EquipmentClient{config: e.config}).QueryManufacturer(e)
 }
 
 // QueryEquipmentInfo queries the "equipment_info" edge of the Equipment entity.
@@ -147,14 +312,39 @@ func (e *Equipment) QueryEquipmentInfo() *EquipmentInfoQuery {
 	return (&EquipmentClient{config: e.config}).QueryEquipmentInfo(e)
 }
 
-// QueryEvses queries the "evses" edge of the Equipment entity.
-func (e *Equipment) QueryEvses() *EvseQuery {
-	return (&EquipmentClient{config: e.config}).QueryEvses(e)
+// QueryEvse queries the "evse" edge of the Equipment entity.
+func (e *Equipment) QueryEvse() *EvseQuery {
+	return (&EquipmentClient{config: e.config}).QueryEvse(e)
 }
 
-// QueryConnectors queries the "connectors" edge of the Equipment entity.
-func (e *Equipment) QueryConnectors() *ConnectorQuery {
-	return (&EquipmentClient{config: e.config}).QueryConnectors(e)
+// QueryConnector queries the "connector" edge of the Equipment entity.
+func (e *Equipment) QueryConnector() *ConnectorQuery {
+	return (&EquipmentClient{config: e.config}).QueryConnector(e)
+}
+
+// QueryEquipmentAlarm queries the "equipment_alarm" edge of the Equipment entity.
+func (e *Equipment) QueryEquipmentAlarm() *EquipmentAlarmQuery {
+	return (&EquipmentClient{config: e.config}).QueryEquipmentAlarm(e)
+}
+
+// QueryEquipmentIot queries the "equipment_iot" edge of the Equipment entity.
+func (e *Equipment) QueryEquipmentIot() *EquipmentIotQuery {
+	return (&EquipmentClient{config: e.config}).QueryEquipmentIot(e)
+}
+
+// QueryEquipmentFirmwareEffect queries the "equipment_firmware_effect" edge of the Equipment entity.
+func (e *Equipment) QueryEquipmentFirmwareEffect() *EquipmentFirmwareEffectQuery {
+	return (&EquipmentClient{config: e.config}).QueryEquipmentFirmwareEffect(e)
+}
+
+// QueryOrderInfo queries the "order_info" edge of the Equipment entity.
+func (e *Equipment) QueryOrderInfo() *OrderInfoQuery {
+	return (&EquipmentClient{config: e.config}).QueryOrderInfo(e)
+}
+
+// QueryReservation queries the "reservation" edge of the Equipment entity.
+func (e *Equipment) QueryReservation() *ReservationQuery {
+	return (&EquipmentClient{config: e.config}).QueryReservation(e)
 }
 
 // Update returns a builder for updating this Equipment.
@@ -182,6 +372,8 @@ func (e *Equipment) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", e.ID))
 	builder.WriteString(", sn=")
 	builder.WriteString(e.Sn)
+	builder.WriteString(", sn2=")
+	builder.WriteString(e.Sn2)
 	builder.WriteString(", category=")
 	builder.WriteString(fmt.Sprintf("%v", e.Category))
 	builder.WriteString(", operator_id=")

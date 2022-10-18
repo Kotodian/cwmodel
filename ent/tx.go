@@ -12,14 +12,36 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// AppModuleInfo is the client for interacting with the AppModuleInfo builders.
+	AppModuleInfo *AppModuleInfoClient
 	// Connector is the client for interacting with the Connector builders.
 	Connector *ConnectorClient
 	// Equipment is the client for interacting with the Equipment builders.
 	Equipment *EquipmentClient
+	// EquipmentAlarm is the client for interacting with the EquipmentAlarm builders.
+	EquipmentAlarm *EquipmentAlarmClient
+	// EquipmentFirmwareEffect is the client for interacting with the EquipmentFirmwareEffect builders.
+	EquipmentFirmwareEffect *EquipmentFirmwareEffectClient
 	// EquipmentInfo is the client for interacting with the EquipmentInfo builders.
 	EquipmentInfo *EquipmentInfoClient
+	// EquipmentIot is the client for interacting with the EquipmentIot builders.
+	EquipmentIot *EquipmentIotClient
 	// Evse is the client for interacting with the Evse builders.
 	Evse *EvseClient
+	// Firmware is the client for interacting with the Firmware builders.
+	Firmware *FirmwareClient
+	// Manufacturer is the client for interacting with the Manufacturer builders.
+	Manufacturer *ManufacturerClient
+	// Model is the client for interacting with the Model builders.
+	Model *ModelClient
+	// OrderEvent is the client for interacting with the OrderEvent builders.
+	OrderEvent *OrderEventClient
+	// OrderInfo is the client for interacting with the OrderInfo builders.
+	OrderInfo *OrderInfoClient
+	// Reservation is the client for interacting with the Reservation builders.
+	Reservation *ReservationClient
+	// SmartChargingEvent is the client for interacting with the SmartChargingEvent builders.
+	SmartChargingEvent *SmartChargingEventClient
 
 	// lazily loaded.
 	client     *Client
@@ -155,10 +177,21 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.AppModuleInfo = NewAppModuleInfoClient(tx.config)
 	tx.Connector = NewConnectorClient(tx.config)
 	tx.Equipment = NewEquipmentClient(tx.config)
+	tx.EquipmentAlarm = NewEquipmentAlarmClient(tx.config)
+	tx.EquipmentFirmwareEffect = NewEquipmentFirmwareEffectClient(tx.config)
 	tx.EquipmentInfo = NewEquipmentInfoClient(tx.config)
+	tx.EquipmentIot = NewEquipmentIotClient(tx.config)
 	tx.Evse = NewEvseClient(tx.config)
+	tx.Firmware = NewFirmwareClient(tx.config)
+	tx.Manufacturer = NewManufacturerClient(tx.config)
+	tx.Model = NewModelClient(tx.config)
+	tx.OrderEvent = NewOrderEventClient(tx.config)
+	tx.OrderInfo = NewOrderInfoClient(tx.config)
+	tx.Reservation = NewReservationClient(tx.config)
+	tx.SmartChargingEvent = NewSmartChargingEventClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -168,7 +201,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Connector.QueryXXX(), the query will be executed
+// applies a query, for example: AppModuleInfo.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.
