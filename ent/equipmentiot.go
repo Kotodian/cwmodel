@@ -29,14 +29,14 @@ type EquipmentIot struct {
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// iccid
-	Iccid string `json:"iccid,omitempty"`
+	Iccid *string `json:"iccid,omitempty"`
 	// imei
-	Imei string `json:"imei,omitempty"`
+	Imei *string `json:"imei,omitempty"`
 	// remote_address
-	RemoteAddress string `json:"remote_address,omitempty"`
+	RemoteAddress *string `json:"remote_address,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentIotQuery when eager-loading is set.
-	Edges        EquipmentIotEdges `json:"edges"`
+	Edges        EquipmentIotEdges `json:"-"`
 	equipment_id *datasource.UUID
 }
 
@@ -128,19 +128,22 @@ func (ei *EquipmentIot) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field iccid", values[i])
 			} else if value.Valid {
-				ei.Iccid = value.String
+				ei.Iccid = new(string)
+				*ei.Iccid = value.String
 			}
 		case equipmentiot.FieldImei:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field imei", values[i])
 			} else if value.Valid {
-				ei.Imei = value.String
+				ei.Imei = new(string)
+				*ei.Imei = value.String
 			}
 		case equipmentiot.FieldRemoteAddress:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field remote_address", values[i])
 			} else if value.Valid {
-				ei.RemoteAddress = value.String
+				ei.RemoteAddress = new(string)
+				*ei.RemoteAddress = value.String
 			}
 		case equipmentiot.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -197,14 +200,20 @@ func (ei *EquipmentIot) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", ei.UpdatedAt))
 	builder.WriteString(", ")
-	builder.WriteString("iccid=")
-	builder.WriteString(ei.Iccid)
+	if v := ei.Iccid; v != nil {
+		builder.WriteString("iccid=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
-	builder.WriteString("imei=")
-	builder.WriteString(ei.Imei)
+	if v := ei.Imei; v != nil {
+		builder.WriteString("imei=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
-	builder.WriteString("remote_address=")
-	builder.WriteString(ei.RemoteAddress)
+	if v := ei.RemoteAddress; v != nil {
+		builder.WriteString("remote_address=")
+		builder.WriteString(*v)
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -35,7 +35,7 @@ type EquipmentFirmwareEffect struct {
 	State int `json:"state,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentFirmwareEffectQuery when eager-loading is set.
-	Edges        EquipmentFirmwareEffectEdges `json:"edges"`
+	Edges        EquipmentFirmwareEffectEdges `json:"-"`
 	equipment_id *datasource.UUID
 	firmware_id  *datasource.UUID
 }

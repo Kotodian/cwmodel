@@ -652,7 +652,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldRemoteStartID,
 		})
-		_node.RemoteStartID = value
+		_node.RemoteStartID = &value
 	}
 	if value, ok := oic.mutation.TransactionID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -668,7 +668,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldAuthorizationID,
 		})
-		_node.AuthorizationID = value
+		_node.AuthorizationID = &value
 	}
 	if value, ok := oic.mutation.CustomerID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -676,7 +676,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldCustomerID,
 		})
-		_node.CustomerID = value
+		_node.CustomerID = &value
 	}
 	if value, ok := oic.mutation.CallerOrderID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -684,7 +684,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldCallerOrderID,
 		})
-		_node.CallerOrderID = value
+		_node.CallerOrderID = &value
 	}
 	if value, ok := oic.mutation.TotalElectricity(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -692,7 +692,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldTotalElectricity,
 		})
-		_node.TotalElectricity = value
+		_node.TotalElectricity = &value
 	}
 	if value, ok := oic.mutation.ChargeStartElectricity(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -700,7 +700,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldChargeStartElectricity,
 		})
-		_node.ChargeStartElectricity = value
+		_node.ChargeStartElectricity = &value
 	}
 	if value, ok := oic.mutation.ChargeStopElectricity(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -708,7 +708,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldChargeStopElectricity,
 		})
-		_node.ChargeStopElectricity = value
+		_node.ChargeStopElectricity = &value
 	}
 	if value, ok := oic.mutation.SharpElectricity(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -716,7 +716,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldSharpElectricity,
 		})
-		_node.SharpElectricity = value
+		_node.SharpElectricity = &value
 	}
 	if value, ok := oic.mutation.PeakElectricity(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -724,7 +724,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldPeakElectricity,
 		})
-		_node.PeakElectricity = value
+		_node.PeakElectricity = &value
 	}
 	if value, ok := oic.mutation.FlatElectricity(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -732,7 +732,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldFlatElectricity,
 		})
-		_node.FlatElectricity = value
+		_node.FlatElectricity = &value
 	}
 	if value, ok := oic.mutation.ValleyElectricity(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -740,7 +740,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldValleyElectricity,
 		})
-		_node.ValleyElectricity = value
+		_node.ValleyElectricity = &value
 	}
 	if value, ok := oic.mutation.StopReasonCode(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -748,7 +748,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldStopReasonCode,
 		})
-		_node.StopReasonCode = value
+		_node.StopReasonCode = &value
 	}
 	if value, ok := oic.mutation.Offline(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -772,7 +772,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldOrderStartTime,
 		})
-		_node.OrderStartTime = value
+		_node.OrderStartTime = &value
 	}
 	if value, ok := oic.mutation.OrderFinalTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -780,7 +780,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldOrderFinalTime,
 		})
-		_node.OrderFinalTime = value
+		_node.OrderFinalTime = &value
 	}
 	if value, ok := oic.mutation.ChargeStartTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -788,7 +788,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldChargeStartTime,
 		})
-		_node.ChargeStartTime = value
+		_node.ChargeStartTime = &value
 	}
 	if value, ok := oic.mutation.ChargeFinalTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -796,7 +796,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldChargeFinalTime,
 		})
-		_node.ChargeFinalTime = value
+		_node.ChargeFinalTime = &value
 	}
 	if value, ok := oic.mutation.IntellectID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -804,7 +804,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldIntellectID,
 		})
-		_node.IntellectID = value
+		_node.IntellectID = &value
 	}
 	if value, ok := oic.mutation.StationID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -812,7 +812,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldStationID,
 		})
-		_node.StationID = value
+		_node.StationID = &value
 	}
 	if value, ok := oic.mutation.OperatorID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -820,7 +820,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: orderinfo.FieldOperatorID,
 		})
-		_node.OperatorID = value
+		_node.OperatorID = &value
 	}
 	if nodes := oic.mutation.ConnectorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

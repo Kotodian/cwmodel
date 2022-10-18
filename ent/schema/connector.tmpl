@@ -1,9 +1,11 @@
 {{ define "model/fields/additional" }}
     {{- if eq $.Name "Connector" }}
-        // StaticField defined by template.
         PushInterval int `json:"push_interval"`
         LastPushTime int64 `json:"last_push_time"`
         OrderState int `json:"order_state"`
         StationID datasource.UUID `json:"station_id"`
+    {{- end }}
+    {{- if eq $.Name "Equipment" }}
+        EquipmentInfo *EquipmentInfo `json:"equipmentInfo"`
     {{- end }}
 {{ end }}

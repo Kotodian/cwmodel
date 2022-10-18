@@ -43,6 +43,8 @@ const (
 	EdgeOrderInfo = "order_info"
 	// EdgeReservation holds the string denoting the reservation edge name in mutations.
 	EdgeReservation = "reservation"
+	// EdgeEquipmentLog holds the string denoting the equipment_log edge name in mutations.
+	EdgeEquipmentLog = "equipment_log"
 	// Table holds the table name of the equipment in the database.
 	Table = "base_equipment"
 	// EquipmentInfoTable is the table that holds the equipment_info relation/edge.
@@ -81,10 +83,10 @@ const (
 	// EquipmentIotColumn is the table column denoting the equipment_iot relation/edge.
 	EquipmentIotColumn = "equipment_id"
 	// EquipmentFirmwareEffectTable is the table that holds the equipment_firmware_effect relation/edge.
-	EquipmentFirmwareEffectTable = "equipment_firmware_effects"
+	EquipmentFirmwareEffectTable = "equip_firmware_effect"
 	// EquipmentFirmwareEffectInverseTable is the table name for the EquipmentFirmwareEffect entity.
 	// It exists in this package in order to avoid circular dependency with the "equipmentfirmwareeffect" package.
-	EquipmentFirmwareEffectInverseTable = "equipment_firmware_effects"
+	EquipmentFirmwareEffectInverseTable = "equip_firmware_effect"
 	// EquipmentFirmwareEffectColumn is the table column denoting the equipment_firmware_effect relation/edge.
 	EquipmentFirmwareEffectColumn = "equipment_id"
 	// OrderInfoTable is the table that holds the order_info relation/edge.
@@ -101,6 +103,13 @@ const (
 	ReservationInverseTable = "reservation_charging_release"
 	// ReservationColumn is the table column denoting the reservation relation/edge.
 	ReservationColumn = "equipment_id"
+	// EquipmentLogTable is the table that holds the equipment_log relation/edge.
+	EquipmentLogTable = "equip_logs"
+	// EquipmentLogInverseTable is the table name for the EquipmentLog entity.
+	// It exists in this package in order to avoid circular dependency with the "equipmentlog" package.
+	EquipmentLogInverseTable = "equip_logs"
+	// EquipmentLogColumn is the table column denoting the equipment_log relation/edge.
+	EquipmentLogColumn = "equipment_id"
 )
 
 // Columns holds all SQL columns for equipment fields.

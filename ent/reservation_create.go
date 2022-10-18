@@ -440,7 +440,7 @@ func (rc *ReservationCreate) createSpec() (*Reservation, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: reservation.FieldAdditional,
 		})
-		_node.Additional = value
+		_node.Additional = &value
 	}
 	if value, ok := rc.mutation.CustomerID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -448,7 +448,7 @@ func (rc *ReservationCreate) createSpec() (*Reservation, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: reservation.FieldCustomerID,
 		})
-		_node.CustomerID = value
+		_node.CustomerID = &value
 	}
 	if value, ok := rc.mutation.Expired(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

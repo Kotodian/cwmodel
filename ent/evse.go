@@ -34,7 +34,7 @@ type Evse struct {
 	ConnectorNumber int `json:"connector_number,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EvseQuery when eager-loading is set.
-	Edges        EvseEdges `json:"edges"`
+	Edges        EvseEdges `json:"-"`
 	equipment_id *datasource.UUID
 }
 

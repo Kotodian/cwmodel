@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -20,6 +21,7 @@ func (Model) Mixin() []ent.Mixin {
 func (Model) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "equip_model"},
+		edge.Annotation{StructTag: `json:"-"`},
 	}
 }
 

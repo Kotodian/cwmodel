@@ -15,6 +15,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
 	"github.com/Kotodian/ent-practice/ent/equipmentiot"
+	"github.com/Kotodian/ent-practice/ent/equipmentlog"
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/reservation"
@@ -256,6 +257,21 @@ func (ec *EquipmentCreate) AddReservation(r ...*Reservation) *EquipmentCreate {
 		ids[i] = r[i].ID
 	}
 	return ec.AddReservationIDs(ids...)
+}
+
+// AddEquipmentLogIDs adds the "equipment_log" edge to the EquipmentLog entity by IDs.
+func (ec *EquipmentCreate) AddEquipmentLogIDs(ids ...datasource.UUID) *EquipmentCreate {
+	ec.mutation.AddEquipmentLogIDs(ids...)
+	return ec
+}
+
+// AddEquipmentLog adds the "equipment_log" edges to the EquipmentLog entity.
+func (ec *EquipmentCreate) AddEquipmentLog(e ...*EquipmentLog) *EquipmentCreate {
+	ids := make([]datasource.UUID, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return ec.AddEquipmentLogIDs(ids...)
 }
 
 // Mutation returns the EquipmentMutation object of the builder.
@@ -633,6 +649,25 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ec.mutation.EquipmentLogIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.EquipmentLogTable,
+			Columns: []string{equipment.EquipmentLogColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: equipmentlog.FieldID,
 				},
 			},
 		}

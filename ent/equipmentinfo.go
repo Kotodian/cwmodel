@@ -29,28 +29,28 @@ type EquipmentInfo struct {
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 桩序列号
-	EquipmentSn string `json:"equipment_sn,omitempty"`
+	EquipmentSn string `json:"equipmentSN"`
 	// 型号id
-	ModelID datasource.UUID `json:"model_id,omitempty"`
+	ModelID datasource.UUID `json:"modelId"`
 	// 产商id
-	ManufacturerID datasource.UUID `json:"manufacturer_id,omitempty"`
+	ManufacturerID datasource.UUID `json:"manufacturerId"`
 	// 固件id
-	FirmwareID datasource.UUID `json:"firmware_id,omitempty"`
+	FirmwareID datasource.UUID `json:"firmwareId"`
 	// 所连接的pod
-	AccessPod string `json:"access_pod,omitempty"`
+	AccessPod string `json:"accessPod"`
 	// 在线或者离线
-	State bool `json:"state,omitempty"`
+	State bool `json:"state"`
 	// evse数量
-	EvseNumber uint `json:"evse_number,omitempty"`
+	EvseNumber uint `json:"evseNumber"`
 	// 告警数量
-	AlarmNumber uint `json:"alarm_number,omitempty"`
+	AlarmNumber uint `json:"alarmNums"`
 	// 注册时间
-	RegisterDatetime int64 `json:"register_datetime,omitempty"`
+	RegisterDatetime int64 `json:"registerDatetime"`
 	// 远程ip地址
-	RemoteAddress int64 `json:"remote_address,omitempty"`
+	RemoteAddress int64 `json:"remoteAddress"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentInfoQuery when eager-loading is set.
-	Edges        EquipmentInfoEdges `json:"edges"`
+	Edges        EquipmentInfoEdges `json:"-"`
 	equipment_id *datasource.UUID
 }
 

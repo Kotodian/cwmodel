@@ -100,6 +100,19 @@ func (f EquipmentIotFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value
 	return f(ctx, mv)
 }
 
+// The EquipmentLogFunc type is an adapter to allow the use of ordinary
+// function as EquipmentLog mutator.
+type EquipmentLogFunc func(context.Context, *ent.EquipmentLogMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f EquipmentLogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.EquipmentLogMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EquipmentLogMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The EvseFunc type is an adapter to allow the use of ordinary
 // function as Evse mutator.
 type EvseFunc func(context.Context, *ent.EvseMutation) (ent.Value, error)

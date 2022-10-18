@@ -21,14 +21,15 @@ func (EquipmentIot) Mixin() []ent.Mixin {
 func (EquipmentIot) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "equip_iot"},
+		edge.Annotation{StructTag: `json:"-"`},
 	}
 }
 
 func (EquipmentIot) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("iccid").Optional().Comment("iccid"),
-		field.String("imei").Optional().Comment("imei"),
-		field.String("remote_address").Optional().Comment("remote_address"),
+		field.String("iccid").Optional().Nillable().Comment("iccid"),
+		field.String("imei").Optional().Nillable().Comment("imei"),
+		field.String("remote_address").Optional().Nillable().Comment("remote_address"),
 	}
 }
 

@@ -16,6 +16,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
 	"github.com/Kotodian/ent-practice/ent/equipmentiot"
+	"github.com/Kotodian/ent-practice/ent/equipmentlog"
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
@@ -259,6 +260,21 @@ func (eu *EquipmentUpdate) AddReservation(r ...*Reservation) *EquipmentUpdate {
 	return eu.AddReservationIDs(ids...)
 }
 
+// AddEquipmentLogIDs adds the "equipment_log" edge to the EquipmentLog entity by IDs.
+func (eu *EquipmentUpdate) AddEquipmentLogIDs(ids ...datasource.UUID) *EquipmentUpdate {
+	eu.mutation.AddEquipmentLogIDs(ids...)
+	return eu
+}
+
+// AddEquipmentLog adds the "equipment_log" edges to the EquipmentLog entity.
+func (eu *EquipmentUpdate) AddEquipmentLog(e ...*EquipmentLog) *EquipmentUpdate {
+	ids := make([]datasource.UUID, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return eu.AddEquipmentLogIDs(ids...)
+}
+
 // Mutation returns the EquipmentMutation object of the builder.
 func (eu *EquipmentUpdate) Mutation() *EquipmentMutation {
 	return eu.mutation
@@ -400,6 +416,27 @@ func (eu *EquipmentUpdate) RemoveReservation(r ...*Reservation) *EquipmentUpdate
 		ids[i] = r[i].ID
 	}
 	return eu.RemoveReservationIDs(ids...)
+}
+
+// ClearEquipmentLog clears all "equipment_log" edges to the EquipmentLog entity.
+func (eu *EquipmentUpdate) ClearEquipmentLog() *EquipmentUpdate {
+	eu.mutation.ClearEquipmentLog()
+	return eu
+}
+
+// RemoveEquipmentLogIDs removes the "equipment_log" edge to EquipmentLog entities by IDs.
+func (eu *EquipmentUpdate) RemoveEquipmentLogIDs(ids ...datasource.UUID) *EquipmentUpdate {
+	eu.mutation.RemoveEquipmentLogIDs(ids...)
+	return eu
+}
+
+// RemoveEquipmentLog removes "equipment_log" edges to EquipmentLog entities.
+func (eu *EquipmentUpdate) RemoveEquipmentLog(e ...*EquipmentLog) *EquipmentUpdate {
+	ids := make([]datasource.UUID, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return eu.RemoveEquipmentLogIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -961,6 +998,60 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if eu.mutation.EquipmentLogCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.EquipmentLogTable,
+			Columns: []string{equipment.EquipmentLogColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: equipmentlog.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := eu.mutation.RemovedEquipmentLogIDs(); len(nodes) > 0 && !eu.mutation.EquipmentLogCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.EquipmentLogTable,
+			Columns: []string{equipment.EquipmentLogColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: equipmentlog.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := eu.mutation.EquipmentLogIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.EquipmentLogTable,
+			Columns: []string{equipment.EquipmentLogColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: equipmentlog.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, eu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{equipment.Label}
@@ -1203,6 +1294,21 @@ func (euo *EquipmentUpdateOne) AddReservation(r ...*Reservation) *EquipmentUpdat
 	return euo.AddReservationIDs(ids...)
 }
 
+// AddEquipmentLogIDs adds the "equipment_log" edge to the EquipmentLog entity by IDs.
+func (euo *EquipmentUpdateOne) AddEquipmentLogIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
+	euo.mutation.AddEquipmentLogIDs(ids...)
+	return euo
+}
+
+// AddEquipmentLog adds the "equipment_log" edges to the EquipmentLog entity.
+func (euo *EquipmentUpdateOne) AddEquipmentLog(e ...*EquipmentLog) *EquipmentUpdateOne {
+	ids := make([]datasource.UUID, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return euo.AddEquipmentLogIDs(ids...)
+}
+
 // Mutation returns the EquipmentMutation object of the builder.
 func (euo *EquipmentUpdateOne) Mutation() *EquipmentMutation {
 	return euo.mutation
@@ -1344,6 +1450,27 @@ func (euo *EquipmentUpdateOne) RemoveReservation(r ...*Reservation) *EquipmentUp
 		ids[i] = r[i].ID
 	}
 	return euo.RemoveReservationIDs(ids...)
+}
+
+// ClearEquipmentLog clears all "equipment_log" edges to the EquipmentLog entity.
+func (euo *EquipmentUpdateOne) ClearEquipmentLog() *EquipmentUpdateOne {
+	euo.mutation.ClearEquipmentLog()
+	return euo
+}
+
+// RemoveEquipmentLogIDs removes the "equipment_log" edge to EquipmentLog entities by IDs.
+func (euo *EquipmentUpdateOne) RemoveEquipmentLogIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
+	euo.mutation.RemoveEquipmentLogIDs(ids...)
+	return euo
+}
+
+// RemoveEquipmentLog removes "equipment_log" edges to EquipmentLog entities.
+func (euo *EquipmentUpdateOne) RemoveEquipmentLog(e ...*EquipmentLog) *EquipmentUpdateOne {
+	ids := make([]datasource.UUID, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return euo.RemoveEquipmentLogIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -1927,6 +2054,60 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if euo.mutation.EquipmentLogCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.EquipmentLogTable,
+			Columns: []string{equipment.EquipmentLogColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: equipmentlog.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := euo.mutation.RemovedEquipmentLogIDs(); len(nodes) > 0 && !euo.mutation.EquipmentLogCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.EquipmentLogTable,
+			Columns: []string{equipment.EquipmentLogColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: equipmentlog.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := euo.mutation.EquipmentLogIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.EquipmentLogTable,
+			Columns: []string{equipment.EquipmentLogColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: equipmentlog.FieldID,
 				},
 			},
 		}

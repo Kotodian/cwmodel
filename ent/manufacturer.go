@@ -30,7 +30,7 @@ type Manufacturer struct {
 	// 产商代码
 	Code string `json:"code,omitempty"`
 	// 产商名称
-	Name string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -103,7 +103,8 @@ func (m *Manufacturer) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				m.Name = value.String
+				m.Name = new(string)
+				*m.Name = value.String
 			}
 		}
 	}
@@ -151,8 +152,10 @@ func (m *Manufacturer) String() string {
 	builder.WriteString("code=")
 	builder.WriteString(m.Code)
 	builder.WriteString(", ")
-	builder.WriteString("name=")
-	builder.WriteString(m.Name)
+	if v := m.Name; v != nil {
+		builder.WriteString("name=")
+		builder.WriteString(*v)
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

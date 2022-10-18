@@ -18,6 +18,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
 	"github.com/Kotodian/ent-practice/ent/equipmentiot"
+	"github.com/Kotodian/ent-practice/ent/equipmentlog"
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/firmware"
 	"github.com/Kotodian/ent-practice/ent/manufacturer"
@@ -51,6 +52,8 @@ type Client struct {
 	EquipmentInfo *EquipmentInfoClient
 	// EquipmentIot is the client for interacting with the EquipmentIot builders.
 	EquipmentIot *EquipmentIotClient
+	// EquipmentLog is the client for interacting with the EquipmentLog builders.
+	EquipmentLog *EquipmentLogClient
 	// Evse is the client for interacting with the Evse builders.
 	Evse *EvseClient
 	// Firmware is the client for interacting with the Firmware builders.
@@ -87,6 +90,7 @@ func (c *Client) init() {
 	c.EquipmentFirmwareEffect = NewEquipmentFirmwareEffectClient(c.config)
 	c.EquipmentInfo = NewEquipmentInfoClient(c.config)
 	c.EquipmentIot = NewEquipmentIotClient(c.config)
+	c.EquipmentLog = NewEquipmentLogClient(c.config)
 	c.Evse = NewEvseClient(c.config)
 	c.Firmware = NewFirmwareClient(c.config)
 	c.Manufacturer = NewManufacturerClient(c.config)
@@ -135,6 +139,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		EquipmentFirmwareEffect: NewEquipmentFirmwareEffectClient(cfg),
 		EquipmentInfo:           NewEquipmentInfoClient(cfg),
 		EquipmentIot:            NewEquipmentIotClient(cfg),
+		EquipmentLog:            NewEquipmentLogClient(cfg),
 		Evse:                    NewEvseClient(cfg),
 		Firmware:                NewFirmwareClient(cfg),
 		Manufacturer:            NewManufacturerClient(cfg),
@@ -169,6 +174,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		EquipmentFirmwareEffect: NewEquipmentFirmwareEffectClient(cfg),
 		EquipmentInfo:           NewEquipmentInfoClient(cfg),
 		EquipmentIot:            NewEquipmentIotClient(cfg),
+		EquipmentLog:            NewEquipmentLogClient(cfg),
 		Evse:                    NewEvseClient(cfg),
 		Firmware:                NewFirmwareClient(cfg),
 		Manufacturer:            NewManufacturerClient(cfg),
@@ -212,6 +218,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.EquipmentFirmwareEffect.Use(hooks...)
 	c.EquipmentInfo.Use(hooks...)
 	c.EquipmentIot.Use(hooks...)
+	c.EquipmentLog.Use(hooks...)
 	c.Evse.Use(hooks...)
 	c.Firmware.Use(hooks...)
 	c.Manufacturer.Use(hooks...)
@@ -679,6 +686,22 @@ func (c *EquipmentClient) QueryReservation(e *Equipment) *ReservationQuery {
 	return query
 }
 
+// QueryEquipmentLog queries the equipment_log edge of a Equipment.
+func (c *EquipmentClient) QueryEquipmentLog(e *Equipment) *EquipmentLogQuery {
+	query := &EquipmentLogQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := e.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipment.Table, equipment.FieldID, id),
+			sqlgraph.To(equipmentlog.Table, equipmentlog.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, equipment.EquipmentLogTable, equipment.EquipmentLogColumn),
+		)
+		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *EquipmentClient) Hooks() []Hook {
 	return c.hooks.Equipment
@@ -1122,6 +1145,112 @@ func (c *EquipmentIotClient) QueryEquipment(ei *EquipmentIot) *EquipmentQuery {
 // Hooks returns the client hooks.
 func (c *EquipmentIotClient) Hooks() []Hook {
 	return c.hooks.EquipmentIot
+}
+
+// EquipmentLogClient is a client for the EquipmentLog schema.
+type EquipmentLogClient struct {
+	config
+}
+
+// NewEquipmentLogClient returns a client for the EquipmentLog from the given config.
+func NewEquipmentLogClient(c config) *EquipmentLogClient {
+	return &EquipmentLogClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `equipmentlog.Hooks(f(g(h())))`.
+func (c *EquipmentLogClient) Use(hooks ...Hook) {
+	c.hooks.EquipmentLog = append(c.hooks.EquipmentLog, hooks...)
+}
+
+// Create returns a builder for creating a EquipmentLog entity.
+func (c *EquipmentLogClient) Create() *EquipmentLogCreate {
+	mutation := newEquipmentLogMutation(c.config, OpCreate)
+	return &EquipmentLogCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of EquipmentLog entities.
+func (c *EquipmentLogClient) CreateBulk(builders ...*EquipmentLogCreate) *EquipmentLogCreateBulk {
+	return &EquipmentLogCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for EquipmentLog.
+func (c *EquipmentLogClient) Update() *EquipmentLogUpdate {
+	mutation := newEquipmentLogMutation(c.config, OpUpdate)
+	return &EquipmentLogUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *EquipmentLogClient) UpdateOne(el *EquipmentLog) *EquipmentLogUpdateOne {
+	mutation := newEquipmentLogMutation(c.config, OpUpdateOne, withEquipmentLog(el))
+	return &EquipmentLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *EquipmentLogClient) UpdateOneID(id datasource.UUID) *EquipmentLogUpdateOne {
+	mutation := newEquipmentLogMutation(c.config, OpUpdateOne, withEquipmentLogID(id))
+	return &EquipmentLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for EquipmentLog.
+func (c *EquipmentLogClient) Delete() *EquipmentLogDelete {
+	mutation := newEquipmentLogMutation(c.config, OpDelete)
+	return &EquipmentLogDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *EquipmentLogClient) DeleteOne(el *EquipmentLog) *EquipmentLogDeleteOne {
+	return c.DeleteOneID(el.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *EquipmentLogClient) DeleteOneID(id datasource.UUID) *EquipmentLogDeleteOne {
+	builder := c.Delete().Where(equipmentlog.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &EquipmentLogDeleteOne{builder}
+}
+
+// Query returns a query builder for EquipmentLog.
+func (c *EquipmentLogClient) Query() *EquipmentLogQuery {
+	return &EquipmentLogQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a EquipmentLog entity by its id.
+func (c *EquipmentLogClient) Get(ctx context.Context, id datasource.UUID) (*EquipmentLog, error) {
+	return c.Query().Where(equipmentlog.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *EquipmentLogClient) GetX(ctx context.Context, id datasource.UUID) *EquipmentLog {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryEquipment queries the equipment edge of a EquipmentLog.
+func (c *EquipmentLogClient) QueryEquipment(el *EquipmentLog) *EquipmentQuery {
+	query := &EquipmentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := el.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipmentlog.Table, equipmentlog.FieldID, id),
+			sqlgraph.To(equipment.Table, equipment.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, equipmentlog.EquipmentTable, equipmentlog.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(el.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *EquipmentLogClient) Hooks() []Hook {
+	return c.hooks.EquipmentLog
 }
 
 // EvseClient is a client for the Evse schema.

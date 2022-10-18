@@ -30,52 +30,52 @@ type OrderInfo struct {
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 远程启动id
-	RemoteStartID int64 `json:"remote_start_id,omitempty"`
+	RemoteStartID *int64 `json:"remote_start_id,omitempty"`
 	// 桩端订单id
 	TransactionID string `json:"transaction_id,omitempty"`
 	// 授权id
-	AuthorizationID string `json:"authorization_id,omitempty"`
+	AuthorizationID *string `json:"authorization_id,omitempty"`
 	// 客户id
-	CustomerID string `json:"customer_id,omitempty"`
+	CustomerID *string `json:"customer_id,omitempty"`
 	// 第三方订单id
-	CallerOrderID string `json:"caller_order_id,omitempty"`
+	CallerOrderID *string `json:"caller_order_id,omitempty"`
 	// 总充电电量
-	TotalElectricity float64 `json:"total_electricity,omitempty"`
+	TotalElectricity *float64 `json:"total_electricity,omitempty"`
 	// 起始电量
-	ChargeStartElectricity float64 `json:"charge_start_electricity,omitempty"`
+	ChargeStartElectricity *float64 `json:"charge_start_electricity,omitempty"`
 	// 结束电量
-	ChargeStopElectricity float64 `json:"charge_stop_electricity,omitempty"`
+	ChargeStopElectricity *float64 `json:"charge_stop_electricity,omitempty"`
 	// 尖电量
-	SharpElectricity float64 `json:"sharp_electricity,omitempty"`
+	SharpElectricity *float64 `json:"sharp_electricity,omitempty"`
 	// 峰电量
-	PeakElectricity float64 `json:"peak_electricity,omitempty"`
+	PeakElectricity *float64 `json:"peak_electricity,omitempty"`
 	// 平电量
-	FlatElectricity float64 `json:"flat_electricity,omitempty"`
+	FlatElectricity *float64 `json:"flat_electricity,omitempty"`
 	// 谷电量
-	ValleyElectricity float64 `json:"valley_electricity,omitempty"`
+	ValleyElectricity *float64 `json:"valley_electricity,omitempty"`
 	// 停止原因代码
-	StopReasonCode int32 `json:"stop_reason_code,omitempty"`
+	StopReasonCode *int32 `json:"stop_reason_code,omitempty"`
 	// 是否为离线订单
 	Offline bool `json:"offline,omitempty"`
 	// 计费模板id
 	PriceSchemeReleaseID int64 `json:"price_scheme_release_id,omitempty"`
 	// 订单开始时间
-	OrderStartTime int64 `json:"order_start_time,omitempty"`
+	OrderStartTime *int64 `json:"order_start_time,omitempty"`
 	// 订单结束时间
-	OrderFinalTime int64 `json:"order_final_time,omitempty"`
+	OrderFinalTime *int64 `json:"order_final_time,omitempty"`
 	// 充电开始时间
-	ChargeStartTime int64 `json:"charge_start_time,omitempty"`
+	ChargeStartTime *int64 `json:"charge_start_time,omitempty"`
 	// 充电结束时间
-	ChargeFinalTime int64 `json:"charge_final_time,omitempty"`
+	ChargeFinalTime *int64 `json:"charge_final_time,omitempty"`
 	// 智慧充电id
-	IntellectID int64 `json:"intellect_id,omitempty"`
+	IntellectID *int64 `json:"intellect_id,omitempty"`
 	// 场站id
-	StationID datasource.UUID `json:"station_id,omitempty"`
+	StationID *datasource.UUID `json:"station_id,omitempty"`
 	// 运营商id
-	OperatorID datasource.UUID `json:"operator_id,omitempty"`
+	OperatorID *datasource.UUID `json:"operator_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrderInfoQuery when eager-loading is set.
-	Edges        OrderInfoEdges `json:"edges"`
+	Edges        OrderInfoEdges `json:"-"`
 	connector_id *datasource.UUID
 	equipment_id *datasource.UUID
 }
@@ -200,7 +200,8 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field remote_start_id", values[i])
 			} else if value.Valid {
-				oi.RemoteStartID = value.Int64
+				oi.RemoteStartID = new(int64)
+				*oi.RemoteStartID = value.Int64
 			}
 		case orderinfo.FieldTransactionID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -212,67 +213,78 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field authorization_id", values[i])
 			} else if value.Valid {
-				oi.AuthorizationID = value.String
+				oi.AuthorizationID = new(string)
+				*oi.AuthorizationID = value.String
 			}
 		case orderinfo.FieldCustomerID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field customer_id", values[i])
 			} else if value.Valid {
-				oi.CustomerID = value.String
+				oi.CustomerID = new(string)
+				*oi.CustomerID = value.String
 			}
 		case orderinfo.FieldCallerOrderID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field caller_order_id", values[i])
 			} else if value.Valid {
-				oi.CallerOrderID = value.String
+				oi.CallerOrderID = new(string)
+				*oi.CallerOrderID = value.String
 			}
 		case orderinfo.FieldTotalElectricity:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field total_electricity", values[i])
 			} else if value.Valid {
-				oi.TotalElectricity = value.Float64
+				oi.TotalElectricity = new(float64)
+				*oi.TotalElectricity = value.Float64
 			}
 		case orderinfo.FieldChargeStartElectricity:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field charge_start_electricity", values[i])
 			} else if value.Valid {
-				oi.ChargeStartElectricity = value.Float64
+				oi.ChargeStartElectricity = new(float64)
+				*oi.ChargeStartElectricity = value.Float64
 			}
 		case orderinfo.FieldChargeStopElectricity:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field charge_stop_electricity", values[i])
 			} else if value.Valid {
-				oi.ChargeStopElectricity = value.Float64
+				oi.ChargeStopElectricity = new(float64)
+				*oi.ChargeStopElectricity = value.Float64
 			}
 		case orderinfo.FieldSharpElectricity:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field sharp_electricity", values[i])
 			} else if value.Valid {
-				oi.SharpElectricity = value.Float64
+				oi.SharpElectricity = new(float64)
+				*oi.SharpElectricity = value.Float64
 			}
 		case orderinfo.FieldPeakElectricity:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field peak_electricity", values[i])
 			} else if value.Valid {
-				oi.PeakElectricity = value.Float64
+				oi.PeakElectricity = new(float64)
+				*oi.PeakElectricity = value.Float64
 			}
 		case orderinfo.FieldFlatElectricity:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field flat_electricity", values[i])
 			} else if value.Valid {
-				oi.FlatElectricity = value.Float64
+				oi.FlatElectricity = new(float64)
+				*oi.FlatElectricity = value.Float64
 			}
 		case orderinfo.FieldValleyElectricity:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field valley_electricity", values[i])
 			} else if value.Valid {
-				oi.ValleyElectricity = value.Float64
+				oi.ValleyElectricity = new(float64)
+				*oi.ValleyElectricity = value.Float64
 			}
 		case orderinfo.FieldStopReasonCode:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field stop_reason_code", values[i])
 			} else if value.Valid {
-				oi.StopReasonCode = int32(value.Int64)
+				oi.StopReasonCode = new(int32)
+				*oi.StopReasonCode = int32(value.Int64)
 			}
 		case orderinfo.FieldOffline:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -290,43 +302,50 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field order_start_time", values[i])
 			} else if value.Valid {
-				oi.OrderStartTime = value.Int64
+				oi.OrderStartTime = new(int64)
+				*oi.OrderStartTime = value.Int64
 			}
 		case orderinfo.FieldOrderFinalTime:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field order_final_time", values[i])
 			} else if value.Valid {
-				oi.OrderFinalTime = value.Int64
+				oi.OrderFinalTime = new(int64)
+				*oi.OrderFinalTime = value.Int64
 			}
 		case orderinfo.FieldChargeStartTime:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field charge_start_time", values[i])
 			} else if value.Valid {
-				oi.ChargeStartTime = value.Int64
+				oi.ChargeStartTime = new(int64)
+				*oi.ChargeStartTime = value.Int64
 			}
 		case orderinfo.FieldChargeFinalTime:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field charge_final_time", values[i])
 			} else if value.Valid {
-				oi.ChargeFinalTime = value.Int64
+				oi.ChargeFinalTime = new(int64)
+				*oi.ChargeFinalTime = value.Int64
 			}
 		case orderinfo.FieldIntellectID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field intellect_id", values[i])
 			} else if value.Valid {
-				oi.IntellectID = value.Int64
+				oi.IntellectID = new(int64)
+				*oi.IntellectID = value.Int64
 			}
 		case orderinfo.FieldStationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field station_id", values[i])
 			} else if value.Valid {
-				oi.StationID = datasource.UUID(value.Int64)
+				oi.StationID = new(datasource.UUID)
+				*oi.StationID = datasource.UUID(value.Int64)
 			}
 		case orderinfo.FieldOperatorID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field operator_id", values[i])
 			} else if value.Valid {
-				oi.OperatorID = datasource.UUID(value.Int64)
+				oi.OperatorID = new(datasource.UUID)
+				*oi.OperatorID = datasource.UUID(value.Int64)
 			}
 		case orderinfo.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -400,44 +419,68 @@ func (oi *OrderInfo) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", oi.UpdatedAt))
 	builder.WriteString(", ")
-	builder.WriteString("remote_start_id=")
-	builder.WriteString(fmt.Sprintf("%v", oi.RemoteStartID))
+	if v := oi.RemoteStartID; v != nil {
+		builder.WriteString("remote_start_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("transaction_id=")
 	builder.WriteString(oi.TransactionID)
 	builder.WriteString(", ")
-	builder.WriteString("authorization_id=")
-	builder.WriteString(oi.AuthorizationID)
+	if v := oi.AuthorizationID; v != nil {
+		builder.WriteString("authorization_id=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
-	builder.WriteString("customer_id=")
-	builder.WriteString(oi.CustomerID)
+	if v := oi.CustomerID; v != nil {
+		builder.WriteString("customer_id=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
-	builder.WriteString("caller_order_id=")
-	builder.WriteString(oi.CallerOrderID)
+	if v := oi.CallerOrderID; v != nil {
+		builder.WriteString("caller_order_id=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
-	builder.WriteString("total_electricity=")
-	builder.WriteString(fmt.Sprintf("%v", oi.TotalElectricity))
+	if v := oi.TotalElectricity; v != nil {
+		builder.WriteString("total_electricity=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("charge_start_electricity=")
-	builder.WriteString(fmt.Sprintf("%v", oi.ChargeStartElectricity))
+	if v := oi.ChargeStartElectricity; v != nil {
+		builder.WriteString("charge_start_electricity=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("charge_stop_electricity=")
-	builder.WriteString(fmt.Sprintf("%v", oi.ChargeStopElectricity))
+	if v := oi.ChargeStopElectricity; v != nil {
+		builder.WriteString("charge_stop_electricity=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("sharp_electricity=")
-	builder.WriteString(fmt.Sprintf("%v", oi.SharpElectricity))
+	if v := oi.SharpElectricity; v != nil {
+		builder.WriteString("sharp_electricity=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("peak_electricity=")
-	builder.WriteString(fmt.Sprintf("%v", oi.PeakElectricity))
+	if v := oi.PeakElectricity; v != nil {
+		builder.WriteString("peak_electricity=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("flat_electricity=")
-	builder.WriteString(fmt.Sprintf("%v", oi.FlatElectricity))
+	if v := oi.FlatElectricity; v != nil {
+		builder.WriteString("flat_electricity=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("valley_electricity=")
-	builder.WriteString(fmt.Sprintf("%v", oi.ValleyElectricity))
+	if v := oi.ValleyElectricity; v != nil {
+		builder.WriteString("valley_electricity=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("stop_reason_code=")
-	builder.WriteString(fmt.Sprintf("%v", oi.StopReasonCode))
+	if v := oi.StopReasonCode; v != nil {
+		builder.WriteString("stop_reason_code=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("offline=")
 	builder.WriteString(fmt.Sprintf("%v", oi.Offline))
@@ -445,26 +488,40 @@ func (oi *OrderInfo) String() string {
 	builder.WriteString("price_scheme_release_id=")
 	builder.WriteString(fmt.Sprintf("%v", oi.PriceSchemeReleaseID))
 	builder.WriteString(", ")
-	builder.WriteString("order_start_time=")
-	builder.WriteString(fmt.Sprintf("%v", oi.OrderStartTime))
+	if v := oi.OrderStartTime; v != nil {
+		builder.WriteString("order_start_time=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("order_final_time=")
-	builder.WriteString(fmt.Sprintf("%v", oi.OrderFinalTime))
+	if v := oi.OrderFinalTime; v != nil {
+		builder.WriteString("order_final_time=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("charge_start_time=")
-	builder.WriteString(fmt.Sprintf("%v", oi.ChargeStartTime))
+	if v := oi.ChargeStartTime; v != nil {
+		builder.WriteString("charge_start_time=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("charge_final_time=")
-	builder.WriteString(fmt.Sprintf("%v", oi.ChargeFinalTime))
+	if v := oi.ChargeFinalTime; v != nil {
+		builder.WriteString("charge_final_time=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("intellect_id=")
-	builder.WriteString(fmt.Sprintf("%v", oi.IntellectID))
+	if v := oi.IntellectID; v != nil {
+		builder.WriteString("intellect_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("station_id=")
-	builder.WriteString(fmt.Sprintf("%v", oi.StationID))
+	if v := oi.StationID; v != nil {
+		builder.WriteString("station_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("operator_id=")
-	builder.WriteString(fmt.Sprintf("%v", oi.OperatorID))
+	if v := oi.OperatorID; v != nil {
+		builder.WriteString("operator_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

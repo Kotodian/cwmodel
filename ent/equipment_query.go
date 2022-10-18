@@ -17,6 +17,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
 	"github.com/Kotodian/ent-practice/ent/equipmentiot"
+	"github.com/Kotodian/ent-practice/ent/equipmentlog"
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
@@ -41,6 +42,7 @@ type EquipmentQuery struct {
 	withEquipmentFirmwareEffect *EquipmentFirmwareEffectQuery
 	withOrderInfo               *OrderInfoQuery
 	withReservation             *ReservationQuery
+	withEquipmentLog            *EquipmentLogQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -253,6 +255,28 @@ func (eq *EquipmentQuery) QueryReservation() *ReservationQuery {
 	return query
 }
 
+// QueryEquipmentLog chains the current query on the "equipment_log" edge.
+func (eq *EquipmentQuery) QueryEquipmentLog() *EquipmentLogQuery {
+	query := &EquipmentLogQuery{config: eq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := eq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := eq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipment.Table, equipment.FieldID, selector),
+			sqlgraph.To(equipmentlog.Table, equipmentlog.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, equipment.EquipmentLogTable, equipment.EquipmentLogColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(eq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // First returns the first Equipment entity from the query.
 // Returns a *NotFoundError when no Equipment was found.
 func (eq *EquipmentQuery) First(ctx context.Context) (*Equipment, error) {
@@ -442,6 +466,7 @@ func (eq *EquipmentQuery) Clone() *EquipmentQuery {
 		withEquipmentFirmwareEffect: eq.withEquipmentFirmwareEffect.Clone(),
 		withOrderInfo:               eq.withOrderInfo.Clone(),
 		withReservation:             eq.withReservation.Clone(),
+		withEquipmentLog:            eq.withEquipmentLog.Clone(),
 		// clone intermediate query.
 		sql:    eq.sql.Clone(),
 		path:   eq.path,
@@ -537,6 +562,17 @@ func (eq *EquipmentQuery) WithReservation(opts ...func(*ReservationQuery)) *Equi
 	return eq
 }
 
+// WithEquipmentLog tells the query-builder to eager-load the nodes that are connected to
+// the "equipment_log" edge. The optional arguments are used to configure the query builder of the edge.
+func (eq *EquipmentQuery) WithEquipmentLog(opts ...func(*EquipmentLogQuery)) *EquipmentQuery {
+	query := &EquipmentLogQuery{config: eq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	eq.withEquipmentLog = query
+	return eq
+}
+
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -605,7 +641,7 @@ func (eq *EquipmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Eq
 	var (
 		nodes       = []*Equipment{}
 		_spec       = eq.querySpec()
-		loadedTypes = [8]bool{
+		loadedTypes = [9]bool{
 			eq.withEquipmentInfo != nil,
 			eq.withEvse != nil,
 			eq.withConnector != nil,
@@ -614,6 +650,7 @@ func (eq *EquipmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Eq
 			eq.withEquipmentFirmwareEffect != nil,
 			eq.withOrderInfo != nil,
 			eq.withReservation != nil,
+			eq.withEquipmentLog != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -687,6 +724,13 @@ func (eq *EquipmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Eq
 		if err := eq.loadReservation(ctx, query, nodes,
 			func(n *Equipment) { n.Edges.Reservation = []*Reservation{} },
 			func(n *Equipment, e *Reservation) { n.Edges.Reservation = append(n.Edges.Reservation, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := eq.withEquipmentLog; query != nil {
+		if err := eq.loadEquipmentLog(ctx, query, nodes,
+			func(n *Equipment) { n.Edges.EquipmentLog = []*EquipmentLog{} },
+			func(n *Equipment, e *EquipmentLog) { n.Edges.EquipmentLog = append(n.Edges.EquipmentLog, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -917,6 +961,37 @@ func (eq *EquipmentQuery) loadReservation(ctx context.Context, query *Reservatio
 	query.withFKs = true
 	query.Where(predicate.Reservation(func(s *sql.Selector) {
 		s.Where(sql.InValues(equipment.ReservationColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.equipment_id
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "equipment_id" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "equipment_id" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (eq *EquipmentQuery) loadEquipmentLog(ctx context.Context, query *EquipmentLogQuery, nodes []*Equipment, init func(*Equipment), assign func(*Equipment, *EquipmentLog)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[datasource.UUID]*Equipment)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.EquipmentLog(func(s *sql.Selector) {
+		s.Where(sql.InValues(equipment.EquipmentLogColumn, fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

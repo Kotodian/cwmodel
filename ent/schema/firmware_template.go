@@ -21,6 +21,7 @@ func (Firmware) Mixin() []ent.Mixin {
 func (Firmware) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "equip_firmware_template"},
+		edge.Annotation{StructTag: `json:"-"`},
 	}
 }
 

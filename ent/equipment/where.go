@@ -935,6 +935,34 @@ func HasReservationWith(preds ...predicate.Reservation) predicate.Equipment {
 	})
 }
 
+// HasEquipmentLog applies the HasEdge predicate on the "equipment_log" edge.
+func HasEquipmentLog() predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(EquipmentLogTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, EquipmentLogTable, EquipmentLogColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasEquipmentLogWith applies the HasEdge predicate on the "equipment_log" edge with a given conditions (other predicates).
+func HasEquipmentLogWith(preds ...predicate.EquipmentLog) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(EquipmentLogInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, EquipmentLogTable, EquipmentLogColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Equipment) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {

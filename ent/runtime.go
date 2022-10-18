@@ -9,6 +9,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
 	"github.com/Kotodian/ent-practice/ent/equipmentiot"
+	"github.com/Kotodian/ent-practice/ent/equipmentlog"
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/firmware"
 	"github.com/Kotodian/ent-practice/ent/manufacturer"
@@ -211,6 +212,35 @@ func init() {
 	equipmentiotDescID := equipmentiotMixinFields0[0].Descriptor()
 	// equipmentiot.DefaultID holds the default value on creation for the id field.
 	equipmentiot.DefaultID = datasource.UUID(equipmentiotDescID.Default.(uint64))
+	equipmentlogMixin := schema.EquipmentLog{}.Mixin()
+	equipmentlogMixinFields0 := equipmentlogMixin[0].Fields()
+	_ = equipmentlogMixinFields0
+	equipmentlogFields := schema.EquipmentLog{}.Fields()
+	_ = equipmentlogFields
+	// equipmentlogDescVersion is the schema descriptor for version field.
+	equipmentlogDescVersion := equipmentlogMixinFields0[1].Descriptor()
+	// equipmentlog.DefaultVersion holds the default value on creation for the version field.
+	equipmentlog.DefaultVersion = equipmentlogDescVersion.Default.(int64)
+	// equipmentlogDescCreatedBy is the schema descriptor for created_by field.
+	equipmentlogDescCreatedBy := equipmentlogMixinFields0[2].Descriptor()
+	// equipmentlog.DefaultCreatedBy holds the default value on creation for the created_by field.
+	equipmentlog.DefaultCreatedBy = datasource.UUID(equipmentlogDescCreatedBy.Default.(uint64))
+	// equipmentlogDescCreatedAt is the schema descriptor for created_at field.
+	equipmentlogDescCreatedAt := equipmentlogMixinFields0[3].Descriptor()
+	// equipmentlog.DefaultCreatedAt holds the default value on creation for the created_at field.
+	equipmentlog.DefaultCreatedAt = equipmentlogDescCreatedAt.Default.(int64)
+	// equipmentlogDescUpdatedBy is the schema descriptor for updated_by field.
+	equipmentlogDescUpdatedBy := equipmentlogMixinFields0[4].Descriptor()
+	// equipmentlog.DefaultUpdatedBy holds the default value on creation for the updated_by field.
+	equipmentlog.DefaultUpdatedBy = datasource.UUID(equipmentlogDescUpdatedBy.Default.(uint64))
+	// equipmentlogDescUpdatedAt is the schema descriptor for updated_at field.
+	equipmentlogDescUpdatedAt := equipmentlogMixinFields0[5].Descriptor()
+	// equipmentlog.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	equipmentlog.DefaultUpdatedAt = equipmentlogDescUpdatedAt.Default.(int64)
+	// equipmentlogDescID is the schema descriptor for id field.
+	equipmentlogDescID := equipmentlogMixinFields0[0].Descriptor()
+	// equipmentlog.DefaultID holds the default value on creation for the id field.
+	equipmentlog.DefaultID = datasource.UUID(equipmentlogDescID.Default.(uint64))
 	evseMixin := schema.Evse{}.Mixin()
 	evseMixinFields0 := evseMixin[0].Fields()
 	_ = evseMixinFields0

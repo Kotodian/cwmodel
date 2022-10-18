@@ -334,7 +334,7 @@ func (mc *ManufacturerCreate) createSpec() (*Manufacturer, *sqlgraph.CreateSpec)
 			Value:  value,
 			Column: manufacturer.FieldName,
 		})
-		_node.Name = value
+		_node.Name = &value
 	}
 	return _node, _spec
 }

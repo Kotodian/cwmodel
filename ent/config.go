@@ -31,6 +31,7 @@ type hooks struct {
 	EquipmentFirmwareEffect []ent.Hook
 	EquipmentInfo           []ent.Hook
 	EquipmentIot            []ent.Hook
+	EquipmentLog            []ent.Hook
 	Evse                    []ent.Hook
 	Firmware                []ent.Hook
 	Manufacturer            []ent.Hook

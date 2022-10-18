@@ -26,6 +26,8 @@ type Tx struct {
 	EquipmentInfo *EquipmentInfoClient
 	// EquipmentIot is the client for interacting with the EquipmentIot builders.
 	EquipmentIot *EquipmentIotClient
+	// EquipmentLog is the client for interacting with the EquipmentLog builders.
+	EquipmentLog *EquipmentLogClient
 	// Evse is the client for interacting with the Evse builders.
 	Evse *EvseClient
 	// Firmware is the client for interacting with the Firmware builders.
@@ -184,6 +186,7 @@ func (tx *Tx) init() {
 	tx.EquipmentFirmwareEffect = NewEquipmentFirmwareEffectClient(tx.config)
 	tx.EquipmentInfo = NewEquipmentInfoClient(tx.config)
 	tx.EquipmentIot = NewEquipmentIotClient(tx.config)
+	tx.EquipmentLog = NewEquipmentLogClient(tx.config)
 	tx.Evse = NewEvseClient(tx.config)
 	tx.Firmware = NewFirmwareClient(tx.config)
 	tx.Manufacturer = NewManufacturerClient(tx.config)

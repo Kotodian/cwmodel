@@ -26,9 +26,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "equipment_sn", Type: field.TypeString},
 		{Name: "evse_serial", Type: field.TypeString},
 		{Name: "serial", Type: field.TypeString},
@@ -65,9 +65,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "sn", Type: field.TypeString},
 		{Name: "operator_id", Type: field.TypeUint64},
 		{Name: "station_id", Type: field.TypeUint64},
@@ -83,9 +83,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "dtc_code", Type: field.TypeInt64},
 		{Name: "remote_address", Type: field.TypeString},
 		{Name: "trigger_time", Type: field.TypeInt64, Nullable: true},
@@ -107,34 +107,34 @@ var (
 			},
 		},
 	}
-	// EquipmentFirmwareEffectsColumns holds the columns for the "equipment_firmware_effects" table.
-	EquipmentFirmwareEffectsColumns = []*schema.Column{
+	// EquipFirmwareEffectColumns holds the columns for the "equip_firmware_effect" table.
+	EquipFirmwareEffectColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "request_id", Type: field.TypeInt64},
 		{Name: "state", Type: field.TypeInt},
 		{Name: "equipment_id", Type: field.TypeUint64, Nullable: true},
 		{Name: "firmware_id", Type: field.TypeUint64, Nullable: true},
 	}
-	// EquipmentFirmwareEffectsTable holds the schema information for the "equipment_firmware_effects" table.
-	EquipmentFirmwareEffectsTable = &schema.Table{
-		Name:       "equipment_firmware_effects",
-		Columns:    EquipmentFirmwareEffectsColumns,
-		PrimaryKey: []*schema.Column{EquipmentFirmwareEffectsColumns[0]},
+	// EquipFirmwareEffectTable holds the schema information for the "equip_firmware_effect" table.
+	EquipFirmwareEffectTable = &schema.Table{
+		Name:       "equip_firmware_effect",
+		Columns:    EquipFirmwareEffectColumns,
+		PrimaryKey: []*schema.Column{EquipFirmwareEffectColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "equipment_firmware_effects_base_equipment_equipment_firmware_effect",
-				Columns:    []*schema.Column{EquipmentFirmwareEffectsColumns[8]},
+				Symbol:     "equip_firmware_effect_base_equipment_equipment_firmware_effect",
+				Columns:    []*schema.Column{EquipFirmwareEffectColumns[8]},
 				RefColumns: []*schema.Column{BaseEquipmentColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
-				Symbol:     "equipment_firmware_effects_equip_firmware_template_equipment_firmware_effect",
-				Columns:    []*schema.Column{EquipmentFirmwareEffectsColumns[9]},
+				Symbol:     "equip_firmware_effect_equip_firmware_template_equipment_firmware_effect",
+				Columns:    []*schema.Column{EquipFirmwareEffectColumns[9]},
 				RefColumns: []*schema.Column{EquipFirmwareTemplateColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -145,9 +145,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "equipment_sn", Type: field.TypeString},
 		{Name: "model_id", Type: field.TypeUint64},
 		{Name: "manufacturer_id", Type: field.TypeUint64},
@@ -179,9 +179,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "iccid", Type: field.TypeString, Nullable: true},
 		{Name: "imei", Type: field.TypeString, Nullable: true},
 		{Name: "remote_address", Type: field.TypeString, Nullable: true},
@@ -201,14 +201,41 @@ var (
 			},
 		},
 	}
+	// EquipLogsColumns holds the columns for the "equip_logs" table.
+	EquipLogsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "version", Type: field.TypeInt64, Default: 1},
+		{Name: "created_by", Type: field.TypeUint64, Default: 1},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
+		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
+		{Name: "request_id", Type: field.TypeInt64},
+		{Name: "state", Type: field.TypeInt},
+		{Name: "data_link", Type: field.TypeUint64},
+		{Name: "equipment_id", Type: field.TypeUint64, Nullable: true},
+	}
+	// EquipLogsTable holds the schema information for the "equip_logs" table.
+	EquipLogsTable = &schema.Table{
+		Name:       "equip_logs",
+		Columns:    EquipLogsColumns,
+		PrimaryKey: []*schema.Column{EquipLogsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "equip_logs_base_equipment_equipment_log",
+				Columns:    []*schema.Column{EquipLogsColumns[9]},
+				RefColumns: []*schema.Column{BaseEquipmentColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// BaseEvseColumns holds the columns for the "base_evse" table.
 	BaseEvseColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "serial", Type: field.TypeString},
 		{Name: "connector_number", Type: field.TypeInt},
 		{Name: "equipment_id", Type: field.TypeUint64},
@@ -232,9 +259,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "equip_version", Type: field.TypeString},
 	}
 	// EquipFirmwareTemplateTable holds the schema information for the "equip_firmware_template" table.
@@ -248,9 +275,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "code", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 	}
@@ -265,9 +292,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "code", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
 		{Name: "phase_category", Type: field.TypeString},
@@ -284,9 +311,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "order_id", Type: field.TypeUint64},
 		{Name: "content", Type: field.TypeString},
 		{Name: "occurrence", Type: field.TypeInt64},
@@ -311,9 +338,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "remote_start_id", Type: field.TypeInt64, Nullable: true},
 		{Name: "transaction_id", Type: field.TypeString},
 		{Name: "authorization_id", Type: field.TypeString, Nullable: true},
@@ -364,9 +391,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "reservation_id", Type: field.TypeInt64},
 		{Name: "authorization_mode", Type: field.TypeInt},
 		{Name: "authorization_id", Type: field.TypeString},
@@ -402,9 +429,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666081106},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666083633},
 		{Name: "smart_id", Type: field.TypeUint64},
 		{Name: "equipment_id", Type: field.TypeUint64},
 		{Name: "connector_id", Type: field.TypeUint64},
@@ -426,9 +453,10 @@ var (
 		BaseConnectorTable,
 		BaseEquipmentTable,
 		BaseEquipmentAlarmTable,
-		EquipmentFirmwareEffectsTable,
+		EquipFirmwareEffectTable,
 		BaseEquipmentExtraTable,
 		EquipIotTable,
+		EquipLogsTable,
 		BaseEvseTable,
 		EquipFirmwareTemplateTable,
 		EquipManufacturerTable,
@@ -456,8 +484,11 @@ func init() {
 	BaseEquipmentAlarmTable.Annotation = &entsql.Annotation{
 		Table: "base_equipment_alarm",
 	}
-	EquipmentFirmwareEffectsTable.ForeignKeys[0].RefTable = BaseEquipmentTable
-	EquipmentFirmwareEffectsTable.ForeignKeys[1].RefTable = EquipFirmwareTemplateTable
+	EquipFirmwareEffectTable.ForeignKeys[0].RefTable = BaseEquipmentTable
+	EquipFirmwareEffectTable.ForeignKeys[1].RefTable = EquipFirmwareTemplateTable
+	EquipFirmwareEffectTable.Annotation = &entsql.Annotation{
+		Table: "equip_firmware_effect",
+	}
 	BaseEquipmentExtraTable.ForeignKeys[0].RefTable = BaseEquipmentTable
 	BaseEquipmentExtraTable.Annotation = &entsql.Annotation{
 		Table: "base_equipment_extra",
@@ -465,6 +496,10 @@ func init() {
 	EquipIotTable.ForeignKeys[0].RefTable = BaseEquipmentTable
 	EquipIotTable.Annotation = &entsql.Annotation{
 		Table: "equip_iot",
+	}
+	EquipLogsTable.ForeignKeys[0].RefTable = BaseEquipmentTable
+	EquipLogsTable.Annotation = &entsql.Annotation{
+		Table: "equip_logs",
 	}
 	BaseEvseTable.ForeignKeys[0].RefTable = BaseEquipmentTable
 	BaseEvseTable.Annotation = &entsql.Annotation{

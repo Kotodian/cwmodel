@@ -17,6 +17,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
 	"github.com/Kotodian/ent-practice/ent/equipmentiot"
+	"github.com/Kotodian/ent-practice/ent/equipmentlog"
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/firmware"
 	"github.com/Kotodian/ent-practice/ent/manufacturer"
@@ -52,6 +53,7 @@ func columnChecker(table string) func(string) error {
 		equipmentfirmwareeffect.Table: equipmentfirmwareeffect.ValidColumn,
 		equipmentinfo.Table:           equipmentinfo.ValidColumn,
 		equipmentiot.Table:            equipmentiot.ValidColumn,
+		equipmentlog.Table:            equipmentlog.ValidColumn,
 		evse.Table:                    evse.ValidColumn,
 		firmware.Table:                firmware.ValidColumn,
 		manufacturer.Table:            manufacturer.ValidColumn,

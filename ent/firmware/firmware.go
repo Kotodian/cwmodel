@@ -28,10 +28,10 @@ const (
 	// Table holds the table name of the firmware in the database.
 	Table = "equip_firmware_template"
 	// EquipmentFirmwareEffectTable is the table that holds the equipment_firmware_effect relation/edge.
-	EquipmentFirmwareEffectTable = "equipment_firmware_effects"
+	EquipmentFirmwareEffectTable = "equip_firmware_effect"
 	// EquipmentFirmwareEffectInverseTable is the table name for the EquipmentFirmwareEffect entity.
 	// It exists in this package in order to avoid circular dependency with the "equipmentfirmwareeffect" package.
-	EquipmentFirmwareEffectInverseTable = "equipment_firmware_effects"
+	EquipmentFirmwareEffectInverseTable = "equip_firmware_effect"
 	// EquipmentFirmwareEffectColumn is the table column denoting the equipment_firmware_effect relation/edge.
 	EquipmentFirmwareEffectColumn = "firmware_id"
 )

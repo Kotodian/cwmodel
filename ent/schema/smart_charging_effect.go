@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/types"
 	"github.com/Kotodian/gokit/datasource"
@@ -22,6 +23,7 @@ func (SmartChargingEvent) Mixin() []ent.Mixin {
 func (SmartChargingEvent) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "smart_charging_effect"},
+		edge.Annotation{StructTag: `json:"-"`},
 	}
 }
 

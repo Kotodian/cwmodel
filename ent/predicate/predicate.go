@@ -27,6 +27,9 @@ type EquipmentInfo func(*sql.Selector)
 // EquipmentIot is the predicate function for equipmentiot builders.
 type EquipmentIot func(*sql.Selector)
 
+// EquipmentLog is the predicate function for equipmentlog builders.
+type EquipmentLog func(*sql.Selector)
+
 // Evse is the predicate function for evse builders.
 type Evse func(*sql.Selector)
 

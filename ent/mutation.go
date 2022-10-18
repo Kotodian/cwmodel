@@ -15,6 +15,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/equipmentinfo"
 	"github.com/Kotodian/ent-practice/ent/equipmentiot"
+	"github.com/Kotodian/ent-practice/ent/equipmentlog"
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/firmware"
 	"github.com/Kotodian/ent-practice/ent/manufacturer"
@@ -46,6 +47,7 @@ const (
 	TypeEquipmentFirmwareEffect = "EquipmentFirmwareEffect"
 	TypeEquipmentInfo           = "EquipmentInfo"
 	TypeEquipmentIot            = "EquipmentIot"
+	TypeEquipmentLog            = "EquipmentLog"
 	TypeEvse                    = "Evse"
 	TypeFirmware                = "Firmware"
 	TypeManufacturer            = "Manufacturer"
@@ -1157,7 +1159,7 @@ func (m *ConnectorMutation) ReservationID() (r datasource.UUID, exists bool) {
 // OldReservationID returns the old "reservation_id" field's value of the Connector entity.
 // If the Connector object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ConnectorMutation) OldReservationID(ctx context.Context) (v datasource.UUID, err error) {
+func (m *ConnectorMutation) OldReservationID(ctx context.Context) (v *datasource.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldReservationID is only allowed on UpdateOne operations")
 	}
@@ -2067,6 +2069,9 @@ type EquipmentMutation struct {
 	reservation                      map[datasource.UUID]struct{}
 	removedreservation               map[datasource.UUID]struct{}
 	clearedreservation               bool
+	equipment_log                    map[datasource.UUID]struct{}
+	removedequipment_log             map[datasource.UUID]struct{}
+	clearedequipment_log             bool
 	done                             bool
 	oldValue                         func(context.Context) (*Equipment, error)
 	predicates                       []predicate.Equipment
@@ -3006,6 +3011,60 @@ func (m *EquipmentMutation) ResetReservation() {
 	m.removedreservation = nil
 }
 
+// AddEquipmentLogIDs adds the "equipment_log" edge to the EquipmentLog entity by ids.
+func (m *EquipmentMutation) AddEquipmentLogIDs(ids ...datasource.UUID) {
+	if m.equipment_log == nil {
+		m.equipment_log = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		m.equipment_log[ids[i]] = struct{}{}
+	}
+}
+
+// ClearEquipmentLog clears the "equipment_log" edge to the EquipmentLog entity.
+func (m *EquipmentMutation) ClearEquipmentLog() {
+	m.clearedequipment_log = true
+}
+
+// EquipmentLogCleared reports if the "equipment_log" edge to the EquipmentLog entity was cleared.
+func (m *EquipmentMutation) EquipmentLogCleared() bool {
+	return m.clearedequipment_log
+}
+
+// RemoveEquipmentLogIDs removes the "equipment_log" edge to the EquipmentLog entity by IDs.
+func (m *EquipmentMutation) RemoveEquipmentLogIDs(ids ...datasource.UUID) {
+	if m.removedequipment_log == nil {
+		m.removedequipment_log = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.equipment_log, ids[i])
+		m.removedequipment_log[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedEquipmentLog returns the removed IDs of the "equipment_log" edge to the EquipmentLog entity.
+func (m *EquipmentMutation) RemovedEquipmentLogIDs() (ids []datasource.UUID) {
+	for id := range m.removedequipment_log {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// EquipmentLogIDs returns the "equipment_log" edge IDs in the mutation.
+func (m *EquipmentMutation) EquipmentLogIDs() (ids []datasource.UUID) {
+	for id := range m.equipment_log {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetEquipmentLog resets all changes to the "equipment_log" edge.
+func (m *EquipmentMutation) ResetEquipmentLog() {
+	m.equipment_log = nil
+	m.clearedequipment_log = false
+	m.removedequipment_log = nil
+}
+
 // Where appends a list predicates to the EquipmentMutation builder.
 func (m *EquipmentMutation) Where(ps ...predicate.Equipment) {
 	m.predicates = append(m.predicates, ps...)
@@ -3330,7 +3389,7 @@ func (m *EquipmentMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *EquipmentMutation) AddedEdges() []string {
-	edges := make([]string, 0, 8)
+	edges := make([]string, 0, 9)
 	if m.equipment_info != nil {
 		edges = append(edges, equipment.EdgeEquipmentInfo)
 	}
@@ -3354,6 +3413,9 @@ func (m *EquipmentMutation) AddedEdges() []string {
 	}
 	if m.reservation != nil {
 		edges = append(edges, equipment.EdgeReservation)
+	}
+	if m.equipment_log != nil {
+		edges = append(edges, equipment.EdgeEquipmentLog)
 	}
 	return edges
 }
@@ -3406,13 +3468,19 @@ func (m *EquipmentMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case equipment.EdgeEquipmentLog:
+		ids := make([]ent.Value, 0, len(m.equipment_log))
+		for id := range m.equipment_log {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *EquipmentMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 8)
+	edges := make([]string, 0, 9)
 	if m.removedevse != nil {
 		edges = append(edges, equipment.EdgeEvse)
 	}
@@ -3430,6 +3498,9 @@ func (m *EquipmentMutation) RemovedEdges() []string {
 	}
 	if m.removedreservation != nil {
 		edges = append(edges, equipment.EdgeReservation)
+	}
+	if m.removedequipment_log != nil {
+		edges = append(edges, equipment.EdgeEquipmentLog)
 	}
 	return edges
 }
@@ -3474,13 +3545,19 @@ func (m *EquipmentMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case equipment.EdgeEquipmentLog:
+		ids := make([]ent.Value, 0, len(m.removedequipment_log))
+		for id := range m.removedequipment_log {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *EquipmentMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 8)
+	edges := make([]string, 0, 9)
 	if m.clearedequipment_info {
 		edges = append(edges, equipment.EdgeEquipmentInfo)
 	}
@@ -3505,6 +3582,9 @@ func (m *EquipmentMutation) ClearedEdges() []string {
 	if m.clearedreservation {
 		edges = append(edges, equipment.EdgeReservation)
 	}
+	if m.clearedequipment_log {
+		edges = append(edges, equipment.EdgeEquipmentLog)
+	}
 	return edges
 }
 
@@ -3528,6 +3608,8 @@ func (m *EquipmentMutation) EdgeCleared(name string) bool {
 		return m.clearedorder_info
 	case equipment.EdgeReservation:
 		return m.clearedreservation
+	case equipment.EdgeEquipmentLog:
+		return m.clearedequipment_log
 	}
 	return false
 }
@@ -3573,6 +3655,9 @@ func (m *EquipmentMutation) ResetEdge(name string) error {
 		return nil
 	case equipment.EdgeReservation:
 		m.ResetReservation()
+		return nil
+	case equipment.EdgeEquipmentLog:
+		m.ResetEquipmentLog()
 		return nil
 	}
 	return fmt.Errorf("unknown Equipment edge %s", name)
@@ -4105,7 +4190,7 @@ func (m *EquipmentAlarmMutation) TriggerTime() (r int64, exists bool) {
 // OldTriggerTime returns the old "trigger_time" field's value of the EquipmentAlarm entity.
 // If the EquipmentAlarm object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EquipmentAlarmMutation) OldTriggerTime(ctx context.Context) (v int64, err error) {
+func (m *EquipmentAlarmMutation) OldTriggerTime(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTriggerTime is only allowed on UpdateOne operations")
 	}
@@ -4175,7 +4260,7 @@ func (m *EquipmentAlarmMutation) FinalTime() (r int64, exists bool) {
 // OldFinalTime returns the old "final_time" field's value of the EquipmentAlarm entity.
 // If the EquipmentAlarm object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EquipmentAlarmMutation) OldFinalTime(ctx context.Context) (v int64, err error) {
+func (m *EquipmentAlarmMutation) OldFinalTime(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFinalTime is only allowed on UpdateOne operations")
 	}
@@ -7759,7 +7844,7 @@ func (m *EquipmentIotMutation) Iccid() (r string, exists bool) {
 // OldIccid returns the old "iccid" field's value of the EquipmentIot entity.
 // If the EquipmentIot object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EquipmentIotMutation) OldIccid(ctx context.Context) (v string, err error) {
+func (m *EquipmentIotMutation) OldIccid(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIccid is only allowed on UpdateOne operations")
 	}
@@ -7808,7 +7893,7 @@ func (m *EquipmentIotMutation) Imei() (r string, exists bool) {
 // OldImei returns the old "imei" field's value of the EquipmentIot entity.
 // If the EquipmentIot object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EquipmentIotMutation) OldImei(ctx context.Context) (v string, err error) {
+func (m *EquipmentIotMutation) OldImei(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldImei is only allowed on UpdateOne operations")
 	}
@@ -7857,7 +7942,7 @@ func (m *EquipmentIotMutation) RemoteAddress() (r string, exists bool) {
 // OldRemoteAddress returns the old "remote_address" field's value of the EquipmentIot entity.
 // If the EquipmentIot object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EquipmentIotMutation) OldRemoteAddress(ctx context.Context) (v string, err error) {
+func (m *EquipmentIotMutation) OldRemoteAddress(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRemoteAddress is only allowed on UpdateOne operations")
 	}
@@ -8319,6 +8404,1035 @@ func (m *EquipmentIotMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown EquipmentIot edge %s", name)
+}
+
+// EquipmentLogMutation represents an operation that mutates the EquipmentLog nodes in the graph.
+type EquipmentLogMutation struct {
+	config
+	op               Op
+	typ              string
+	id               *datasource.UUID
+	version          *int64
+	addversion       *int64
+	created_by       *datasource.UUID
+	addcreated_by    *datasource.UUID
+	created_at       *int64
+	addcreated_at    *int64
+	updated_by       *datasource.UUID
+	addupdated_by    *datasource.UUID
+	updated_at       *int64
+	addupdated_at    *int64
+	requestId        *int64
+	addrequestId     *int64
+	state            *int
+	addstate         *int
+	data_link        *datasource.UUID
+	adddata_link     *datasource.UUID
+	clearedFields    map[string]struct{}
+	equipment        *datasource.UUID
+	clearedequipment bool
+	done             bool
+	oldValue         func(context.Context) (*EquipmentLog, error)
+	predicates       []predicate.EquipmentLog
+}
+
+var _ ent.Mutation = (*EquipmentLogMutation)(nil)
+
+// equipmentlogOption allows management of the mutation configuration using functional options.
+type equipmentlogOption func(*EquipmentLogMutation)
+
+// newEquipmentLogMutation creates new mutation for the EquipmentLog entity.
+func newEquipmentLogMutation(c config, op Op, opts ...equipmentlogOption) *EquipmentLogMutation {
+	m := &EquipmentLogMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeEquipmentLog,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withEquipmentLogID sets the ID field of the mutation.
+func withEquipmentLogID(id datasource.UUID) equipmentlogOption {
+	return func(m *EquipmentLogMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *EquipmentLog
+		)
+		m.oldValue = func(ctx context.Context) (*EquipmentLog, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().EquipmentLog.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withEquipmentLog sets the old EquipmentLog of the mutation.
+func withEquipmentLog(node *EquipmentLog) equipmentlogOption {
+	return func(m *EquipmentLogMutation) {
+		m.oldValue = func(context.Context) (*EquipmentLog, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m EquipmentLogMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m EquipmentLogMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of EquipmentLog entities.
+func (m *EquipmentLogMutation) SetID(id datasource.UUID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *EquipmentLogMutation) ID() (id datasource.UUID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *EquipmentLogMutation) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []datasource.UUID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().EquipmentLog.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetVersion sets the "version" field.
+func (m *EquipmentLogMutation) SetVersion(i int64) {
+	m.version = &i
+	m.addversion = nil
+}
+
+// Version returns the value of the "version" field in the mutation.
+func (m *EquipmentLogMutation) Version() (r int64, exists bool) {
+	v := m.version
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVersion returns the old "version" field's value of the EquipmentLog entity.
+// If the EquipmentLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentLogMutation) OldVersion(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVersion is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVersion requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVersion: %w", err)
+	}
+	return oldValue.Version, nil
+}
+
+// AddVersion adds i to the "version" field.
+func (m *EquipmentLogMutation) AddVersion(i int64) {
+	if m.addversion != nil {
+		*m.addversion += i
+	} else {
+		m.addversion = &i
+	}
+}
+
+// AddedVersion returns the value that was added to the "version" field in this mutation.
+func (m *EquipmentLogMutation) AddedVersion() (r int64, exists bool) {
+	v := m.addversion
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetVersion resets all changes to the "version" field.
+func (m *EquipmentLogMutation) ResetVersion() {
+	m.version = nil
+	m.addversion = nil
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (m *EquipmentLogMutation) SetCreatedBy(d datasource.UUID) {
+	m.created_by = &d
+	m.addcreated_by = nil
+}
+
+// CreatedBy returns the value of the "created_by" field in the mutation.
+func (m *EquipmentLogMutation) CreatedBy() (r datasource.UUID, exists bool) {
+	v := m.created_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedBy returns the old "created_by" field's value of the EquipmentLog entity.
+// If the EquipmentLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentLogMutation) OldCreatedBy(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedBy: %w", err)
+	}
+	return oldValue.CreatedBy, nil
+}
+
+// AddCreatedBy adds d to the "created_by" field.
+func (m *EquipmentLogMutation) AddCreatedBy(d datasource.UUID) {
+	if m.addcreated_by != nil {
+		*m.addcreated_by += d
+	} else {
+		m.addcreated_by = &d
+	}
+}
+
+// AddedCreatedBy returns the value that was added to the "created_by" field in this mutation.
+func (m *EquipmentLogMutation) AddedCreatedBy() (r datasource.UUID, exists bool) {
+	v := m.addcreated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreatedBy resets all changes to the "created_by" field.
+func (m *EquipmentLogMutation) ResetCreatedBy() {
+	m.created_by = nil
+	m.addcreated_by = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *EquipmentLogMutation) SetCreatedAt(i int64) {
+	m.created_at = &i
+	m.addcreated_at = nil
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *EquipmentLogMutation) CreatedAt() (r int64, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the EquipmentLog entity.
+// If the EquipmentLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentLogMutation) OldCreatedAt(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// AddCreatedAt adds i to the "created_at" field.
+func (m *EquipmentLogMutation) AddCreatedAt(i int64) {
+	if m.addcreated_at != nil {
+		*m.addcreated_at += i
+	} else {
+		m.addcreated_at = &i
+	}
+}
+
+// AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
+func (m *EquipmentLogMutation) AddedCreatedAt() (r int64, exists bool) {
+	v := m.addcreated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *EquipmentLogMutation) ResetCreatedAt() {
+	m.created_at = nil
+	m.addcreated_at = nil
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (m *EquipmentLogMutation) SetUpdatedBy(d datasource.UUID) {
+	m.updated_by = &d
+	m.addupdated_by = nil
+}
+
+// UpdatedBy returns the value of the "updated_by" field in the mutation.
+func (m *EquipmentLogMutation) UpdatedBy() (r datasource.UUID, exists bool) {
+	v := m.updated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedBy returns the old "updated_by" field's value of the EquipmentLog entity.
+// If the EquipmentLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentLogMutation) OldUpdatedBy(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedBy: %w", err)
+	}
+	return oldValue.UpdatedBy, nil
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (m *EquipmentLogMutation) AddUpdatedBy(d datasource.UUID) {
+	if m.addupdated_by != nil {
+		*m.addupdated_by += d
+	} else {
+		m.addupdated_by = &d
+	}
+}
+
+// AddedUpdatedBy returns the value that was added to the "updated_by" field in this mutation.
+func (m *EquipmentLogMutation) AddedUpdatedBy() (r datasource.UUID, exists bool) {
+	v := m.addupdated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUpdatedBy resets all changes to the "updated_by" field.
+func (m *EquipmentLogMutation) ResetUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *EquipmentLogMutation) SetUpdatedAt(i int64) {
+	m.updated_at = &i
+	m.addupdated_at = nil
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *EquipmentLogMutation) UpdatedAt() (r int64, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the EquipmentLog entity.
+// If the EquipmentLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentLogMutation) OldUpdatedAt(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (m *EquipmentLogMutation) AddUpdatedAt(i int64) {
+	if m.addupdated_at != nil {
+		*m.addupdated_at += i
+	} else {
+		m.addupdated_at = &i
+	}
+}
+
+// AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
+func (m *EquipmentLogMutation) AddedUpdatedAt() (r int64, exists bool) {
+	v := m.addupdated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *EquipmentLogMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+	m.addupdated_at = nil
+}
+
+// SetRequestId sets the "requestId" field.
+func (m *EquipmentLogMutation) SetRequestId(i int64) {
+	m.requestId = &i
+	m.addrequestId = nil
+}
+
+// RequestId returns the value of the "requestId" field in the mutation.
+func (m *EquipmentLogMutation) RequestId() (r int64, exists bool) {
+	v := m.requestId
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRequestId returns the old "requestId" field's value of the EquipmentLog entity.
+// If the EquipmentLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentLogMutation) OldRequestId(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRequestId is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRequestId requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRequestId: %w", err)
+	}
+	return oldValue.RequestId, nil
+}
+
+// AddRequestId adds i to the "requestId" field.
+func (m *EquipmentLogMutation) AddRequestId(i int64) {
+	if m.addrequestId != nil {
+		*m.addrequestId += i
+	} else {
+		m.addrequestId = &i
+	}
+}
+
+// AddedRequestId returns the value that was added to the "requestId" field in this mutation.
+func (m *EquipmentLogMutation) AddedRequestId() (r int64, exists bool) {
+	v := m.addrequestId
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRequestId resets all changes to the "requestId" field.
+func (m *EquipmentLogMutation) ResetRequestId() {
+	m.requestId = nil
+	m.addrequestId = nil
+}
+
+// SetState sets the "state" field.
+func (m *EquipmentLogMutation) SetState(i int) {
+	m.state = &i
+	m.addstate = nil
+}
+
+// State returns the value of the "state" field in the mutation.
+func (m *EquipmentLogMutation) State() (r int, exists bool) {
+	v := m.state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldState returns the old "state" field's value of the EquipmentLog entity.
+// If the EquipmentLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentLogMutation) OldState(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldState: %w", err)
+	}
+	return oldValue.State, nil
+}
+
+// AddState adds i to the "state" field.
+func (m *EquipmentLogMutation) AddState(i int) {
+	if m.addstate != nil {
+		*m.addstate += i
+	} else {
+		m.addstate = &i
+	}
+}
+
+// AddedState returns the value that was added to the "state" field in this mutation.
+func (m *EquipmentLogMutation) AddedState() (r int, exists bool) {
+	v := m.addstate
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetState resets all changes to the "state" field.
+func (m *EquipmentLogMutation) ResetState() {
+	m.state = nil
+	m.addstate = nil
+}
+
+// SetDataLink sets the "data_link" field.
+func (m *EquipmentLogMutation) SetDataLink(d datasource.UUID) {
+	m.data_link = &d
+	m.adddata_link = nil
+}
+
+// DataLink returns the value of the "data_link" field in the mutation.
+func (m *EquipmentLogMutation) DataLink() (r datasource.UUID, exists bool) {
+	v := m.data_link
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDataLink returns the old "data_link" field's value of the EquipmentLog entity.
+// If the EquipmentLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentLogMutation) OldDataLink(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDataLink is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDataLink requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDataLink: %w", err)
+	}
+	return oldValue.DataLink, nil
+}
+
+// AddDataLink adds d to the "data_link" field.
+func (m *EquipmentLogMutation) AddDataLink(d datasource.UUID) {
+	if m.adddata_link != nil {
+		*m.adddata_link += d
+	} else {
+		m.adddata_link = &d
+	}
+}
+
+// AddedDataLink returns the value that was added to the "data_link" field in this mutation.
+func (m *EquipmentLogMutation) AddedDataLink() (r datasource.UUID, exists bool) {
+	v := m.adddata_link
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDataLink resets all changes to the "data_link" field.
+func (m *EquipmentLogMutation) ResetDataLink() {
+	m.data_link = nil
+	m.adddata_link = nil
+}
+
+// SetEquipmentID sets the "equipment" edge to the Equipment entity by id.
+func (m *EquipmentLogMutation) SetEquipmentID(id datasource.UUID) {
+	m.equipment = &id
+}
+
+// ClearEquipment clears the "equipment" edge to the Equipment entity.
+func (m *EquipmentLogMutation) ClearEquipment() {
+	m.clearedequipment = true
+}
+
+// EquipmentCleared reports if the "equipment" edge to the Equipment entity was cleared.
+func (m *EquipmentLogMutation) EquipmentCleared() bool {
+	return m.clearedequipment
+}
+
+// EquipmentID returns the "equipment" edge ID in the mutation.
+func (m *EquipmentLogMutation) EquipmentID() (id datasource.UUID, exists bool) {
+	if m.equipment != nil {
+		return *m.equipment, true
+	}
+	return
+}
+
+// EquipmentIDs returns the "equipment" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// EquipmentID instead. It exists only for internal usage by the builders.
+func (m *EquipmentLogMutation) EquipmentIDs() (ids []datasource.UUID) {
+	if id := m.equipment; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetEquipment resets all changes to the "equipment" edge.
+func (m *EquipmentLogMutation) ResetEquipment() {
+	m.equipment = nil
+	m.clearedequipment = false
+}
+
+// Where appends a list predicates to the EquipmentLogMutation builder.
+func (m *EquipmentLogMutation) Where(ps ...predicate.EquipmentLog) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *EquipmentLogMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (EquipmentLog).
+func (m *EquipmentLogMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *EquipmentLogMutation) Fields() []string {
+	fields := make([]string, 0, 8)
+	if m.version != nil {
+		fields = append(fields, equipmentlog.FieldVersion)
+	}
+	if m.created_by != nil {
+		fields = append(fields, equipmentlog.FieldCreatedBy)
+	}
+	if m.created_at != nil {
+		fields = append(fields, equipmentlog.FieldCreatedAt)
+	}
+	if m.updated_by != nil {
+		fields = append(fields, equipmentlog.FieldUpdatedBy)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, equipmentlog.FieldUpdatedAt)
+	}
+	if m.requestId != nil {
+		fields = append(fields, equipmentlog.FieldRequestId)
+	}
+	if m.state != nil {
+		fields = append(fields, equipmentlog.FieldState)
+	}
+	if m.data_link != nil {
+		fields = append(fields, equipmentlog.FieldDataLink)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *EquipmentLogMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case equipmentlog.FieldVersion:
+		return m.Version()
+	case equipmentlog.FieldCreatedBy:
+		return m.CreatedBy()
+	case equipmentlog.FieldCreatedAt:
+		return m.CreatedAt()
+	case equipmentlog.FieldUpdatedBy:
+		return m.UpdatedBy()
+	case equipmentlog.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case equipmentlog.FieldRequestId:
+		return m.RequestId()
+	case equipmentlog.FieldState:
+		return m.State()
+	case equipmentlog.FieldDataLink:
+		return m.DataLink()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *EquipmentLogMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case equipmentlog.FieldVersion:
+		return m.OldVersion(ctx)
+	case equipmentlog.FieldCreatedBy:
+		return m.OldCreatedBy(ctx)
+	case equipmentlog.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case equipmentlog.FieldUpdatedBy:
+		return m.OldUpdatedBy(ctx)
+	case equipmentlog.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case equipmentlog.FieldRequestId:
+		return m.OldRequestId(ctx)
+	case equipmentlog.FieldState:
+		return m.OldState(ctx)
+	case equipmentlog.FieldDataLink:
+		return m.OldDataLink(ctx)
+	}
+	return nil, fmt.Errorf("unknown EquipmentLog field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *EquipmentLogMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case equipmentlog.FieldVersion:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVersion(v)
+		return nil
+	case equipmentlog.FieldCreatedBy:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedBy(v)
+		return nil
+	case equipmentlog.FieldCreatedAt:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case equipmentlog.FieldUpdatedBy:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedBy(v)
+		return nil
+	case equipmentlog.FieldUpdatedAt:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case equipmentlog.FieldRequestId:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRequestId(v)
+		return nil
+	case equipmentlog.FieldState:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetState(v)
+		return nil
+	case equipmentlog.FieldDataLink:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDataLink(v)
+		return nil
+	}
+	return fmt.Errorf("unknown EquipmentLog field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *EquipmentLogMutation) AddedFields() []string {
+	var fields []string
+	if m.addversion != nil {
+		fields = append(fields, equipmentlog.FieldVersion)
+	}
+	if m.addcreated_by != nil {
+		fields = append(fields, equipmentlog.FieldCreatedBy)
+	}
+	if m.addcreated_at != nil {
+		fields = append(fields, equipmentlog.FieldCreatedAt)
+	}
+	if m.addupdated_by != nil {
+		fields = append(fields, equipmentlog.FieldUpdatedBy)
+	}
+	if m.addupdated_at != nil {
+		fields = append(fields, equipmentlog.FieldUpdatedAt)
+	}
+	if m.addrequestId != nil {
+		fields = append(fields, equipmentlog.FieldRequestId)
+	}
+	if m.addstate != nil {
+		fields = append(fields, equipmentlog.FieldState)
+	}
+	if m.adddata_link != nil {
+		fields = append(fields, equipmentlog.FieldDataLink)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *EquipmentLogMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case equipmentlog.FieldVersion:
+		return m.AddedVersion()
+	case equipmentlog.FieldCreatedBy:
+		return m.AddedCreatedBy()
+	case equipmentlog.FieldCreatedAt:
+		return m.AddedCreatedAt()
+	case equipmentlog.FieldUpdatedBy:
+		return m.AddedUpdatedBy()
+	case equipmentlog.FieldUpdatedAt:
+		return m.AddedUpdatedAt()
+	case equipmentlog.FieldRequestId:
+		return m.AddedRequestId()
+	case equipmentlog.FieldState:
+		return m.AddedState()
+	case equipmentlog.FieldDataLink:
+		return m.AddedDataLink()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *EquipmentLogMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case equipmentlog.FieldVersion:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddVersion(v)
+		return nil
+	case equipmentlog.FieldCreatedBy:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedBy(v)
+		return nil
+	case equipmentlog.FieldCreatedAt:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedAt(v)
+		return nil
+	case equipmentlog.FieldUpdatedBy:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedBy(v)
+		return nil
+	case equipmentlog.FieldUpdatedAt:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedAt(v)
+		return nil
+	case equipmentlog.FieldRequestId:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRequestId(v)
+		return nil
+	case equipmentlog.FieldState:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddState(v)
+		return nil
+	case equipmentlog.FieldDataLink:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDataLink(v)
+		return nil
+	}
+	return fmt.Errorf("unknown EquipmentLog numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *EquipmentLogMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *EquipmentLogMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *EquipmentLogMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown EquipmentLog nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *EquipmentLogMutation) ResetField(name string) error {
+	switch name {
+	case equipmentlog.FieldVersion:
+		m.ResetVersion()
+		return nil
+	case equipmentlog.FieldCreatedBy:
+		m.ResetCreatedBy()
+		return nil
+	case equipmentlog.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case equipmentlog.FieldUpdatedBy:
+		m.ResetUpdatedBy()
+		return nil
+	case equipmentlog.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case equipmentlog.FieldRequestId:
+		m.ResetRequestId()
+		return nil
+	case equipmentlog.FieldState:
+		m.ResetState()
+		return nil
+	case equipmentlog.FieldDataLink:
+		m.ResetDataLink()
+		return nil
+	}
+	return fmt.Errorf("unknown EquipmentLog field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *EquipmentLogMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.equipment != nil {
+		edges = append(edges, equipmentlog.EdgeEquipment)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *EquipmentLogMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case equipmentlog.EdgeEquipment:
+		if id := m.equipment; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *EquipmentLogMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *EquipmentLogMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *EquipmentLogMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedequipment {
+		edges = append(edges, equipmentlog.EdgeEquipment)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *EquipmentLogMutation) EdgeCleared(name string) bool {
+	switch name {
+	case equipmentlog.EdgeEquipment:
+		return m.clearedequipment
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *EquipmentLogMutation) ClearEdge(name string) error {
+	switch name {
+	case equipmentlog.EdgeEquipment:
+		m.ClearEquipment()
+		return nil
+	}
+	return fmt.Errorf("unknown EquipmentLog unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *EquipmentLogMutation) ResetEdge(name string) error {
+	switch name {
+	case equipmentlog.EdgeEquipment:
+		m.ResetEquipment()
+		return nil
+	}
+	return fmt.Errorf("unknown EquipmentLog edge %s", name)
 }
 
 // EvseMutation represents an operation that mutates the Evse nodes in the graph.
@@ -10624,7 +11738,7 @@ func (m *ManufacturerMutation) Name() (r string, exists bool) {
 // OldName returns the old "name" field's value of the Manufacturer entity.
 // If the Manufacturer object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ManufacturerMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *ManufacturerMutation) OldName(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
@@ -13377,7 +14491,7 @@ func (m *OrderInfoMutation) RemoteStartID() (r int64, exists bool) {
 // OldRemoteStartID returns the old "remote_start_id" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldRemoteStartID(ctx context.Context) (v int64, err error) {
+func (m *OrderInfoMutation) OldRemoteStartID(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRemoteStartID is only allowed on UpdateOne operations")
 	}
@@ -13482,7 +14596,7 @@ func (m *OrderInfoMutation) AuthorizationID() (r string, exists bool) {
 // OldAuthorizationID returns the old "authorization_id" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldAuthorizationID(ctx context.Context) (v string, err error) {
+func (m *OrderInfoMutation) OldAuthorizationID(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAuthorizationID is only allowed on UpdateOne operations")
 	}
@@ -13531,7 +14645,7 @@ func (m *OrderInfoMutation) CustomerID() (r string, exists bool) {
 // OldCustomerID returns the old "customer_id" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldCustomerID(ctx context.Context) (v string, err error) {
+func (m *OrderInfoMutation) OldCustomerID(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCustomerID is only allowed on UpdateOne operations")
 	}
@@ -13580,7 +14694,7 @@ func (m *OrderInfoMutation) CallerOrderID() (r string, exists bool) {
 // OldCallerOrderID returns the old "caller_order_id" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldCallerOrderID(ctx context.Context) (v string, err error) {
+func (m *OrderInfoMutation) OldCallerOrderID(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCallerOrderID is only allowed on UpdateOne operations")
 	}
@@ -13630,7 +14744,7 @@ func (m *OrderInfoMutation) TotalElectricity() (r float64, exists bool) {
 // OldTotalElectricity returns the old "total_electricity" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldTotalElectricity(ctx context.Context) (v float64, err error) {
+func (m *OrderInfoMutation) OldTotalElectricity(ctx context.Context) (v *float64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTotalElectricity is only allowed on UpdateOne operations")
 	}
@@ -13700,7 +14814,7 @@ func (m *OrderInfoMutation) ChargeStartElectricity() (r float64, exists bool) {
 // OldChargeStartElectricity returns the old "charge_start_electricity" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldChargeStartElectricity(ctx context.Context) (v float64, err error) {
+func (m *OrderInfoMutation) OldChargeStartElectricity(ctx context.Context) (v *float64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldChargeStartElectricity is only allowed on UpdateOne operations")
 	}
@@ -13770,7 +14884,7 @@ func (m *OrderInfoMutation) ChargeStopElectricity() (r float64, exists bool) {
 // OldChargeStopElectricity returns the old "charge_stop_electricity" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldChargeStopElectricity(ctx context.Context) (v float64, err error) {
+func (m *OrderInfoMutation) OldChargeStopElectricity(ctx context.Context) (v *float64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldChargeStopElectricity is only allowed on UpdateOne operations")
 	}
@@ -13840,7 +14954,7 @@ func (m *OrderInfoMutation) SharpElectricity() (r float64, exists bool) {
 // OldSharpElectricity returns the old "sharp_electricity" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldSharpElectricity(ctx context.Context) (v float64, err error) {
+func (m *OrderInfoMutation) OldSharpElectricity(ctx context.Context) (v *float64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSharpElectricity is only allowed on UpdateOne operations")
 	}
@@ -13910,7 +15024,7 @@ func (m *OrderInfoMutation) PeakElectricity() (r float64, exists bool) {
 // OldPeakElectricity returns the old "peak_electricity" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldPeakElectricity(ctx context.Context) (v float64, err error) {
+func (m *OrderInfoMutation) OldPeakElectricity(ctx context.Context) (v *float64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPeakElectricity is only allowed on UpdateOne operations")
 	}
@@ -13980,7 +15094,7 @@ func (m *OrderInfoMutation) FlatElectricity() (r float64, exists bool) {
 // OldFlatElectricity returns the old "flat_electricity" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldFlatElectricity(ctx context.Context) (v float64, err error) {
+func (m *OrderInfoMutation) OldFlatElectricity(ctx context.Context) (v *float64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFlatElectricity is only allowed on UpdateOne operations")
 	}
@@ -14050,7 +15164,7 @@ func (m *OrderInfoMutation) ValleyElectricity() (r float64, exists bool) {
 // OldValleyElectricity returns the old "valley_electricity" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldValleyElectricity(ctx context.Context) (v float64, err error) {
+func (m *OrderInfoMutation) OldValleyElectricity(ctx context.Context) (v *float64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldValleyElectricity is only allowed on UpdateOne operations")
 	}
@@ -14120,7 +15234,7 @@ func (m *OrderInfoMutation) StopReasonCode() (r int32, exists bool) {
 // OldStopReasonCode returns the old "stop_reason_code" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldStopReasonCode(ctx context.Context) (v int32, err error) {
+func (m *OrderInfoMutation) OldStopReasonCode(ctx context.Context) (v *int32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStopReasonCode is only allowed on UpdateOne operations")
 	}
@@ -14282,7 +15396,7 @@ func (m *OrderInfoMutation) OrderStartTime() (r int64, exists bool) {
 // OldOrderStartTime returns the old "order_start_time" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldOrderStartTime(ctx context.Context) (v int64, err error) {
+func (m *OrderInfoMutation) OldOrderStartTime(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOrderStartTime is only allowed on UpdateOne operations")
 	}
@@ -14352,7 +15466,7 @@ func (m *OrderInfoMutation) OrderFinalTime() (r int64, exists bool) {
 // OldOrderFinalTime returns the old "order_final_time" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldOrderFinalTime(ctx context.Context) (v int64, err error) {
+func (m *OrderInfoMutation) OldOrderFinalTime(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOrderFinalTime is only allowed on UpdateOne operations")
 	}
@@ -14422,7 +15536,7 @@ func (m *OrderInfoMutation) ChargeStartTime() (r int64, exists bool) {
 // OldChargeStartTime returns the old "charge_start_time" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldChargeStartTime(ctx context.Context) (v int64, err error) {
+func (m *OrderInfoMutation) OldChargeStartTime(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldChargeStartTime is only allowed on UpdateOne operations")
 	}
@@ -14492,7 +15606,7 @@ func (m *OrderInfoMutation) ChargeFinalTime() (r int64, exists bool) {
 // OldChargeFinalTime returns the old "charge_final_time" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldChargeFinalTime(ctx context.Context) (v int64, err error) {
+func (m *OrderInfoMutation) OldChargeFinalTime(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldChargeFinalTime is only allowed on UpdateOne operations")
 	}
@@ -14562,7 +15676,7 @@ func (m *OrderInfoMutation) IntellectID() (r int64, exists bool) {
 // OldIntellectID returns the old "intellect_id" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldIntellectID(ctx context.Context) (v int64, err error) {
+func (m *OrderInfoMutation) OldIntellectID(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIntellectID is only allowed on UpdateOne operations")
 	}
@@ -14632,7 +15746,7 @@ func (m *OrderInfoMutation) StationID() (r datasource.UUID, exists bool) {
 // OldStationID returns the old "station_id" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldStationID(ctx context.Context) (v datasource.UUID, err error) {
+func (m *OrderInfoMutation) OldStationID(ctx context.Context) (v *datasource.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStationID is only allowed on UpdateOne operations")
 	}
@@ -14702,7 +15816,7 @@ func (m *OrderInfoMutation) OperatorID() (r datasource.UUID, exists bool) {
 // OldOperatorID returns the old "operator_id" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldOperatorID(ctx context.Context) (v datasource.UUID, err error) {
+func (m *OrderInfoMutation) OldOperatorID(ctx context.Context) (v *datasource.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOperatorID is only allowed on UpdateOne operations")
 	}
@@ -16534,7 +17648,7 @@ func (m *ReservationMutation) Additional() (r string, exists bool) {
 // OldAdditional returns the old "additional" field's value of the Reservation entity.
 // If the Reservation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ReservationMutation) OldAdditional(ctx context.Context) (v string, err error) {
+func (m *ReservationMutation) OldAdditional(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAdditional is only allowed on UpdateOne operations")
 	}
@@ -16583,7 +17697,7 @@ func (m *ReservationMutation) CustomerID() (r string, exists bool) {
 // OldCustomerID returns the old "customer_id" field's value of the Reservation entity.
 // If the Reservation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ReservationMutation) OldCustomerID(ctx context.Context) (v string, err error) {
+func (m *ReservationMutation) OldCustomerID(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCustomerID is only allowed on UpdateOne operations")
 	}

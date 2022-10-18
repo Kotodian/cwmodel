@@ -36,7 +36,7 @@ type OrderEvent struct {
 	Occurrence int64 `json:"occurrence,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrderEventQuery when eager-loading is set.
-	Edges                  OrderEventEdges `json:"edges"`
+	Edges                  OrderEventEdges `json:"-"`
 	order_info_order_event *datasource.UUID
 }
 

@@ -22,6 +22,7 @@ func (Evse) Mixin() []ent.Mixin {
 func (Evse) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "base_evse"},
+		edge.Annotation{StructTag: `json:"-"`},
 	}
 }
 

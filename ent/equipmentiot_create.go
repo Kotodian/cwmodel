@@ -365,7 +365,7 @@ func (eic *EquipmentIotCreate) createSpec() (*EquipmentIot, *sqlgraph.CreateSpec
 			Value:  value,
 			Column: equipmentiot.FieldIccid,
 		})
-		_node.Iccid = value
+		_node.Iccid = &value
 	}
 	if value, ok := eic.mutation.Imei(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -373,7 +373,7 @@ func (eic *EquipmentIotCreate) createSpec() (*EquipmentIot, *sqlgraph.CreateSpec
 			Value:  value,
 			Column: equipmentiot.FieldImei,
 		})
-		_node.Imei = value
+		_node.Imei = &value
 	}
 	if value, ok := eic.mutation.RemoteAddress(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -381,7 +381,7 @@ func (eic *EquipmentIotCreate) createSpec() (*EquipmentIot, *sqlgraph.CreateSpec
 			Value:  value,
 			Column: equipmentiot.FieldRemoteAddress,
 		})
-		_node.RemoteAddress = value
+		_node.RemoteAddress = &value
 	}
 	if nodes := eic.mutation.EquipmentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

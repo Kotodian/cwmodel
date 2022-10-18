@@ -31,7 +31,7 @@ type Firmware struct {
 	EquipVersion string `json:"equip_version,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FirmwareQuery when eager-loading is set.
-	Edges FirmwareEdges `json:"edges"`
+	Edges FirmwareEdges `json:"-"`
 }
 
 // FirmwareEdges holds the relations/edges for other nodes in the graph.

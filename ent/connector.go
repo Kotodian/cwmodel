@@ -42,16 +42,15 @@ type Connector struct {
 	// 充电状态
 	ChargingState int `json:"charging_state,omitempty"`
 	// 预约id
-	ReservationID datasource.UUID `json:"reservation_id,omitempty"`
+	ReservationID *datasource.UUID `json:"reservation_id,omitempty"`
 	// 停车编号
 	ParkNo string `json:"park_no,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ConnectorQuery when eager-loading is set.
-	Edges        ConnectorEdges `json:"edges"`
+	Edges        ConnectorEdges `json:"-"`
 	equipment_id *datasource.UUID
 	evse_id      *datasource.UUID
 
-	// StaticField defined by template.
 	PushInterval int             `json:"push_interval"`
 	LastPushTime int64           `json:"last_push_time"`
 	OrderState   int             `json:"order_state"`
@@ -221,7 +220,8 @@ func (c *Connector) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field reservation_id", values[i])
 			} else if value.Valid {
-				c.ReservationID = datasource.UUID(value.Int64)
+				c.ReservationID = new(datasource.UUID)
+				*c.ReservationID = datasource.UUID(value.Int64)
 			}
 		case connector.FieldParkNo:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -324,8 +324,10 @@ func (c *Connector) String() string {
 	builder.WriteString("charging_state=")
 	builder.WriteString(fmt.Sprintf("%v", c.ChargingState))
 	builder.WriteString(", ")
-	builder.WriteString("reservation_id=")
-	builder.WriteString(fmt.Sprintf("%v", c.ReservationID))
+	if v := c.ReservationID; v != nil {
+		builder.WriteString("reservation_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("park_no=")
 	builder.WriteString(c.ParkNo)

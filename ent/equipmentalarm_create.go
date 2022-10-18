@@ -401,7 +401,7 @@ func (eac *EquipmentAlarmCreate) createSpec() (*EquipmentAlarm, *sqlgraph.Create
 			Value:  value,
 			Column: equipmentalarm.FieldTriggerTime,
 		})
-		_node.TriggerTime = value
+		_node.TriggerTime = &value
 	}
 	if value, ok := eac.mutation.FinalTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -409,7 +409,7 @@ func (eac *EquipmentAlarmCreate) createSpec() (*EquipmentAlarm, *sqlgraph.Create
 			Value:  value,
 			Column: equipmentalarm.FieldFinalTime,
 		})
-		_node.FinalTime = value
+		_node.FinalTime = &value
 	}
 	if value, ok := eac.mutation.Count(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

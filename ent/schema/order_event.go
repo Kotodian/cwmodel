@@ -22,6 +22,7 @@ func (OrderEvent) Mixin() []ent.Mixin {
 func (OrderEvent) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "order_event"},
+		edge.Annotation{StructTag: `json:"-"`},
 	}
 }
 

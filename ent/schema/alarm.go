@@ -21,6 +21,7 @@ func (EquipmentAlarm) Mixin() []ent.Mixin {
 func (EquipmentAlarm) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "base_equipment_alarm"},
+		edge.Annotation{StructTag: `json:"-"`},
 	}
 }
 
@@ -29,8 +30,8 @@ func (EquipmentAlarm) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("dtc_code").Comment("告警代码"),
 		field.String("remote_address").Comment("ip地址"),
-		field.Int64("trigger_time").Optional().Comment("触发时间"),
-		field.Int64("final_time").Optional().Comment("结束时间"),
+		field.Int64("trigger_time").Optional().Nillable().Comment("触发时间"),
+		field.Int64("final_time").Optional().Nillable().Comment("结束时间"),
 		field.Int("count").Default(0).Comment("数量"),
 	}
 }

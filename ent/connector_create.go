@@ -507,7 +507,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: connector.FieldReservationID,
 		})
-		_node.ReservationID = value
+		_node.ReservationID = &value
 	}
 	if value, ok := cc.mutation.ParkNo(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

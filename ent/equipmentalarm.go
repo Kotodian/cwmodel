@@ -33,14 +33,14 @@ type EquipmentAlarm struct {
 	// ip地址
 	RemoteAddress string `json:"remote_address,omitempty"`
 	// 触发时间
-	TriggerTime int64 `json:"trigger_time,omitempty"`
+	TriggerTime *int64 `json:"trigger_time,omitempty"`
 	// 结束时间
-	FinalTime int64 `json:"final_time,omitempty"`
+	FinalTime *int64 `json:"final_time,omitempty"`
 	// 数量
 	Count int `json:"count,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentAlarmQuery when eager-loading is set.
-	Edges        EquipmentAlarmEdges `json:"edges"`
+	Edges        EquipmentAlarmEdges `json:"-"`
 	equipment_id *datasource.UUID
 }
 
@@ -144,13 +144,15 @@ func (ea *EquipmentAlarm) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field trigger_time", values[i])
 			} else if value.Valid {
-				ea.TriggerTime = value.Int64
+				ea.TriggerTime = new(int64)
+				*ea.TriggerTime = value.Int64
 			}
 		case equipmentalarm.FieldFinalTime:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field final_time", values[i])
 			} else if value.Valid {
-				ea.FinalTime = value.Int64
+				ea.FinalTime = new(int64)
+				*ea.FinalTime = value.Int64
 			}
 		case equipmentalarm.FieldCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -219,11 +221,15 @@ func (ea *EquipmentAlarm) String() string {
 	builder.WriteString("remote_address=")
 	builder.WriteString(ea.RemoteAddress)
 	builder.WriteString(", ")
-	builder.WriteString("trigger_time=")
-	builder.WriteString(fmt.Sprintf("%v", ea.TriggerTime))
+	if v := ea.TriggerTime; v != nil {
+		builder.WriteString("trigger_time=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("final_time=")
-	builder.WriteString(fmt.Sprintf("%v", ea.FinalTime))
+	if v := ea.FinalTime; v != nil {
+		builder.WriteString("final_time=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("count=")
 	builder.WriteString(fmt.Sprintf("%v", ea.Count))

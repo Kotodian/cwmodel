@@ -30,20 +30,22 @@ type Equipment struct {
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 桩序列号
-	Sn string `json:"sn,omitempty"`
+	Sn string `json:"sn"`
 	// 运营商id
-	OperatorID datasource.UUID `json:"operator_id,omitempty"`
+	OperatorID datasource.UUID `json:"operatorId"`
 	// 站点id
-	StationID datasource.UUID `json:"station_id,omitempty"`
+	StationID datasource.UUID `json:"stationId"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentQuery when eager-loading is set.
-	Edges EquipmentEdges `json:"edges"`
+	Edges EquipmentEdges `json:"-"`
+
+	EquipmentInfo *EquipmentInfo `json:"equipmentInfo"`
 }
 
 // EquipmentEdges holds the relations/edges for other nodes in the graph.
 type EquipmentEdges struct {
 	// EquipmentInfo holds the value of the equipment_info edge.
-	EquipmentInfo *EquipmentInfo `json:"equipment_info,omitempty"`
+	EquipmentInfo *EquipmentInfo `json:"equipmentId"`
 	// Evse holds the value of the evse edge.
 	Evse []*Evse `json:"evse,omitempty"`
 	// Connector holds the value of the connector edge.
@@ -58,9 +60,11 @@ type EquipmentEdges struct {
 	OrderInfo []*OrderInfo `json:"order_info,omitempty"`
 	// Reservation holds the value of the reservation edge.
 	Reservation []*Reservation `json:"reservation,omitempty"`
+	// EquipmentLog holds the value of the equipment_log edge.
+	EquipmentLog []*EquipmentLog `json:"equipment_log,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [8]bool
+	loadedTypes [9]bool
 }
 
 // EquipmentInfoOrErr returns the EquipmentInfo value or an error if the edge
@@ -141,6 +145,15 @@ func (e EquipmentEdges) ReservationOrErr() ([]*Reservation, error) {
 		return e.Reservation, nil
 	}
 	return nil, &NotLoadedError{edge: "reservation"}
+}
+
+// EquipmentLogOrErr returns the EquipmentLog value or an error if the edge
+// was not loaded in eager-loading.
+func (e EquipmentEdges) EquipmentLogOrErr() ([]*EquipmentLog, error) {
+	if e.loadedTypes[8] {
+		return e.EquipmentLog, nil
+	}
+	return nil, &NotLoadedError{edge: "equipment_log"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -264,6 +277,11 @@ func (e *Equipment) QueryOrderInfo() *OrderInfoQuery {
 // QueryReservation queries the "reservation" edge of the Equipment entity.
 func (e *Equipment) QueryReservation() *ReservationQuery {
 	return (&EquipmentClient{config: e.config}).QueryReservation(e)
+}
+
+// QueryEquipmentLog queries the "equipment_log" edge of the Equipment entity.
+func (e *Equipment) QueryEquipmentLog() *EquipmentLogQuery {
+	return (&EquipmentClient{config: e.config}).QueryEquipmentLog(e)
 }
 
 // Update returns a builder for updating this Equipment.

@@ -36,16 +36,16 @@ type Reservation struct {
 	// 授权id
 	AuthorizationID string `json:"authorization_id,omitempty"`
 	// 额外授权id
-	Additional string `json:"additional,omitempty"`
+	Additional *string `json:"additional,omitempty"`
 	// 客户id
-	CustomerID string `json:"customer_id,omitempty"`
+	CustomerID *string `json:"customer_id,omitempty"`
 	// 过期时间
 	Expired int64 `json:"expired,omitempty"`
 	// 预约状态
 	State int `json:"state,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ReservationQuery when eager-loading is set.
-	Edges        ReservationEdges `json:"edges"`
+	Edges        ReservationEdges `json:"-"`
 	connector_id *datasource.UUID
 	equipment_id *datasource.UUID
 }
@@ -173,13 +173,15 @@ func (r *Reservation) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field additional", values[i])
 			} else if value.Valid {
-				r.Additional = value.String
+				r.Additional = new(string)
+				*r.Additional = value.String
 			}
 		case reservation.FieldCustomerID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field customer_id", values[i])
 			} else if value.Valid {
-				r.CustomerID = value.String
+				r.CustomerID = new(string)
+				*r.CustomerID = value.String
 			}
 		case reservation.FieldExpired:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -269,11 +271,15 @@ func (r *Reservation) String() string {
 	builder.WriteString("authorization_id=")
 	builder.WriteString(r.AuthorizationID)
 	builder.WriteString(", ")
-	builder.WriteString("additional=")
-	builder.WriteString(r.Additional)
+	if v := r.Additional; v != nil {
+		builder.WriteString("additional=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
-	builder.WriteString("customer_id=")
-	builder.WriteString(r.CustomerID)
+	if v := r.CustomerID; v != nil {
+		builder.WriteString("customer_id=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
 	builder.WriteString("expired=")
 	builder.WriteString(fmt.Sprintf("%v", r.Expired))
