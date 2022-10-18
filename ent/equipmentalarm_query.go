@@ -13,6 +13,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentalarm"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentAlarmQuery is the builder for querying EquipmentAlarm entities.
@@ -108,8 +109,8 @@ func (eaq *EquipmentAlarmQuery) FirstX(ctx context.Context) *EquipmentAlarm {
 
 // FirstID returns the first EquipmentAlarm ID from the query.
 // Returns a *NotFoundError when no EquipmentAlarm ID was found.
-func (eaq *EquipmentAlarmQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (eaq *EquipmentAlarmQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = eaq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -121,7 +122,7 @@ func (eaq *EquipmentAlarmQuery) FirstID(ctx context.Context) (id int, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (eaq *EquipmentAlarmQuery) FirstIDX(ctx context.Context) int {
+func (eaq *EquipmentAlarmQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := eaq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -159,8 +160,8 @@ func (eaq *EquipmentAlarmQuery) OnlyX(ctx context.Context) *EquipmentAlarm {
 // OnlyID is like Only, but returns the only EquipmentAlarm ID in the query.
 // Returns a *NotSingularError when more than one EquipmentAlarm ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (eaq *EquipmentAlarmQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (eaq *EquipmentAlarmQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = eaq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -176,7 +177,7 @@ func (eaq *EquipmentAlarmQuery) OnlyID(ctx context.Context) (id int, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (eaq *EquipmentAlarmQuery) OnlyIDX(ctx context.Context) int {
+func (eaq *EquipmentAlarmQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := eaq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -202,8 +203,8 @@ func (eaq *EquipmentAlarmQuery) AllX(ctx context.Context) []*EquipmentAlarm {
 }
 
 // IDs executes the query and returns a list of EquipmentAlarm IDs.
-func (eaq *EquipmentAlarmQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (eaq *EquipmentAlarmQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := eaq.Select(equipmentalarm.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -211,7 +212,7 @@ func (eaq *EquipmentAlarmQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (eaq *EquipmentAlarmQuery) IDsX(ctx context.Context) []int {
+func (eaq *EquipmentAlarmQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := eaq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -290,12 +291,12 @@ func (eaq *EquipmentAlarmQuery) WithEquipment(opts ...func(*EquipmentQuery)) *Eq
 // Example:
 //
 //	var v []struct {
-//		DtcCode int64 `json:"dtc_code,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.EquipmentAlarm.Query().
-//		GroupBy(equipmentalarm.FieldDtcCode).
+//		GroupBy(equipmentalarm.FieldVersion).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (eaq *EquipmentAlarmQuery) GroupBy(field string, fields ...string) *EquipmentAlarmGroupBy {
@@ -318,11 +319,11 @@ func (eaq *EquipmentAlarmQuery) GroupBy(field string, fields ...string) *Equipme
 // Example:
 //
 //	var v []struct {
-//		DtcCode int64 `json:"dtc_code,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //	}
 //
 //	client.EquipmentAlarm.Query().
-//		Select(equipmentalarm.FieldDtcCode).
+//		Select(equipmentalarm.FieldVersion).
 //		Scan(ctx, &v)
 func (eaq *EquipmentAlarmQuery) Select(fields ...string) *EquipmentAlarmSelect {
 	eaq.fields = append(eaq.fields, fields...)
@@ -391,8 +392,8 @@ func (eaq *EquipmentAlarmQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 }
 
 func (eaq *EquipmentAlarmQuery) loadEquipment(ctx context.Context, query *EquipmentQuery, nodes []*EquipmentAlarm, init func(*EquipmentAlarm), assign func(*EquipmentAlarm, *Equipment)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*EquipmentAlarm)
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*EquipmentAlarm)
 	for i := range nodes {
 		if nodes[i].equipment_id == nil {
 			continue
@@ -446,7 +447,7 @@ func (eaq *EquipmentAlarmQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   equipmentalarm.Table,
 			Columns: equipmentalarm.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentalarm.FieldID,
 			},
 		},

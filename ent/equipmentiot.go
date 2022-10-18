@@ -9,13 +9,25 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentiot"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentIot is the model entity for the EquipmentIot schema.
 type EquipmentIot struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	// 主键
+	ID datasource.UUID `json:"id,omitempty"`
+	// 乐观锁
+	Version int64 `json:"version,omitempty"`
+	// 创建者
+	CreatedBy datasource.UUID `json:"created_by,omitempty"`
+	// 创建时间
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// 修改者
+	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
+	// 修改时间
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// iccid
 	Iccid string `json:"iccid,omitempty"`
 	// imei
@@ -25,7 +37,7 @@ type EquipmentIot struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentIotQuery when eager-loading is set.
 	Edges        EquipmentIotEdges `json:"edges"`
-	equipment_id *int
+	equipment_id *datasource.UUID
 }
 
 // EquipmentIotEdges holds the relations/edges for other nodes in the graph.
@@ -55,7 +67,7 @@ func (*EquipmentIot) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case equipmentiot.FieldID:
+		case equipmentiot.FieldID, equipmentiot.FieldVersion, equipmentiot.FieldCreatedBy, equipmentiot.FieldCreatedAt, equipmentiot.FieldUpdatedBy, equipmentiot.FieldUpdatedAt:
 			values[i] = new(sql.NullInt64)
 		case equipmentiot.FieldIccid, equipmentiot.FieldImei, equipmentiot.FieldRemoteAddress:
 			values[i] = new(sql.NullString)
@@ -77,11 +89,41 @@ func (ei *EquipmentIot) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case equipmentiot.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				ei.ID = datasource.UUID(value.Int64)
 			}
-			ei.ID = int(value.Int64)
+		case equipmentiot.FieldVersion:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field version", values[i])
+			} else if value.Valid {
+				ei.Version = value.Int64
+			}
+		case equipmentiot.FieldCreatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_by", values[i])
+			} else if value.Valid {
+				ei.CreatedBy = datasource.UUID(value.Int64)
+			}
+		case equipmentiot.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				ei.CreatedAt = value.Int64
+			}
+		case equipmentiot.FieldUpdatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
+			} else if value.Valid {
+				ei.UpdatedBy = datasource.UUID(value.Int64)
+			}
+		case equipmentiot.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				ei.UpdatedAt = value.Int64
+			}
 		case equipmentiot.FieldIccid:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field iccid", values[i])
@@ -102,10 +144,10 @@ func (ei *EquipmentIot) assignValues(columns []string, values []any) error {
 			}
 		case equipmentiot.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field equipment_id", value)
+				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
 			} else if value.Valid {
-				ei.equipment_id = new(int)
-				*ei.equipment_id = int(value.Int64)
+				ei.equipment_id = new(datasource.UUID)
+				*ei.equipment_id = datasource.UUID(value.Int64)
 			}
 		}
 	}
@@ -140,6 +182,21 @@ func (ei *EquipmentIot) String() string {
 	var builder strings.Builder
 	builder.WriteString("EquipmentIot(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", ei.ID))
+	builder.WriteString("version=")
+	builder.WriteString(fmt.Sprintf("%v", ei.Version))
+	builder.WriteString(", ")
+	builder.WriteString("created_by=")
+	builder.WriteString(fmt.Sprintf("%v", ei.CreatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(fmt.Sprintf("%v", ei.CreatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("updated_by=")
+	builder.WriteString(fmt.Sprintf("%v", ei.UpdatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(fmt.Sprintf("%v", ei.UpdatedAt))
+	builder.WriteString(", ")
 	builder.WriteString("iccid=")
 	builder.WriteString(ei.Iccid)
 	builder.WriteString(", ")

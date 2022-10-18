@@ -12,6 +12,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/firmware"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentFirmwareEffectCreate is the builder for creating a EquipmentFirmwareEffect entity.
@@ -19,6 +20,76 @@ type EquipmentFirmwareEffectCreate struct {
 	config
 	mutation *EquipmentFirmwareEffectMutation
 	hooks    []Hook
+}
+
+// SetVersion sets the "version" field.
+func (efec *EquipmentFirmwareEffectCreate) SetVersion(i int64) *EquipmentFirmwareEffectCreate {
+	efec.mutation.SetVersion(i)
+	return efec
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (efec *EquipmentFirmwareEffectCreate) SetNillableVersion(i *int64) *EquipmentFirmwareEffectCreate {
+	if i != nil {
+		efec.SetVersion(*i)
+	}
+	return efec
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (efec *EquipmentFirmwareEffectCreate) SetCreatedBy(d datasource.UUID) *EquipmentFirmwareEffectCreate {
+	efec.mutation.SetCreatedBy(d)
+	return efec
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (efec *EquipmentFirmwareEffectCreate) SetNillableCreatedBy(d *datasource.UUID) *EquipmentFirmwareEffectCreate {
+	if d != nil {
+		efec.SetCreatedBy(*d)
+	}
+	return efec
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (efec *EquipmentFirmwareEffectCreate) SetCreatedAt(i int64) *EquipmentFirmwareEffectCreate {
+	efec.mutation.SetCreatedAt(i)
+	return efec
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (efec *EquipmentFirmwareEffectCreate) SetNillableCreatedAt(i *int64) *EquipmentFirmwareEffectCreate {
+	if i != nil {
+		efec.SetCreatedAt(*i)
+	}
+	return efec
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (efec *EquipmentFirmwareEffectCreate) SetUpdatedBy(d datasource.UUID) *EquipmentFirmwareEffectCreate {
+	efec.mutation.SetUpdatedBy(d)
+	return efec
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (efec *EquipmentFirmwareEffectCreate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentFirmwareEffectCreate {
+	if d != nil {
+		efec.SetUpdatedBy(*d)
+	}
+	return efec
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (efec *EquipmentFirmwareEffectCreate) SetUpdatedAt(i int64) *EquipmentFirmwareEffectCreate {
+	efec.mutation.SetUpdatedAt(i)
+	return efec
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (efec *EquipmentFirmwareEffectCreate) SetNillableUpdatedAt(i *int64) *EquipmentFirmwareEffectCreate {
+	if i != nil {
+		efec.SetUpdatedAt(*i)
+	}
+	return efec
 }
 
 // SetRequestID sets the "request_id" field.
@@ -33,14 +104,28 @@ func (efec *EquipmentFirmwareEffectCreate) SetState(i int) *EquipmentFirmwareEff
 	return efec
 }
 
+// SetID sets the "id" field.
+func (efec *EquipmentFirmwareEffectCreate) SetID(d datasource.UUID) *EquipmentFirmwareEffectCreate {
+	efec.mutation.SetID(d)
+	return efec
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (efec *EquipmentFirmwareEffectCreate) SetNillableID(d *datasource.UUID) *EquipmentFirmwareEffectCreate {
+	if d != nil {
+		efec.SetID(*d)
+	}
+	return efec
+}
+
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (efec *EquipmentFirmwareEffectCreate) SetEquipmentID(id int) *EquipmentFirmwareEffectCreate {
+func (efec *EquipmentFirmwareEffectCreate) SetEquipmentID(id datasource.UUID) *EquipmentFirmwareEffectCreate {
 	efec.mutation.SetEquipmentID(id)
 	return efec
 }
 
 // SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (efec *EquipmentFirmwareEffectCreate) SetNillableEquipmentID(id *int) *EquipmentFirmwareEffectCreate {
+func (efec *EquipmentFirmwareEffectCreate) SetNillableEquipmentID(id *datasource.UUID) *EquipmentFirmwareEffectCreate {
 	if id != nil {
 		efec = efec.SetEquipmentID(*id)
 	}
@@ -53,13 +138,13 @@ func (efec *EquipmentFirmwareEffectCreate) SetEquipment(e *Equipment) *Equipment
 }
 
 // SetFirmwareID sets the "firmware" edge to the Firmware entity by ID.
-func (efec *EquipmentFirmwareEffectCreate) SetFirmwareID(id int) *EquipmentFirmwareEffectCreate {
+func (efec *EquipmentFirmwareEffectCreate) SetFirmwareID(id datasource.UUID) *EquipmentFirmwareEffectCreate {
 	efec.mutation.SetFirmwareID(id)
 	return efec
 }
 
 // SetNillableFirmwareID sets the "firmware" edge to the Firmware entity by ID if the given value is not nil.
-func (efec *EquipmentFirmwareEffectCreate) SetNillableFirmwareID(id *int) *EquipmentFirmwareEffectCreate {
+func (efec *EquipmentFirmwareEffectCreate) SetNillableFirmwareID(id *datasource.UUID) *EquipmentFirmwareEffectCreate {
 	if id != nil {
 		efec = efec.SetFirmwareID(*id)
 	}
@@ -82,6 +167,7 @@ func (efec *EquipmentFirmwareEffectCreate) Save(ctx context.Context) (*Equipment
 		err  error
 		node *EquipmentFirmwareEffect
 	)
+	efec.defaults()
 	if len(efec.hooks) == 0 {
 		if err = efec.check(); err != nil {
 			return nil, err
@@ -145,8 +231,51 @@ func (efec *EquipmentFirmwareEffectCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (efec *EquipmentFirmwareEffectCreate) defaults() {
+	if _, ok := efec.mutation.Version(); !ok {
+		v := equipmentfirmwareeffect.DefaultVersion
+		efec.mutation.SetVersion(v)
+	}
+	if _, ok := efec.mutation.CreatedBy(); !ok {
+		v := equipmentfirmwareeffect.DefaultCreatedBy
+		efec.mutation.SetCreatedBy(v)
+	}
+	if _, ok := efec.mutation.CreatedAt(); !ok {
+		v := equipmentfirmwareeffect.DefaultCreatedAt
+		efec.mutation.SetCreatedAt(v)
+	}
+	if _, ok := efec.mutation.UpdatedBy(); !ok {
+		v := equipmentfirmwareeffect.DefaultUpdatedBy
+		efec.mutation.SetUpdatedBy(v)
+	}
+	if _, ok := efec.mutation.UpdatedAt(); !ok {
+		v := equipmentfirmwareeffect.DefaultUpdatedAt
+		efec.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := efec.mutation.ID(); !ok {
+		v := equipmentfirmwareeffect.DefaultID
+		efec.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (efec *EquipmentFirmwareEffectCreate) check() error {
+	if _, ok := efec.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "EquipmentFirmwareEffect.version"`)}
+	}
+	if _, ok := efec.mutation.CreatedBy(); !ok {
+		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "EquipmentFirmwareEffect.created_by"`)}
+	}
+	if _, ok := efec.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "EquipmentFirmwareEffect.created_at"`)}
+	}
+	if _, ok := efec.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "EquipmentFirmwareEffect.updated_by"`)}
+	}
+	if _, ok := efec.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "EquipmentFirmwareEffect.updated_at"`)}
+	}
 	if _, ok := efec.mutation.RequestID(); !ok {
 		return &ValidationError{Name: "request_id", err: errors.New(`ent: missing required field "EquipmentFirmwareEffect.request_id"`)}
 	}
@@ -164,8 +293,10 @@ func (efec *EquipmentFirmwareEffectCreate) sqlSave(ctx context.Context) (*Equipm
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -175,11 +306,55 @@ func (efec *EquipmentFirmwareEffectCreate) createSpec() (*EquipmentFirmwareEffec
 		_spec = &sqlgraph.CreateSpec{
 			Table: equipmentfirmwareeffect.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentfirmwareeffect.FieldID,
 			},
 		}
 	)
+	if id, ok := efec.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := efec.mutation.Version(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldVersion,
+		})
+		_node.Version = value
+	}
+	if value, ok := efec.mutation.CreatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldCreatedBy,
+		})
+		_node.CreatedBy = value
+	}
+	if value, ok := efec.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := efec.mutation.UpdatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldUpdatedBy,
+		})
+		_node.UpdatedBy = value
+	}
+	if value, ok := efec.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := efec.mutation.RequestID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
@@ -205,7 +380,7 @@ func (efec *EquipmentFirmwareEffectCreate) createSpec() (*EquipmentFirmwareEffec
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -225,7 +400,7 @@ func (efec *EquipmentFirmwareEffectCreate) createSpec() (*EquipmentFirmwareEffec
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: firmware.FieldID,
 				},
 			},
@@ -253,6 +428,7 @@ func (efecb *EquipmentFirmwareEffectCreateBulk) Save(ctx context.Context) ([]*Eq
 	for i := range efecb.builders {
 		func(i int, root context.Context) {
 			builder := efecb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*EquipmentFirmwareEffectMutation)
 				if !ok {
@@ -279,9 +455,9 @@ func (efecb *EquipmentFirmwareEffectCreateBulk) Save(ctx context.Context) ([]*Eq
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

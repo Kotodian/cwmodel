@@ -15,6 +15,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EvseQuery is the builder for querying Evse entities.
@@ -133,8 +134,8 @@ func (eq *EvseQuery) FirstX(ctx context.Context) *Evse {
 
 // FirstID returns the first Evse ID from the query.
 // Returns a *NotFoundError when no Evse ID was found.
-func (eq *EvseQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (eq *EvseQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = eq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -146,7 +147,7 @@ func (eq *EvseQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (eq *EvseQuery) FirstIDX(ctx context.Context) int {
+func (eq *EvseQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := eq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -184,8 +185,8 @@ func (eq *EvseQuery) OnlyX(ctx context.Context) *Evse {
 // OnlyID is like Only, but returns the only Evse ID in the query.
 // Returns a *NotSingularError when more than one Evse ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (eq *EvseQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (eq *EvseQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = eq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -201,7 +202,7 @@ func (eq *EvseQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (eq *EvseQuery) OnlyIDX(ctx context.Context) int {
+func (eq *EvseQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := eq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -227,8 +228,8 @@ func (eq *EvseQuery) AllX(ctx context.Context) []*Evse {
 }
 
 // IDs executes the query and returns a list of Evse IDs.
-func (eq *EvseQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (eq *EvseQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := eq.Select(evse.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -236,7 +237,7 @@ func (eq *EvseQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (eq *EvseQuery) IDsX(ctx context.Context) []int {
+func (eq *EvseQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := eq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -327,12 +328,12 @@ func (eq *EvseQuery) WithConnector(opts ...func(*ConnectorQuery)) *EvseQuery {
 // Example:
 //
 //	var v []struct {
-//		Serial string `json:"serial,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Evse.Query().
-//		GroupBy(evse.FieldSerial).
+//		GroupBy(evse.FieldVersion).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (eq *EvseQuery) GroupBy(field string, fields ...string) *EvseGroupBy {
@@ -355,11 +356,11 @@ func (eq *EvseQuery) GroupBy(field string, fields ...string) *EvseGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Serial string `json:"serial,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //	}
 //
 //	client.Evse.Query().
-//		Select(evse.FieldSerial).
+//		Select(evse.FieldVersion).
 //		Scan(ctx, &v)
 func (eq *EvseQuery) Select(fields ...string) *EvseSelect {
 	eq.fields = append(eq.fields, fields...)
@@ -436,8 +437,8 @@ func (eq *EvseQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Evse, e
 }
 
 func (eq *EvseQuery) loadEquipment(ctx context.Context, query *EquipmentQuery, nodes []*Evse, init func(*Evse), assign func(*Evse, *Equipment)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Evse)
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*Evse)
 	for i := range nodes {
 		if nodes[i].equipment_id == nil {
 			continue
@@ -466,7 +467,7 @@ func (eq *EvseQuery) loadEquipment(ctx context.Context, query *EquipmentQuery, n
 }
 func (eq *EvseQuery) loadConnector(ctx context.Context, query *ConnectorQuery, nodes []*Evse, init func(*Evse), assign func(*Evse, *Connector)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Evse)
+	nodeids := make(map[datasource.UUID]*Evse)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -483,13 +484,13 @@ func (eq *EvseQuery) loadConnector(ctx context.Context, query *ConnectorQuery, n
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.evse_connector
+		fk := n.evse_id
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "evse_connector" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "evse_id" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "evse_connector" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "evse_id" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -522,7 +523,7 @@ func (eq *EvseQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   evse.Table,
 			Columns: evse.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: evse.FieldID,
 			},
 		},

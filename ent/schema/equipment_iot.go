@@ -12,7 +12,7 @@ type EquipmentIot struct {
 	ent.Schema
 }
 
-func (EquipmentIot) Mixins() []ent.Mixin {
+func (EquipmentIot) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}

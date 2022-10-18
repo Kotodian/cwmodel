@@ -8,13 +8,25 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/Kotodian/ent-practice/ent/firmware"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // Firmware is the model entity for the Firmware schema.
 type Firmware struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	// 主键
+	ID datasource.UUID `json:"id,omitempty"`
+	// 乐观锁
+	Version int64 `json:"version,omitempty"`
+	// 创建者
+	CreatedBy datasource.UUID `json:"created_by,omitempty"`
+	// 创建时间
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// 修改者
+	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
+	// 修改时间
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 固件版本
 	EquipVersion string `json:"equip_version,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -45,7 +57,7 @@ func (*Firmware) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case firmware.FieldID:
+		case firmware.FieldID, firmware.FieldVersion, firmware.FieldCreatedBy, firmware.FieldCreatedAt, firmware.FieldUpdatedBy, firmware.FieldUpdatedAt:
 			values[i] = new(sql.NullInt64)
 		case firmware.FieldEquipVersion:
 			values[i] = new(sql.NullString)
@@ -65,11 +77,41 @@ func (f *Firmware) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case firmware.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				f.ID = datasource.UUID(value.Int64)
 			}
-			f.ID = int(value.Int64)
+		case firmware.FieldVersion:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field version", values[i])
+			} else if value.Valid {
+				f.Version = value.Int64
+			}
+		case firmware.FieldCreatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_by", values[i])
+			} else if value.Valid {
+				f.CreatedBy = datasource.UUID(value.Int64)
+			}
+		case firmware.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				f.CreatedAt = value.Int64
+			}
+		case firmware.FieldUpdatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
+			} else if value.Valid {
+				f.UpdatedBy = datasource.UUID(value.Int64)
+			}
+		case firmware.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				f.UpdatedAt = value.Int64
+			}
 		case firmware.FieldEquipVersion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field equip_version", values[i])
@@ -109,6 +151,21 @@ func (f *Firmware) String() string {
 	var builder strings.Builder
 	builder.WriteString("Firmware(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", f.ID))
+	builder.WriteString("version=")
+	builder.WriteString(fmt.Sprintf("%v", f.Version))
+	builder.WriteString(", ")
+	builder.WriteString("created_by=")
+	builder.WriteString(fmt.Sprintf("%v", f.CreatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(fmt.Sprintf("%v", f.CreatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("updated_by=")
+	builder.WriteString(fmt.Sprintf("%v", f.UpdatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(fmt.Sprintf("%v", f.UpdatedAt))
+	builder.WriteString(", ")
 	builder.WriteString("equip_version=")
 	builder.WriteString(f.EquipVersion)
 	builder.WriteByte(')')

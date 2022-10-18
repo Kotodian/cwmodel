@@ -10,7 +10,7 @@ type EquipmentFirmwareEffect struct {
 	ent.Schema
 }
 
-func (EquipmentFirmwareEffect) Mixins() []ent.Mixin {
+func (EquipmentFirmwareEffect) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}

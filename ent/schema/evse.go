@@ -13,7 +13,7 @@ type Evse struct {
 	ent.Schema
 }
 
-func (Evse) Mixins() []ent.Mixin {
+func (Evse) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}
@@ -37,6 +37,6 @@ func (Evse) Fields() []ent.Field {
 func (Evse) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("equipment", Equipment.Type).Ref("evse").Unique().Required(),
-		edge.To("connector", Connector.Type),
+		edge.To("connector", Connector.Type).StorageKey(edge.Column("evse_id")),
 	}
 }

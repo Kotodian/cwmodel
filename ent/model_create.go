@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/model"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // ModelCreate is the builder for creating a Model entity.
@@ -17,6 +18,76 @@ type ModelCreate struct {
 	config
 	mutation *ModelMutation
 	hooks    []Hook
+}
+
+// SetVersion sets the "version" field.
+func (mc *ModelCreate) SetVersion(i int64) *ModelCreate {
+	mc.mutation.SetVersion(i)
+	return mc
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (mc *ModelCreate) SetNillableVersion(i *int64) *ModelCreate {
+	if i != nil {
+		mc.SetVersion(*i)
+	}
+	return mc
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (mc *ModelCreate) SetCreatedBy(d datasource.UUID) *ModelCreate {
+	mc.mutation.SetCreatedBy(d)
+	return mc
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (mc *ModelCreate) SetNillableCreatedBy(d *datasource.UUID) *ModelCreate {
+	if d != nil {
+		mc.SetCreatedBy(*d)
+	}
+	return mc
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (mc *ModelCreate) SetCreatedAt(i int64) *ModelCreate {
+	mc.mutation.SetCreatedAt(i)
+	return mc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (mc *ModelCreate) SetNillableCreatedAt(i *int64) *ModelCreate {
+	if i != nil {
+		mc.SetCreatedAt(*i)
+	}
+	return mc
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (mc *ModelCreate) SetUpdatedBy(d datasource.UUID) *ModelCreate {
+	mc.mutation.SetUpdatedBy(d)
+	return mc
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (mc *ModelCreate) SetNillableUpdatedBy(d *datasource.UUID) *ModelCreate {
+	if d != nil {
+		mc.SetUpdatedBy(*d)
+	}
+	return mc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (mc *ModelCreate) SetUpdatedAt(i int64) *ModelCreate {
+	mc.mutation.SetUpdatedAt(i)
+	return mc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (mc *ModelCreate) SetNillableUpdatedAt(i *int64) *ModelCreate {
+	if i != nil {
+		mc.SetUpdatedAt(*i)
+	}
+	return mc
 }
 
 // SetCode sets the "code" field.
@@ -43,6 +114,20 @@ func (mc *ModelCreate) SetCurrentCategory(s string) *ModelCreate {
 	return mc
 }
 
+// SetID sets the "id" field.
+func (mc *ModelCreate) SetID(d datasource.UUID) *ModelCreate {
+	mc.mutation.SetID(d)
+	return mc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (mc *ModelCreate) SetNillableID(d *datasource.UUID) *ModelCreate {
+	if d != nil {
+		mc.SetID(*d)
+	}
+	return mc
+}
+
 // Mutation returns the ModelMutation object of the builder.
 func (mc *ModelCreate) Mutation() *ModelMutation {
 	return mc.mutation
@@ -54,6 +139,7 @@ func (mc *ModelCreate) Save(ctx context.Context) (*Model, error) {
 		err  error
 		node *Model
 	)
+	mc.defaults()
 	if len(mc.hooks) == 0 {
 		if err = mc.check(); err != nil {
 			return nil, err
@@ -117,8 +203,51 @@ func (mc *ModelCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (mc *ModelCreate) defaults() {
+	if _, ok := mc.mutation.Version(); !ok {
+		v := model.DefaultVersion
+		mc.mutation.SetVersion(v)
+	}
+	if _, ok := mc.mutation.CreatedBy(); !ok {
+		v := model.DefaultCreatedBy
+		mc.mutation.SetCreatedBy(v)
+	}
+	if _, ok := mc.mutation.CreatedAt(); !ok {
+		v := model.DefaultCreatedAt
+		mc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := mc.mutation.UpdatedBy(); !ok {
+		v := model.DefaultUpdatedBy
+		mc.mutation.SetUpdatedBy(v)
+	}
+	if _, ok := mc.mutation.UpdatedAt(); !ok {
+		v := model.DefaultUpdatedAt
+		mc.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := mc.mutation.ID(); !ok {
+		v := model.DefaultID
+		mc.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (mc *ModelCreate) check() error {
+	if _, ok := mc.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "Model.version"`)}
+	}
+	if _, ok := mc.mutation.CreatedBy(); !ok {
+		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "Model.created_by"`)}
+	}
+	if _, ok := mc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Model.created_at"`)}
+	}
+	if _, ok := mc.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "Model.updated_by"`)}
+	}
+	if _, ok := mc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Model.updated_at"`)}
+	}
 	if _, ok := mc.mutation.Code(); !ok {
 		return &ValidationError{Name: "code", err: errors.New(`ent: missing required field "Model.code"`)}
 	}
@@ -142,8 +271,10 @@ func (mc *ModelCreate) sqlSave(ctx context.Context) (*Model, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -153,11 +284,55 @@ func (mc *ModelCreate) createSpec() (*Model, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: model.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: model.FieldID,
 			},
 		}
 	)
+	if id, ok := mc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := mc.mutation.Version(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: model.FieldVersion,
+		})
+		_node.Version = value
+	}
+	if value, ok := mc.mutation.CreatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: model.FieldCreatedBy,
+		})
+		_node.CreatedBy = value
+	}
+	if value, ok := mc.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: model.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := mc.mutation.UpdatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: model.FieldUpdatedBy,
+		})
+		_node.UpdatedBy = value
+	}
+	if value, ok := mc.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: model.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := mc.mutation.Code(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -207,6 +382,7 @@ func (mcb *ModelCreateBulk) Save(ctx context.Context) ([]*Model, error) {
 	for i := range mcb.builders {
 		func(i int, root context.Context) {
 			builder := mcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ModelMutation)
 				if !ok {
@@ -233,9 +409,9 @@ func (mcb *ModelCreateBulk) Save(ctx context.Context) ([]*Model, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

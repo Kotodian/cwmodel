@@ -14,6 +14,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/firmware"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentFirmwareEffectQuery is the builder for querying EquipmentFirmwareEffect entities.
@@ -132,8 +133,8 @@ func (efeq *EquipmentFirmwareEffectQuery) FirstX(ctx context.Context) *Equipment
 
 // FirstID returns the first EquipmentFirmwareEffect ID from the query.
 // Returns a *NotFoundError when no EquipmentFirmwareEffect ID was found.
-func (efeq *EquipmentFirmwareEffectQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (efeq *EquipmentFirmwareEffectQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = efeq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -145,7 +146,7 @@ func (efeq *EquipmentFirmwareEffectQuery) FirstID(ctx context.Context) (id int, 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (efeq *EquipmentFirmwareEffectQuery) FirstIDX(ctx context.Context) int {
+func (efeq *EquipmentFirmwareEffectQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := efeq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -183,8 +184,8 @@ func (efeq *EquipmentFirmwareEffectQuery) OnlyX(ctx context.Context) *EquipmentF
 // OnlyID is like Only, but returns the only EquipmentFirmwareEffect ID in the query.
 // Returns a *NotSingularError when more than one EquipmentFirmwareEffect ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (efeq *EquipmentFirmwareEffectQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (efeq *EquipmentFirmwareEffectQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = efeq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -200,7 +201,7 @@ func (efeq *EquipmentFirmwareEffectQuery) OnlyID(ctx context.Context) (id int, e
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (efeq *EquipmentFirmwareEffectQuery) OnlyIDX(ctx context.Context) int {
+func (efeq *EquipmentFirmwareEffectQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := efeq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -226,8 +227,8 @@ func (efeq *EquipmentFirmwareEffectQuery) AllX(ctx context.Context) []*Equipment
 }
 
 // IDs executes the query and returns a list of EquipmentFirmwareEffect IDs.
-func (efeq *EquipmentFirmwareEffectQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (efeq *EquipmentFirmwareEffectQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := efeq.Select(equipmentfirmwareeffect.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -235,7 +236,7 @@ func (efeq *EquipmentFirmwareEffectQuery) IDs(ctx context.Context) ([]int, error
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (efeq *EquipmentFirmwareEffectQuery) IDsX(ctx context.Context) []int {
+func (efeq *EquipmentFirmwareEffectQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := efeq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -326,12 +327,12 @@ func (efeq *EquipmentFirmwareEffectQuery) WithFirmware(opts ...func(*FirmwareQue
 // Example:
 //
 //	var v []struct {
-//		RequestID int64 `json:"request_id,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.EquipmentFirmwareEffect.Query().
-//		GroupBy(equipmentfirmwareeffect.FieldRequestID).
+//		GroupBy(equipmentfirmwareeffect.FieldVersion).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (efeq *EquipmentFirmwareEffectQuery) GroupBy(field string, fields ...string) *EquipmentFirmwareEffectGroupBy {
@@ -354,11 +355,11 @@ func (efeq *EquipmentFirmwareEffectQuery) GroupBy(field string, fields ...string
 // Example:
 //
 //	var v []struct {
-//		RequestID int64 `json:"request_id,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //	}
 //
 //	client.EquipmentFirmwareEffect.Query().
-//		Select(equipmentfirmwareeffect.FieldRequestID).
+//		Select(equipmentfirmwareeffect.FieldVersion).
 //		Scan(ctx, &v)
 func (efeq *EquipmentFirmwareEffectQuery) Select(fields ...string) *EquipmentFirmwareEffectSelect {
 	efeq.fields = append(efeq.fields, fields...)
@@ -434,8 +435,8 @@ func (efeq *EquipmentFirmwareEffectQuery) sqlAll(ctx context.Context, hooks ...q
 }
 
 func (efeq *EquipmentFirmwareEffectQuery) loadEquipment(ctx context.Context, query *EquipmentQuery, nodes []*EquipmentFirmwareEffect, init func(*EquipmentFirmwareEffect), assign func(*EquipmentFirmwareEffect, *Equipment)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*EquipmentFirmwareEffect)
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*EquipmentFirmwareEffect)
 	for i := range nodes {
 		if nodes[i].equipment_id == nil {
 			continue
@@ -463,8 +464,8 @@ func (efeq *EquipmentFirmwareEffectQuery) loadEquipment(ctx context.Context, que
 	return nil
 }
 func (efeq *EquipmentFirmwareEffectQuery) loadFirmware(ctx context.Context, query *FirmwareQuery, nodes []*EquipmentFirmwareEffect, init func(*EquipmentFirmwareEffect), assign func(*EquipmentFirmwareEffect, *Firmware)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*EquipmentFirmwareEffect)
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*EquipmentFirmwareEffect)
 	for i := range nodes {
 		if nodes[i].firmware_id == nil {
 			continue
@@ -518,7 +519,7 @@ func (efeq *EquipmentFirmwareEffectQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   equipmentfirmwareeffect.Table,
 			Columns: equipmentfirmwareeffect.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentfirmwareeffect.FieldID,
 			},
 		},

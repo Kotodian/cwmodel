@@ -12,7 +12,7 @@ type Firmware struct {
 	ent.Schema
 }
 
-func (Firmware) Mixins() []ent.Mixin {
+func (Firmware) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}

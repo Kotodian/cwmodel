@@ -13,7 +13,7 @@ type OrderEvent struct {
 	ent.Schema
 }
 
-func (OrderEvent) Mixins() []ent.Mixin {
+func (OrderEvent) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}

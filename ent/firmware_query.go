@@ -14,6 +14,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/firmware"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // FirmwareQuery is the builder for querying Firmware entities.
@@ -108,8 +109,8 @@ func (fq *FirmwareQuery) FirstX(ctx context.Context) *Firmware {
 
 // FirstID returns the first Firmware ID from the query.
 // Returns a *NotFoundError when no Firmware ID was found.
-func (fq *FirmwareQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (fq *FirmwareQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = fq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -121,7 +122,7 @@ func (fq *FirmwareQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (fq *FirmwareQuery) FirstIDX(ctx context.Context) int {
+func (fq *FirmwareQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := fq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -159,8 +160,8 @@ func (fq *FirmwareQuery) OnlyX(ctx context.Context) *Firmware {
 // OnlyID is like Only, but returns the only Firmware ID in the query.
 // Returns a *NotSingularError when more than one Firmware ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (fq *FirmwareQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (fq *FirmwareQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = fq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -176,7 +177,7 @@ func (fq *FirmwareQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (fq *FirmwareQuery) OnlyIDX(ctx context.Context) int {
+func (fq *FirmwareQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := fq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -202,8 +203,8 @@ func (fq *FirmwareQuery) AllX(ctx context.Context) []*Firmware {
 }
 
 // IDs executes the query and returns a list of Firmware IDs.
-func (fq *FirmwareQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (fq *FirmwareQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := fq.Select(firmware.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -211,7 +212,7 @@ func (fq *FirmwareQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (fq *FirmwareQuery) IDsX(ctx context.Context) []int {
+func (fq *FirmwareQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := fq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -290,12 +291,12 @@ func (fq *FirmwareQuery) WithEquipmentFirmwareEffect(opts ...func(*EquipmentFirm
 // Example:
 //
 //	var v []struct {
-//		EquipVersion string `json:"equip_version,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Firmware.Query().
-//		GroupBy(firmware.FieldEquipVersion).
+//		GroupBy(firmware.FieldVersion).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (fq *FirmwareQuery) GroupBy(field string, fields ...string) *FirmwareGroupBy {
@@ -318,11 +319,11 @@ func (fq *FirmwareQuery) GroupBy(field string, fields ...string) *FirmwareGroupB
 // Example:
 //
 //	var v []struct {
-//		EquipVersion string `json:"equip_version,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //	}
 //
 //	client.Firmware.Query().
-//		Select(firmware.FieldEquipVersion).
+//		Select(firmware.FieldVersion).
 //		Scan(ctx, &v)
 func (fq *FirmwareQuery) Select(fields ...string) *FirmwareSelect {
 	fq.fields = append(fq.fields, fields...)
@@ -388,7 +389,7 @@ func (fq *FirmwareQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Fir
 
 func (fq *FirmwareQuery) loadEquipmentFirmwareEffect(ctx context.Context, query *EquipmentFirmwareEffectQuery, nodes []*Firmware, init func(*Firmware), assign func(*Firmware, *EquipmentFirmwareEffect)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Firmware)
+	nodeids := make(map[datasource.UUID]*Firmware)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -444,7 +445,7 @@ func (fq *FirmwareQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   firmware.Table,
 			Columns: firmware.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: firmware.FieldID,
 			},
 		},

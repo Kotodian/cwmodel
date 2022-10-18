@@ -12,6 +12,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/connector"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/evse"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EvseCreate is the builder for creating a Evse entity.
@@ -19,6 +20,76 @@ type EvseCreate struct {
 	config
 	mutation *EvseMutation
 	hooks    []Hook
+}
+
+// SetVersion sets the "version" field.
+func (ec *EvseCreate) SetVersion(i int64) *EvseCreate {
+	ec.mutation.SetVersion(i)
+	return ec
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (ec *EvseCreate) SetNillableVersion(i *int64) *EvseCreate {
+	if i != nil {
+		ec.SetVersion(*i)
+	}
+	return ec
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (ec *EvseCreate) SetCreatedBy(d datasource.UUID) *EvseCreate {
+	ec.mutation.SetCreatedBy(d)
+	return ec
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (ec *EvseCreate) SetNillableCreatedBy(d *datasource.UUID) *EvseCreate {
+	if d != nil {
+		ec.SetCreatedBy(*d)
+	}
+	return ec
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (ec *EvseCreate) SetCreatedAt(i int64) *EvseCreate {
+	ec.mutation.SetCreatedAt(i)
+	return ec
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (ec *EvseCreate) SetNillableCreatedAt(i *int64) *EvseCreate {
+	if i != nil {
+		ec.SetCreatedAt(*i)
+	}
+	return ec
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (ec *EvseCreate) SetUpdatedBy(d datasource.UUID) *EvseCreate {
+	ec.mutation.SetUpdatedBy(d)
+	return ec
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (ec *EvseCreate) SetNillableUpdatedBy(d *datasource.UUID) *EvseCreate {
+	if d != nil {
+		ec.SetUpdatedBy(*d)
+	}
+	return ec
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (ec *EvseCreate) SetUpdatedAt(i int64) *EvseCreate {
+	ec.mutation.SetUpdatedAt(i)
+	return ec
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (ec *EvseCreate) SetNillableUpdatedAt(i *int64) *EvseCreate {
+	if i != nil {
+		ec.SetUpdatedAt(*i)
+	}
+	return ec
 }
 
 // SetSerial sets the "serial" field.
@@ -33,8 +104,22 @@ func (ec *EvseCreate) SetConnectorNumber(i int) *EvseCreate {
 	return ec
 }
 
+// SetID sets the "id" field.
+func (ec *EvseCreate) SetID(d datasource.UUID) *EvseCreate {
+	ec.mutation.SetID(d)
+	return ec
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (ec *EvseCreate) SetNillableID(d *datasource.UUID) *EvseCreate {
+	if d != nil {
+		ec.SetID(*d)
+	}
+	return ec
+}
+
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (ec *EvseCreate) SetEquipmentID(id int) *EvseCreate {
+func (ec *EvseCreate) SetEquipmentID(id datasource.UUID) *EvseCreate {
 	ec.mutation.SetEquipmentID(id)
 	return ec
 }
@@ -45,14 +130,14 @@ func (ec *EvseCreate) SetEquipment(e *Equipment) *EvseCreate {
 }
 
 // AddConnectorIDs adds the "connector" edge to the Connector entity by IDs.
-func (ec *EvseCreate) AddConnectorIDs(ids ...int) *EvseCreate {
+func (ec *EvseCreate) AddConnectorIDs(ids ...datasource.UUID) *EvseCreate {
 	ec.mutation.AddConnectorIDs(ids...)
 	return ec
 }
 
 // AddConnector adds the "connector" edges to the Connector entity.
 func (ec *EvseCreate) AddConnector(c ...*Connector) *EvseCreate {
-	ids := make([]int, len(c))
+	ids := make([]datasource.UUID, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -70,6 +155,7 @@ func (ec *EvseCreate) Save(ctx context.Context) (*Evse, error) {
 		err  error
 		node *Evse
 	)
+	ec.defaults()
 	if len(ec.hooks) == 0 {
 		if err = ec.check(); err != nil {
 			return nil, err
@@ -133,8 +219,51 @@ func (ec *EvseCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ec *EvseCreate) defaults() {
+	if _, ok := ec.mutation.Version(); !ok {
+		v := evse.DefaultVersion
+		ec.mutation.SetVersion(v)
+	}
+	if _, ok := ec.mutation.CreatedBy(); !ok {
+		v := evse.DefaultCreatedBy
+		ec.mutation.SetCreatedBy(v)
+	}
+	if _, ok := ec.mutation.CreatedAt(); !ok {
+		v := evse.DefaultCreatedAt
+		ec.mutation.SetCreatedAt(v)
+	}
+	if _, ok := ec.mutation.UpdatedBy(); !ok {
+		v := evse.DefaultUpdatedBy
+		ec.mutation.SetUpdatedBy(v)
+	}
+	if _, ok := ec.mutation.UpdatedAt(); !ok {
+		v := evse.DefaultUpdatedAt
+		ec.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := ec.mutation.ID(); !ok {
+		v := evse.DefaultID
+		ec.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (ec *EvseCreate) check() error {
+	if _, ok := ec.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "Evse.version"`)}
+	}
+	if _, ok := ec.mutation.CreatedBy(); !ok {
+		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "Evse.created_by"`)}
+	}
+	if _, ok := ec.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Evse.created_at"`)}
+	}
+	if _, ok := ec.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "Evse.updated_by"`)}
+	}
+	if _, ok := ec.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Evse.updated_at"`)}
+	}
 	if _, ok := ec.mutation.Serial(); !ok {
 		return &ValidationError{Name: "serial", err: errors.New(`ent: missing required field "Evse.serial"`)}
 	}
@@ -155,8 +284,10 @@ func (ec *EvseCreate) sqlSave(ctx context.Context) (*Evse, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -166,11 +297,55 @@ func (ec *EvseCreate) createSpec() (*Evse, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: evse.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: evse.FieldID,
 			},
 		}
 	)
+	if id, ok := ec.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := ec.mutation.Version(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: evse.FieldVersion,
+		})
+		_node.Version = value
+	}
+	if value, ok := ec.mutation.CreatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: evse.FieldCreatedBy,
+		})
+		_node.CreatedBy = value
+	}
+	if value, ok := ec.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: evse.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := ec.mutation.UpdatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: evse.FieldUpdatedBy,
+		})
+		_node.UpdatedBy = value
+	}
+	if value, ok := ec.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: evse.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := ec.mutation.Serial(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -196,7 +371,7 @@ func (ec *EvseCreate) createSpec() (*Evse, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -216,7 +391,7 @@ func (ec *EvseCreate) createSpec() (*Evse, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -243,6 +418,7 @@ func (ecb *EvseCreateBulk) Save(ctx context.Context) ([]*Evse, error) {
 	for i := range ecb.builders {
 		func(i int, root context.Context) {
 			builder := ecb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*EvseMutation)
 				if !ok {
@@ -269,9 +445,9 @@ func (ecb *EvseCreateBulk) Save(ctx context.Context) ([]*Evse, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

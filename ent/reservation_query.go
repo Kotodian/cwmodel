@@ -14,6 +14,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/predicate"
 	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // ReservationQuery is the builder for querying Reservation entities.
@@ -132,8 +133,8 @@ func (rq *ReservationQuery) FirstX(ctx context.Context) *Reservation {
 
 // FirstID returns the first Reservation ID from the query.
 // Returns a *NotFoundError when no Reservation ID was found.
-func (rq *ReservationQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (rq *ReservationQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = rq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -145,7 +146,7 @@ func (rq *ReservationQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (rq *ReservationQuery) FirstIDX(ctx context.Context) int {
+func (rq *ReservationQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := rq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -183,8 +184,8 @@ func (rq *ReservationQuery) OnlyX(ctx context.Context) *Reservation {
 // OnlyID is like Only, but returns the only Reservation ID in the query.
 // Returns a *NotSingularError when more than one Reservation ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (rq *ReservationQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (rq *ReservationQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = rq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -200,7 +201,7 @@ func (rq *ReservationQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (rq *ReservationQuery) OnlyIDX(ctx context.Context) int {
+func (rq *ReservationQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := rq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -226,8 +227,8 @@ func (rq *ReservationQuery) AllX(ctx context.Context) []*Reservation {
 }
 
 // IDs executes the query and returns a list of Reservation IDs.
-func (rq *ReservationQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (rq *ReservationQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := rq.Select(reservation.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -235,7 +236,7 @@ func (rq *ReservationQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (rq *ReservationQuery) IDsX(ctx context.Context) []int {
+func (rq *ReservationQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := rq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -326,12 +327,12 @@ func (rq *ReservationQuery) WithConnector(opts ...func(*ConnectorQuery)) *Reserv
 // Example:
 //
 //	var v []struct {
-//		ReservationID int64 `json:"reservation_id,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Reservation.Query().
-//		GroupBy(reservation.FieldReservationID).
+//		GroupBy(reservation.FieldVersion).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (rq *ReservationQuery) GroupBy(field string, fields ...string) *ReservationGroupBy {
@@ -354,11 +355,11 @@ func (rq *ReservationQuery) GroupBy(field string, fields ...string) *Reservation
 // Example:
 //
 //	var v []struct {
-//		ReservationID int64 `json:"reservation_id,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //	}
 //
 //	client.Reservation.Query().
-//		Select(reservation.FieldReservationID).
+//		Select(reservation.FieldVersion).
 //		Scan(ctx, &v)
 func (rq *ReservationQuery) Select(fields ...string) *ReservationSelect {
 	rq.fields = append(rq.fields, fields...)
@@ -434,8 +435,8 @@ func (rq *ReservationQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 }
 
 func (rq *ReservationQuery) loadEquipment(ctx context.Context, query *EquipmentQuery, nodes []*Reservation, init func(*Reservation), assign func(*Reservation, *Equipment)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Reservation)
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*Reservation)
 	for i := range nodes {
 		if nodes[i].equipment_id == nil {
 			continue
@@ -463,8 +464,8 @@ func (rq *ReservationQuery) loadEquipment(ctx context.Context, query *EquipmentQ
 	return nil
 }
 func (rq *ReservationQuery) loadConnector(ctx context.Context, query *ConnectorQuery, nodes []*Reservation, init func(*Reservation), assign func(*Reservation, *Connector)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Reservation)
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*Reservation)
 	for i := range nodes {
 		if nodes[i].connector_id == nil {
 			continue
@@ -518,7 +519,7 @@ func (rq *ReservationQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   reservation.Table,
 			Columns: reservation.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: reservation.FieldID,
 			},
 		},

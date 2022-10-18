@@ -23,6 +23,76 @@ type OrderInfoCreate struct {
 	hooks    []Hook
 }
 
+// SetVersion sets the "version" field.
+func (oic *OrderInfoCreate) SetVersion(i int64) *OrderInfoCreate {
+	oic.mutation.SetVersion(i)
+	return oic
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillableVersion(i *int64) *OrderInfoCreate {
+	if i != nil {
+		oic.SetVersion(*i)
+	}
+	return oic
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (oic *OrderInfoCreate) SetCreatedBy(d datasource.UUID) *OrderInfoCreate {
+	oic.mutation.SetCreatedBy(d)
+	return oic
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillableCreatedBy(d *datasource.UUID) *OrderInfoCreate {
+	if d != nil {
+		oic.SetCreatedBy(*d)
+	}
+	return oic
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (oic *OrderInfoCreate) SetCreatedAt(i int64) *OrderInfoCreate {
+	oic.mutation.SetCreatedAt(i)
+	return oic
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillableCreatedAt(i *int64) *OrderInfoCreate {
+	if i != nil {
+		oic.SetCreatedAt(*i)
+	}
+	return oic
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (oic *OrderInfoCreate) SetUpdatedBy(d datasource.UUID) *OrderInfoCreate {
+	oic.mutation.SetUpdatedBy(d)
+	return oic
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillableUpdatedBy(d *datasource.UUID) *OrderInfoCreate {
+	if d != nil {
+		oic.SetUpdatedBy(*d)
+	}
+	return oic
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (oic *OrderInfoCreate) SetUpdatedAt(i int64) *OrderInfoCreate {
+	oic.mutation.SetUpdatedAt(i)
+	return oic
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillableUpdatedAt(i *int64) *OrderInfoCreate {
+	if i != nil {
+		oic.SetUpdatedAt(*i)
+	}
+	return oic
+}
+
 // SetRemoteStartID sets the "remote_start_id" field.
 func (oic *OrderInfoCreate) SetRemoteStartID(i int64) *OrderInfoCreate {
 	oic.mutation.SetRemoteStartID(i)
@@ -307,14 +377,28 @@ func (oic *OrderInfoCreate) SetNillableOperatorID(d *datasource.UUID) *OrderInfo
 	return oic
 }
 
+// SetID sets the "id" field.
+func (oic *OrderInfoCreate) SetID(d datasource.UUID) *OrderInfoCreate {
+	oic.mutation.SetID(d)
+	return oic
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillableID(d *datasource.UUID) *OrderInfoCreate {
+	if d != nil {
+		oic.SetID(*d)
+	}
+	return oic
+}
+
 // SetConnectorID sets the "connector" edge to the Connector entity by ID.
-func (oic *OrderInfoCreate) SetConnectorID(id int) *OrderInfoCreate {
+func (oic *OrderInfoCreate) SetConnectorID(id datasource.UUID) *OrderInfoCreate {
 	oic.mutation.SetConnectorID(id)
 	return oic
 }
 
 // SetNillableConnectorID sets the "connector" edge to the Connector entity by ID if the given value is not nil.
-func (oic *OrderInfoCreate) SetNillableConnectorID(id *int) *OrderInfoCreate {
+func (oic *OrderInfoCreate) SetNillableConnectorID(id *datasource.UUID) *OrderInfoCreate {
 	if id != nil {
 		oic = oic.SetConnectorID(*id)
 	}
@@ -327,13 +411,13 @@ func (oic *OrderInfoCreate) SetConnector(c *Connector) *OrderInfoCreate {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (oic *OrderInfoCreate) SetEquipmentID(id int) *OrderInfoCreate {
+func (oic *OrderInfoCreate) SetEquipmentID(id datasource.UUID) *OrderInfoCreate {
 	oic.mutation.SetEquipmentID(id)
 	return oic
 }
 
 // SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (oic *OrderInfoCreate) SetNillableEquipmentID(id *int) *OrderInfoCreate {
+func (oic *OrderInfoCreate) SetNillableEquipmentID(id *datasource.UUID) *OrderInfoCreate {
 	if id != nil {
 		oic = oic.SetEquipmentID(*id)
 	}
@@ -346,14 +430,14 @@ func (oic *OrderInfoCreate) SetEquipment(e *Equipment) *OrderInfoCreate {
 }
 
 // AddOrderEventIDs adds the "order_event" edge to the OrderEvent entity by IDs.
-func (oic *OrderInfoCreate) AddOrderEventIDs(ids ...int) *OrderInfoCreate {
+func (oic *OrderInfoCreate) AddOrderEventIDs(ids ...datasource.UUID) *OrderInfoCreate {
 	oic.mutation.AddOrderEventIDs(ids...)
 	return oic
 }
 
 // AddOrderEvent adds the "order_event" edges to the OrderEvent entity.
 func (oic *OrderInfoCreate) AddOrderEvent(o ...*OrderEvent) *OrderInfoCreate {
-	ids := make([]int, len(o))
+	ids := make([]datasource.UUID, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
@@ -371,6 +455,7 @@ func (oic *OrderInfoCreate) Save(ctx context.Context) (*OrderInfo, error) {
 		err  error
 		node *OrderInfo
 	)
+	oic.defaults()
 	if len(oic.hooks) == 0 {
 		if err = oic.check(); err != nil {
 			return nil, err
@@ -434,8 +519,51 @@ func (oic *OrderInfoCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (oic *OrderInfoCreate) defaults() {
+	if _, ok := oic.mutation.Version(); !ok {
+		v := orderinfo.DefaultVersion
+		oic.mutation.SetVersion(v)
+	}
+	if _, ok := oic.mutation.CreatedBy(); !ok {
+		v := orderinfo.DefaultCreatedBy
+		oic.mutation.SetCreatedBy(v)
+	}
+	if _, ok := oic.mutation.CreatedAt(); !ok {
+		v := orderinfo.DefaultCreatedAt
+		oic.mutation.SetCreatedAt(v)
+	}
+	if _, ok := oic.mutation.UpdatedBy(); !ok {
+		v := orderinfo.DefaultUpdatedBy
+		oic.mutation.SetUpdatedBy(v)
+	}
+	if _, ok := oic.mutation.UpdatedAt(); !ok {
+		v := orderinfo.DefaultUpdatedAt
+		oic.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := oic.mutation.ID(); !ok {
+		v := orderinfo.DefaultID
+		oic.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (oic *OrderInfoCreate) check() error {
+	if _, ok := oic.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "OrderInfo.version"`)}
+	}
+	if _, ok := oic.mutation.CreatedBy(); !ok {
+		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "OrderInfo.created_by"`)}
+	}
+	if _, ok := oic.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "OrderInfo.created_at"`)}
+	}
+	if _, ok := oic.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "OrderInfo.updated_by"`)}
+	}
+	if _, ok := oic.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "OrderInfo.updated_at"`)}
+	}
 	if _, ok := oic.mutation.TransactionID(); !ok {
 		return &ValidationError{Name: "transaction_id", err: errors.New(`ent: missing required field "OrderInfo.transaction_id"`)}
 	}
@@ -456,8 +584,10 @@ func (oic *OrderInfoCreate) sqlSave(ctx context.Context) (*OrderInfo, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -467,11 +597,55 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: orderinfo.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: orderinfo.FieldID,
 			},
 		}
 	)
+	if id, ok := oic.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := oic.mutation.Version(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: orderinfo.FieldVersion,
+		})
+		_node.Version = value
+	}
+	if value, ok := oic.mutation.CreatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: orderinfo.FieldCreatedBy,
+		})
+		_node.CreatedBy = value
+	}
+	if value, ok := oic.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: orderinfo.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := oic.mutation.UpdatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: orderinfo.FieldUpdatedBy,
+		})
+		_node.UpdatedBy = value
+	}
+	if value, ok := oic.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: orderinfo.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := oic.mutation.RemoteStartID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
@@ -657,7 +831,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -677,7 +851,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -697,7 +871,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderevent.FieldID,
 				},
 			},
@@ -724,6 +898,7 @@ func (oicb *OrderInfoCreateBulk) Save(ctx context.Context) ([]*OrderInfo, error)
 	for i := range oicb.builders {
 		func(i int, root context.Context) {
 			builder := oicb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*OrderInfoMutation)
 				if !ok {
@@ -750,9 +925,9 @@ func (oicb *OrderInfoCreateBulk) Save(ctx context.Context) ([]*OrderInfo, error)
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

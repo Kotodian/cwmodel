@@ -21,6 +21,76 @@ type EquipmentInfoCreate struct {
 	hooks    []Hook
 }
 
+// SetVersion sets the "version" field.
+func (eic *EquipmentInfoCreate) SetVersion(i int64) *EquipmentInfoCreate {
+	eic.mutation.SetVersion(i)
+	return eic
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (eic *EquipmentInfoCreate) SetNillableVersion(i *int64) *EquipmentInfoCreate {
+	if i != nil {
+		eic.SetVersion(*i)
+	}
+	return eic
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (eic *EquipmentInfoCreate) SetCreatedBy(d datasource.UUID) *EquipmentInfoCreate {
+	eic.mutation.SetCreatedBy(d)
+	return eic
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (eic *EquipmentInfoCreate) SetNillableCreatedBy(d *datasource.UUID) *EquipmentInfoCreate {
+	if d != nil {
+		eic.SetCreatedBy(*d)
+	}
+	return eic
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (eic *EquipmentInfoCreate) SetCreatedAt(i int64) *EquipmentInfoCreate {
+	eic.mutation.SetCreatedAt(i)
+	return eic
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (eic *EquipmentInfoCreate) SetNillableCreatedAt(i *int64) *EquipmentInfoCreate {
+	if i != nil {
+		eic.SetCreatedAt(*i)
+	}
+	return eic
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (eic *EquipmentInfoCreate) SetUpdatedBy(d datasource.UUID) *EquipmentInfoCreate {
+	eic.mutation.SetUpdatedBy(d)
+	return eic
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (eic *EquipmentInfoCreate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentInfoCreate {
+	if d != nil {
+		eic.SetUpdatedBy(*d)
+	}
+	return eic
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (eic *EquipmentInfoCreate) SetUpdatedAt(i int64) *EquipmentInfoCreate {
+	eic.mutation.SetUpdatedAt(i)
+	return eic
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (eic *EquipmentInfoCreate) SetNillableUpdatedAt(i *int64) *EquipmentInfoCreate {
+	if i != nil {
+		eic.SetUpdatedAt(*i)
+	}
+	return eic
+}
+
 // SetEquipmentSn sets the "equipment_sn" field.
 func (eic *EquipmentInfoCreate) SetEquipmentSn(s string) *EquipmentInfoCreate {
 	eic.mutation.SetEquipmentSn(s)
@@ -81,8 +151,22 @@ func (eic *EquipmentInfoCreate) SetRemoteAddress(i int64) *EquipmentInfoCreate {
 	return eic
 }
 
+// SetID sets the "id" field.
+func (eic *EquipmentInfoCreate) SetID(d datasource.UUID) *EquipmentInfoCreate {
+	eic.mutation.SetID(d)
+	return eic
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (eic *EquipmentInfoCreate) SetNillableID(d *datasource.UUID) *EquipmentInfoCreate {
+	if d != nil {
+		eic.SetID(*d)
+	}
+	return eic
+}
+
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eic *EquipmentInfoCreate) SetEquipmentID(id int) *EquipmentInfoCreate {
+func (eic *EquipmentInfoCreate) SetEquipmentID(id datasource.UUID) *EquipmentInfoCreate {
 	eic.mutation.SetEquipmentID(id)
 	return eic
 }
@@ -103,6 +187,7 @@ func (eic *EquipmentInfoCreate) Save(ctx context.Context) (*EquipmentInfo, error
 		err  error
 		node *EquipmentInfo
 	)
+	eic.defaults()
 	if len(eic.hooks) == 0 {
 		if err = eic.check(); err != nil {
 			return nil, err
@@ -166,8 +251,51 @@ func (eic *EquipmentInfoCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (eic *EquipmentInfoCreate) defaults() {
+	if _, ok := eic.mutation.Version(); !ok {
+		v := equipmentinfo.DefaultVersion
+		eic.mutation.SetVersion(v)
+	}
+	if _, ok := eic.mutation.CreatedBy(); !ok {
+		v := equipmentinfo.DefaultCreatedBy
+		eic.mutation.SetCreatedBy(v)
+	}
+	if _, ok := eic.mutation.CreatedAt(); !ok {
+		v := equipmentinfo.DefaultCreatedAt
+		eic.mutation.SetCreatedAt(v)
+	}
+	if _, ok := eic.mutation.UpdatedBy(); !ok {
+		v := equipmentinfo.DefaultUpdatedBy
+		eic.mutation.SetUpdatedBy(v)
+	}
+	if _, ok := eic.mutation.UpdatedAt(); !ok {
+		v := equipmentinfo.DefaultUpdatedAt
+		eic.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := eic.mutation.ID(); !ok {
+		v := equipmentinfo.DefaultID
+		eic.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (eic *EquipmentInfoCreate) check() error {
+	if _, ok := eic.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "EquipmentInfo.version"`)}
+	}
+	if _, ok := eic.mutation.CreatedBy(); !ok {
+		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "EquipmentInfo.created_by"`)}
+	}
+	if _, ok := eic.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "EquipmentInfo.created_at"`)}
+	}
+	if _, ok := eic.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "EquipmentInfo.updated_by"`)}
+	}
+	if _, ok := eic.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "EquipmentInfo.updated_at"`)}
+	}
 	if _, ok := eic.mutation.EquipmentSn(); !ok {
 		return &ValidationError{Name: "equipment_sn", err: errors.New(`ent: missing required field "EquipmentInfo.equipment_sn"`)}
 	}
@@ -212,8 +340,10 @@ func (eic *EquipmentInfoCreate) sqlSave(ctx context.Context) (*EquipmentInfo, er
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -223,11 +353,55 @@ func (eic *EquipmentInfoCreate) createSpec() (*EquipmentInfo, *sqlgraph.CreateSp
 		_spec = &sqlgraph.CreateSpec{
 			Table: equipmentinfo.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentinfo.FieldID,
 			},
 		}
 	)
+	if id, ok := eic.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := eic.mutation.Version(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldVersion,
+		})
+		_node.Version = value
+	}
+	if value, ok := eic.mutation.CreatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentinfo.FieldCreatedBy,
+		})
+		_node.CreatedBy = value
+	}
+	if value, ok := eic.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := eic.mutation.UpdatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentinfo.FieldUpdatedBy,
+		})
+		_node.UpdatedBy = value
+	}
+	if value, ok := eic.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := eic.mutation.EquipmentSn(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -317,7 +491,7 @@ func (eic *EquipmentInfoCreate) createSpec() (*EquipmentInfo, *sqlgraph.CreateSp
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -345,6 +519,7 @@ func (eicb *EquipmentInfoCreateBulk) Save(ctx context.Context) ([]*EquipmentInfo
 	for i := range eicb.builders {
 		func(i int, root context.Context) {
 			builder := eicb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*EquipmentInfoMutation)
 				if !ok {
@@ -371,9 +546,9 @@ func (eicb *EquipmentInfoCreateBulk) Save(ctx context.Context) ([]*EquipmentInfo
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

@@ -14,6 +14,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/predicate"
 	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // ReservationUpdate is the builder for updating Reservation entities.
@@ -26,6 +27,69 @@ type ReservationUpdate struct {
 // Where appends a list predicates to the ReservationUpdate builder.
 func (ru *ReservationUpdate) Where(ps ...predicate.Reservation) *ReservationUpdate {
 	ru.mutation.Where(ps...)
+	return ru
+}
+
+// SetVersion sets the "version" field.
+func (ru *ReservationUpdate) SetVersion(i int64) *ReservationUpdate {
+	ru.mutation.ResetVersion()
+	ru.mutation.SetVersion(i)
+	return ru
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (ru *ReservationUpdate) SetNillableVersion(i *int64) *ReservationUpdate {
+	if i != nil {
+		ru.SetVersion(*i)
+	}
+	return ru
+}
+
+// AddVersion adds i to the "version" field.
+func (ru *ReservationUpdate) AddVersion(i int64) *ReservationUpdate {
+	ru.mutation.AddVersion(i)
+	return ru
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (ru *ReservationUpdate) SetUpdatedBy(d datasource.UUID) *ReservationUpdate {
+	ru.mutation.ResetUpdatedBy()
+	ru.mutation.SetUpdatedBy(d)
+	return ru
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (ru *ReservationUpdate) SetNillableUpdatedBy(d *datasource.UUID) *ReservationUpdate {
+	if d != nil {
+		ru.SetUpdatedBy(*d)
+	}
+	return ru
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (ru *ReservationUpdate) AddUpdatedBy(d datasource.UUID) *ReservationUpdate {
+	ru.mutation.AddUpdatedBy(d)
+	return ru
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (ru *ReservationUpdate) SetUpdatedAt(i int64) *ReservationUpdate {
+	ru.mutation.ResetUpdatedAt()
+	ru.mutation.SetUpdatedAt(i)
+	return ru
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (ru *ReservationUpdate) SetNillableUpdatedAt(i *int64) *ReservationUpdate {
+	if i != nil {
+		ru.SetUpdatedAt(*i)
+	}
+	return ru
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (ru *ReservationUpdate) AddUpdatedAt(i int64) *ReservationUpdate {
+	ru.mutation.AddUpdatedAt(i)
 	return ru
 }
 
@@ -128,13 +192,13 @@ func (ru *ReservationUpdate) AddState(i int) *ReservationUpdate {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (ru *ReservationUpdate) SetEquipmentID(id int) *ReservationUpdate {
+func (ru *ReservationUpdate) SetEquipmentID(id datasource.UUID) *ReservationUpdate {
 	ru.mutation.SetEquipmentID(id)
 	return ru
 }
 
 // SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (ru *ReservationUpdate) SetNillableEquipmentID(id *int) *ReservationUpdate {
+func (ru *ReservationUpdate) SetNillableEquipmentID(id *datasource.UUID) *ReservationUpdate {
 	if id != nil {
 		ru = ru.SetEquipmentID(*id)
 	}
@@ -147,13 +211,13 @@ func (ru *ReservationUpdate) SetEquipment(e *Equipment) *ReservationUpdate {
 }
 
 // SetConnectorID sets the "connector" edge to the Connector entity by ID.
-func (ru *ReservationUpdate) SetConnectorID(id int) *ReservationUpdate {
+func (ru *ReservationUpdate) SetConnectorID(id datasource.UUID) *ReservationUpdate {
 	ru.mutation.SetConnectorID(id)
 	return ru
 }
 
 // SetNillableConnectorID sets the "connector" edge to the Connector entity by ID if the given value is not nil.
-func (ru *ReservationUpdate) SetNillableConnectorID(id *int) *ReservationUpdate {
+func (ru *ReservationUpdate) SetNillableConnectorID(id *datasource.UUID) *ReservationUpdate {
 	if id != nil {
 		ru = ru.SetConnectorID(*id)
 	}
@@ -242,7 +306,7 @@ func (ru *ReservationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   reservation.Table,
 			Columns: reservation.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: reservation.FieldID,
 			},
 		},
@@ -253,6 +317,48 @@ func (ru *ReservationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := ru.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: reservation.FieldVersion,
+		})
+	}
+	if value, ok := ru.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: reservation.FieldVersion,
+		})
+	}
+	if value, ok := ru.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: reservation.FieldUpdatedBy,
+		})
+	}
+	if value, ok := ru.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: reservation.FieldUpdatedBy,
+		})
+	}
+	if value, ok := ru.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: reservation.FieldUpdatedAt,
+		})
+	}
+	if value, ok := ru.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: reservation.FieldUpdatedAt,
+		})
 	}
 	if value, ok := ru.mutation.ReservationID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -352,7 +458,7 @@ func (ru *ReservationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -368,7 +474,7 @@ func (ru *ReservationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -387,7 +493,7 @@ func (ru *ReservationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -403,7 +509,7 @@ func (ru *ReservationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -430,6 +536,69 @@ type ReservationUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *ReservationMutation
+}
+
+// SetVersion sets the "version" field.
+func (ruo *ReservationUpdateOne) SetVersion(i int64) *ReservationUpdateOne {
+	ruo.mutation.ResetVersion()
+	ruo.mutation.SetVersion(i)
+	return ruo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (ruo *ReservationUpdateOne) SetNillableVersion(i *int64) *ReservationUpdateOne {
+	if i != nil {
+		ruo.SetVersion(*i)
+	}
+	return ruo
+}
+
+// AddVersion adds i to the "version" field.
+func (ruo *ReservationUpdateOne) AddVersion(i int64) *ReservationUpdateOne {
+	ruo.mutation.AddVersion(i)
+	return ruo
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (ruo *ReservationUpdateOne) SetUpdatedBy(d datasource.UUID) *ReservationUpdateOne {
+	ruo.mutation.ResetUpdatedBy()
+	ruo.mutation.SetUpdatedBy(d)
+	return ruo
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (ruo *ReservationUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *ReservationUpdateOne {
+	if d != nil {
+		ruo.SetUpdatedBy(*d)
+	}
+	return ruo
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (ruo *ReservationUpdateOne) AddUpdatedBy(d datasource.UUID) *ReservationUpdateOne {
+	ruo.mutation.AddUpdatedBy(d)
+	return ruo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (ruo *ReservationUpdateOne) SetUpdatedAt(i int64) *ReservationUpdateOne {
+	ruo.mutation.ResetUpdatedAt()
+	ruo.mutation.SetUpdatedAt(i)
+	return ruo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (ruo *ReservationUpdateOne) SetNillableUpdatedAt(i *int64) *ReservationUpdateOne {
+	if i != nil {
+		ruo.SetUpdatedAt(*i)
+	}
+	return ruo
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (ruo *ReservationUpdateOne) AddUpdatedAt(i int64) *ReservationUpdateOne {
+	ruo.mutation.AddUpdatedAt(i)
+	return ruo
 }
 
 // SetReservationID sets the "reservation_id" field.
@@ -531,13 +700,13 @@ func (ruo *ReservationUpdateOne) AddState(i int) *ReservationUpdateOne {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (ruo *ReservationUpdateOne) SetEquipmentID(id int) *ReservationUpdateOne {
+func (ruo *ReservationUpdateOne) SetEquipmentID(id datasource.UUID) *ReservationUpdateOne {
 	ruo.mutation.SetEquipmentID(id)
 	return ruo
 }
 
 // SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (ruo *ReservationUpdateOne) SetNillableEquipmentID(id *int) *ReservationUpdateOne {
+func (ruo *ReservationUpdateOne) SetNillableEquipmentID(id *datasource.UUID) *ReservationUpdateOne {
 	if id != nil {
 		ruo = ruo.SetEquipmentID(*id)
 	}
@@ -550,13 +719,13 @@ func (ruo *ReservationUpdateOne) SetEquipment(e *Equipment) *ReservationUpdateOn
 }
 
 // SetConnectorID sets the "connector" edge to the Connector entity by ID.
-func (ruo *ReservationUpdateOne) SetConnectorID(id int) *ReservationUpdateOne {
+func (ruo *ReservationUpdateOne) SetConnectorID(id datasource.UUID) *ReservationUpdateOne {
 	ruo.mutation.SetConnectorID(id)
 	return ruo
 }
 
 // SetNillableConnectorID sets the "connector" edge to the Connector entity by ID if the given value is not nil.
-func (ruo *ReservationUpdateOne) SetNillableConnectorID(id *int) *ReservationUpdateOne {
+func (ruo *ReservationUpdateOne) SetNillableConnectorID(id *datasource.UUID) *ReservationUpdateOne {
 	if id != nil {
 		ruo = ruo.SetConnectorID(*id)
 	}
@@ -658,7 +827,7 @@ func (ruo *ReservationUpdateOne) sqlSave(ctx context.Context) (_node *Reservatio
 			Table:   reservation.Table,
 			Columns: reservation.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: reservation.FieldID,
 			},
 		},
@@ -686,6 +855,48 @@ func (ruo *ReservationUpdateOne) sqlSave(ctx context.Context) (_node *Reservatio
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := ruo.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: reservation.FieldVersion,
+		})
+	}
+	if value, ok := ruo.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: reservation.FieldVersion,
+		})
+	}
+	if value, ok := ruo.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: reservation.FieldUpdatedBy,
+		})
+	}
+	if value, ok := ruo.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: reservation.FieldUpdatedBy,
+		})
+	}
+	if value, ok := ruo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: reservation.FieldUpdatedAt,
+		})
+	}
+	if value, ok := ruo.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: reservation.FieldUpdatedAt,
+		})
 	}
 	if value, ok := ruo.mutation.ReservationID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -785,7 +996,7 @@ func (ruo *ReservationUpdateOne) sqlSave(ctx context.Context) (_node *Reservatio
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -801,7 +1012,7 @@ func (ruo *ReservationUpdateOne) sqlSave(ctx context.Context) (_node *Reservatio
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -820,7 +1031,7 @@ func (ruo *ReservationUpdateOne) sqlSave(ctx context.Context) (_node *Reservatio
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -836,7 +1047,7 @@ func (ruo *ReservationUpdateOne) sqlSave(ctx context.Context) (_node *Reservatio
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},

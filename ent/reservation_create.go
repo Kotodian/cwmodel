@@ -12,6 +12,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/connector"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // ReservationCreate is the builder for creating a Reservation entity.
@@ -19,6 +20,76 @@ type ReservationCreate struct {
 	config
 	mutation *ReservationMutation
 	hooks    []Hook
+}
+
+// SetVersion sets the "version" field.
+func (rc *ReservationCreate) SetVersion(i int64) *ReservationCreate {
+	rc.mutation.SetVersion(i)
+	return rc
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (rc *ReservationCreate) SetNillableVersion(i *int64) *ReservationCreate {
+	if i != nil {
+		rc.SetVersion(*i)
+	}
+	return rc
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (rc *ReservationCreate) SetCreatedBy(d datasource.UUID) *ReservationCreate {
+	rc.mutation.SetCreatedBy(d)
+	return rc
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (rc *ReservationCreate) SetNillableCreatedBy(d *datasource.UUID) *ReservationCreate {
+	if d != nil {
+		rc.SetCreatedBy(*d)
+	}
+	return rc
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (rc *ReservationCreate) SetCreatedAt(i int64) *ReservationCreate {
+	rc.mutation.SetCreatedAt(i)
+	return rc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (rc *ReservationCreate) SetNillableCreatedAt(i *int64) *ReservationCreate {
+	if i != nil {
+		rc.SetCreatedAt(*i)
+	}
+	return rc
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (rc *ReservationCreate) SetUpdatedBy(d datasource.UUID) *ReservationCreate {
+	rc.mutation.SetUpdatedBy(d)
+	return rc
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (rc *ReservationCreate) SetNillableUpdatedBy(d *datasource.UUID) *ReservationCreate {
+	if d != nil {
+		rc.SetUpdatedBy(*d)
+	}
+	return rc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (rc *ReservationCreate) SetUpdatedAt(i int64) *ReservationCreate {
+	rc.mutation.SetUpdatedAt(i)
+	return rc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (rc *ReservationCreate) SetNillableUpdatedAt(i *int64) *ReservationCreate {
+	if i != nil {
+		rc.SetUpdatedAt(*i)
+	}
+	return rc
 }
 
 // SetReservationID sets the "reservation_id" field.
@@ -79,14 +150,28 @@ func (rc *ReservationCreate) SetState(i int) *ReservationCreate {
 	return rc
 }
 
+// SetID sets the "id" field.
+func (rc *ReservationCreate) SetID(d datasource.UUID) *ReservationCreate {
+	rc.mutation.SetID(d)
+	return rc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (rc *ReservationCreate) SetNillableID(d *datasource.UUID) *ReservationCreate {
+	if d != nil {
+		rc.SetID(*d)
+	}
+	return rc
+}
+
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (rc *ReservationCreate) SetEquipmentID(id int) *ReservationCreate {
+func (rc *ReservationCreate) SetEquipmentID(id datasource.UUID) *ReservationCreate {
 	rc.mutation.SetEquipmentID(id)
 	return rc
 }
 
 // SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (rc *ReservationCreate) SetNillableEquipmentID(id *int) *ReservationCreate {
+func (rc *ReservationCreate) SetNillableEquipmentID(id *datasource.UUID) *ReservationCreate {
 	if id != nil {
 		rc = rc.SetEquipmentID(*id)
 	}
@@ -99,13 +184,13 @@ func (rc *ReservationCreate) SetEquipment(e *Equipment) *ReservationCreate {
 }
 
 // SetConnectorID sets the "connector" edge to the Connector entity by ID.
-func (rc *ReservationCreate) SetConnectorID(id int) *ReservationCreate {
+func (rc *ReservationCreate) SetConnectorID(id datasource.UUID) *ReservationCreate {
 	rc.mutation.SetConnectorID(id)
 	return rc
 }
 
 // SetNillableConnectorID sets the "connector" edge to the Connector entity by ID if the given value is not nil.
-func (rc *ReservationCreate) SetNillableConnectorID(id *int) *ReservationCreate {
+func (rc *ReservationCreate) SetNillableConnectorID(id *datasource.UUID) *ReservationCreate {
 	if id != nil {
 		rc = rc.SetConnectorID(*id)
 	}
@@ -128,6 +213,7 @@ func (rc *ReservationCreate) Save(ctx context.Context) (*Reservation, error) {
 		err  error
 		node *Reservation
 	)
+	rc.defaults()
 	if len(rc.hooks) == 0 {
 		if err = rc.check(); err != nil {
 			return nil, err
@@ -191,8 +277,51 @@ func (rc *ReservationCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (rc *ReservationCreate) defaults() {
+	if _, ok := rc.mutation.Version(); !ok {
+		v := reservation.DefaultVersion
+		rc.mutation.SetVersion(v)
+	}
+	if _, ok := rc.mutation.CreatedBy(); !ok {
+		v := reservation.DefaultCreatedBy
+		rc.mutation.SetCreatedBy(v)
+	}
+	if _, ok := rc.mutation.CreatedAt(); !ok {
+		v := reservation.DefaultCreatedAt
+		rc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := rc.mutation.UpdatedBy(); !ok {
+		v := reservation.DefaultUpdatedBy
+		rc.mutation.SetUpdatedBy(v)
+	}
+	if _, ok := rc.mutation.UpdatedAt(); !ok {
+		v := reservation.DefaultUpdatedAt
+		rc.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := rc.mutation.ID(); !ok {
+		v := reservation.DefaultID
+		rc.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (rc *ReservationCreate) check() error {
+	if _, ok := rc.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "Reservation.version"`)}
+	}
+	if _, ok := rc.mutation.CreatedBy(); !ok {
+		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "Reservation.created_by"`)}
+	}
+	if _, ok := rc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Reservation.created_at"`)}
+	}
+	if _, ok := rc.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "Reservation.updated_by"`)}
+	}
+	if _, ok := rc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Reservation.updated_at"`)}
+	}
 	if _, ok := rc.mutation.ReservationID(); !ok {
 		return &ValidationError{Name: "reservation_id", err: errors.New(`ent: missing required field "Reservation.reservation_id"`)}
 	}
@@ -219,8 +348,10 @@ func (rc *ReservationCreate) sqlSave(ctx context.Context) (*Reservation, error) 
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -230,11 +361,55 @@ func (rc *ReservationCreate) createSpec() (*Reservation, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: reservation.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: reservation.FieldID,
 			},
 		}
 	)
+	if id, ok := rc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := rc.mutation.Version(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: reservation.FieldVersion,
+		})
+		_node.Version = value
+	}
+	if value, ok := rc.mutation.CreatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: reservation.FieldCreatedBy,
+		})
+		_node.CreatedBy = value
+	}
+	if value, ok := rc.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: reservation.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := rc.mutation.UpdatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: reservation.FieldUpdatedBy,
+		})
+		_node.UpdatedBy = value
+	}
+	if value, ok := rc.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: reservation.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := rc.mutation.ReservationID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
@@ -300,7 +475,7 @@ func (rc *ReservationCreate) createSpec() (*Reservation, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -320,7 +495,7 @@ func (rc *ReservationCreate) createSpec() (*Reservation, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -348,6 +523,7 @@ func (rcb *ReservationCreateBulk) Save(ctx context.Context) ([]*Reservation, err
 	for i := range rcb.builders {
 		func(i int, root context.Context) {
 			builder := rcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ReservationMutation)
 				if !ok {
@@ -374,9 +550,9 @@ func (rcb *ReservationCreateBulk) Save(ctx context.Context) ([]*Reservation, err
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

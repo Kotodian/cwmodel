@@ -21,6 +21,76 @@ type SmartChargingEventCreate struct {
 	hooks    []Hook
 }
 
+// SetVersion sets the "version" field.
+func (scec *SmartChargingEventCreate) SetVersion(i int64) *SmartChargingEventCreate {
+	scec.mutation.SetVersion(i)
+	return scec
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (scec *SmartChargingEventCreate) SetNillableVersion(i *int64) *SmartChargingEventCreate {
+	if i != nil {
+		scec.SetVersion(*i)
+	}
+	return scec
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (scec *SmartChargingEventCreate) SetCreatedBy(d datasource.UUID) *SmartChargingEventCreate {
+	scec.mutation.SetCreatedBy(d)
+	return scec
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (scec *SmartChargingEventCreate) SetNillableCreatedBy(d *datasource.UUID) *SmartChargingEventCreate {
+	if d != nil {
+		scec.SetCreatedBy(*d)
+	}
+	return scec
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (scec *SmartChargingEventCreate) SetCreatedAt(i int64) *SmartChargingEventCreate {
+	scec.mutation.SetCreatedAt(i)
+	return scec
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (scec *SmartChargingEventCreate) SetNillableCreatedAt(i *int64) *SmartChargingEventCreate {
+	if i != nil {
+		scec.SetCreatedAt(*i)
+	}
+	return scec
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (scec *SmartChargingEventCreate) SetUpdatedBy(d datasource.UUID) *SmartChargingEventCreate {
+	scec.mutation.SetUpdatedBy(d)
+	return scec
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (scec *SmartChargingEventCreate) SetNillableUpdatedBy(d *datasource.UUID) *SmartChargingEventCreate {
+	if d != nil {
+		scec.SetUpdatedBy(*d)
+	}
+	return scec
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (scec *SmartChargingEventCreate) SetUpdatedAt(i int64) *SmartChargingEventCreate {
+	scec.mutation.SetUpdatedAt(i)
+	return scec
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (scec *SmartChargingEventCreate) SetNillableUpdatedAt(i *int64) *SmartChargingEventCreate {
+	if i != nil {
+		scec.SetUpdatedAt(*i)
+	}
+	return scec
+}
+
 // SetSmartID sets the "smart_id" field.
 func (scec *SmartChargingEventCreate) SetSmartID(d datasource.UUID) *SmartChargingEventCreate {
 	scec.mutation.SetSmartID(d)
@@ -93,6 +163,20 @@ func (scec *SmartChargingEventCreate) SetSpec(tsp []types.ChargingSchedulePeriod
 	return scec
 }
 
+// SetID sets the "id" field.
+func (scec *SmartChargingEventCreate) SetID(d datasource.UUID) *SmartChargingEventCreate {
+	scec.mutation.SetID(d)
+	return scec
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (scec *SmartChargingEventCreate) SetNillableID(d *datasource.UUID) *SmartChargingEventCreate {
+	if d != nil {
+		scec.SetID(*d)
+	}
+	return scec
+}
+
 // Mutation returns the SmartChargingEventMutation object of the builder.
 func (scec *SmartChargingEventCreate) Mutation() *SmartChargingEventMutation {
 	return scec.mutation
@@ -104,6 +188,7 @@ func (scec *SmartChargingEventCreate) Save(ctx context.Context) (*SmartChargingE
 		err  error
 		node *SmartChargingEvent
 	)
+	scec.defaults()
 	if len(scec.hooks) == 0 {
 		if err = scec.check(); err != nil {
 			return nil, err
@@ -167,8 +252,51 @@ func (scec *SmartChargingEventCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (scec *SmartChargingEventCreate) defaults() {
+	if _, ok := scec.mutation.Version(); !ok {
+		v := smartchargingevent.DefaultVersion
+		scec.mutation.SetVersion(v)
+	}
+	if _, ok := scec.mutation.CreatedBy(); !ok {
+		v := smartchargingevent.DefaultCreatedBy
+		scec.mutation.SetCreatedBy(v)
+	}
+	if _, ok := scec.mutation.CreatedAt(); !ok {
+		v := smartchargingevent.DefaultCreatedAt
+		scec.mutation.SetCreatedAt(v)
+	}
+	if _, ok := scec.mutation.UpdatedBy(); !ok {
+		v := smartchargingevent.DefaultUpdatedBy
+		scec.mutation.SetUpdatedBy(v)
+	}
+	if _, ok := scec.mutation.UpdatedAt(); !ok {
+		v := smartchargingevent.DefaultUpdatedAt
+		scec.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := scec.mutation.ID(); !ok {
+		v := smartchargingevent.DefaultID
+		scec.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (scec *SmartChargingEventCreate) check() error {
+	if _, ok := scec.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "SmartChargingEvent.version"`)}
+	}
+	if _, ok := scec.mutation.CreatedBy(); !ok {
+		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "SmartChargingEvent.created_by"`)}
+	}
+	if _, ok := scec.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SmartChargingEvent.created_at"`)}
+	}
+	if _, ok := scec.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "SmartChargingEvent.updated_by"`)}
+	}
+	if _, ok := scec.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "SmartChargingEvent.updated_at"`)}
+	}
 	if _, ok := scec.mutation.SmartID(); !ok {
 		return &ValidationError{Name: "smart_id", err: errors.New(`ent: missing required field "SmartChargingEvent.smart_id"`)}
 	}
@@ -195,8 +323,10 @@ func (scec *SmartChargingEventCreate) sqlSave(ctx context.Context) (*SmartChargi
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -206,11 +336,55 @@ func (scec *SmartChargingEventCreate) createSpec() (*SmartChargingEvent, *sqlgra
 		_spec = &sqlgraph.CreateSpec{
 			Table: smartchargingevent.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: smartchargingevent.FieldID,
 			},
 		}
 	)
+	if id, ok := scec.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := scec.mutation.Version(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: smartchargingevent.FieldVersion,
+		})
+		_node.Version = value
+	}
+	if value, ok := scec.mutation.CreatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: smartchargingevent.FieldCreatedBy,
+		})
+		_node.CreatedBy = value
+	}
+	if value, ok := scec.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: smartchargingevent.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := scec.mutation.UpdatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: smartchargingevent.FieldUpdatedBy,
+		})
+		_node.UpdatedBy = value
+	}
+	if value, ok := scec.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: smartchargingevent.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := scec.mutation.SmartID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint64,
@@ -292,6 +466,7 @@ func (scecb *SmartChargingEventCreateBulk) Save(ctx context.Context) ([]*SmartCh
 	for i := range scecb.builders {
 		func(i int, root context.Context) {
 			builder := scecb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*SmartChargingEventMutation)
 				if !ok {
@@ -318,9 +493,9 @@ func (scecb *SmartChargingEventCreateBulk) Save(ctx context.Context) ([]*SmartCh
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

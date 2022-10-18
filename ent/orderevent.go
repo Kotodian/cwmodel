@@ -16,7 +16,18 @@ import (
 type OrderEvent struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	// 主键
+	ID datasource.UUID `json:"id,omitempty"`
+	// 乐观锁
+	Version int64 `json:"version,omitempty"`
+	// 创建者
+	CreatedBy datasource.UUID `json:"created_by,omitempty"`
+	// 创建时间
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// 修改者
+	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
+	// 修改时间
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 订单id
 	OrderID datasource.UUID `json:"order_id,omitempty"`
 	// 事件内容
@@ -26,7 +37,7 @@ type OrderEvent struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrderEventQuery when eager-loading is set.
 	Edges                  OrderEventEdges `json:"edges"`
-	order_info_order_event *int
+	order_info_order_event *datasource.UUID
 }
 
 // OrderEventEdges holds the relations/edges for other nodes in the graph.
@@ -56,7 +67,7 @@ func (*OrderEvent) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case orderevent.FieldID, orderevent.FieldOrderID, orderevent.FieldOccurrence:
+		case orderevent.FieldID, orderevent.FieldVersion, orderevent.FieldCreatedBy, orderevent.FieldCreatedAt, orderevent.FieldUpdatedBy, orderevent.FieldUpdatedAt, orderevent.FieldOrderID, orderevent.FieldOccurrence:
 			values[i] = new(sql.NullInt64)
 		case orderevent.FieldContent:
 			values[i] = new(sql.NullString)
@@ -78,11 +89,41 @@ func (oe *OrderEvent) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case orderevent.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				oe.ID = datasource.UUID(value.Int64)
 			}
-			oe.ID = int(value.Int64)
+		case orderevent.FieldVersion:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field version", values[i])
+			} else if value.Valid {
+				oe.Version = value.Int64
+			}
+		case orderevent.FieldCreatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_by", values[i])
+			} else if value.Valid {
+				oe.CreatedBy = datasource.UUID(value.Int64)
+			}
+		case orderevent.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				oe.CreatedAt = value.Int64
+			}
+		case orderevent.FieldUpdatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
+			} else if value.Valid {
+				oe.UpdatedBy = datasource.UUID(value.Int64)
+			}
+		case orderevent.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				oe.UpdatedAt = value.Int64
+			}
 		case orderevent.FieldOrderID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field order_id", values[i])
@@ -103,10 +144,10 @@ func (oe *OrderEvent) assignValues(columns []string, values []any) error {
 			}
 		case orderevent.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field order_info_order_event", value)
+				return fmt.Errorf("unexpected type %T for field order_info_order_event", values[i])
 			} else if value.Valid {
-				oe.order_info_order_event = new(int)
-				*oe.order_info_order_event = int(value.Int64)
+				oe.order_info_order_event = new(datasource.UUID)
+				*oe.order_info_order_event = datasource.UUID(value.Int64)
 			}
 		}
 	}
@@ -141,6 +182,21 @@ func (oe *OrderEvent) String() string {
 	var builder strings.Builder
 	builder.WriteString("OrderEvent(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", oe.ID))
+	builder.WriteString("version=")
+	builder.WriteString(fmt.Sprintf("%v", oe.Version))
+	builder.WriteString(", ")
+	builder.WriteString("created_by=")
+	builder.WriteString(fmt.Sprintf("%v", oe.CreatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(fmt.Sprintf("%v", oe.CreatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("updated_by=")
+	builder.WriteString(fmt.Sprintf("%v", oe.UpdatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(fmt.Sprintf("%v", oe.UpdatedAt))
+	builder.WriteString(", ")
 	builder.WriteString("order_id=")
 	builder.WriteString(fmt.Sprintf("%v", oe.OrderID))
 	builder.WriteString(", ")

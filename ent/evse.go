@@ -9,13 +9,25 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/evse"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // Evse is the model entity for the Evse schema.
 type Evse struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	// 主键
+	ID datasource.UUID `json:"id,omitempty"`
+	// 乐观锁
+	Version int64 `json:"version,omitempty"`
+	// 创建者
+	CreatedBy datasource.UUID `json:"created_by,omitempty"`
+	// 创建时间
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// 修改者
+	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
+	// 修改时间
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 设备序列号
 	Serial string `json:"serial,omitempty"`
 	// 枪数量
@@ -23,7 +35,7 @@ type Evse struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EvseQuery when eager-loading is set.
 	Edges        EvseEdges `json:"edges"`
-	equipment_id *int
+	equipment_id *datasource.UUID
 }
 
 // EvseEdges holds the relations/edges for other nodes in the graph.
@@ -64,7 +76,7 @@ func (*Evse) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case evse.FieldID, evse.FieldConnectorNumber:
+		case evse.FieldID, evse.FieldVersion, evse.FieldCreatedBy, evse.FieldCreatedAt, evse.FieldUpdatedBy, evse.FieldUpdatedAt, evse.FieldConnectorNumber:
 			values[i] = new(sql.NullInt64)
 		case evse.FieldSerial:
 			values[i] = new(sql.NullString)
@@ -86,11 +98,41 @@ func (e *Evse) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case evse.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				e.ID = datasource.UUID(value.Int64)
 			}
-			e.ID = int(value.Int64)
+		case evse.FieldVersion:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field version", values[i])
+			} else if value.Valid {
+				e.Version = value.Int64
+			}
+		case evse.FieldCreatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_by", values[i])
+			} else if value.Valid {
+				e.CreatedBy = datasource.UUID(value.Int64)
+			}
+		case evse.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				e.CreatedAt = value.Int64
+			}
+		case evse.FieldUpdatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
+			} else if value.Valid {
+				e.UpdatedBy = datasource.UUID(value.Int64)
+			}
+		case evse.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				e.UpdatedAt = value.Int64
+			}
 		case evse.FieldSerial:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field serial", values[i])
@@ -105,10 +147,10 @@ func (e *Evse) assignValues(columns []string, values []any) error {
 			}
 		case evse.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field equipment_id", value)
+				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
 			} else if value.Valid {
-				e.equipment_id = new(int)
-				*e.equipment_id = int(value.Int64)
+				e.equipment_id = new(datasource.UUID)
+				*e.equipment_id = datasource.UUID(value.Int64)
 			}
 		}
 	}
@@ -148,6 +190,21 @@ func (e *Evse) String() string {
 	var builder strings.Builder
 	builder.WriteString("Evse(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", e.ID))
+	builder.WriteString("version=")
+	builder.WriteString(fmt.Sprintf("%v", e.Version))
+	builder.WriteString(", ")
+	builder.WriteString("created_by=")
+	builder.WriteString(fmt.Sprintf("%v", e.CreatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(fmt.Sprintf("%v", e.CreatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("updated_by=")
+	builder.WriteString(fmt.Sprintf("%v", e.UpdatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(fmt.Sprintf("%v", e.UpdatedAt))
+	builder.WriteString(", ")
 	builder.WriteString("serial=")
 	builder.WriteString(e.Serial)
 	builder.WriteString(", ")

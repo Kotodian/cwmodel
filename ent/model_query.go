@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/model"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // ModelQuery is the builder for querying Model entities.
@@ -83,8 +84,8 @@ func (mq *ModelQuery) FirstX(ctx context.Context) *Model {
 
 // FirstID returns the first Model ID from the query.
 // Returns a *NotFoundError when no Model ID was found.
-func (mq *ModelQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (mq *ModelQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = mq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -96,7 +97,7 @@ func (mq *ModelQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (mq *ModelQuery) FirstIDX(ctx context.Context) int {
+func (mq *ModelQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := mq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -134,8 +135,8 @@ func (mq *ModelQuery) OnlyX(ctx context.Context) *Model {
 // OnlyID is like Only, but returns the only Model ID in the query.
 // Returns a *NotSingularError when more than one Model ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (mq *ModelQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (mq *ModelQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = mq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -151,7 +152,7 @@ func (mq *ModelQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (mq *ModelQuery) OnlyIDX(ctx context.Context) int {
+func (mq *ModelQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := mq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -177,8 +178,8 @@ func (mq *ModelQuery) AllX(ctx context.Context) []*Model {
 }
 
 // IDs executes the query and returns a list of Model IDs.
-func (mq *ModelQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (mq *ModelQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := mq.Select(model.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -186,7 +187,7 @@ func (mq *ModelQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (mq *ModelQuery) IDsX(ctx context.Context) []int {
+func (mq *ModelQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := mq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -253,12 +254,12 @@ func (mq *ModelQuery) Clone() *ModelQuery {
 // Example:
 //
 //	var v []struct {
-//		Code string `json:"code,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Model.Query().
-//		GroupBy(model.FieldCode).
+//		GroupBy(model.FieldVersion).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (mq *ModelQuery) GroupBy(field string, fields ...string) *ModelGroupBy {
@@ -281,11 +282,11 @@ func (mq *ModelQuery) GroupBy(field string, fields ...string) *ModelGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Code string `json:"code,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //	}
 //
 //	client.Model.Query().
-//		Select(model.FieldCode).
+//		Select(model.FieldVersion).
 //		Scan(ctx, &v)
 func (mq *ModelQuery) Select(fields ...string) *ModelSelect {
 	mq.fields = append(mq.fields, fields...)
@@ -362,7 +363,7 @@ func (mq *ModelQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   model.Table,
 			Columns: model.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: model.FieldID,
 			},
 		},

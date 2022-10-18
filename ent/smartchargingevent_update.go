@@ -29,6 +29,69 @@ func (sceu *SmartChargingEventUpdate) Where(ps ...predicate.SmartChargingEvent) 
 	return sceu
 }
 
+// SetVersion sets the "version" field.
+func (sceu *SmartChargingEventUpdate) SetVersion(i int64) *SmartChargingEventUpdate {
+	sceu.mutation.ResetVersion()
+	sceu.mutation.SetVersion(i)
+	return sceu
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (sceu *SmartChargingEventUpdate) SetNillableVersion(i *int64) *SmartChargingEventUpdate {
+	if i != nil {
+		sceu.SetVersion(*i)
+	}
+	return sceu
+}
+
+// AddVersion adds i to the "version" field.
+func (sceu *SmartChargingEventUpdate) AddVersion(i int64) *SmartChargingEventUpdate {
+	sceu.mutation.AddVersion(i)
+	return sceu
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (sceu *SmartChargingEventUpdate) SetUpdatedBy(d datasource.UUID) *SmartChargingEventUpdate {
+	sceu.mutation.ResetUpdatedBy()
+	sceu.mutation.SetUpdatedBy(d)
+	return sceu
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (sceu *SmartChargingEventUpdate) SetNillableUpdatedBy(d *datasource.UUID) *SmartChargingEventUpdate {
+	if d != nil {
+		sceu.SetUpdatedBy(*d)
+	}
+	return sceu
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (sceu *SmartChargingEventUpdate) AddUpdatedBy(d datasource.UUID) *SmartChargingEventUpdate {
+	sceu.mutation.AddUpdatedBy(d)
+	return sceu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (sceu *SmartChargingEventUpdate) SetUpdatedAt(i int64) *SmartChargingEventUpdate {
+	sceu.mutation.ResetUpdatedAt()
+	sceu.mutation.SetUpdatedAt(i)
+	return sceu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (sceu *SmartChargingEventUpdate) SetNillableUpdatedAt(i *int64) *SmartChargingEventUpdate {
+	if i != nil {
+		sceu.SetUpdatedAt(*i)
+	}
+	return sceu
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (sceu *SmartChargingEventUpdate) AddUpdatedAt(i int64) *SmartChargingEventUpdate {
+	sceu.mutation.AddUpdatedAt(i)
+	return sceu
+}
+
 // SetSmartID sets the "smart_id" field.
 func (sceu *SmartChargingEventUpdate) SetSmartID(d datasource.UUID) *SmartChargingEventUpdate {
 	sceu.mutation.ResetSmartID()
@@ -226,7 +289,7 @@ func (sceu *SmartChargingEventUpdate) sqlSave(ctx context.Context) (n int, err e
 			Table:   smartchargingevent.Table,
 			Columns: smartchargingevent.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: smartchargingevent.FieldID,
 			},
 		},
@@ -237,6 +300,48 @@ func (sceu *SmartChargingEventUpdate) sqlSave(ctx context.Context) (n int, err e
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := sceu.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: smartchargingevent.FieldVersion,
+		})
+	}
+	if value, ok := sceu.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: smartchargingevent.FieldVersion,
+		})
+	}
+	if value, ok := sceu.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: smartchargingevent.FieldUpdatedBy,
+		})
+	}
+	if value, ok := sceu.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: smartchargingevent.FieldUpdatedBy,
+		})
+	}
+	if value, ok := sceu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: smartchargingevent.FieldUpdatedAt,
+		})
+	}
+	if value, ok := sceu.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: smartchargingevent.FieldUpdatedAt,
+		})
 	}
 	if value, ok := sceu.mutation.SmartID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -371,6 +476,69 @@ type SmartChargingEventUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *SmartChargingEventMutation
+}
+
+// SetVersion sets the "version" field.
+func (sceuo *SmartChargingEventUpdateOne) SetVersion(i int64) *SmartChargingEventUpdateOne {
+	sceuo.mutation.ResetVersion()
+	sceuo.mutation.SetVersion(i)
+	return sceuo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (sceuo *SmartChargingEventUpdateOne) SetNillableVersion(i *int64) *SmartChargingEventUpdateOne {
+	if i != nil {
+		sceuo.SetVersion(*i)
+	}
+	return sceuo
+}
+
+// AddVersion adds i to the "version" field.
+func (sceuo *SmartChargingEventUpdateOne) AddVersion(i int64) *SmartChargingEventUpdateOne {
+	sceuo.mutation.AddVersion(i)
+	return sceuo
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (sceuo *SmartChargingEventUpdateOne) SetUpdatedBy(d datasource.UUID) *SmartChargingEventUpdateOne {
+	sceuo.mutation.ResetUpdatedBy()
+	sceuo.mutation.SetUpdatedBy(d)
+	return sceuo
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (sceuo *SmartChargingEventUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *SmartChargingEventUpdateOne {
+	if d != nil {
+		sceuo.SetUpdatedBy(*d)
+	}
+	return sceuo
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (sceuo *SmartChargingEventUpdateOne) AddUpdatedBy(d datasource.UUID) *SmartChargingEventUpdateOne {
+	sceuo.mutation.AddUpdatedBy(d)
+	return sceuo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (sceuo *SmartChargingEventUpdateOne) SetUpdatedAt(i int64) *SmartChargingEventUpdateOne {
+	sceuo.mutation.ResetUpdatedAt()
+	sceuo.mutation.SetUpdatedAt(i)
+	return sceuo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (sceuo *SmartChargingEventUpdateOne) SetNillableUpdatedAt(i *int64) *SmartChargingEventUpdateOne {
+	if i != nil {
+		sceuo.SetUpdatedAt(*i)
+	}
+	return sceuo
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (sceuo *SmartChargingEventUpdateOne) AddUpdatedAt(i int64) *SmartChargingEventUpdateOne {
+	sceuo.mutation.AddUpdatedAt(i)
+	return sceuo
 }
 
 // SetSmartID sets the "smart_id" field.
@@ -583,7 +751,7 @@ func (sceuo *SmartChargingEventUpdateOne) sqlSave(ctx context.Context) (_node *S
 			Table:   smartchargingevent.Table,
 			Columns: smartchargingevent.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: smartchargingevent.FieldID,
 			},
 		},
@@ -611,6 +779,48 @@ func (sceuo *SmartChargingEventUpdateOne) sqlSave(ctx context.Context) (_node *S
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := sceuo.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: smartchargingevent.FieldVersion,
+		})
+	}
+	if value, ok := sceuo.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: smartchargingevent.FieldVersion,
+		})
+	}
+	if value, ok := sceuo.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: smartchargingevent.FieldUpdatedBy,
+		})
+	}
+	if value, ok := sceuo.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: smartchargingevent.FieldUpdatedBy,
+		})
+	}
+	if value, ok := sceuo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: smartchargingevent.FieldUpdatedAt,
+		})
+	}
+	if value, ok := sceuo.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: smartchargingevent.FieldUpdatedAt,
+		})
 	}
 	if value, ok := sceuo.mutation.SmartID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{

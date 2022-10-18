@@ -8,13 +8,25 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/Kotodian/ent-practice/ent/model"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // Model is the model entity for the Model schema.
 type Model struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	// 主键
+	ID datasource.UUID `json:"id,omitempty"`
+	// 乐观锁
+	Version int64 `json:"version,omitempty"`
+	// 创建者
+	CreatedBy datasource.UUID `json:"created_by,omitempty"`
+	// 创建时间
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// 修改者
+	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
+	// 修改时间
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 型号代码
 	Code string `json:"code,omitempty"`
 	// 型号名称
@@ -30,7 +42,7 @@ func (*Model) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case model.FieldID:
+		case model.FieldID, model.FieldVersion, model.FieldCreatedBy, model.FieldCreatedAt, model.FieldUpdatedBy, model.FieldUpdatedAt:
 			values[i] = new(sql.NullInt64)
 		case model.FieldCode, model.FieldName, model.FieldPhaseCategory, model.FieldCurrentCategory:
 			values[i] = new(sql.NullString)
@@ -50,11 +62,41 @@ func (m *Model) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case model.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				m.ID = datasource.UUID(value.Int64)
 			}
-			m.ID = int(value.Int64)
+		case model.FieldVersion:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field version", values[i])
+			} else if value.Valid {
+				m.Version = value.Int64
+			}
+		case model.FieldCreatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_by", values[i])
+			} else if value.Valid {
+				m.CreatedBy = datasource.UUID(value.Int64)
+			}
+		case model.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				m.CreatedAt = value.Int64
+			}
+		case model.FieldUpdatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
+			} else if value.Valid {
+				m.UpdatedBy = datasource.UUID(value.Int64)
+			}
+		case model.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				m.UpdatedAt = value.Int64
+			}
 		case model.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field code", values[i])
@@ -107,6 +149,21 @@ func (m *Model) String() string {
 	var builder strings.Builder
 	builder.WriteString("Model(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", m.ID))
+	builder.WriteString("version=")
+	builder.WriteString(fmt.Sprintf("%v", m.Version))
+	builder.WriteString(", ")
+	builder.WriteString("created_by=")
+	builder.WriteString(fmt.Sprintf("%v", m.CreatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(fmt.Sprintf("%v", m.CreatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("updated_by=")
+	builder.WriteString(fmt.Sprintf("%v", m.UpdatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(fmt.Sprintf("%v", m.UpdatedAt))
+	builder.WriteString(", ")
 	builder.WriteString("code=")
 	builder.WriteString(m.Code)
 	builder.WriteString(", ")

@@ -28,6 +28,76 @@ type EquipmentCreate struct {
 	hooks    []Hook
 }
 
+// SetVersion sets the "version" field.
+func (ec *EquipmentCreate) SetVersion(i int64) *EquipmentCreate {
+	ec.mutation.SetVersion(i)
+	return ec
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableVersion(i *int64) *EquipmentCreate {
+	if i != nil {
+		ec.SetVersion(*i)
+	}
+	return ec
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (ec *EquipmentCreate) SetCreatedBy(d datasource.UUID) *EquipmentCreate {
+	ec.mutation.SetCreatedBy(d)
+	return ec
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableCreatedBy(d *datasource.UUID) *EquipmentCreate {
+	if d != nil {
+		ec.SetCreatedBy(*d)
+	}
+	return ec
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (ec *EquipmentCreate) SetCreatedAt(i int64) *EquipmentCreate {
+	ec.mutation.SetCreatedAt(i)
+	return ec
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableCreatedAt(i *int64) *EquipmentCreate {
+	if i != nil {
+		ec.SetCreatedAt(*i)
+	}
+	return ec
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (ec *EquipmentCreate) SetUpdatedBy(d datasource.UUID) *EquipmentCreate {
+	ec.mutation.SetUpdatedBy(d)
+	return ec
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentCreate {
+	if d != nil {
+		ec.SetUpdatedBy(*d)
+	}
+	return ec
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (ec *EquipmentCreate) SetUpdatedAt(i int64) *EquipmentCreate {
+	ec.mutation.SetUpdatedAt(i)
+	return ec
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableUpdatedAt(i *int64) *EquipmentCreate {
+	if i != nil {
+		ec.SetUpdatedAt(*i)
+	}
+	return ec
+}
+
 // SetSn sets the "sn" field.
 func (ec *EquipmentCreate) SetSn(s string) *EquipmentCreate {
 	ec.mutation.SetSn(s)
@@ -46,14 +116,28 @@ func (ec *EquipmentCreate) SetStationID(d datasource.UUID) *EquipmentCreate {
 	return ec
 }
 
+// SetID sets the "id" field.
+func (ec *EquipmentCreate) SetID(d datasource.UUID) *EquipmentCreate {
+	ec.mutation.SetID(d)
+	return ec
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableID(d *datasource.UUID) *EquipmentCreate {
+	if d != nil {
+		ec.SetID(*d)
+	}
+	return ec
+}
+
 // SetEquipmentInfoID sets the "equipment_info" edge to the EquipmentInfo entity by ID.
-func (ec *EquipmentCreate) SetEquipmentInfoID(id int) *EquipmentCreate {
+func (ec *EquipmentCreate) SetEquipmentInfoID(id datasource.UUID) *EquipmentCreate {
 	ec.mutation.SetEquipmentInfoID(id)
 	return ec
 }
 
 // SetNillableEquipmentInfoID sets the "equipment_info" edge to the EquipmentInfo entity by ID if the given value is not nil.
-func (ec *EquipmentCreate) SetNillableEquipmentInfoID(id *int) *EquipmentCreate {
+func (ec *EquipmentCreate) SetNillableEquipmentInfoID(id *datasource.UUID) *EquipmentCreate {
 	if id != nil {
 		ec = ec.SetEquipmentInfoID(*id)
 	}
@@ -66,14 +150,14 @@ func (ec *EquipmentCreate) SetEquipmentInfo(e *EquipmentInfo) *EquipmentCreate {
 }
 
 // AddEvseIDs adds the "evse" edge to the Evse entity by IDs.
-func (ec *EquipmentCreate) AddEvseIDs(ids ...int) *EquipmentCreate {
+func (ec *EquipmentCreate) AddEvseIDs(ids ...datasource.UUID) *EquipmentCreate {
 	ec.mutation.AddEvseIDs(ids...)
 	return ec
 }
 
 // AddEvse adds the "evse" edges to the Evse entity.
 func (ec *EquipmentCreate) AddEvse(e ...*Evse) *EquipmentCreate {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -81,14 +165,14 @@ func (ec *EquipmentCreate) AddEvse(e ...*Evse) *EquipmentCreate {
 }
 
 // AddConnectorIDs adds the "connector" edge to the Connector entity by IDs.
-func (ec *EquipmentCreate) AddConnectorIDs(ids ...int) *EquipmentCreate {
+func (ec *EquipmentCreate) AddConnectorIDs(ids ...datasource.UUID) *EquipmentCreate {
 	ec.mutation.AddConnectorIDs(ids...)
 	return ec
 }
 
 // AddConnector adds the "connector" edges to the Connector entity.
 func (ec *EquipmentCreate) AddConnector(c ...*Connector) *EquipmentCreate {
-	ids := make([]int, len(c))
+	ids := make([]datasource.UUID, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -96,14 +180,14 @@ func (ec *EquipmentCreate) AddConnector(c ...*Connector) *EquipmentCreate {
 }
 
 // AddEquipmentAlarmIDs adds the "equipment_alarm" edge to the EquipmentAlarm entity by IDs.
-func (ec *EquipmentCreate) AddEquipmentAlarmIDs(ids ...int) *EquipmentCreate {
+func (ec *EquipmentCreate) AddEquipmentAlarmIDs(ids ...datasource.UUID) *EquipmentCreate {
 	ec.mutation.AddEquipmentAlarmIDs(ids...)
 	return ec
 }
 
 // AddEquipmentAlarm adds the "equipment_alarm" edges to the EquipmentAlarm entity.
 func (ec *EquipmentCreate) AddEquipmentAlarm(e ...*EquipmentAlarm) *EquipmentCreate {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -111,13 +195,13 @@ func (ec *EquipmentCreate) AddEquipmentAlarm(e ...*EquipmentAlarm) *EquipmentCre
 }
 
 // SetEquipmentIotID sets the "equipment_iot" edge to the EquipmentIot entity by ID.
-func (ec *EquipmentCreate) SetEquipmentIotID(id int) *EquipmentCreate {
+func (ec *EquipmentCreate) SetEquipmentIotID(id datasource.UUID) *EquipmentCreate {
 	ec.mutation.SetEquipmentIotID(id)
 	return ec
 }
 
 // SetNillableEquipmentIotID sets the "equipment_iot" edge to the EquipmentIot entity by ID if the given value is not nil.
-func (ec *EquipmentCreate) SetNillableEquipmentIotID(id *int) *EquipmentCreate {
+func (ec *EquipmentCreate) SetNillableEquipmentIotID(id *datasource.UUID) *EquipmentCreate {
 	if id != nil {
 		ec = ec.SetEquipmentIotID(*id)
 	}
@@ -130,14 +214,14 @@ func (ec *EquipmentCreate) SetEquipmentIot(e *EquipmentIot) *EquipmentCreate {
 }
 
 // AddEquipmentFirmwareEffectIDs adds the "equipment_firmware_effect" edge to the EquipmentFirmwareEffect entity by IDs.
-func (ec *EquipmentCreate) AddEquipmentFirmwareEffectIDs(ids ...int) *EquipmentCreate {
+func (ec *EquipmentCreate) AddEquipmentFirmwareEffectIDs(ids ...datasource.UUID) *EquipmentCreate {
 	ec.mutation.AddEquipmentFirmwareEffectIDs(ids...)
 	return ec
 }
 
 // AddEquipmentFirmwareEffect adds the "equipment_firmware_effect" edges to the EquipmentFirmwareEffect entity.
 func (ec *EquipmentCreate) AddEquipmentFirmwareEffect(e ...*EquipmentFirmwareEffect) *EquipmentCreate {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -145,14 +229,14 @@ func (ec *EquipmentCreate) AddEquipmentFirmwareEffect(e ...*EquipmentFirmwareEff
 }
 
 // AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
-func (ec *EquipmentCreate) AddOrderInfoIDs(ids ...int) *EquipmentCreate {
+func (ec *EquipmentCreate) AddOrderInfoIDs(ids ...datasource.UUID) *EquipmentCreate {
 	ec.mutation.AddOrderInfoIDs(ids...)
 	return ec
 }
 
 // AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
 func (ec *EquipmentCreate) AddOrderInfo(o ...*OrderInfo) *EquipmentCreate {
-	ids := make([]int, len(o))
+	ids := make([]datasource.UUID, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
@@ -160,14 +244,14 @@ func (ec *EquipmentCreate) AddOrderInfo(o ...*OrderInfo) *EquipmentCreate {
 }
 
 // AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
-func (ec *EquipmentCreate) AddReservationIDs(ids ...int) *EquipmentCreate {
+func (ec *EquipmentCreate) AddReservationIDs(ids ...datasource.UUID) *EquipmentCreate {
 	ec.mutation.AddReservationIDs(ids...)
 	return ec
 }
 
 // AddReservation adds the "reservation" edges to the Reservation entity.
 func (ec *EquipmentCreate) AddReservation(r ...*Reservation) *EquipmentCreate {
-	ids := make([]int, len(r))
+	ids := make([]datasource.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -185,6 +269,7 @@ func (ec *EquipmentCreate) Save(ctx context.Context) (*Equipment, error) {
 		err  error
 		node *Equipment
 	)
+	ec.defaults()
 	if len(ec.hooks) == 0 {
 		if err = ec.check(); err != nil {
 			return nil, err
@@ -248,8 +333,51 @@ func (ec *EquipmentCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ec *EquipmentCreate) defaults() {
+	if _, ok := ec.mutation.Version(); !ok {
+		v := equipment.DefaultVersion
+		ec.mutation.SetVersion(v)
+	}
+	if _, ok := ec.mutation.CreatedBy(); !ok {
+		v := equipment.DefaultCreatedBy
+		ec.mutation.SetCreatedBy(v)
+	}
+	if _, ok := ec.mutation.CreatedAt(); !ok {
+		v := equipment.DefaultCreatedAt
+		ec.mutation.SetCreatedAt(v)
+	}
+	if _, ok := ec.mutation.UpdatedBy(); !ok {
+		v := equipment.DefaultUpdatedBy
+		ec.mutation.SetUpdatedBy(v)
+	}
+	if _, ok := ec.mutation.UpdatedAt(); !ok {
+		v := equipment.DefaultUpdatedAt
+		ec.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := ec.mutation.ID(); !ok {
+		v := equipment.DefaultID
+		ec.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (ec *EquipmentCreate) check() error {
+	if _, ok := ec.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "Equipment.version"`)}
+	}
+	if _, ok := ec.mutation.CreatedBy(); !ok {
+		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "Equipment.created_by"`)}
+	}
+	if _, ok := ec.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Equipment.created_at"`)}
+	}
+	if _, ok := ec.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "Equipment.updated_by"`)}
+	}
+	if _, ok := ec.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Equipment.updated_at"`)}
+	}
 	if _, ok := ec.mutation.Sn(); !ok {
 		return &ValidationError{Name: "sn", err: errors.New(`ent: missing required field "Equipment.sn"`)}
 	}
@@ -275,8 +403,10 @@ func (ec *EquipmentCreate) sqlSave(ctx context.Context) (*Equipment, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -286,11 +416,55 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: equipment.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipment.FieldID,
 			},
 		}
 	)
+	if id, ok := ec.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := ec.mutation.Version(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipment.FieldVersion,
+		})
+		_node.Version = value
+	}
+	if value, ok := ec.mutation.CreatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipment.FieldCreatedBy,
+		})
+		_node.CreatedBy = value
+	}
+	if value, ok := ec.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipment.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := ec.mutation.UpdatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipment.FieldUpdatedBy,
+		})
+		_node.UpdatedBy = value
+	}
+	if value, ok := ec.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipment.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := ec.mutation.Sn(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -324,7 +498,7 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentinfo.FieldID,
 				},
 			},
@@ -343,7 +517,7 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: evse.FieldID,
 				},
 			},
@@ -362,7 +536,7 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -381,7 +555,7 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentalarm.FieldID,
 				},
 			},
@@ -400,7 +574,7 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentiot.FieldID,
 				},
 			},
@@ -419,7 +593,7 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentfirmwareeffect.FieldID,
 				},
 			},
@@ -438,7 +612,7 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -457,7 +631,7 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},
@@ -484,6 +658,7 @@ func (ecb *EquipmentCreateBulk) Save(ctx context.Context) ([]*Equipment, error) 
 	for i := range ecb.builders {
 		func(i int, root context.Context) {
 			builder := ecb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*EquipmentMutation)
 				if !ok {
@@ -510,9 +685,9 @@ func (ecb *EquipmentCreateBulk) Save(ctx context.Context) ([]*Equipment, error) 
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

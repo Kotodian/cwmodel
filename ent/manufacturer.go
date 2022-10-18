@@ -8,13 +8,25 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/Kotodian/ent-practice/ent/manufacturer"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // Manufacturer is the model entity for the Manufacturer schema.
 type Manufacturer struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	// 主键
+	ID datasource.UUID `json:"id,omitempty"`
+	// 乐观锁
+	Version int64 `json:"version,omitempty"`
+	// 创建者
+	CreatedBy datasource.UUID `json:"created_by,omitempty"`
+	// 创建时间
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// 修改者
+	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
+	// 修改时间
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 产商代码
 	Code string `json:"code,omitempty"`
 	// 产商名称
@@ -26,7 +38,7 @@ func (*Manufacturer) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case manufacturer.FieldID:
+		case manufacturer.FieldID, manufacturer.FieldVersion, manufacturer.FieldCreatedBy, manufacturer.FieldCreatedAt, manufacturer.FieldUpdatedBy, manufacturer.FieldUpdatedAt:
 			values[i] = new(sql.NullInt64)
 		case manufacturer.FieldCode, manufacturer.FieldName:
 			values[i] = new(sql.NullString)
@@ -46,11 +58,41 @@ func (m *Manufacturer) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case manufacturer.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				m.ID = datasource.UUID(value.Int64)
 			}
-			m.ID = int(value.Int64)
+		case manufacturer.FieldVersion:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field version", values[i])
+			} else if value.Valid {
+				m.Version = value.Int64
+			}
+		case manufacturer.FieldCreatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_by", values[i])
+			} else if value.Valid {
+				m.CreatedBy = datasource.UUID(value.Int64)
+			}
+		case manufacturer.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				m.CreatedAt = value.Int64
+			}
+		case manufacturer.FieldUpdatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
+			} else if value.Valid {
+				m.UpdatedBy = datasource.UUID(value.Int64)
+			}
+		case manufacturer.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				m.UpdatedAt = value.Int64
+			}
 		case manufacturer.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field code", values[i])
@@ -91,6 +133,21 @@ func (m *Manufacturer) String() string {
 	var builder strings.Builder
 	builder.WriteString("Manufacturer(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", m.ID))
+	builder.WriteString("version=")
+	builder.WriteString(fmt.Sprintf("%v", m.Version))
+	builder.WriteString(", ")
+	builder.WriteString("created_by=")
+	builder.WriteString(fmt.Sprintf("%v", m.CreatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(fmt.Sprintf("%v", m.CreatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("updated_by=")
+	builder.WriteString(fmt.Sprintf("%v", m.UpdatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(fmt.Sprintf("%v", m.UpdatedAt))
+	builder.WriteString(", ")
 	builder.WriteString("code=")
 	builder.WriteString(m.Code)
 	builder.WriteString(", ")

@@ -14,6 +14,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/firmware"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentFirmwareEffectUpdate is the builder for updating EquipmentFirmwareEffect entities.
@@ -26,6 +27,69 @@ type EquipmentFirmwareEffectUpdate struct {
 // Where appends a list predicates to the EquipmentFirmwareEffectUpdate builder.
 func (efeu *EquipmentFirmwareEffectUpdate) Where(ps ...predicate.EquipmentFirmwareEffect) *EquipmentFirmwareEffectUpdate {
 	efeu.mutation.Where(ps...)
+	return efeu
+}
+
+// SetVersion sets the "version" field.
+func (efeu *EquipmentFirmwareEffectUpdate) SetVersion(i int64) *EquipmentFirmwareEffectUpdate {
+	efeu.mutation.ResetVersion()
+	efeu.mutation.SetVersion(i)
+	return efeu
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (efeu *EquipmentFirmwareEffectUpdate) SetNillableVersion(i *int64) *EquipmentFirmwareEffectUpdate {
+	if i != nil {
+		efeu.SetVersion(*i)
+	}
+	return efeu
+}
+
+// AddVersion adds i to the "version" field.
+func (efeu *EquipmentFirmwareEffectUpdate) AddVersion(i int64) *EquipmentFirmwareEffectUpdate {
+	efeu.mutation.AddVersion(i)
+	return efeu
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (efeu *EquipmentFirmwareEffectUpdate) SetUpdatedBy(d datasource.UUID) *EquipmentFirmwareEffectUpdate {
+	efeu.mutation.ResetUpdatedBy()
+	efeu.mutation.SetUpdatedBy(d)
+	return efeu
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (efeu *EquipmentFirmwareEffectUpdate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentFirmwareEffectUpdate {
+	if d != nil {
+		efeu.SetUpdatedBy(*d)
+	}
+	return efeu
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (efeu *EquipmentFirmwareEffectUpdate) AddUpdatedBy(d datasource.UUID) *EquipmentFirmwareEffectUpdate {
+	efeu.mutation.AddUpdatedBy(d)
+	return efeu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (efeu *EquipmentFirmwareEffectUpdate) SetUpdatedAt(i int64) *EquipmentFirmwareEffectUpdate {
+	efeu.mutation.ResetUpdatedAt()
+	efeu.mutation.SetUpdatedAt(i)
+	return efeu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (efeu *EquipmentFirmwareEffectUpdate) SetNillableUpdatedAt(i *int64) *EquipmentFirmwareEffectUpdate {
+	if i != nil {
+		efeu.SetUpdatedAt(*i)
+	}
+	return efeu
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (efeu *EquipmentFirmwareEffectUpdate) AddUpdatedAt(i int64) *EquipmentFirmwareEffectUpdate {
+	efeu.mutation.AddUpdatedAt(i)
 	return efeu
 }
 
@@ -56,13 +120,13 @@ func (efeu *EquipmentFirmwareEffectUpdate) AddState(i int) *EquipmentFirmwareEff
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (efeu *EquipmentFirmwareEffectUpdate) SetEquipmentID(id int) *EquipmentFirmwareEffectUpdate {
+func (efeu *EquipmentFirmwareEffectUpdate) SetEquipmentID(id datasource.UUID) *EquipmentFirmwareEffectUpdate {
 	efeu.mutation.SetEquipmentID(id)
 	return efeu
 }
 
 // SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (efeu *EquipmentFirmwareEffectUpdate) SetNillableEquipmentID(id *int) *EquipmentFirmwareEffectUpdate {
+func (efeu *EquipmentFirmwareEffectUpdate) SetNillableEquipmentID(id *datasource.UUID) *EquipmentFirmwareEffectUpdate {
 	if id != nil {
 		efeu = efeu.SetEquipmentID(*id)
 	}
@@ -75,13 +139,13 @@ func (efeu *EquipmentFirmwareEffectUpdate) SetEquipment(e *Equipment) *Equipment
 }
 
 // SetFirmwareID sets the "firmware" edge to the Firmware entity by ID.
-func (efeu *EquipmentFirmwareEffectUpdate) SetFirmwareID(id int) *EquipmentFirmwareEffectUpdate {
+func (efeu *EquipmentFirmwareEffectUpdate) SetFirmwareID(id datasource.UUID) *EquipmentFirmwareEffectUpdate {
 	efeu.mutation.SetFirmwareID(id)
 	return efeu
 }
 
 // SetNillableFirmwareID sets the "firmware" edge to the Firmware entity by ID if the given value is not nil.
-func (efeu *EquipmentFirmwareEffectUpdate) SetNillableFirmwareID(id *int) *EquipmentFirmwareEffectUpdate {
+func (efeu *EquipmentFirmwareEffectUpdate) SetNillableFirmwareID(id *datasource.UUID) *EquipmentFirmwareEffectUpdate {
 	if id != nil {
 		efeu = efeu.SetFirmwareID(*id)
 	}
@@ -170,7 +234,7 @@ func (efeu *EquipmentFirmwareEffectUpdate) sqlSave(ctx context.Context) (n int, 
 			Table:   equipmentfirmwareeffect.Table,
 			Columns: equipmentfirmwareeffect.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentfirmwareeffect.FieldID,
 			},
 		},
@@ -181,6 +245,48 @@ func (efeu *EquipmentFirmwareEffectUpdate) sqlSave(ctx context.Context) (n int, 
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := efeu.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldVersion,
+		})
+	}
+	if value, ok := efeu.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldVersion,
+		})
+	}
+	if value, ok := efeu.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldUpdatedBy,
+		})
+	}
+	if value, ok := efeu.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldUpdatedBy,
+		})
+	}
+	if value, ok := efeu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldUpdatedAt,
+		})
+	}
+	if value, ok := efeu.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldUpdatedAt,
+		})
 	}
 	if value, ok := efeu.mutation.RequestID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -219,7 +325,7 @@ func (efeu *EquipmentFirmwareEffectUpdate) sqlSave(ctx context.Context) (n int, 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -235,7 +341,7 @@ func (efeu *EquipmentFirmwareEffectUpdate) sqlSave(ctx context.Context) (n int, 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -254,7 +360,7 @@ func (efeu *EquipmentFirmwareEffectUpdate) sqlSave(ctx context.Context) (n int, 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: firmware.FieldID,
 				},
 			},
@@ -270,7 +376,7 @@ func (efeu *EquipmentFirmwareEffectUpdate) sqlSave(ctx context.Context) (n int, 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: firmware.FieldID,
 				},
 			},
@@ -297,6 +403,69 @@ type EquipmentFirmwareEffectUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *EquipmentFirmwareEffectMutation
+}
+
+// SetVersion sets the "version" field.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) SetVersion(i int64) *EquipmentFirmwareEffectUpdateOne {
+	efeuo.mutation.ResetVersion()
+	efeuo.mutation.SetVersion(i)
+	return efeuo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) SetNillableVersion(i *int64) *EquipmentFirmwareEffectUpdateOne {
+	if i != nil {
+		efeuo.SetVersion(*i)
+	}
+	return efeuo
+}
+
+// AddVersion adds i to the "version" field.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) AddVersion(i int64) *EquipmentFirmwareEffectUpdateOne {
+	efeuo.mutation.AddVersion(i)
+	return efeuo
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) SetUpdatedBy(d datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
+	efeuo.mutation.ResetUpdatedBy()
+	efeuo.mutation.SetUpdatedBy(d)
+	return efeuo
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
+	if d != nil {
+		efeuo.SetUpdatedBy(*d)
+	}
+	return efeuo
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) AddUpdatedBy(d datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
+	efeuo.mutation.AddUpdatedBy(d)
+	return efeuo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) SetUpdatedAt(i int64) *EquipmentFirmwareEffectUpdateOne {
+	efeuo.mutation.ResetUpdatedAt()
+	efeuo.mutation.SetUpdatedAt(i)
+	return efeuo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) SetNillableUpdatedAt(i *int64) *EquipmentFirmwareEffectUpdateOne {
+	if i != nil {
+		efeuo.SetUpdatedAt(*i)
+	}
+	return efeuo
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) AddUpdatedAt(i int64) *EquipmentFirmwareEffectUpdateOne {
+	efeuo.mutation.AddUpdatedAt(i)
+	return efeuo
 }
 
 // SetRequestID sets the "request_id" field.
@@ -326,13 +495,13 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) AddState(i int) *EquipmentFirmwar
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (efeuo *EquipmentFirmwareEffectUpdateOne) SetEquipmentID(id int) *EquipmentFirmwareEffectUpdateOne {
+func (efeuo *EquipmentFirmwareEffectUpdateOne) SetEquipmentID(id datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
 	efeuo.mutation.SetEquipmentID(id)
 	return efeuo
 }
 
 // SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (efeuo *EquipmentFirmwareEffectUpdateOne) SetNillableEquipmentID(id *int) *EquipmentFirmwareEffectUpdateOne {
+func (efeuo *EquipmentFirmwareEffectUpdateOne) SetNillableEquipmentID(id *datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
 	if id != nil {
 		efeuo = efeuo.SetEquipmentID(*id)
 	}
@@ -345,13 +514,13 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) SetEquipment(e *Equipment) *Equip
 }
 
 // SetFirmwareID sets the "firmware" edge to the Firmware entity by ID.
-func (efeuo *EquipmentFirmwareEffectUpdateOne) SetFirmwareID(id int) *EquipmentFirmwareEffectUpdateOne {
+func (efeuo *EquipmentFirmwareEffectUpdateOne) SetFirmwareID(id datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
 	efeuo.mutation.SetFirmwareID(id)
 	return efeuo
 }
 
 // SetNillableFirmwareID sets the "firmware" edge to the Firmware entity by ID if the given value is not nil.
-func (efeuo *EquipmentFirmwareEffectUpdateOne) SetNillableFirmwareID(id *int) *EquipmentFirmwareEffectUpdateOne {
+func (efeuo *EquipmentFirmwareEffectUpdateOne) SetNillableFirmwareID(id *datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
 	if id != nil {
 		efeuo = efeuo.SetFirmwareID(*id)
 	}
@@ -453,7 +622,7 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) sqlSave(ctx context.Context) (_no
 			Table:   equipmentfirmwareeffect.Table,
 			Columns: equipmentfirmwareeffect.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentfirmwareeffect.FieldID,
 			},
 		},
@@ -481,6 +650,48 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) sqlSave(ctx context.Context) (_no
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := efeuo.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldVersion,
+		})
+	}
+	if value, ok := efeuo.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldVersion,
+		})
+	}
+	if value, ok := efeuo.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldUpdatedBy,
+		})
+	}
+	if value, ok := efeuo.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldUpdatedBy,
+		})
+	}
+	if value, ok := efeuo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldUpdatedAt,
+		})
+	}
+	if value, ok := efeuo.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentfirmwareeffect.FieldUpdatedAt,
+		})
 	}
 	if value, ok := efeuo.mutation.RequestID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -519,7 +730,7 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) sqlSave(ctx context.Context) (_no
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -535,7 +746,7 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) sqlSave(ctx context.Context) (_no
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -554,7 +765,7 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) sqlSave(ctx context.Context) (_no
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: firmware.FieldID,
 				},
 			},
@@ -570,7 +781,7 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) sqlSave(ctx context.Context) (_no
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: firmware.FieldID,
 				},
 			},

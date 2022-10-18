@@ -29,6 +29,69 @@ func (oeu *OrderEventUpdate) Where(ps ...predicate.OrderEvent) *OrderEventUpdate
 	return oeu
 }
 
+// SetVersion sets the "version" field.
+func (oeu *OrderEventUpdate) SetVersion(i int64) *OrderEventUpdate {
+	oeu.mutation.ResetVersion()
+	oeu.mutation.SetVersion(i)
+	return oeu
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (oeu *OrderEventUpdate) SetNillableVersion(i *int64) *OrderEventUpdate {
+	if i != nil {
+		oeu.SetVersion(*i)
+	}
+	return oeu
+}
+
+// AddVersion adds i to the "version" field.
+func (oeu *OrderEventUpdate) AddVersion(i int64) *OrderEventUpdate {
+	oeu.mutation.AddVersion(i)
+	return oeu
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (oeu *OrderEventUpdate) SetUpdatedBy(d datasource.UUID) *OrderEventUpdate {
+	oeu.mutation.ResetUpdatedBy()
+	oeu.mutation.SetUpdatedBy(d)
+	return oeu
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (oeu *OrderEventUpdate) SetNillableUpdatedBy(d *datasource.UUID) *OrderEventUpdate {
+	if d != nil {
+		oeu.SetUpdatedBy(*d)
+	}
+	return oeu
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (oeu *OrderEventUpdate) AddUpdatedBy(d datasource.UUID) *OrderEventUpdate {
+	oeu.mutation.AddUpdatedBy(d)
+	return oeu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (oeu *OrderEventUpdate) SetUpdatedAt(i int64) *OrderEventUpdate {
+	oeu.mutation.ResetUpdatedAt()
+	oeu.mutation.SetUpdatedAt(i)
+	return oeu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (oeu *OrderEventUpdate) SetNillableUpdatedAt(i *int64) *OrderEventUpdate {
+	if i != nil {
+		oeu.SetUpdatedAt(*i)
+	}
+	return oeu
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (oeu *OrderEventUpdate) AddUpdatedAt(i int64) *OrderEventUpdate {
+	oeu.mutation.AddUpdatedAt(i)
+	return oeu
+}
+
 // SetOrderID sets the "order_id" field.
 func (oeu *OrderEventUpdate) SetOrderID(d datasource.UUID) *OrderEventUpdate {
 	oeu.mutation.ResetOrderID()
@@ -62,13 +125,13 @@ func (oeu *OrderEventUpdate) AddOccurrence(i int64) *OrderEventUpdate {
 }
 
 // SetOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID.
-func (oeu *OrderEventUpdate) SetOrderInfoID(id int) *OrderEventUpdate {
+func (oeu *OrderEventUpdate) SetOrderInfoID(id datasource.UUID) *OrderEventUpdate {
 	oeu.mutation.SetOrderInfoID(id)
 	return oeu
 }
 
 // SetNillableOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID if the given value is not nil.
-func (oeu *OrderEventUpdate) SetNillableOrderInfoID(id *int) *OrderEventUpdate {
+func (oeu *OrderEventUpdate) SetNillableOrderInfoID(id *datasource.UUID) *OrderEventUpdate {
 	if id != nil {
 		oeu = oeu.SetOrderInfoID(*id)
 	}
@@ -151,7 +214,7 @@ func (oeu *OrderEventUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   orderevent.Table,
 			Columns: orderevent.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: orderevent.FieldID,
 			},
 		},
@@ -162,6 +225,48 @@ func (oeu *OrderEventUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := oeu.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: orderevent.FieldVersion,
+		})
+	}
+	if value, ok := oeu.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: orderevent.FieldVersion,
+		})
+	}
+	if value, ok := oeu.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: orderevent.FieldUpdatedBy,
+		})
+	}
+	if value, ok := oeu.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: orderevent.FieldUpdatedBy,
+		})
+	}
+	if value, ok := oeu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: orderevent.FieldUpdatedAt,
+		})
+	}
+	if value, ok := oeu.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: orderevent.FieldUpdatedAt,
+		})
 	}
 	if value, ok := oeu.mutation.OrderID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -207,7 +312,7 @@ func (oeu *OrderEventUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -223,7 +328,7 @@ func (oeu *OrderEventUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -250,6 +355,69 @@ type OrderEventUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *OrderEventMutation
+}
+
+// SetVersion sets the "version" field.
+func (oeuo *OrderEventUpdateOne) SetVersion(i int64) *OrderEventUpdateOne {
+	oeuo.mutation.ResetVersion()
+	oeuo.mutation.SetVersion(i)
+	return oeuo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (oeuo *OrderEventUpdateOne) SetNillableVersion(i *int64) *OrderEventUpdateOne {
+	if i != nil {
+		oeuo.SetVersion(*i)
+	}
+	return oeuo
+}
+
+// AddVersion adds i to the "version" field.
+func (oeuo *OrderEventUpdateOne) AddVersion(i int64) *OrderEventUpdateOne {
+	oeuo.mutation.AddVersion(i)
+	return oeuo
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (oeuo *OrderEventUpdateOne) SetUpdatedBy(d datasource.UUID) *OrderEventUpdateOne {
+	oeuo.mutation.ResetUpdatedBy()
+	oeuo.mutation.SetUpdatedBy(d)
+	return oeuo
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (oeuo *OrderEventUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *OrderEventUpdateOne {
+	if d != nil {
+		oeuo.SetUpdatedBy(*d)
+	}
+	return oeuo
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (oeuo *OrderEventUpdateOne) AddUpdatedBy(d datasource.UUID) *OrderEventUpdateOne {
+	oeuo.mutation.AddUpdatedBy(d)
+	return oeuo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (oeuo *OrderEventUpdateOne) SetUpdatedAt(i int64) *OrderEventUpdateOne {
+	oeuo.mutation.ResetUpdatedAt()
+	oeuo.mutation.SetUpdatedAt(i)
+	return oeuo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (oeuo *OrderEventUpdateOne) SetNillableUpdatedAt(i *int64) *OrderEventUpdateOne {
+	if i != nil {
+		oeuo.SetUpdatedAt(*i)
+	}
+	return oeuo
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (oeuo *OrderEventUpdateOne) AddUpdatedAt(i int64) *OrderEventUpdateOne {
+	oeuo.mutation.AddUpdatedAt(i)
+	return oeuo
 }
 
 // SetOrderID sets the "order_id" field.
@@ -285,13 +453,13 @@ func (oeuo *OrderEventUpdateOne) AddOccurrence(i int64) *OrderEventUpdateOne {
 }
 
 // SetOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID.
-func (oeuo *OrderEventUpdateOne) SetOrderInfoID(id int) *OrderEventUpdateOne {
+func (oeuo *OrderEventUpdateOne) SetOrderInfoID(id datasource.UUID) *OrderEventUpdateOne {
 	oeuo.mutation.SetOrderInfoID(id)
 	return oeuo
 }
 
 // SetNillableOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID if the given value is not nil.
-func (oeuo *OrderEventUpdateOne) SetNillableOrderInfoID(id *int) *OrderEventUpdateOne {
+func (oeuo *OrderEventUpdateOne) SetNillableOrderInfoID(id *datasource.UUID) *OrderEventUpdateOne {
 	if id != nil {
 		oeuo = oeuo.SetOrderInfoID(*id)
 	}
@@ -387,7 +555,7 @@ func (oeuo *OrderEventUpdateOne) sqlSave(ctx context.Context) (_node *OrderEvent
 			Table:   orderevent.Table,
 			Columns: orderevent.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: orderevent.FieldID,
 			},
 		},
@@ -415,6 +583,48 @@ func (oeuo *OrderEventUpdateOne) sqlSave(ctx context.Context) (_node *OrderEvent
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := oeuo.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: orderevent.FieldVersion,
+		})
+	}
+	if value, ok := oeuo.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: orderevent.FieldVersion,
+		})
+	}
+	if value, ok := oeuo.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: orderevent.FieldUpdatedBy,
+		})
+	}
+	if value, ok := oeuo.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: orderevent.FieldUpdatedBy,
+		})
+	}
+	if value, ok := oeuo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: orderevent.FieldUpdatedAt,
+		})
+	}
+	if value, ok := oeuo.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: orderevent.FieldUpdatedAt,
+		})
 	}
 	if value, ok := oeuo.mutation.OrderID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -460,7 +670,7 @@ func (oeuo *OrderEventUpdateOne) sqlSave(ctx context.Context) (_node *OrderEvent
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -476,7 +686,7 @@ func (oeuo *OrderEventUpdateOne) sqlSave(ctx context.Context) (_node *OrderEvent
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},

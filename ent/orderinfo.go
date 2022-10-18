@@ -17,7 +17,18 @@ import (
 type OrderInfo struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	// 主键
+	ID datasource.UUID `json:"id,omitempty"`
+	// 乐观锁
+	Version int64 `json:"version,omitempty"`
+	// 创建者
+	CreatedBy datasource.UUID `json:"created_by,omitempty"`
+	// 创建时间
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// 修改者
+	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
+	// 修改时间
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 远程启动id
 	RemoteStartID int64 `json:"remote_start_id,omitempty"`
 	// 桩端订单id
@@ -65,8 +76,8 @@ type OrderInfo struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrderInfoQuery when eager-loading is set.
 	Edges        OrderInfoEdges `json:"edges"`
-	connector_id *int
-	equipment_id *int
+	connector_id *datasource.UUID
+	equipment_id *datasource.UUID
 }
 
 // OrderInfoEdges holds the relations/edges for other nodes in the graph.
@@ -126,7 +137,7 @@ func (*OrderInfo) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case orderinfo.FieldTotalElectricity, orderinfo.FieldChargeStartElectricity, orderinfo.FieldChargeStopElectricity, orderinfo.FieldSharpElectricity, orderinfo.FieldPeakElectricity, orderinfo.FieldFlatElectricity, orderinfo.FieldValleyElectricity:
 			values[i] = new(sql.NullFloat64)
-		case orderinfo.FieldID, orderinfo.FieldRemoteStartID, orderinfo.FieldStopReasonCode, orderinfo.FieldPriceSchemeReleaseID, orderinfo.FieldOrderStartTime, orderinfo.FieldOrderFinalTime, orderinfo.FieldChargeStartTime, orderinfo.FieldChargeFinalTime, orderinfo.FieldIntellectID, orderinfo.FieldStationID, orderinfo.FieldOperatorID:
+		case orderinfo.FieldID, orderinfo.FieldVersion, orderinfo.FieldCreatedBy, orderinfo.FieldCreatedAt, orderinfo.FieldUpdatedBy, orderinfo.FieldUpdatedAt, orderinfo.FieldRemoteStartID, orderinfo.FieldStopReasonCode, orderinfo.FieldPriceSchemeReleaseID, orderinfo.FieldOrderStartTime, orderinfo.FieldOrderFinalTime, orderinfo.FieldChargeStartTime, orderinfo.FieldChargeFinalTime, orderinfo.FieldIntellectID, orderinfo.FieldStationID, orderinfo.FieldOperatorID:
 			values[i] = new(sql.NullInt64)
 		case orderinfo.FieldTransactionID, orderinfo.FieldAuthorizationID, orderinfo.FieldCustomerID, orderinfo.FieldCallerOrderID:
 			values[i] = new(sql.NullString)
@@ -150,11 +161,41 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case orderinfo.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				oi.ID = datasource.UUID(value.Int64)
 			}
-			oi.ID = int(value.Int64)
+		case orderinfo.FieldVersion:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field version", values[i])
+			} else if value.Valid {
+				oi.Version = value.Int64
+			}
+		case orderinfo.FieldCreatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_by", values[i])
+			} else if value.Valid {
+				oi.CreatedBy = datasource.UUID(value.Int64)
+			}
+		case orderinfo.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				oi.CreatedAt = value.Int64
+			}
+		case orderinfo.FieldUpdatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
+			} else if value.Valid {
+				oi.UpdatedBy = datasource.UUID(value.Int64)
+			}
+		case orderinfo.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				oi.UpdatedAt = value.Int64
+			}
 		case orderinfo.FieldRemoteStartID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field remote_start_id", values[i])
@@ -289,17 +330,17 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 			}
 		case orderinfo.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field connector_id", value)
+				return fmt.Errorf("unexpected type %T for field connector_id", values[i])
 			} else if value.Valid {
-				oi.connector_id = new(int)
-				*oi.connector_id = int(value.Int64)
+				oi.connector_id = new(datasource.UUID)
+				*oi.connector_id = datasource.UUID(value.Int64)
 			}
 		case orderinfo.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field equipment_id", value)
+				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
 			} else if value.Valid {
-				oi.equipment_id = new(int)
-				*oi.equipment_id = int(value.Int64)
+				oi.equipment_id = new(datasource.UUID)
+				*oi.equipment_id = datasource.UUID(value.Int64)
 			}
 		}
 	}
@@ -344,6 +385,21 @@ func (oi *OrderInfo) String() string {
 	var builder strings.Builder
 	builder.WriteString("OrderInfo(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", oi.ID))
+	builder.WriteString("version=")
+	builder.WriteString(fmt.Sprintf("%v", oi.Version))
+	builder.WriteString(", ")
+	builder.WriteString("created_by=")
+	builder.WriteString(fmt.Sprintf("%v", oi.CreatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(fmt.Sprintf("%v", oi.CreatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("updated_by=")
+	builder.WriteString(fmt.Sprintf("%v", oi.UpdatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(fmt.Sprintf("%v", oi.UpdatedAt))
+	builder.WriteString(", ")
 	builder.WriteString("remote_start_id=")
 	builder.WriteString(fmt.Sprintf("%v", oi.RemoteStartID))
 	builder.WriteString(", ")

@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/predicate"
 	"github.com/Kotodian/ent-practice/ent/smartchargingevent"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // SmartChargingEventQuery is the builder for querying SmartChargingEvent entities.
@@ -83,8 +84,8 @@ func (sceq *SmartChargingEventQuery) FirstX(ctx context.Context) *SmartChargingE
 
 // FirstID returns the first SmartChargingEvent ID from the query.
 // Returns a *NotFoundError when no SmartChargingEvent ID was found.
-func (sceq *SmartChargingEventQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (sceq *SmartChargingEventQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = sceq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -96,7 +97,7 @@ func (sceq *SmartChargingEventQuery) FirstID(ctx context.Context) (id int, err e
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (sceq *SmartChargingEventQuery) FirstIDX(ctx context.Context) int {
+func (sceq *SmartChargingEventQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := sceq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -134,8 +135,8 @@ func (sceq *SmartChargingEventQuery) OnlyX(ctx context.Context) *SmartChargingEv
 // OnlyID is like Only, but returns the only SmartChargingEvent ID in the query.
 // Returns a *NotSingularError when more than one SmartChargingEvent ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (sceq *SmartChargingEventQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (sceq *SmartChargingEventQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = sceq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -151,7 +152,7 @@ func (sceq *SmartChargingEventQuery) OnlyID(ctx context.Context) (id int, err er
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (sceq *SmartChargingEventQuery) OnlyIDX(ctx context.Context) int {
+func (sceq *SmartChargingEventQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := sceq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -177,8 +178,8 @@ func (sceq *SmartChargingEventQuery) AllX(ctx context.Context) []*SmartChargingE
 }
 
 // IDs executes the query and returns a list of SmartChargingEvent IDs.
-func (sceq *SmartChargingEventQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (sceq *SmartChargingEventQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := sceq.Select(smartchargingevent.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -186,7 +187,7 @@ func (sceq *SmartChargingEventQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (sceq *SmartChargingEventQuery) IDsX(ctx context.Context) []int {
+func (sceq *SmartChargingEventQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := sceq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -253,12 +254,12 @@ func (sceq *SmartChargingEventQuery) Clone() *SmartChargingEventQuery {
 // Example:
 //
 //	var v []struct {
-//		SmartID datasource.UUID `json:"smart_id,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.SmartChargingEvent.Query().
-//		GroupBy(smartchargingevent.FieldSmartID).
+//		GroupBy(smartchargingevent.FieldVersion).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (sceq *SmartChargingEventQuery) GroupBy(field string, fields ...string) *SmartChargingEventGroupBy {
@@ -281,11 +282,11 @@ func (sceq *SmartChargingEventQuery) GroupBy(field string, fields ...string) *Sm
 // Example:
 //
 //	var v []struct {
-//		SmartID datasource.UUID `json:"smart_id,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //	}
 //
 //	client.SmartChargingEvent.Query().
-//		Select(smartchargingevent.FieldSmartID).
+//		Select(smartchargingevent.FieldVersion).
 //		Scan(ctx, &v)
 func (sceq *SmartChargingEventQuery) Select(fields ...string) *SmartChargingEventSelect {
 	sceq.fields = append(sceq.fields, fields...)
@@ -362,7 +363,7 @@ func (sceq *SmartChargingEventQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   smartchargingevent.Table,
 			Columns: smartchargingevent.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: smartchargingevent.FieldID,
 			},
 		},

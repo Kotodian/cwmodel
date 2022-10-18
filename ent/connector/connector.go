@@ -3,9 +3,7 @@
 package connector
 
 import (
-	"fmt"
-
-	"github.com/Kotodian/ent-practice/ent/types"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 const (
@@ -13,6 +11,16 @@ const (
 	Label = "connector"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldVersion holds the string denoting the version field in the database.
+	FieldVersion = "version"
+	// FieldCreatedBy holds the string denoting the created_by field in the database.
+	FieldCreatedBy = "created_by"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedBy holds the string denoting the updated_by field in the database.
+	FieldUpdatedBy = "updated_by"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// FieldEquipmentSn holds the string denoting the equipment_sn field in the database.
 	FieldEquipmentSn = "equipment_sn"
 	// FieldEvseSerial holds the string denoting the evse_serial field in the database.
@@ -39,7 +47,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "evse" package.
 	EvseInverseTable = "base_evse"
 	// EvseColumn is the table column denoting the evse relation/edge.
-	EvseColumn = "evse_connector"
+	EvseColumn = "evse_id"
 	// EquipmentTable is the table that holds the equipment relation/edge.
 	EquipmentTable = "base_connector"
 	// EquipmentInverseTable is the table name for the Equipment entity.
@@ -66,6 +74,11 @@ const (
 // Columns holds all SQL columns for connector fields.
 var Columns = []string{
 	FieldID,
+	FieldVersion,
+	FieldCreatedBy,
+	FieldCreatedAt,
+	FieldUpdatedBy,
+	FieldUpdatedAt,
 	FieldEquipmentSn,
 	FieldEvseSerial,
 	FieldSerial,
@@ -77,7 +90,7 @@ var Columns = []string{
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
 	"equipment_id",
-	"evse_connector",
+	"evse_id",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -95,22 +108,17 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// CurrentStateValidator is a validator for the "current_state" field enum values. It is called by the builders before save.
-func CurrentStateValidator(cs types.ConnectorState) error {
-	switch cs.String() {
-	case "unavailable", "available", "occcupied", "reserved", "faulted":
-		return nil
-	default:
-		return fmt.Errorf("connector: invalid enum value for current_state field: %q", cs)
-	}
-}
-
-// BeforeStateValidator is a validator for the "before_state" field enum values. It is called by the builders before save.
-func BeforeStateValidator(bs types.ConnectorState) error {
-	switch bs.String() {
-	case "unavailable", "available", "occcupied", "reserved", "faulted":
-		return nil
-	default:
-		return fmt.Errorf("connector: invalid enum value for before_state field: %q", bs)
-	}
-}
+var (
+	// DefaultVersion holds the default value on creation for the "version" field.
+	DefaultVersion int64
+	// DefaultCreatedBy holds the default value on creation for the "created_by" field.
+	DefaultCreatedBy datasource.UUID
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt int64
+	// DefaultUpdatedBy holds the default value on creation for the "updated_by" field.
+	DefaultUpdatedBy datasource.UUID
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt int64
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID datasource.UUID
+)

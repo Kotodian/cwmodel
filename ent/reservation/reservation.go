@@ -2,11 +2,25 @@
 
 package reservation
 
+import (
+	"github.com/Kotodian/gokit/datasource"
+)
+
 const (
 	// Label holds the string label denoting the reservation type in the database.
 	Label = "reservation"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldVersion holds the string denoting the version field in the database.
+	FieldVersion = "version"
+	// FieldCreatedBy holds the string denoting the created_by field in the database.
+	FieldCreatedBy = "created_by"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedBy holds the string denoting the updated_by field in the database.
+	FieldUpdatedBy = "updated_by"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// FieldReservationID holds the string denoting the reservation_id field in the database.
 	FieldReservationID = "reservation_id"
 	// FieldAuthorizationMode holds the string denoting the authorization_mode field in the database.
@@ -46,6 +60,11 @@ const (
 // Columns holds all SQL columns for reservation fields.
 var Columns = []string{
 	FieldID,
+	FieldVersion,
+	FieldCreatedBy,
+	FieldCreatedAt,
+	FieldUpdatedBy,
+	FieldUpdatedAt,
 	FieldReservationID,
 	FieldAuthorizationMode,
 	FieldAuthorizationID,
@@ -76,3 +95,18 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultVersion holds the default value on creation for the "version" field.
+	DefaultVersion int64
+	// DefaultCreatedBy holds the default value on creation for the "created_by" field.
+	DefaultCreatedBy datasource.UUID
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt int64
+	// DefaultUpdatedBy holds the default value on creation for the "updated_by" field.
+	DefaultUpdatedBy datasource.UUID
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt int64
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID datasource.UUID
+)

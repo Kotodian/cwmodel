@@ -2,11 +2,25 @@
 
 package evse
 
+import (
+	"github.com/Kotodian/gokit/datasource"
+)
+
 const (
 	// Label holds the string label denoting the evse type in the database.
 	Label = "evse"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldVersion holds the string denoting the version field in the database.
+	FieldVersion = "version"
+	// FieldCreatedBy holds the string denoting the created_by field in the database.
+	FieldCreatedBy = "created_by"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedBy holds the string denoting the updated_by field in the database.
+	FieldUpdatedBy = "updated_by"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// FieldSerial holds the string denoting the serial field in the database.
 	FieldSerial = "serial"
 	// FieldConnectorNumber holds the string denoting the connector_number field in the database.
@@ -30,12 +44,17 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "connector" package.
 	ConnectorInverseTable = "base_connector"
 	// ConnectorColumn is the table column denoting the connector relation/edge.
-	ConnectorColumn = "evse_connector"
+	ConnectorColumn = "evse_id"
 )
 
 // Columns holds all SQL columns for evse fields.
 var Columns = []string{
 	FieldID,
+	FieldVersion,
+	FieldCreatedBy,
+	FieldCreatedAt,
+	FieldUpdatedBy,
+	FieldUpdatedAt,
 	FieldSerial,
 	FieldConnectorNumber,
 }
@@ -60,3 +79,18 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultVersion holds the default value on creation for the "version" field.
+	DefaultVersion int64
+	// DefaultCreatedBy holds the default value on creation for the "created_by" field.
+	DefaultCreatedBy datasource.UUID
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt int64
+	// DefaultUpdatedBy holds the default value on creation for the "updated_by" field.
+	DefaultUpdatedBy datasource.UUID
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt int64
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID datasource.UUID
+)

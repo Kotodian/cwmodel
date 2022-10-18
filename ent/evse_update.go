@@ -14,6 +14,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EvseUpdate is the builder for updating Evse entities.
@@ -26,6 +27,69 @@ type EvseUpdate struct {
 // Where appends a list predicates to the EvseUpdate builder.
 func (eu *EvseUpdate) Where(ps ...predicate.Evse) *EvseUpdate {
 	eu.mutation.Where(ps...)
+	return eu
+}
+
+// SetVersion sets the "version" field.
+func (eu *EvseUpdate) SetVersion(i int64) *EvseUpdate {
+	eu.mutation.ResetVersion()
+	eu.mutation.SetVersion(i)
+	return eu
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (eu *EvseUpdate) SetNillableVersion(i *int64) *EvseUpdate {
+	if i != nil {
+		eu.SetVersion(*i)
+	}
+	return eu
+}
+
+// AddVersion adds i to the "version" field.
+func (eu *EvseUpdate) AddVersion(i int64) *EvseUpdate {
+	eu.mutation.AddVersion(i)
+	return eu
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (eu *EvseUpdate) SetUpdatedBy(d datasource.UUID) *EvseUpdate {
+	eu.mutation.ResetUpdatedBy()
+	eu.mutation.SetUpdatedBy(d)
+	return eu
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (eu *EvseUpdate) SetNillableUpdatedBy(d *datasource.UUID) *EvseUpdate {
+	if d != nil {
+		eu.SetUpdatedBy(*d)
+	}
+	return eu
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (eu *EvseUpdate) AddUpdatedBy(d datasource.UUID) *EvseUpdate {
+	eu.mutation.AddUpdatedBy(d)
+	return eu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (eu *EvseUpdate) SetUpdatedAt(i int64) *EvseUpdate {
+	eu.mutation.ResetUpdatedAt()
+	eu.mutation.SetUpdatedAt(i)
+	return eu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (eu *EvseUpdate) SetNillableUpdatedAt(i *int64) *EvseUpdate {
+	if i != nil {
+		eu.SetUpdatedAt(*i)
+	}
+	return eu
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (eu *EvseUpdate) AddUpdatedAt(i int64) *EvseUpdate {
+	eu.mutation.AddUpdatedAt(i)
 	return eu
 }
 
@@ -49,7 +113,7 @@ func (eu *EvseUpdate) AddConnectorNumber(i int) *EvseUpdate {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eu *EvseUpdate) SetEquipmentID(id int) *EvseUpdate {
+func (eu *EvseUpdate) SetEquipmentID(id datasource.UUID) *EvseUpdate {
 	eu.mutation.SetEquipmentID(id)
 	return eu
 }
@@ -60,14 +124,14 @@ func (eu *EvseUpdate) SetEquipment(e *Equipment) *EvseUpdate {
 }
 
 // AddConnectorIDs adds the "connector" edge to the Connector entity by IDs.
-func (eu *EvseUpdate) AddConnectorIDs(ids ...int) *EvseUpdate {
+func (eu *EvseUpdate) AddConnectorIDs(ids ...datasource.UUID) *EvseUpdate {
 	eu.mutation.AddConnectorIDs(ids...)
 	return eu
 }
 
 // AddConnector adds the "connector" edges to the Connector entity.
 func (eu *EvseUpdate) AddConnector(c ...*Connector) *EvseUpdate {
-	ids := make([]int, len(c))
+	ids := make([]datasource.UUID, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -92,14 +156,14 @@ func (eu *EvseUpdate) ClearConnector() *EvseUpdate {
 }
 
 // RemoveConnectorIDs removes the "connector" edge to Connector entities by IDs.
-func (eu *EvseUpdate) RemoveConnectorIDs(ids ...int) *EvseUpdate {
+func (eu *EvseUpdate) RemoveConnectorIDs(ids ...datasource.UUID) *EvseUpdate {
 	eu.mutation.RemoveConnectorIDs(ids...)
 	return eu
 }
 
 // RemoveConnector removes "connector" edges to Connector entities.
 func (eu *EvseUpdate) RemoveConnector(c ...*Connector) *EvseUpdate {
-	ids := make([]int, len(c))
+	ids := make([]datasource.UUID, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -180,7 +244,7 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   evse.Table,
 			Columns: evse.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: evse.FieldID,
 			},
 		},
@@ -191,6 +255,48 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := eu.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: evse.FieldVersion,
+		})
+	}
+	if value, ok := eu.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: evse.FieldVersion,
+		})
+	}
+	if value, ok := eu.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: evse.FieldUpdatedBy,
+		})
+	}
+	if value, ok := eu.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: evse.FieldUpdatedBy,
+		})
+	}
+	if value, ok := eu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: evse.FieldUpdatedAt,
+		})
+	}
+	if value, ok := eu.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: evse.FieldUpdatedAt,
+		})
 	}
 	if value, ok := eu.mutation.Serial(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -222,7 +328,7 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -238,7 +344,7 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -257,7 +363,7 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -273,7 +379,7 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -292,7 +398,7 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -321,6 +427,69 @@ type EvseUpdateOne struct {
 	mutation *EvseMutation
 }
 
+// SetVersion sets the "version" field.
+func (euo *EvseUpdateOne) SetVersion(i int64) *EvseUpdateOne {
+	euo.mutation.ResetVersion()
+	euo.mutation.SetVersion(i)
+	return euo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (euo *EvseUpdateOne) SetNillableVersion(i *int64) *EvseUpdateOne {
+	if i != nil {
+		euo.SetVersion(*i)
+	}
+	return euo
+}
+
+// AddVersion adds i to the "version" field.
+func (euo *EvseUpdateOne) AddVersion(i int64) *EvseUpdateOne {
+	euo.mutation.AddVersion(i)
+	return euo
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (euo *EvseUpdateOne) SetUpdatedBy(d datasource.UUID) *EvseUpdateOne {
+	euo.mutation.ResetUpdatedBy()
+	euo.mutation.SetUpdatedBy(d)
+	return euo
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (euo *EvseUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *EvseUpdateOne {
+	if d != nil {
+		euo.SetUpdatedBy(*d)
+	}
+	return euo
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (euo *EvseUpdateOne) AddUpdatedBy(d datasource.UUID) *EvseUpdateOne {
+	euo.mutation.AddUpdatedBy(d)
+	return euo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (euo *EvseUpdateOne) SetUpdatedAt(i int64) *EvseUpdateOne {
+	euo.mutation.ResetUpdatedAt()
+	euo.mutation.SetUpdatedAt(i)
+	return euo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (euo *EvseUpdateOne) SetNillableUpdatedAt(i *int64) *EvseUpdateOne {
+	if i != nil {
+		euo.SetUpdatedAt(*i)
+	}
+	return euo
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (euo *EvseUpdateOne) AddUpdatedAt(i int64) *EvseUpdateOne {
+	euo.mutation.AddUpdatedAt(i)
+	return euo
+}
+
 // SetSerial sets the "serial" field.
 func (euo *EvseUpdateOne) SetSerial(s string) *EvseUpdateOne {
 	euo.mutation.SetSerial(s)
@@ -341,7 +510,7 @@ func (euo *EvseUpdateOne) AddConnectorNumber(i int) *EvseUpdateOne {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (euo *EvseUpdateOne) SetEquipmentID(id int) *EvseUpdateOne {
+func (euo *EvseUpdateOne) SetEquipmentID(id datasource.UUID) *EvseUpdateOne {
 	euo.mutation.SetEquipmentID(id)
 	return euo
 }
@@ -352,14 +521,14 @@ func (euo *EvseUpdateOne) SetEquipment(e *Equipment) *EvseUpdateOne {
 }
 
 // AddConnectorIDs adds the "connector" edge to the Connector entity by IDs.
-func (euo *EvseUpdateOne) AddConnectorIDs(ids ...int) *EvseUpdateOne {
+func (euo *EvseUpdateOne) AddConnectorIDs(ids ...datasource.UUID) *EvseUpdateOne {
 	euo.mutation.AddConnectorIDs(ids...)
 	return euo
 }
 
 // AddConnector adds the "connector" edges to the Connector entity.
 func (euo *EvseUpdateOne) AddConnector(c ...*Connector) *EvseUpdateOne {
-	ids := make([]int, len(c))
+	ids := make([]datasource.UUID, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -384,14 +553,14 @@ func (euo *EvseUpdateOne) ClearConnector() *EvseUpdateOne {
 }
 
 // RemoveConnectorIDs removes the "connector" edge to Connector entities by IDs.
-func (euo *EvseUpdateOne) RemoveConnectorIDs(ids ...int) *EvseUpdateOne {
+func (euo *EvseUpdateOne) RemoveConnectorIDs(ids ...datasource.UUID) *EvseUpdateOne {
 	euo.mutation.RemoveConnectorIDs(ids...)
 	return euo
 }
 
 // RemoveConnector removes "connector" edges to Connector entities.
 func (euo *EvseUpdateOne) RemoveConnector(c ...*Connector) *EvseUpdateOne {
-	ids := make([]int, len(c))
+	ids := make([]datasource.UUID, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -485,7 +654,7 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 			Table:   evse.Table,
 			Columns: evse.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: evse.FieldID,
 			},
 		},
@@ -513,6 +682,48 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := euo.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: evse.FieldVersion,
+		})
+	}
+	if value, ok := euo.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: evse.FieldVersion,
+		})
+	}
+	if value, ok := euo.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: evse.FieldUpdatedBy,
+		})
+	}
+	if value, ok := euo.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: evse.FieldUpdatedBy,
+		})
+	}
+	if value, ok := euo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: evse.FieldUpdatedAt,
+		})
+	}
+	if value, ok := euo.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: evse.FieldUpdatedAt,
+		})
 	}
 	if value, ok := euo.mutation.Serial(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -544,7 +755,7 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -560,7 +771,7 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -579,7 +790,7 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -595,7 +806,7 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -614,7 +825,7 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},

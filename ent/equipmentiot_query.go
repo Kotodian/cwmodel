@@ -13,6 +13,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentiot"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentIotQuery is the builder for querying EquipmentIot entities.
@@ -108,8 +109,8 @@ func (eiq *EquipmentIotQuery) FirstX(ctx context.Context) *EquipmentIot {
 
 // FirstID returns the first EquipmentIot ID from the query.
 // Returns a *NotFoundError when no EquipmentIot ID was found.
-func (eiq *EquipmentIotQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (eiq *EquipmentIotQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = eiq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -121,7 +122,7 @@ func (eiq *EquipmentIotQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (eiq *EquipmentIotQuery) FirstIDX(ctx context.Context) int {
+func (eiq *EquipmentIotQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := eiq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -159,8 +160,8 @@ func (eiq *EquipmentIotQuery) OnlyX(ctx context.Context) *EquipmentIot {
 // OnlyID is like Only, but returns the only EquipmentIot ID in the query.
 // Returns a *NotSingularError when more than one EquipmentIot ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (eiq *EquipmentIotQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (eiq *EquipmentIotQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = eiq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -176,7 +177,7 @@ func (eiq *EquipmentIotQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (eiq *EquipmentIotQuery) OnlyIDX(ctx context.Context) int {
+func (eiq *EquipmentIotQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := eiq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -202,8 +203,8 @@ func (eiq *EquipmentIotQuery) AllX(ctx context.Context) []*EquipmentIot {
 }
 
 // IDs executes the query and returns a list of EquipmentIot IDs.
-func (eiq *EquipmentIotQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (eiq *EquipmentIotQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := eiq.Select(equipmentiot.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -211,7 +212,7 @@ func (eiq *EquipmentIotQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (eiq *EquipmentIotQuery) IDsX(ctx context.Context) []int {
+func (eiq *EquipmentIotQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := eiq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -290,12 +291,12 @@ func (eiq *EquipmentIotQuery) WithEquipment(opts ...func(*EquipmentQuery)) *Equi
 // Example:
 //
 //	var v []struct {
-//		Iccid string `json:"iccid,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.EquipmentIot.Query().
-//		GroupBy(equipmentiot.FieldIccid).
+//		GroupBy(equipmentiot.FieldVersion).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (eiq *EquipmentIotQuery) GroupBy(field string, fields ...string) *EquipmentIotGroupBy {
@@ -318,11 +319,11 @@ func (eiq *EquipmentIotQuery) GroupBy(field string, fields ...string) *Equipment
 // Example:
 //
 //	var v []struct {
-//		Iccid string `json:"iccid,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //	}
 //
 //	client.EquipmentIot.Query().
-//		Select(equipmentiot.FieldIccid).
+//		Select(equipmentiot.FieldVersion).
 //		Scan(ctx, &v)
 func (eiq *EquipmentIotQuery) Select(fields ...string) *EquipmentIotSelect {
 	eiq.fields = append(eiq.fields, fields...)
@@ -391,8 +392,8 @@ func (eiq *EquipmentIotQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 }
 
 func (eiq *EquipmentIotQuery) loadEquipment(ctx context.Context, query *EquipmentQuery, nodes []*EquipmentIot, init func(*EquipmentIot), assign func(*EquipmentIot, *Equipment)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*EquipmentIot)
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*EquipmentIot)
 	for i := range nodes {
 		if nodes[i].equipment_id == nil {
 			continue
@@ -446,7 +447,7 @@ func (eiq *EquipmentIotQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   equipmentiot.Table,
 			Columns: equipmentiot.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentiot.FieldID,
 			},
 		},

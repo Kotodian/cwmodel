@@ -14,7 +14,7 @@ type EquipmentInfo struct {
 	ent.Schema
 }
 
-func (EquipmentInfo) Mixins() []ent.Mixin {
+func (EquipmentInfo) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}

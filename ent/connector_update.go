@@ -16,7 +16,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
 	"github.com/Kotodian/ent-practice/ent/reservation"
-	"github.com/Kotodian/ent-practice/ent/types"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // ConnectorUpdate is the builder for updating Connector entities.
@@ -29,6 +29,69 @@ type ConnectorUpdate struct {
 // Where appends a list predicates to the ConnectorUpdate builder.
 func (cu *ConnectorUpdate) Where(ps ...predicate.Connector) *ConnectorUpdate {
 	cu.mutation.Where(ps...)
+	return cu
+}
+
+// SetVersion sets the "version" field.
+func (cu *ConnectorUpdate) SetVersion(i int64) *ConnectorUpdate {
+	cu.mutation.ResetVersion()
+	cu.mutation.SetVersion(i)
+	return cu
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (cu *ConnectorUpdate) SetNillableVersion(i *int64) *ConnectorUpdate {
+	if i != nil {
+		cu.SetVersion(*i)
+	}
+	return cu
+}
+
+// AddVersion adds i to the "version" field.
+func (cu *ConnectorUpdate) AddVersion(i int64) *ConnectorUpdate {
+	cu.mutation.AddVersion(i)
+	return cu
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (cu *ConnectorUpdate) SetUpdatedBy(d datasource.UUID) *ConnectorUpdate {
+	cu.mutation.ResetUpdatedBy()
+	cu.mutation.SetUpdatedBy(d)
+	return cu
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (cu *ConnectorUpdate) SetNillableUpdatedBy(d *datasource.UUID) *ConnectorUpdate {
+	if d != nil {
+		cu.SetUpdatedBy(*d)
+	}
+	return cu
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (cu *ConnectorUpdate) AddUpdatedBy(d datasource.UUID) *ConnectorUpdate {
+	cu.mutation.AddUpdatedBy(d)
+	return cu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (cu *ConnectorUpdate) SetUpdatedAt(i int64) *ConnectorUpdate {
+	cu.mutation.ResetUpdatedAt()
+	cu.mutation.SetUpdatedAt(i)
+	return cu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (cu *ConnectorUpdate) SetNillableUpdatedAt(i *int64) *ConnectorUpdate {
+	if i != nil {
+		cu.SetUpdatedAt(*i)
+	}
+	return cu
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (cu *ConnectorUpdate) AddUpdatedAt(i int64) *ConnectorUpdate {
+	cu.mutation.AddUpdatedAt(i)
 	return cu
 }
 
@@ -51,19 +114,33 @@ func (cu *ConnectorUpdate) SetSerial(s string) *ConnectorUpdate {
 }
 
 // SetCurrentState sets the "current_state" field.
-func (cu *ConnectorUpdate) SetCurrentState(ts types.ConnectorState) *ConnectorUpdate {
-	cu.mutation.SetCurrentState(ts)
+func (cu *ConnectorUpdate) SetCurrentState(i int) *ConnectorUpdate {
+	cu.mutation.ResetCurrentState()
+	cu.mutation.SetCurrentState(i)
+	return cu
+}
+
+// AddCurrentState adds i to the "current_state" field.
+func (cu *ConnectorUpdate) AddCurrentState(i int) *ConnectorUpdate {
+	cu.mutation.AddCurrentState(i)
 	return cu
 }
 
 // SetBeforeState sets the "before_state" field.
-func (cu *ConnectorUpdate) SetBeforeState(ts types.ConnectorState) *ConnectorUpdate {
-	cu.mutation.SetBeforeState(ts)
+func (cu *ConnectorUpdate) SetBeforeState(i int) *ConnectorUpdate {
+	cu.mutation.ResetBeforeState()
+	cu.mutation.SetBeforeState(i)
+	return cu
+}
+
+// AddBeforeState adds i to the "before_state" field.
+func (cu *ConnectorUpdate) AddBeforeState(i int) *ConnectorUpdate {
+	cu.mutation.AddBeforeState(i)
 	return cu
 }
 
 // SetEvseID sets the "evse" edge to the Evse entity by ID.
-func (cu *ConnectorUpdate) SetEvseID(id int) *ConnectorUpdate {
+func (cu *ConnectorUpdate) SetEvseID(id datasource.UUID) *ConnectorUpdate {
 	cu.mutation.SetEvseID(id)
 	return cu
 }
@@ -74,7 +151,7 @@ func (cu *ConnectorUpdate) SetEvse(e *Evse) *ConnectorUpdate {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (cu *ConnectorUpdate) SetEquipmentID(id int) *ConnectorUpdate {
+func (cu *ConnectorUpdate) SetEquipmentID(id datasource.UUID) *ConnectorUpdate {
 	cu.mutation.SetEquipmentID(id)
 	return cu
 }
@@ -85,14 +162,14 @@ func (cu *ConnectorUpdate) SetEquipment(e *Equipment) *ConnectorUpdate {
 }
 
 // AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
-func (cu *ConnectorUpdate) AddOrderInfoIDs(ids ...int) *ConnectorUpdate {
+func (cu *ConnectorUpdate) AddOrderInfoIDs(ids ...datasource.UUID) *ConnectorUpdate {
 	cu.mutation.AddOrderInfoIDs(ids...)
 	return cu
 }
 
 // AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
 func (cu *ConnectorUpdate) AddOrderInfo(o ...*OrderInfo) *ConnectorUpdate {
-	ids := make([]int, len(o))
+	ids := make([]datasource.UUID, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
@@ -100,14 +177,14 @@ func (cu *ConnectorUpdate) AddOrderInfo(o ...*OrderInfo) *ConnectorUpdate {
 }
 
 // AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
-func (cu *ConnectorUpdate) AddReservationIDs(ids ...int) *ConnectorUpdate {
+func (cu *ConnectorUpdate) AddReservationIDs(ids ...datasource.UUID) *ConnectorUpdate {
 	cu.mutation.AddReservationIDs(ids...)
 	return cu
 }
 
 // AddReservation adds the "reservation" edges to the Reservation entity.
 func (cu *ConnectorUpdate) AddReservation(r ...*Reservation) *ConnectorUpdate {
-	ids := make([]int, len(r))
+	ids := make([]datasource.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -138,14 +215,14 @@ func (cu *ConnectorUpdate) ClearOrderInfo() *ConnectorUpdate {
 }
 
 // RemoveOrderInfoIDs removes the "order_info" edge to OrderInfo entities by IDs.
-func (cu *ConnectorUpdate) RemoveOrderInfoIDs(ids ...int) *ConnectorUpdate {
+func (cu *ConnectorUpdate) RemoveOrderInfoIDs(ids ...datasource.UUID) *ConnectorUpdate {
 	cu.mutation.RemoveOrderInfoIDs(ids...)
 	return cu
 }
 
 // RemoveOrderInfo removes "order_info" edges to OrderInfo entities.
 func (cu *ConnectorUpdate) RemoveOrderInfo(o ...*OrderInfo) *ConnectorUpdate {
-	ids := make([]int, len(o))
+	ids := make([]datasource.UUID, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
@@ -159,14 +236,14 @@ func (cu *ConnectorUpdate) ClearReservation() *ConnectorUpdate {
 }
 
 // RemoveReservationIDs removes the "reservation" edge to Reservation entities by IDs.
-func (cu *ConnectorUpdate) RemoveReservationIDs(ids ...int) *ConnectorUpdate {
+func (cu *ConnectorUpdate) RemoveReservationIDs(ids ...datasource.UUID) *ConnectorUpdate {
 	cu.mutation.RemoveReservationIDs(ids...)
 	return cu
 }
 
 // RemoveReservation removes "reservation" edges to Reservation entities.
 func (cu *ConnectorUpdate) RemoveReservation(r ...*Reservation) *ConnectorUpdate {
-	ids := make([]int, len(r))
+	ids := make([]datasource.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -235,16 +312,6 @@ func (cu *ConnectorUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (cu *ConnectorUpdate) check() error {
-	if v, ok := cu.mutation.CurrentState(); ok {
-		if err := connector.CurrentStateValidator(v); err != nil {
-			return &ValidationError{Name: "current_state", err: fmt.Errorf(`ent: validator failed for field "Connector.current_state": %w`, err)}
-		}
-	}
-	if v, ok := cu.mutation.BeforeState(); ok {
-		if err := connector.BeforeStateValidator(v); err != nil {
-			return &ValidationError{Name: "before_state", err: fmt.Errorf(`ent: validator failed for field "Connector.before_state": %w`, err)}
-		}
-	}
 	if _, ok := cu.mutation.EvseID(); cu.mutation.EvseCleared() && !ok {
 		return errors.New(`ent: clearing a required unique edge "Connector.evse"`)
 	}
@@ -260,7 +327,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   connector.Table,
 			Columns: connector.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: connector.FieldID,
 			},
 		},
@@ -271,6 +338,48 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := cu.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: connector.FieldVersion,
+		})
+	}
+	if value, ok := cu.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: connector.FieldVersion,
+		})
+	}
+	if value, ok := cu.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: connector.FieldUpdatedBy,
+		})
+	}
+	if value, ok := cu.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: connector.FieldUpdatedBy,
+		})
+	}
+	if value, ok := cu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: connector.FieldUpdatedAt,
+		})
+	}
+	if value, ok := cu.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: connector.FieldUpdatedAt,
+		})
 	}
 	if value, ok := cu.mutation.EquipmentSn(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -295,14 +404,28 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := cu.mutation.CurrentState(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: connector.FieldCurrentState,
+		})
+	}
+	if value, ok := cu.mutation.AddedCurrentState(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: connector.FieldCurrentState,
 		})
 	}
 	if value, ok := cu.mutation.BeforeState(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: connector.FieldBeforeState,
+		})
+	}
+	if value, ok := cu.mutation.AddedBeforeState(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: connector.FieldBeforeState,
 		})
@@ -316,7 +439,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: evse.FieldID,
 				},
 			},
@@ -332,7 +455,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: evse.FieldID,
 				},
 			},
@@ -351,7 +474,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -367,7 +490,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -386,7 +509,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -402,7 +525,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -421,7 +544,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -440,7 +563,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},
@@ -456,7 +579,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},
@@ -475,7 +598,7 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},
@@ -504,6 +627,69 @@ type ConnectorUpdateOne struct {
 	mutation *ConnectorMutation
 }
 
+// SetVersion sets the "version" field.
+func (cuo *ConnectorUpdateOne) SetVersion(i int64) *ConnectorUpdateOne {
+	cuo.mutation.ResetVersion()
+	cuo.mutation.SetVersion(i)
+	return cuo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (cuo *ConnectorUpdateOne) SetNillableVersion(i *int64) *ConnectorUpdateOne {
+	if i != nil {
+		cuo.SetVersion(*i)
+	}
+	return cuo
+}
+
+// AddVersion adds i to the "version" field.
+func (cuo *ConnectorUpdateOne) AddVersion(i int64) *ConnectorUpdateOne {
+	cuo.mutation.AddVersion(i)
+	return cuo
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (cuo *ConnectorUpdateOne) SetUpdatedBy(d datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.ResetUpdatedBy()
+	cuo.mutation.SetUpdatedBy(d)
+	return cuo
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (cuo *ConnectorUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *ConnectorUpdateOne {
+	if d != nil {
+		cuo.SetUpdatedBy(*d)
+	}
+	return cuo
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (cuo *ConnectorUpdateOne) AddUpdatedBy(d datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.AddUpdatedBy(d)
+	return cuo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (cuo *ConnectorUpdateOne) SetUpdatedAt(i int64) *ConnectorUpdateOne {
+	cuo.mutation.ResetUpdatedAt()
+	cuo.mutation.SetUpdatedAt(i)
+	return cuo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (cuo *ConnectorUpdateOne) SetNillableUpdatedAt(i *int64) *ConnectorUpdateOne {
+	if i != nil {
+		cuo.SetUpdatedAt(*i)
+	}
+	return cuo
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (cuo *ConnectorUpdateOne) AddUpdatedAt(i int64) *ConnectorUpdateOne {
+	cuo.mutation.AddUpdatedAt(i)
+	return cuo
+}
+
 // SetEquipmentSn sets the "equipment_sn" field.
 func (cuo *ConnectorUpdateOne) SetEquipmentSn(s string) *ConnectorUpdateOne {
 	cuo.mutation.SetEquipmentSn(s)
@@ -523,19 +709,33 @@ func (cuo *ConnectorUpdateOne) SetSerial(s string) *ConnectorUpdateOne {
 }
 
 // SetCurrentState sets the "current_state" field.
-func (cuo *ConnectorUpdateOne) SetCurrentState(ts types.ConnectorState) *ConnectorUpdateOne {
-	cuo.mutation.SetCurrentState(ts)
+func (cuo *ConnectorUpdateOne) SetCurrentState(i int) *ConnectorUpdateOne {
+	cuo.mutation.ResetCurrentState()
+	cuo.mutation.SetCurrentState(i)
+	return cuo
+}
+
+// AddCurrentState adds i to the "current_state" field.
+func (cuo *ConnectorUpdateOne) AddCurrentState(i int) *ConnectorUpdateOne {
+	cuo.mutation.AddCurrentState(i)
 	return cuo
 }
 
 // SetBeforeState sets the "before_state" field.
-func (cuo *ConnectorUpdateOne) SetBeforeState(ts types.ConnectorState) *ConnectorUpdateOne {
-	cuo.mutation.SetBeforeState(ts)
+func (cuo *ConnectorUpdateOne) SetBeforeState(i int) *ConnectorUpdateOne {
+	cuo.mutation.ResetBeforeState()
+	cuo.mutation.SetBeforeState(i)
+	return cuo
+}
+
+// AddBeforeState adds i to the "before_state" field.
+func (cuo *ConnectorUpdateOne) AddBeforeState(i int) *ConnectorUpdateOne {
+	cuo.mutation.AddBeforeState(i)
 	return cuo
 }
 
 // SetEvseID sets the "evse" edge to the Evse entity by ID.
-func (cuo *ConnectorUpdateOne) SetEvseID(id int) *ConnectorUpdateOne {
+func (cuo *ConnectorUpdateOne) SetEvseID(id datasource.UUID) *ConnectorUpdateOne {
 	cuo.mutation.SetEvseID(id)
 	return cuo
 }
@@ -546,7 +746,7 @@ func (cuo *ConnectorUpdateOne) SetEvse(e *Evse) *ConnectorUpdateOne {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (cuo *ConnectorUpdateOne) SetEquipmentID(id int) *ConnectorUpdateOne {
+func (cuo *ConnectorUpdateOne) SetEquipmentID(id datasource.UUID) *ConnectorUpdateOne {
 	cuo.mutation.SetEquipmentID(id)
 	return cuo
 }
@@ -557,14 +757,14 @@ func (cuo *ConnectorUpdateOne) SetEquipment(e *Equipment) *ConnectorUpdateOne {
 }
 
 // AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
-func (cuo *ConnectorUpdateOne) AddOrderInfoIDs(ids ...int) *ConnectorUpdateOne {
+func (cuo *ConnectorUpdateOne) AddOrderInfoIDs(ids ...datasource.UUID) *ConnectorUpdateOne {
 	cuo.mutation.AddOrderInfoIDs(ids...)
 	return cuo
 }
 
 // AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
 func (cuo *ConnectorUpdateOne) AddOrderInfo(o ...*OrderInfo) *ConnectorUpdateOne {
-	ids := make([]int, len(o))
+	ids := make([]datasource.UUID, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
@@ -572,14 +772,14 @@ func (cuo *ConnectorUpdateOne) AddOrderInfo(o ...*OrderInfo) *ConnectorUpdateOne
 }
 
 // AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
-func (cuo *ConnectorUpdateOne) AddReservationIDs(ids ...int) *ConnectorUpdateOne {
+func (cuo *ConnectorUpdateOne) AddReservationIDs(ids ...datasource.UUID) *ConnectorUpdateOne {
 	cuo.mutation.AddReservationIDs(ids...)
 	return cuo
 }
 
 // AddReservation adds the "reservation" edges to the Reservation entity.
 func (cuo *ConnectorUpdateOne) AddReservation(r ...*Reservation) *ConnectorUpdateOne {
-	ids := make([]int, len(r))
+	ids := make([]datasource.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -610,14 +810,14 @@ func (cuo *ConnectorUpdateOne) ClearOrderInfo() *ConnectorUpdateOne {
 }
 
 // RemoveOrderInfoIDs removes the "order_info" edge to OrderInfo entities by IDs.
-func (cuo *ConnectorUpdateOne) RemoveOrderInfoIDs(ids ...int) *ConnectorUpdateOne {
+func (cuo *ConnectorUpdateOne) RemoveOrderInfoIDs(ids ...datasource.UUID) *ConnectorUpdateOne {
 	cuo.mutation.RemoveOrderInfoIDs(ids...)
 	return cuo
 }
 
 // RemoveOrderInfo removes "order_info" edges to OrderInfo entities.
 func (cuo *ConnectorUpdateOne) RemoveOrderInfo(o ...*OrderInfo) *ConnectorUpdateOne {
-	ids := make([]int, len(o))
+	ids := make([]datasource.UUID, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
@@ -631,14 +831,14 @@ func (cuo *ConnectorUpdateOne) ClearReservation() *ConnectorUpdateOne {
 }
 
 // RemoveReservationIDs removes the "reservation" edge to Reservation entities by IDs.
-func (cuo *ConnectorUpdateOne) RemoveReservationIDs(ids ...int) *ConnectorUpdateOne {
+func (cuo *ConnectorUpdateOne) RemoveReservationIDs(ids ...datasource.UUID) *ConnectorUpdateOne {
 	cuo.mutation.RemoveReservationIDs(ids...)
 	return cuo
 }
 
 // RemoveReservation removes "reservation" edges to Reservation entities.
 func (cuo *ConnectorUpdateOne) RemoveReservation(r ...*Reservation) *ConnectorUpdateOne {
-	ids := make([]int, len(r))
+	ids := make([]datasource.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -720,16 +920,6 @@ func (cuo *ConnectorUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (cuo *ConnectorUpdateOne) check() error {
-	if v, ok := cuo.mutation.CurrentState(); ok {
-		if err := connector.CurrentStateValidator(v); err != nil {
-			return &ValidationError{Name: "current_state", err: fmt.Errorf(`ent: validator failed for field "Connector.current_state": %w`, err)}
-		}
-	}
-	if v, ok := cuo.mutation.BeforeState(); ok {
-		if err := connector.BeforeStateValidator(v); err != nil {
-			return &ValidationError{Name: "before_state", err: fmt.Errorf(`ent: validator failed for field "Connector.before_state": %w`, err)}
-		}
-	}
 	if _, ok := cuo.mutation.EvseID(); cuo.mutation.EvseCleared() && !ok {
 		return errors.New(`ent: clearing a required unique edge "Connector.evse"`)
 	}
@@ -745,7 +935,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Table:   connector.Table,
 			Columns: connector.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: connector.FieldID,
 			},
 		},
@@ -774,6 +964,48 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			}
 		}
 	}
+	if value, ok := cuo.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: connector.FieldVersion,
+		})
+	}
+	if value, ok := cuo.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: connector.FieldVersion,
+		})
+	}
+	if value, ok := cuo.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: connector.FieldUpdatedBy,
+		})
+	}
+	if value, ok := cuo.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: connector.FieldUpdatedBy,
+		})
+	}
+	if value, ok := cuo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: connector.FieldUpdatedAt,
+		})
+	}
+	if value, ok := cuo.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: connector.FieldUpdatedAt,
+		})
+	}
 	if value, ok := cuo.mutation.EquipmentSn(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -797,14 +1029,28 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 	}
 	if value, ok := cuo.mutation.CurrentState(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: connector.FieldCurrentState,
+		})
+	}
+	if value, ok := cuo.mutation.AddedCurrentState(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: connector.FieldCurrentState,
 		})
 	}
 	if value, ok := cuo.mutation.BeforeState(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: connector.FieldBeforeState,
+		})
+	}
+	if value, ok := cuo.mutation.AddedBeforeState(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: connector.FieldBeforeState,
 		})
@@ -818,7 +1064,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: evse.FieldID,
 				},
 			},
@@ -834,7 +1080,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: evse.FieldID,
 				},
 			},
@@ -853,7 +1099,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -869,7 +1115,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -888,7 +1134,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -904,7 +1150,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -923,7 +1169,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -942,7 +1188,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},
@@ -958,7 +1204,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},
@@ -977,7 +1223,7 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},

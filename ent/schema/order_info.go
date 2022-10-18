@@ -13,7 +13,7 @@ type OrderInfo struct {
 	ent.Schema
 }
 
-func (OrderInfo) Mixins() []ent.Mixin {
+func (OrderInfo) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}

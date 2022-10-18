@@ -16,7 +16,7 @@ type ModelMixin struct {
 
 func (ModelMixin) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint64("id").GoType(datasource.UUID(0)).DefaultFunc(id.Next()).Immutable().Comment("主键"),
+		field.Uint64("id").GoType(datasource.UUID(0)).DefaultFunc(id.Next().Uint64()).Immutable().Comment("主键"),
 		field.Int64("version").Default(1).Comment("乐观锁"),
 		field.Uint64("created_by").Default(1).GoType(datasource.UUID(0)).Immutable().Comment("创建者"),
 		field.Int64("created_at").Default(time.Now().Unix()).Immutable().Comment("创建时间"),

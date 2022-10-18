@@ -11,7 +11,7 @@ type Model struct {
 	ent.Schema
 }
 
-func (Model) Mixins() []ent.Mixin {
+func (Model) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}
@@ -31,4 +31,3 @@ func (Model) Fields() []ent.Field {
 		field.String("current_category").Comment("电流类型"),
 	}
 }
-

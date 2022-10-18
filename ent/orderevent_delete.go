@@ -72,7 +72,7 @@ func (oed *OrderEventDelete) sqlExec(ctx context.Context) (int, error) {
 		Node: &sqlgraph.NodeSpec{
 			Table: orderevent.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: orderevent.FieldID,
 			},
 		},

@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/manufacturer"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // ManufacturerUpdate is the builder for updating Manufacturer entities.
@@ -24,6 +25,69 @@ type ManufacturerUpdate struct {
 // Where appends a list predicates to the ManufacturerUpdate builder.
 func (mu *ManufacturerUpdate) Where(ps ...predicate.Manufacturer) *ManufacturerUpdate {
 	mu.mutation.Where(ps...)
+	return mu
+}
+
+// SetVersion sets the "version" field.
+func (mu *ManufacturerUpdate) SetVersion(i int64) *ManufacturerUpdate {
+	mu.mutation.ResetVersion()
+	mu.mutation.SetVersion(i)
+	return mu
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (mu *ManufacturerUpdate) SetNillableVersion(i *int64) *ManufacturerUpdate {
+	if i != nil {
+		mu.SetVersion(*i)
+	}
+	return mu
+}
+
+// AddVersion adds i to the "version" field.
+func (mu *ManufacturerUpdate) AddVersion(i int64) *ManufacturerUpdate {
+	mu.mutation.AddVersion(i)
+	return mu
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (mu *ManufacturerUpdate) SetUpdatedBy(d datasource.UUID) *ManufacturerUpdate {
+	mu.mutation.ResetUpdatedBy()
+	mu.mutation.SetUpdatedBy(d)
+	return mu
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (mu *ManufacturerUpdate) SetNillableUpdatedBy(d *datasource.UUID) *ManufacturerUpdate {
+	if d != nil {
+		mu.SetUpdatedBy(*d)
+	}
+	return mu
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (mu *ManufacturerUpdate) AddUpdatedBy(d datasource.UUID) *ManufacturerUpdate {
+	mu.mutation.AddUpdatedBy(d)
+	return mu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (mu *ManufacturerUpdate) SetUpdatedAt(i int64) *ManufacturerUpdate {
+	mu.mutation.ResetUpdatedAt()
+	mu.mutation.SetUpdatedAt(i)
+	return mu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (mu *ManufacturerUpdate) SetNillableUpdatedAt(i *int64) *ManufacturerUpdate {
+	if i != nil {
+		mu.SetUpdatedAt(*i)
+	}
+	return mu
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (mu *ManufacturerUpdate) AddUpdatedAt(i int64) *ManufacturerUpdate {
+	mu.mutation.AddUpdatedAt(i)
 	return mu
 }
 
@@ -118,7 +182,7 @@ func (mu *ManufacturerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   manufacturer.Table,
 			Columns: manufacturer.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: manufacturer.FieldID,
 			},
 		},
@@ -129,6 +193,48 @@ func (mu *ManufacturerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := mu.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: manufacturer.FieldVersion,
+		})
+	}
+	if value, ok := mu.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: manufacturer.FieldVersion,
+		})
+	}
+	if value, ok := mu.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: manufacturer.FieldUpdatedBy,
+		})
+	}
+	if value, ok := mu.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: manufacturer.FieldUpdatedBy,
+		})
+	}
+	if value, ok := mu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: manufacturer.FieldUpdatedAt,
+		})
+	}
+	if value, ok := mu.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: manufacturer.FieldUpdatedAt,
+		})
 	}
 	if value, ok := mu.mutation.Code(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -167,6 +273,69 @@ type ManufacturerUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *ManufacturerMutation
+}
+
+// SetVersion sets the "version" field.
+func (muo *ManufacturerUpdateOne) SetVersion(i int64) *ManufacturerUpdateOne {
+	muo.mutation.ResetVersion()
+	muo.mutation.SetVersion(i)
+	return muo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (muo *ManufacturerUpdateOne) SetNillableVersion(i *int64) *ManufacturerUpdateOne {
+	if i != nil {
+		muo.SetVersion(*i)
+	}
+	return muo
+}
+
+// AddVersion adds i to the "version" field.
+func (muo *ManufacturerUpdateOne) AddVersion(i int64) *ManufacturerUpdateOne {
+	muo.mutation.AddVersion(i)
+	return muo
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (muo *ManufacturerUpdateOne) SetUpdatedBy(d datasource.UUID) *ManufacturerUpdateOne {
+	muo.mutation.ResetUpdatedBy()
+	muo.mutation.SetUpdatedBy(d)
+	return muo
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (muo *ManufacturerUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *ManufacturerUpdateOne {
+	if d != nil {
+		muo.SetUpdatedBy(*d)
+	}
+	return muo
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (muo *ManufacturerUpdateOne) AddUpdatedBy(d datasource.UUID) *ManufacturerUpdateOne {
+	muo.mutation.AddUpdatedBy(d)
+	return muo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (muo *ManufacturerUpdateOne) SetUpdatedAt(i int64) *ManufacturerUpdateOne {
+	muo.mutation.ResetUpdatedAt()
+	muo.mutation.SetUpdatedAt(i)
+	return muo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (muo *ManufacturerUpdateOne) SetNillableUpdatedAt(i *int64) *ManufacturerUpdateOne {
+	if i != nil {
+		muo.SetUpdatedAt(*i)
+	}
+	return muo
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (muo *ManufacturerUpdateOne) AddUpdatedAt(i int64) *ManufacturerUpdateOne {
+	muo.mutation.AddUpdatedAt(i)
+	return muo
 }
 
 // SetCode sets the "code" field.
@@ -273,7 +442,7 @@ func (muo *ManufacturerUpdateOne) sqlSave(ctx context.Context) (_node *Manufactu
 			Table:   manufacturer.Table,
 			Columns: manufacturer.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: manufacturer.FieldID,
 			},
 		},
@@ -301,6 +470,48 @@ func (muo *ManufacturerUpdateOne) sqlSave(ctx context.Context) (_node *Manufactu
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := muo.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: manufacturer.FieldVersion,
+		})
+	}
+	if value, ok := muo.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: manufacturer.FieldVersion,
+		})
+	}
+	if value, ok := muo.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: manufacturer.FieldUpdatedBy,
+		})
+	}
+	if value, ok := muo.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: manufacturer.FieldUpdatedBy,
+		})
+	}
+	if value, ok := muo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: manufacturer.FieldUpdatedAt,
+		})
+	}
+	if value, ok := muo.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: manufacturer.FieldUpdatedAt,
+		})
 	}
 	if value, ok := muo.mutation.Code(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{

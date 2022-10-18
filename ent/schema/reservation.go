@@ -12,7 +12,7 @@ type Reservation struct {
 	ent.Schema
 }
 
-func (Reservation) Mixins() []ent.Mixin {
+func (Reservation) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}

@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/Kotodian/ent-practice/ent/firmware"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // FirmwareCreate is the builder for creating a Firmware entity.
@@ -20,21 +21,105 @@ type FirmwareCreate struct {
 	hooks    []Hook
 }
 
+// SetVersion sets the "version" field.
+func (fc *FirmwareCreate) SetVersion(i int64) *FirmwareCreate {
+	fc.mutation.SetVersion(i)
+	return fc
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (fc *FirmwareCreate) SetNillableVersion(i *int64) *FirmwareCreate {
+	if i != nil {
+		fc.SetVersion(*i)
+	}
+	return fc
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (fc *FirmwareCreate) SetCreatedBy(d datasource.UUID) *FirmwareCreate {
+	fc.mutation.SetCreatedBy(d)
+	return fc
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (fc *FirmwareCreate) SetNillableCreatedBy(d *datasource.UUID) *FirmwareCreate {
+	if d != nil {
+		fc.SetCreatedBy(*d)
+	}
+	return fc
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (fc *FirmwareCreate) SetCreatedAt(i int64) *FirmwareCreate {
+	fc.mutation.SetCreatedAt(i)
+	return fc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (fc *FirmwareCreate) SetNillableCreatedAt(i *int64) *FirmwareCreate {
+	if i != nil {
+		fc.SetCreatedAt(*i)
+	}
+	return fc
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (fc *FirmwareCreate) SetUpdatedBy(d datasource.UUID) *FirmwareCreate {
+	fc.mutation.SetUpdatedBy(d)
+	return fc
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (fc *FirmwareCreate) SetNillableUpdatedBy(d *datasource.UUID) *FirmwareCreate {
+	if d != nil {
+		fc.SetUpdatedBy(*d)
+	}
+	return fc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (fc *FirmwareCreate) SetUpdatedAt(i int64) *FirmwareCreate {
+	fc.mutation.SetUpdatedAt(i)
+	return fc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (fc *FirmwareCreate) SetNillableUpdatedAt(i *int64) *FirmwareCreate {
+	if i != nil {
+		fc.SetUpdatedAt(*i)
+	}
+	return fc
+}
+
 // SetEquipVersion sets the "equip_version" field.
 func (fc *FirmwareCreate) SetEquipVersion(s string) *FirmwareCreate {
 	fc.mutation.SetEquipVersion(s)
 	return fc
 }
 
+// SetID sets the "id" field.
+func (fc *FirmwareCreate) SetID(d datasource.UUID) *FirmwareCreate {
+	fc.mutation.SetID(d)
+	return fc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (fc *FirmwareCreate) SetNillableID(d *datasource.UUID) *FirmwareCreate {
+	if d != nil {
+		fc.SetID(*d)
+	}
+	return fc
+}
+
 // AddEquipmentFirmwareEffectIDs adds the "equipment_firmware_effect" edge to the EquipmentFirmwareEffect entity by IDs.
-func (fc *FirmwareCreate) AddEquipmentFirmwareEffectIDs(ids ...int) *FirmwareCreate {
+func (fc *FirmwareCreate) AddEquipmentFirmwareEffectIDs(ids ...datasource.UUID) *FirmwareCreate {
 	fc.mutation.AddEquipmentFirmwareEffectIDs(ids...)
 	return fc
 }
 
 // AddEquipmentFirmwareEffect adds the "equipment_firmware_effect" edges to the EquipmentFirmwareEffect entity.
 func (fc *FirmwareCreate) AddEquipmentFirmwareEffect(e ...*EquipmentFirmwareEffect) *FirmwareCreate {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -52,6 +137,7 @@ func (fc *FirmwareCreate) Save(ctx context.Context) (*Firmware, error) {
 		err  error
 		node *Firmware
 	)
+	fc.defaults()
 	if len(fc.hooks) == 0 {
 		if err = fc.check(); err != nil {
 			return nil, err
@@ -115,8 +201,51 @@ func (fc *FirmwareCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (fc *FirmwareCreate) defaults() {
+	if _, ok := fc.mutation.Version(); !ok {
+		v := firmware.DefaultVersion
+		fc.mutation.SetVersion(v)
+	}
+	if _, ok := fc.mutation.CreatedBy(); !ok {
+		v := firmware.DefaultCreatedBy
+		fc.mutation.SetCreatedBy(v)
+	}
+	if _, ok := fc.mutation.CreatedAt(); !ok {
+		v := firmware.DefaultCreatedAt
+		fc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := fc.mutation.UpdatedBy(); !ok {
+		v := firmware.DefaultUpdatedBy
+		fc.mutation.SetUpdatedBy(v)
+	}
+	if _, ok := fc.mutation.UpdatedAt(); !ok {
+		v := firmware.DefaultUpdatedAt
+		fc.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := fc.mutation.ID(); !ok {
+		v := firmware.DefaultID
+		fc.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (fc *FirmwareCreate) check() error {
+	if _, ok := fc.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "Firmware.version"`)}
+	}
+	if _, ok := fc.mutation.CreatedBy(); !ok {
+		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "Firmware.created_by"`)}
+	}
+	if _, ok := fc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Firmware.created_at"`)}
+	}
+	if _, ok := fc.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "Firmware.updated_by"`)}
+	}
+	if _, ok := fc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Firmware.updated_at"`)}
+	}
 	if _, ok := fc.mutation.EquipVersion(); !ok {
 		return &ValidationError{Name: "equip_version", err: errors.New(`ent: missing required field "Firmware.equip_version"`)}
 	}
@@ -131,8 +260,10 @@ func (fc *FirmwareCreate) sqlSave(ctx context.Context) (*Firmware, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -142,11 +273,55 @@ func (fc *FirmwareCreate) createSpec() (*Firmware, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: firmware.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: firmware.FieldID,
 			},
 		}
 	)
+	if id, ok := fc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := fc.mutation.Version(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: firmware.FieldVersion,
+		})
+		_node.Version = value
+	}
+	if value, ok := fc.mutation.CreatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: firmware.FieldCreatedBy,
+		})
+		_node.CreatedBy = value
+	}
+	if value, ok := fc.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: firmware.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := fc.mutation.UpdatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: firmware.FieldUpdatedBy,
+		})
+		_node.UpdatedBy = value
+	}
+	if value, ok := fc.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: firmware.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := fc.mutation.EquipVersion(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -164,7 +339,7 @@ func (fc *FirmwareCreate) createSpec() (*Firmware, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentfirmwareeffect.FieldID,
 				},
 			},
@@ -191,6 +366,7 @@ func (fcb *FirmwareCreateBulk) Save(ctx context.Context) ([]*Firmware, error) {
 	for i := range fcb.builders {
 		func(i int, root context.Context) {
 			builder := fcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*FirmwareMutation)
 				if !ok {
@@ -217,9 +393,9 @@ func (fcb *FirmwareCreateBulk) Save(ctx context.Context) ([]*Firmware, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

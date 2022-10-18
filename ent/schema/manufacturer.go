@@ -11,7 +11,7 @@ type Manufacturer struct {
 	ent.Schema
 }
 
-func (Manufacturer) Mixins() []ent.Mixin {
+func (Manufacturer) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}

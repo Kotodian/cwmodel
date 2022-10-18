@@ -36,6 +36,69 @@ func (eu *EquipmentUpdate) Where(ps ...predicate.Equipment) *EquipmentUpdate {
 	return eu
 }
 
+// SetVersion sets the "version" field.
+func (eu *EquipmentUpdate) SetVersion(i int64) *EquipmentUpdate {
+	eu.mutation.ResetVersion()
+	eu.mutation.SetVersion(i)
+	return eu
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (eu *EquipmentUpdate) SetNillableVersion(i *int64) *EquipmentUpdate {
+	if i != nil {
+		eu.SetVersion(*i)
+	}
+	return eu
+}
+
+// AddVersion adds i to the "version" field.
+func (eu *EquipmentUpdate) AddVersion(i int64) *EquipmentUpdate {
+	eu.mutation.AddVersion(i)
+	return eu
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (eu *EquipmentUpdate) SetUpdatedBy(d datasource.UUID) *EquipmentUpdate {
+	eu.mutation.ResetUpdatedBy()
+	eu.mutation.SetUpdatedBy(d)
+	return eu
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (eu *EquipmentUpdate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentUpdate {
+	if d != nil {
+		eu.SetUpdatedBy(*d)
+	}
+	return eu
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (eu *EquipmentUpdate) AddUpdatedBy(d datasource.UUID) *EquipmentUpdate {
+	eu.mutation.AddUpdatedBy(d)
+	return eu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (eu *EquipmentUpdate) SetUpdatedAt(i int64) *EquipmentUpdate {
+	eu.mutation.ResetUpdatedAt()
+	eu.mutation.SetUpdatedAt(i)
+	return eu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (eu *EquipmentUpdate) SetNillableUpdatedAt(i *int64) *EquipmentUpdate {
+	if i != nil {
+		eu.SetUpdatedAt(*i)
+	}
+	return eu
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (eu *EquipmentUpdate) AddUpdatedAt(i int64) *EquipmentUpdate {
+	eu.mutation.AddUpdatedAt(i)
+	return eu
+}
+
 // SetSn sets the "sn" field.
 func (eu *EquipmentUpdate) SetSn(s string) *EquipmentUpdate {
 	eu.mutation.SetSn(s)
@@ -69,13 +132,13 @@ func (eu *EquipmentUpdate) AddStationID(d datasource.UUID) *EquipmentUpdate {
 }
 
 // SetEquipmentInfoID sets the "equipment_info" edge to the EquipmentInfo entity by ID.
-func (eu *EquipmentUpdate) SetEquipmentInfoID(id int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) SetEquipmentInfoID(id datasource.UUID) *EquipmentUpdate {
 	eu.mutation.SetEquipmentInfoID(id)
 	return eu
 }
 
 // SetNillableEquipmentInfoID sets the "equipment_info" edge to the EquipmentInfo entity by ID if the given value is not nil.
-func (eu *EquipmentUpdate) SetNillableEquipmentInfoID(id *int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) SetNillableEquipmentInfoID(id *datasource.UUID) *EquipmentUpdate {
 	if id != nil {
 		eu = eu.SetEquipmentInfoID(*id)
 	}
@@ -88,14 +151,14 @@ func (eu *EquipmentUpdate) SetEquipmentInfo(e *EquipmentInfo) *EquipmentUpdate {
 }
 
 // AddEvseIDs adds the "evse" edge to the Evse entity by IDs.
-func (eu *EquipmentUpdate) AddEvseIDs(ids ...int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) AddEvseIDs(ids ...datasource.UUID) *EquipmentUpdate {
 	eu.mutation.AddEvseIDs(ids...)
 	return eu
 }
 
 // AddEvse adds the "evse" edges to the Evse entity.
 func (eu *EquipmentUpdate) AddEvse(e ...*Evse) *EquipmentUpdate {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -103,14 +166,14 @@ func (eu *EquipmentUpdate) AddEvse(e ...*Evse) *EquipmentUpdate {
 }
 
 // AddConnectorIDs adds the "connector" edge to the Connector entity by IDs.
-func (eu *EquipmentUpdate) AddConnectorIDs(ids ...int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) AddConnectorIDs(ids ...datasource.UUID) *EquipmentUpdate {
 	eu.mutation.AddConnectorIDs(ids...)
 	return eu
 }
 
 // AddConnector adds the "connector" edges to the Connector entity.
 func (eu *EquipmentUpdate) AddConnector(c ...*Connector) *EquipmentUpdate {
-	ids := make([]int, len(c))
+	ids := make([]datasource.UUID, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -118,14 +181,14 @@ func (eu *EquipmentUpdate) AddConnector(c ...*Connector) *EquipmentUpdate {
 }
 
 // AddEquipmentAlarmIDs adds the "equipment_alarm" edge to the EquipmentAlarm entity by IDs.
-func (eu *EquipmentUpdate) AddEquipmentAlarmIDs(ids ...int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) AddEquipmentAlarmIDs(ids ...datasource.UUID) *EquipmentUpdate {
 	eu.mutation.AddEquipmentAlarmIDs(ids...)
 	return eu
 }
 
 // AddEquipmentAlarm adds the "equipment_alarm" edges to the EquipmentAlarm entity.
 func (eu *EquipmentUpdate) AddEquipmentAlarm(e ...*EquipmentAlarm) *EquipmentUpdate {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -133,13 +196,13 @@ func (eu *EquipmentUpdate) AddEquipmentAlarm(e ...*EquipmentAlarm) *EquipmentUpd
 }
 
 // SetEquipmentIotID sets the "equipment_iot" edge to the EquipmentIot entity by ID.
-func (eu *EquipmentUpdate) SetEquipmentIotID(id int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) SetEquipmentIotID(id datasource.UUID) *EquipmentUpdate {
 	eu.mutation.SetEquipmentIotID(id)
 	return eu
 }
 
 // SetNillableEquipmentIotID sets the "equipment_iot" edge to the EquipmentIot entity by ID if the given value is not nil.
-func (eu *EquipmentUpdate) SetNillableEquipmentIotID(id *int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) SetNillableEquipmentIotID(id *datasource.UUID) *EquipmentUpdate {
 	if id != nil {
 		eu = eu.SetEquipmentIotID(*id)
 	}
@@ -152,14 +215,14 @@ func (eu *EquipmentUpdate) SetEquipmentIot(e *EquipmentIot) *EquipmentUpdate {
 }
 
 // AddEquipmentFirmwareEffectIDs adds the "equipment_firmware_effect" edge to the EquipmentFirmwareEffect entity by IDs.
-func (eu *EquipmentUpdate) AddEquipmentFirmwareEffectIDs(ids ...int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) AddEquipmentFirmwareEffectIDs(ids ...datasource.UUID) *EquipmentUpdate {
 	eu.mutation.AddEquipmentFirmwareEffectIDs(ids...)
 	return eu
 }
 
 // AddEquipmentFirmwareEffect adds the "equipment_firmware_effect" edges to the EquipmentFirmwareEffect entity.
 func (eu *EquipmentUpdate) AddEquipmentFirmwareEffect(e ...*EquipmentFirmwareEffect) *EquipmentUpdate {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -167,14 +230,14 @@ func (eu *EquipmentUpdate) AddEquipmentFirmwareEffect(e ...*EquipmentFirmwareEff
 }
 
 // AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
-func (eu *EquipmentUpdate) AddOrderInfoIDs(ids ...int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) AddOrderInfoIDs(ids ...datasource.UUID) *EquipmentUpdate {
 	eu.mutation.AddOrderInfoIDs(ids...)
 	return eu
 }
 
 // AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
 func (eu *EquipmentUpdate) AddOrderInfo(o ...*OrderInfo) *EquipmentUpdate {
-	ids := make([]int, len(o))
+	ids := make([]datasource.UUID, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
@@ -182,14 +245,14 @@ func (eu *EquipmentUpdate) AddOrderInfo(o ...*OrderInfo) *EquipmentUpdate {
 }
 
 // AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
-func (eu *EquipmentUpdate) AddReservationIDs(ids ...int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) AddReservationIDs(ids ...datasource.UUID) *EquipmentUpdate {
 	eu.mutation.AddReservationIDs(ids...)
 	return eu
 }
 
 // AddReservation adds the "reservation" edges to the Reservation entity.
 func (eu *EquipmentUpdate) AddReservation(r ...*Reservation) *EquipmentUpdate {
-	ids := make([]int, len(r))
+	ids := make([]datasource.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -214,14 +277,14 @@ func (eu *EquipmentUpdate) ClearEvse() *EquipmentUpdate {
 }
 
 // RemoveEvseIDs removes the "evse" edge to Evse entities by IDs.
-func (eu *EquipmentUpdate) RemoveEvseIDs(ids ...int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) RemoveEvseIDs(ids ...datasource.UUID) *EquipmentUpdate {
 	eu.mutation.RemoveEvseIDs(ids...)
 	return eu
 }
 
 // RemoveEvse removes "evse" edges to Evse entities.
 func (eu *EquipmentUpdate) RemoveEvse(e ...*Evse) *EquipmentUpdate {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -235,14 +298,14 @@ func (eu *EquipmentUpdate) ClearConnector() *EquipmentUpdate {
 }
 
 // RemoveConnectorIDs removes the "connector" edge to Connector entities by IDs.
-func (eu *EquipmentUpdate) RemoveConnectorIDs(ids ...int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) RemoveConnectorIDs(ids ...datasource.UUID) *EquipmentUpdate {
 	eu.mutation.RemoveConnectorIDs(ids...)
 	return eu
 }
 
 // RemoveConnector removes "connector" edges to Connector entities.
 func (eu *EquipmentUpdate) RemoveConnector(c ...*Connector) *EquipmentUpdate {
-	ids := make([]int, len(c))
+	ids := make([]datasource.UUID, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -256,14 +319,14 @@ func (eu *EquipmentUpdate) ClearEquipmentAlarm() *EquipmentUpdate {
 }
 
 // RemoveEquipmentAlarmIDs removes the "equipment_alarm" edge to EquipmentAlarm entities by IDs.
-func (eu *EquipmentUpdate) RemoveEquipmentAlarmIDs(ids ...int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) RemoveEquipmentAlarmIDs(ids ...datasource.UUID) *EquipmentUpdate {
 	eu.mutation.RemoveEquipmentAlarmIDs(ids...)
 	return eu
 }
 
 // RemoveEquipmentAlarm removes "equipment_alarm" edges to EquipmentAlarm entities.
 func (eu *EquipmentUpdate) RemoveEquipmentAlarm(e ...*EquipmentAlarm) *EquipmentUpdate {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -283,14 +346,14 @@ func (eu *EquipmentUpdate) ClearEquipmentFirmwareEffect() *EquipmentUpdate {
 }
 
 // RemoveEquipmentFirmwareEffectIDs removes the "equipment_firmware_effect" edge to EquipmentFirmwareEffect entities by IDs.
-func (eu *EquipmentUpdate) RemoveEquipmentFirmwareEffectIDs(ids ...int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) RemoveEquipmentFirmwareEffectIDs(ids ...datasource.UUID) *EquipmentUpdate {
 	eu.mutation.RemoveEquipmentFirmwareEffectIDs(ids...)
 	return eu
 }
 
 // RemoveEquipmentFirmwareEffect removes "equipment_firmware_effect" edges to EquipmentFirmwareEffect entities.
 func (eu *EquipmentUpdate) RemoveEquipmentFirmwareEffect(e ...*EquipmentFirmwareEffect) *EquipmentUpdate {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -304,14 +367,14 @@ func (eu *EquipmentUpdate) ClearOrderInfo() *EquipmentUpdate {
 }
 
 // RemoveOrderInfoIDs removes the "order_info" edge to OrderInfo entities by IDs.
-func (eu *EquipmentUpdate) RemoveOrderInfoIDs(ids ...int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) RemoveOrderInfoIDs(ids ...datasource.UUID) *EquipmentUpdate {
 	eu.mutation.RemoveOrderInfoIDs(ids...)
 	return eu
 }
 
 // RemoveOrderInfo removes "order_info" edges to OrderInfo entities.
 func (eu *EquipmentUpdate) RemoveOrderInfo(o ...*OrderInfo) *EquipmentUpdate {
-	ids := make([]int, len(o))
+	ids := make([]datasource.UUID, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
@@ -325,14 +388,14 @@ func (eu *EquipmentUpdate) ClearReservation() *EquipmentUpdate {
 }
 
 // RemoveReservationIDs removes the "reservation" edge to Reservation entities by IDs.
-func (eu *EquipmentUpdate) RemoveReservationIDs(ids ...int) *EquipmentUpdate {
+func (eu *EquipmentUpdate) RemoveReservationIDs(ids ...datasource.UUID) *EquipmentUpdate {
 	eu.mutation.RemoveReservationIDs(ids...)
 	return eu
 }
 
 // RemoveReservation removes "reservation" edges to Reservation entities.
 func (eu *EquipmentUpdate) RemoveReservation(r ...*Reservation) *EquipmentUpdate {
-	ids := make([]int, len(r))
+	ids := make([]datasource.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -415,7 +478,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   equipment.Table,
 			Columns: equipment.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipment.FieldID,
 			},
 		},
@@ -426,6 +489,48 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := eu.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipment.FieldVersion,
+		})
+	}
+	if value, ok := eu.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipment.FieldVersion,
+		})
+	}
+	if value, ok := eu.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipment.FieldUpdatedBy,
+		})
+	}
+	if value, ok := eu.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipment.FieldUpdatedBy,
+		})
+	}
+	if value, ok := eu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipment.FieldUpdatedAt,
+		})
+	}
+	if value, ok := eu.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipment.FieldUpdatedAt,
+		})
 	}
 	if value, ok := eu.mutation.Sn(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -471,7 +576,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentinfo.FieldID,
 				},
 			},
@@ -487,7 +592,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentinfo.FieldID,
 				},
 			},
@@ -506,7 +611,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: evse.FieldID,
 				},
 			},
@@ -522,7 +627,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: evse.FieldID,
 				},
 			},
@@ -541,7 +646,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: evse.FieldID,
 				},
 			},
@@ -560,7 +665,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -576,7 +681,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -595,7 +700,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -614,7 +719,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentalarm.FieldID,
 				},
 			},
@@ -630,7 +735,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentalarm.FieldID,
 				},
 			},
@@ -649,7 +754,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentalarm.FieldID,
 				},
 			},
@@ -668,7 +773,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentiot.FieldID,
 				},
 			},
@@ -684,7 +789,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentiot.FieldID,
 				},
 			},
@@ -703,7 +808,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentfirmwareeffect.FieldID,
 				},
 			},
@@ -719,7 +824,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentfirmwareeffect.FieldID,
 				},
 			},
@@ -738,7 +843,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentfirmwareeffect.FieldID,
 				},
 			},
@@ -757,7 +862,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -773,7 +878,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -792,7 +897,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -811,7 +916,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},
@@ -827,7 +932,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},
@@ -846,7 +951,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},
@@ -873,6 +978,69 @@ type EquipmentUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *EquipmentMutation
+}
+
+// SetVersion sets the "version" field.
+func (euo *EquipmentUpdateOne) SetVersion(i int64) *EquipmentUpdateOne {
+	euo.mutation.ResetVersion()
+	euo.mutation.SetVersion(i)
+	return euo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (euo *EquipmentUpdateOne) SetNillableVersion(i *int64) *EquipmentUpdateOne {
+	if i != nil {
+		euo.SetVersion(*i)
+	}
+	return euo
+}
+
+// AddVersion adds i to the "version" field.
+func (euo *EquipmentUpdateOne) AddVersion(i int64) *EquipmentUpdateOne {
+	euo.mutation.AddVersion(i)
+	return euo
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (euo *EquipmentUpdateOne) SetUpdatedBy(d datasource.UUID) *EquipmentUpdateOne {
+	euo.mutation.ResetUpdatedBy()
+	euo.mutation.SetUpdatedBy(d)
+	return euo
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (euo *EquipmentUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentUpdateOne {
+	if d != nil {
+		euo.SetUpdatedBy(*d)
+	}
+	return euo
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (euo *EquipmentUpdateOne) AddUpdatedBy(d datasource.UUID) *EquipmentUpdateOne {
+	euo.mutation.AddUpdatedBy(d)
+	return euo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (euo *EquipmentUpdateOne) SetUpdatedAt(i int64) *EquipmentUpdateOne {
+	euo.mutation.ResetUpdatedAt()
+	euo.mutation.SetUpdatedAt(i)
+	return euo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (euo *EquipmentUpdateOne) SetNillableUpdatedAt(i *int64) *EquipmentUpdateOne {
+	if i != nil {
+		euo.SetUpdatedAt(*i)
+	}
+	return euo
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (euo *EquipmentUpdateOne) AddUpdatedAt(i int64) *EquipmentUpdateOne {
+	euo.mutation.AddUpdatedAt(i)
+	return euo
 }
 
 // SetSn sets the "sn" field.
@@ -908,13 +1076,13 @@ func (euo *EquipmentUpdateOne) AddStationID(d datasource.UUID) *EquipmentUpdateO
 }
 
 // SetEquipmentInfoID sets the "equipment_info" edge to the EquipmentInfo entity by ID.
-func (euo *EquipmentUpdateOne) SetEquipmentInfoID(id int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) SetEquipmentInfoID(id datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.SetEquipmentInfoID(id)
 	return euo
 }
 
 // SetNillableEquipmentInfoID sets the "equipment_info" edge to the EquipmentInfo entity by ID if the given value is not nil.
-func (euo *EquipmentUpdateOne) SetNillableEquipmentInfoID(id *int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) SetNillableEquipmentInfoID(id *datasource.UUID) *EquipmentUpdateOne {
 	if id != nil {
 		euo = euo.SetEquipmentInfoID(*id)
 	}
@@ -927,14 +1095,14 @@ func (euo *EquipmentUpdateOne) SetEquipmentInfo(e *EquipmentInfo) *EquipmentUpda
 }
 
 // AddEvseIDs adds the "evse" edge to the Evse entity by IDs.
-func (euo *EquipmentUpdateOne) AddEvseIDs(ids ...int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) AddEvseIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.AddEvseIDs(ids...)
 	return euo
 }
 
 // AddEvse adds the "evse" edges to the Evse entity.
 func (euo *EquipmentUpdateOne) AddEvse(e ...*Evse) *EquipmentUpdateOne {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -942,14 +1110,14 @@ func (euo *EquipmentUpdateOne) AddEvse(e ...*Evse) *EquipmentUpdateOne {
 }
 
 // AddConnectorIDs adds the "connector" edge to the Connector entity by IDs.
-func (euo *EquipmentUpdateOne) AddConnectorIDs(ids ...int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) AddConnectorIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.AddConnectorIDs(ids...)
 	return euo
 }
 
 // AddConnector adds the "connector" edges to the Connector entity.
 func (euo *EquipmentUpdateOne) AddConnector(c ...*Connector) *EquipmentUpdateOne {
-	ids := make([]int, len(c))
+	ids := make([]datasource.UUID, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -957,14 +1125,14 @@ func (euo *EquipmentUpdateOne) AddConnector(c ...*Connector) *EquipmentUpdateOne
 }
 
 // AddEquipmentAlarmIDs adds the "equipment_alarm" edge to the EquipmentAlarm entity by IDs.
-func (euo *EquipmentUpdateOne) AddEquipmentAlarmIDs(ids ...int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) AddEquipmentAlarmIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.AddEquipmentAlarmIDs(ids...)
 	return euo
 }
 
 // AddEquipmentAlarm adds the "equipment_alarm" edges to the EquipmentAlarm entity.
 func (euo *EquipmentUpdateOne) AddEquipmentAlarm(e ...*EquipmentAlarm) *EquipmentUpdateOne {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -972,13 +1140,13 @@ func (euo *EquipmentUpdateOne) AddEquipmentAlarm(e ...*EquipmentAlarm) *Equipmen
 }
 
 // SetEquipmentIotID sets the "equipment_iot" edge to the EquipmentIot entity by ID.
-func (euo *EquipmentUpdateOne) SetEquipmentIotID(id int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) SetEquipmentIotID(id datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.SetEquipmentIotID(id)
 	return euo
 }
 
 // SetNillableEquipmentIotID sets the "equipment_iot" edge to the EquipmentIot entity by ID if the given value is not nil.
-func (euo *EquipmentUpdateOne) SetNillableEquipmentIotID(id *int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) SetNillableEquipmentIotID(id *datasource.UUID) *EquipmentUpdateOne {
 	if id != nil {
 		euo = euo.SetEquipmentIotID(*id)
 	}
@@ -991,14 +1159,14 @@ func (euo *EquipmentUpdateOne) SetEquipmentIot(e *EquipmentIot) *EquipmentUpdate
 }
 
 // AddEquipmentFirmwareEffectIDs adds the "equipment_firmware_effect" edge to the EquipmentFirmwareEffect entity by IDs.
-func (euo *EquipmentUpdateOne) AddEquipmentFirmwareEffectIDs(ids ...int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) AddEquipmentFirmwareEffectIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.AddEquipmentFirmwareEffectIDs(ids...)
 	return euo
 }
 
 // AddEquipmentFirmwareEffect adds the "equipment_firmware_effect" edges to the EquipmentFirmwareEffect entity.
 func (euo *EquipmentUpdateOne) AddEquipmentFirmwareEffect(e ...*EquipmentFirmwareEffect) *EquipmentUpdateOne {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -1006,14 +1174,14 @@ func (euo *EquipmentUpdateOne) AddEquipmentFirmwareEffect(e ...*EquipmentFirmwar
 }
 
 // AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
-func (euo *EquipmentUpdateOne) AddOrderInfoIDs(ids ...int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) AddOrderInfoIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.AddOrderInfoIDs(ids...)
 	return euo
 }
 
 // AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
 func (euo *EquipmentUpdateOne) AddOrderInfo(o ...*OrderInfo) *EquipmentUpdateOne {
-	ids := make([]int, len(o))
+	ids := make([]datasource.UUID, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
@@ -1021,14 +1189,14 @@ func (euo *EquipmentUpdateOne) AddOrderInfo(o ...*OrderInfo) *EquipmentUpdateOne
 }
 
 // AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
-func (euo *EquipmentUpdateOne) AddReservationIDs(ids ...int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) AddReservationIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.AddReservationIDs(ids...)
 	return euo
 }
 
 // AddReservation adds the "reservation" edges to the Reservation entity.
 func (euo *EquipmentUpdateOne) AddReservation(r ...*Reservation) *EquipmentUpdateOne {
-	ids := make([]int, len(r))
+	ids := make([]datasource.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -1053,14 +1221,14 @@ func (euo *EquipmentUpdateOne) ClearEvse() *EquipmentUpdateOne {
 }
 
 // RemoveEvseIDs removes the "evse" edge to Evse entities by IDs.
-func (euo *EquipmentUpdateOne) RemoveEvseIDs(ids ...int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) RemoveEvseIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.RemoveEvseIDs(ids...)
 	return euo
 }
 
 // RemoveEvse removes "evse" edges to Evse entities.
 func (euo *EquipmentUpdateOne) RemoveEvse(e ...*Evse) *EquipmentUpdateOne {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -1074,14 +1242,14 @@ func (euo *EquipmentUpdateOne) ClearConnector() *EquipmentUpdateOne {
 }
 
 // RemoveConnectorIDs removes the "connector" edge to Connector entities by IDs.
-func (euo *EquipmentUpdateOne) RemoveConnectorIDs(ids ...int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) RemoveConnectorIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.RemoveConnectorIDs(ids...)
 	return euo
 }
 
 // RemoveConnector removes "connector" edges to Connector entities.
 func (euo *EquipmentUpdateOne) RemoveConnector(c ...*Connector) *EquipmentUpdateOne {
-	ids := make([]int, len(c))
+	ids := make([]datasource.UUID, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -1095,14 +1263,14 @@ func (euo *EquipmentUpdateOne) ClearEquipmentAlarm() *EquipmentUpdateOne {
 }
 
 // RemoveEquipmentAlarmIDs removes the "equipment_alarm" edge to EquipmentAlarm entities by IDs.
-func (euo *EquipmentUpdateOne) RemoveEquipmentAlarmIDs(ids ...int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) RemoveEquipmentAlarmIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.RemoveEquipmentAlarmIDs(ids...)
 	return euo
 }
 
 // RemoveEquipmentAlarm removes "equipment_alarm" edges to EquipmentAlarm entities.
 func (euo *EquipmentUpdateOne) RemoveEquipmentAlarm(e ...*EquipmentAlarm) *EquipmentUpdateOne {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -1122,14 +1290,14 @@ func (euo *EquipmentUpdateOne) ClearEquipmentFirmwareEffect() *EquipmentUpdateOn
 }
 
 // RemoveEquipmentFirmwareEffectIDs removes the "equipment_firmware_effect" edge to EquipmentFirmwareEffect entities by IDs.
-func (euo *EquipmentUpdateOne) RemoveEquipmentFirmwareEffectIDs(ids ...int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) RemoveEquipmentFirmwareEffectIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.RemoveEquipmentFirmwareEffectIDs(ids...)
 	return euo
 }
 
 // RemoveEquipmentFirmwareEffect removes "equipment_firmware_effect" edges to EquipmentFirmwareEffect entities.
 func (euo *EquipmentUpdateOne) RemoveEquipmentFirmwareEffect(e ...*EquipmentFirmwareEffect) *EquipmentUpdateOne {
-	ids := make([]int, len(e))
+	ids := make([]datasource.UUID, len(e))
 	for i := range e {
 		ids[i] = e[i].ID
 	}
@@ -1143,14 +1311,14 @@ func (euo *EquipmentUpdateOne) ClearOrderInfo() *EquipmentUpdateOne {
 }
 
 // RemoveOrderInfoIDs removes the "order_info" edge to OrderInfo entities by IDs.
-func (euo *EquipmentUpdateOne) RemoveOrderInfoIDs(ids ...int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) RemoveOrderInfoIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.RemoveOrderInfoIDs(ids...)
 	return euo
 }
 
 // RemoveOrderInfo removes "order_info" edges to OrderInfo entities.
 func (euo *EquipmentUpdateOne) RemoveOrderInfo(o ...*OrderInfo) *EquipmentUpdateOne {
-	ids := make([]int, len(o))
+	ids := make([]datasource.UUID, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
@@ -1164,14 +1332,14 @@ func (euo *EquipmentUpdateOne) ClearReservation() *EquipmentUpdateOne {
 }
 
 // RemoveReservationIDs removes the "reservation" edge to Reservation entities by IDs.
-func (euo *EquipmentUpdateOne) RemoveReservationIDs(ids ...int) *EquipmentUpdateOne {
+func (euo *EquipmentUpdateOne) RemoveReservationIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.RemoveReservationIDs(ids...)
 	return euo
 }
 
 // RemoveReservation removes "reservation" edges to Reservation entities.
 func (euo *EquipmentUpdateOne) RemoveReservation(r ...*Reservation) *EquipmentUpdateOne {
-	ids := make([]int, len(r))
+	ids := make([]datasource.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -1267,7 +1435,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Table:   equipment.Table,
 			Columns: equipment.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipment.FieldID,
 			},
 		},
@@ -1295,6 +1463,48 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := euo.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipment.FieldVersion,
+		})
+	}
+	if value, ok := euo.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipment.FieldVersion,
+		})
+	}
+	if value, ok := euo.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipment.FieldUpdatedBy,
+		})
+	}
+	if value, ok := euo.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipment.FieldUpdatedBy,
+		})
+	}
+	if value, ok := euo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipment.FieldUpdatedAt,
+		})
+	}
+	if value, ok := euo.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipment.FieldUpdatedAt,
+		})
 	}
 	if value, ok := euo.mutation.Sn(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -1340,7 +1550,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentinfo.FieldID,
 				},
 			},
@@ -1356,7 +1566,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentinfo.FieldID,
 				},
 			},
@@ -1375,7 +1585,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: evse.FieldID,
 				},
 			},
@@ -1391,7 +1601,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: evse.FieldID,
 				},
 			},
@@ -1410,7 +1620,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: evse.FieldID,
 				},
 			},
@@ -1429,7 +1639,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -1445,7 +1655,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -1464,7 +1674,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: connector.FieldID,
 				},
 			},
@@ -1483,7 +1693,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentalarm.FieldID,
 				},
 			},
@@ -1499,7 +1709,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentalarm.FieldID,
 				},
 			},
@@ -1518,7 +1728,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentalarm.FieldID,
 				},
 			},
@@ -1537,7 +1747,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentiot.FieldID,
 				},
 			},
@@ -1553,7 +1763,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentiot.FieldID,
 				},
 			},
@@ -1572,7 +1782,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentfirmwareeffect.FieldID,
 				},
 			},
@@ -1588,7 +1798,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentfirmwareeffect.FieldID,
 				},
 			},
@@ -1607,7 +1817,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipmentfirmwareeffect.FieldID,
 				},
 			},
@@ -1626,7 +1836,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -1642,7 +1852,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -1661,7 +1871,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -1680,7 +1890,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},
@@ -1696,7 +1906,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},
@@ -1715,7 +1925,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},

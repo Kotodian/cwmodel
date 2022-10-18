@@ -13,6 +13,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentiot"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentIotUpdate is the builder for updating EquipmentIot entities.
@@ -25,6 +26,69 @@ type EquipmentIotUpdate struct {
 // Where appends a list predicates to the EquipmentIotUpdate builder.
 func (eiu *EquipmentIotUpdate) Where(ps ...predicate.EquipmentIot) *EquipmentIotUpdate {
 	eiu.mutation.Where(ps...)
+	return eiu
+}
+
+// SetVersion sets the "version" field.
+func (eiu *EquipmentIotUpdate) SetVersion(i int64) *EquipmentIotUpdate {
+	eiu.mutation.ResetVersion()
+	eiu.mutation.SetVersion(i)
+	return eiu
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (eiu *EquipmentIotUpdate) SetNillableVersion(i *int64) *EquipmentIotUpdate {
+	if i != nil {
+		eiu.SetVersion(*i)
+	}
+	return eiu
+}
+
+// AddVersion adds i to the "version" field.
+func (eiu *EquipmentIotUpdate) AddVersion(i int64) *EquipmentIotUpdate {
+	eiu.mutation.AddVersion(i)
+	return eiu
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (eiu *EquipmentIotUpdate) SetUpdatedBy(d datasource.UUID) *EquipmentIotUpdate {
+	eiu.mutation.ResetUpdatedBy()
+	eiu.mutation.SetUpdatedBy(d)
+	return eiu
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (eiu *EquipmentIotUpdate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentIotUpdate {
+	if d != nil {
+		eiu.SetUpdatedBy(*d)
+	}
+	return eiu
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (eiu *EquipmentIotUpdate) AddUpdatedBy(d datasource.UUID) *EquipmentIotUpdate {
+	eiu.mutation.AddUpdatedBy(d)
+	return eiu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (eiu *EquipmentIotUpdate) SetUpdatedAt(i int64) *EquipmentIotUpdate {
+	eiu.mutation.ResetUpdatedAt()
+	eiu.mutation.SetUpdatedAt(i)
+	return eiu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (eiu *EquipmentIotUpdate) SetNillableUpdatedAt(i *int64) *EquipmentIotUpdate {
+	if i != nil {
+		eiu.SetUpdatedAt(*i)
+	}
+	return eiu
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (eiu *EquipmentIotUpdate) AddUpdatedAt(i int64) *EquipmentIotUpdate {
+	eiu.mutation.AddUpdatedAt(i)
 	return eiu
 }
 
@@ -89,13 +153,13 @@ func (eiu *EquipmentIotUpdate) ClearRemoteAddress() *EquipmentIotUpdate {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eiu *EquipmentIotUpdate) SetEquipmentID(id int) *EquipmentIotUpdate {
+func (eiu *EquipmentIotUpdate) SetEquipmentID(id datasource.UUID) *EquipmentIotUpdate {
 	eiu.mutation.SetEquipmentID(id)
 	return eiu
 }
 
 // SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (eiu *EquipmentIotUpdate) SetNillableEquipmentID(id *int) *EquipmentIotUpdate {
+func (eiu *EquipmentIotUpdate) SetNillableEquipmentID(id *datasource.UUID) *EquipmentIotUpdate {
 	if id != nil {
 		eiu = eiu.SetEquipmentID(*id)
 	}
@@ -178,7 +242,7 @@ func (eiu *EquipmentIotUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   equipmentiot.Table,
 			Columns: equipmentiot.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentiot.FieldID,
 			},
 		},
@@ -189,6 +253,48 @@ func (eiu *EquipmentIotUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := eiu.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentiot.FieldVersion,
+		})
+	}
+	if value, ok := eiu.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentiot.FieldVersion,
+		})
+	}
+	if value, ok := eiu.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentiot.FieldUpdatedBy,
+		})
+	}
+	if value, ok := eiu.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentiot.FieldUpdatedBy,
+		})
+	}
+	if value, ok := eiu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentiot.FieldUpdatedAt,
+		})
+	}
+	if value, ok := eiu.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentiot.FieldUpdatedAt,
+		})
 	}
 	if value, ok := eiu.mutation.Iccid(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -238,7 +344,7 @@ func (eiu *EquipmentIotUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -254,7 +360,7 @@ func (eiu *EquipmentIotUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -281,6 +387,69 @@ type EquipmentIotUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *EquipmentIotMutation
+}
+
+// SetVersion sets the "version" field.
+func (eiuo *EquipmentIotUpdateOne) SetVersion(i int64) *EquipmentIotUpdateOne {
+	eiuo.mutation.ResetVersion()
+	eiuo.mutation.SetVersion(i)
+	return eiuo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (eiuo *EquipmentIotUpdateOne) SetNillableVersion(i *int64) *EquipmentIotUpdateOne {
+	if i != nil {
+		eiuo.SetVersion(*i)
+	}
+	return eiuo
+}
+
+// AddVersion adds i to the "version" field.
+func (eiuo *EquipmentIotUpdateOne) AddVersion(i int64) *EquipmentIotUpdateOne {
+	eiuo.mutation.AddVersion(i)
+	return eiuo
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (eiuo *EquipmentIotUpdateOne) SetUpdatedBy(d datasource.UUID) *EquipmentIotUpdateOne {
+	eiuo.mutation.ResetUpdatedBy()
+	eiuo.mutation.SetUpdatedBy(d)
+	return eiuo
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (eiuo *EquipmentIotUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentIotUpdateOne {
+	if d != nil {
+		eiuo.SetUpdatedBy(*d)
+	}
+	return eiuo
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (eiuo *EquipmentIotUpdateOne) AddUpdatedBy(d datasource.UUID) *EquipmentIotUpdateOne {
+	eiuo.mutation.AddUpdatedBy(d)
+	return eiuo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (eiuo *EquipmentIotUpdateOne) SetUpdatedAt(i int64) *EquipmentIotUpdateOne {
+	eiuo.mutation.ResetUpdatedAt()
+	eiuo.mutation.SetUpdatedAt(i)
+	return eiuo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (eiuo *EquipmentIotUpdateOne) SetNillableUpdatedAt(i *int64) *EquipmentIotUpdateOne {
+	if i != nil {
+		eiuo.SetUpdatedAt(*i)
+	}
+	return eiuo
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (eiuo *EquipmentIotUpdateOne) AddUpdatedAt(i int64) *EquipmentIotUpdateOne {
+	eiuo.mutation.AddUpdatedAt(i)
+	return eiuo
 }
 
 // SetIccid sets the "iccid" field.
@@ -344,13 +513,13 @@ func (eiuo *EquipmentIotUpdateOne) ClearRemoteAddress() *EquipmentIotUpdateOne {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eiuo *EquipmentIotUpdateOne) SetEquipmentID(id int) *EquipmentIotUpdateOne {
+func (eiuo *EquipmentIotUpdateOne) SetEquipmentID(id datasource.UUID) *EquipmentIotUpdateOne {
 	eiuo.mutation.SetEquipmentID(id)
 	return eiuo
 }
 
 // SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (eiuo *EquipmentIotUpdateOne) SetNillableEquipmentID(id *int) *EquipmentIotUpdateOne {
+func (eiuo *EquipmentIotUpdateOne) SetNillableEquipmentID(id *datasource.UUID) *EquipmentIotUpdateOne {
 	if id != nil {
 		eiuo = eiuo.SetEquipmentID(*id)
 	}
@@ -446,7 +615,7 @@ func (eiuo *EquipmentIotUpdateOne) sqlSave(ctx context.Context) (_node *Equipmen
 			Table:   equipmentiot.Table,
 			Columns: equipmentiot.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentiot.FieldID,
 			},
 		},
@@ -474,6 +643,48 @@ func (eiuo *EquipmentIotUpdateOne) sqlSave(ctx context.Context) (_node *Equipmen
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := eiuo.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentiot.FieldVersion,
+		})
+	}
+	if value, ok := eiuo.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentiot.FieldVersion,
+		})
+	}
+	if value, ok := eiuo.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentiot.FieldUpdatedBy,
+		})
+	}
+	if value, ok := eiuo.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentiot.FieldUpdatedBy,
+		})
+	}
+	if value, ok := eiuo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentiot.FieldUpdatedAt,
+		})
+	}
+	if value, ok := eiuo.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentiot.FieldUpdatedAt,
+		})
 	}
 	if value, ok := eiuo.mutation.Iccid(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -523,7 +734,7 @@ func (eiuo *EquipmentIotUpdateOne) sqlSave(ctx context.Context) (_node *Equipmen
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -539,7 +750,7 @@ func (eiuo *EquipmentIotUpdateOne) sqlSave(ctx context.Context) (_node *Equipmen
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},

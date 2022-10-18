@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/manufacturer"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // ManufacturerQuery is the builder for querying Manufacturer entities.
@@ -83,8 +84,8 @@ func (mq *ManufacturerQuery) FirstX(ctx context.Context) *Manufacturer {
 
 // FirstID returns the first Manufacturer ID from the query.
 // Returns a *NotFoundError when no Manufacturer ID was found.
-func (mq *ManufacturerQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (mq *ManufacturerQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = mq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -96,7 +97,7 @@ func (mq *ManufacturerQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (mq *ManufacturerQuery) FirstIDX(ctx context.Context) int {
+func (mq *ManufacturerQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := mq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -134,8 +135,8 @@ func (mq *ManufacturerQuery) OnlyX(ctx context.Context) *Manufacturer {
 // OnlyID is like Only, but returns the only Manufacturer ID in the query.
 // Returns a *NotSingularError when more than one Manufacturer ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (mq *ManufacturerQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (mq *ManufacturerQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = mq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -151,7 +152,7 @@ func (mq *ManufacturerQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (mq *ManufacturerQuery) OnlyIDX(ctx context.Context) int {
+func (mq *ManufacturerQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := mq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -177,8 +178,8 @@ func (mq *ManufacturerQuery) AllX(ctx context.Context) []*Manufacturer {
 }
 
 // IDs executes the query and returns a list of Manufacturer IDs.
-func (mq *ManufacturerQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (mq *ManufacturerQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := mq.Select(manufacturer.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -186,7 +187,7 @@ func (mq *ManufacturerQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (mq *ManufacturerQuery) IDsX(ctx context.Context) []int {
+func (mq *ManufacturerQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := mq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -253,12 +254,12 @@ func (mq *ManufacturerQuery) Clone() *ManufacturerQuery {
 // Example:
 //
 //	var v []struct {
-//		Code string `json:"code,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Manufacturer.Query().
-//		GroupBy(manufacturer.FieldCode).
+//		GroupBy(manufacturer.FieldVersion).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (mq *ManufacturerQuery) GroupBy(field string, fields ...string) *ManufacturerGroupBy {
@@ -281,11 +282,11 @@ func (mq *ManufacturerQuery) GroupBy(field string, fields ...string) *Manufactur
 // Example:
 //
 //	var v []struct {
-//		Code string `json:"code,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //	}
 //
 //	client.Manufacturer.Query().
-//		Select(manufacturer.FieldCode).
+//		Select(manufacturer.FieldVersion).
 //		Scan(ctx, &v)
 func (mq *ManufacturerQuery) Select(fields ...string) *ManufacturerSelect {
 	mq.fields = append(mq.fields, fields...)
@@ -362,7 +363,7 @@ func (mq *ManufacturerQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   manufacturer.Table,
 			Columns: manufacturer.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: manufacturer.FieldID,
 			},
 		},

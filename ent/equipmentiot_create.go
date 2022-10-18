@@ -4,12 +4,14 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentiot"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentIotCreate is the builder for creating a EquipmentIot entity.
@@ -17,6 +19,76 @@ type EquipmentIotCreate struct {
 	config
 	mutation *EquipmentIotMutation
 	hooks    []Hook
+}
+
+// SetVersion sets the "version" field.
+func (eic *EquipmentIotCreate) SetVersion(i int64) *EquipmentIotCreate {
+	eic.mutation.SetVersion(i)
+	return eic
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (eic *EquipmentIotCreate) SetNillableVersion(i *int64) *EquipmentIotCreate {
+	if i != nil {
+		eic.SetVersion(*i)
+	}
+	return eic
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (eic *EquipmentIotCreate) SetCreatedBy(d datasource.UUID) *EquipmentIotCreate {
+	eic.mutation.SetCreatedBy(d)
+	return eic
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (eic *EquipmentIotCreate) SetNillableCreatedBy(d *datasource.UUID) *EquipmentIotCreate {
+	if d != nil {
+		eic.SetCreatedBy(*d)
+	}
+	return eic
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (eic *EquipmentIotCreate) SetCreatedAt(i int64) *EquipmentIotCreate {
+	eic.mutation.SetCreatedAt(i)
+	return eic
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (eic *EquipmentIotCreate) SetNillableCreatedAt(i *int64) *EquipmentIotCreate {
+	if i != nil {
+		eic.SetCreatedAt(*i)
+	}
+	return eic
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (eic *EquipmentIotCreate) SetUpdatedBy(d datasource.UUID) *EquipmentIotCreate {
+	eic.mutation.SetUpdatedBy(d)
+	return eic
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (eic *EquipmentIotCreate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentIotCreate {
+	if d != nil {
+		eic.SetUpdatedBy(*d)
+	}
+	return eic
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (eic *EquipmentIotCreate) SetUpdatedAt(i int64) *EquipmentIotCreate {
+	eic.mutation.SetUpdatedAt(i)
+	return eic
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (eic *EquipmentIotCreate) SetNillableUpdatedAt(i *int64) *EquipmentIotCreate {
+	if i != nil {
+		eic.SetUpdatedAt(*i)
+	}
+	return eic
 }
 
 // SetIccid sets the "iccid" field.
@@ -61,14 +133,28 @@ func (eic *EquipmentIotCreate) SetNillableRemoteAddress(s *string) *EquipmentIot
 	return eic
 }
 
+// SetID sets the "id" field.
+func (eic *EquipmentIotCreate) SetID(d datasource.UUID) *EquipmentIotCreate {
+	eic.mutation.SetID(d)
+	return eic
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (eic *EquipmentIotCreate) SetNillableID(d *datasource.UUID) *EquipmentIotCreate {
+	if d != nil {
+		eic.SetID(*d)
+	}
+	return eic
+}
+
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eic *EquipmentIotCreate) SetEquipmentID(id int) *EquipmentIotCreate {
+func (eic *EquipmentIotCreate) SetEquipmentID(id datasource.UUID) *EquipmentIotCreate {
 	eic.mutation.SetEquipmentID(id)
 	return eic
 }
 
 // SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (eic *EquipmentIotCreate) SetNillableEquipmentID(id *int) *EquipmentIotCreate {
+func (eic *EquipmentIotCreate) SetNillableEquipmentID(id *datasource.UUID) *EquipmentIotCreate {
 	if id != nil {
 		eic = eic.SetEquipmentID(*id)
 	}
@@ -91,6 +177,7 @@ func (eic *EquipmentIotCreate) Save(ctx context.Context) (*EquipmentIot, error) 
 		err  error
 		node *EquipmentIot
 	)
+	eic.defaults()
 	if len(eic.hooks) == 0 {
 		if err = eic.check(); err != nil {
 			return nil, err
@@ -154,8 +241,51 @@ func (eic *EquipmentIotCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (eic *EquipmentIotCreate) defaults() {
+	if _, ok := eic.mutation.Version(); !ok {
+		v := equipmentiot.DefaultVersion
+		eic.mutation.SetVersion(v)
+	}
+	if _, ok := eic.mutation.CreatedBy(); !ok {
+		v := equipmentiot.DefaultCreatedBy
+		eic.mutation.SetCreatedBy(v)
+	}
+	if _, ok := eic.mutation.CreatedAt(); !ok {
+		v := equipmentiot.DefaultCreatedAt
+		eic.mutation.SetCreatedAt(v)
+	}
+	if _, ok := eic.mutation.UpdatedBy(); !ok {
+		v := equipmentiot.DefaultUpdatedBy
+		eic.mutation.SetUpdatedBy(v)
+	}
+	if _, ok := eic.mutation.UpdatedAt(); !ok {
+		v := equipmentiot.DefaultUpdatedAt
+		eic.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := eic.mutation.ID(); !ok {
+		v := equipmentiot.DefaultID
+		eic.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (eic *EquipmentIotCreate) check() error {
+	if _, ok := eic.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "EquipmentIot.version"`)}
+	}
+	if _, ok := eic.mutation.CreatedBy(); !ok {
+		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "EquipmentIot.created_by"`)}
+	}
+	if _, ok := eic.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "EquipmentIot.created_at"`)}
+	}
+	if _, ok := eic.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "EquipmentIot.updated_by"`)}
+	}
+	if _, ok := eic.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "EquipmentIot.updated_at"`)}
+	}
 	return nil
 }
 
@@ -167,8 +297,10 @@ func (eic *EquipmentIotCreate) sqlSave(ctx context.Context) (*EquipmentIot, erro
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -178,11 +310,55 @@ func (eic *EquipmentIotCreate) createSpec() (*EquipmentIot, *sqlgraph.CreateSpec
 		_spec = &sqlgraph.CreateSpec{
 			Table: equipmentiot.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentiot.FieldID,
 			},
 		}
 	)
+	if id, ok := eic.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := eic.mutation.Version(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentiot.FieldVersion,
+		})
+		_node.Version = value
+	}
+	if value, ok := eic.mutation.CreatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentiot.FieldCreatedBy,
+		})
+		_node.CreatedBy = value
+	}
+	if value, ok := eic.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentiot.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := eic.mutation.UpdatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentiot.FieldUpdatedBy,
+		})
+		_node.UpdatedBy = value
+	}
+	if value, ok := eic.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentiot.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := eic.mutation.Iccid(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -216,7 +392,7 @@ func (eic *EquipmentIotCreate) createSpec() (*EquipmentIot, *sqlgraph.CreateSpec
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -244,6 +420,7 @@ func (eicb *EquipmentIotCreateBulk) Save(ctx context.Context) ([]*EquipmentIot, 
 	for i := range eicb.builders {
 		func(i int, root context.Context) {
 			builder := eicb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*EquipmentIotMutation)
 				if !ok {
@@ -270,9 +447,9 @@ func (eicb *EquipmentIotCreateBulk) Save(ctx context.Context) ([]*EquipmentIot, 
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

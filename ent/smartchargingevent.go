@@ -17,7 +17,18 @@ import (
 type SmartChargingEvent struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	// 主键
+	ID datasource.UUID `json:"id,omitempty"`
+	// 乐观锁
+	Version int64 `json:"version,omitempty"`
+	// 创建者
+	CreatedBy datasource.UUID `json:"created_by,omitempty"`
+	// 创建时间
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// 修改者
+	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
+	// 修改时间
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 智慧id
 	SmartID datasource.UUID `json:"smart_id,omitempty"`
 	// 桩端id
@@ -43,7 +54,7 @@ func (*SmartChargingEvent) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case smartchargingevent.FieldSpec:
 			values[i] = new([]byte)
-		case smartchargingevent.FieldID, smartchargingevent.FieldSmartID, smartchargingevent.FieldEquipmentID, smartchargingevent.FieldConnectorID, smartchargingevent.FieldOrderID, smartchargingevent.FieldValidFrom, smartchargingevent.FieldValidTo:
+		case smartchargingevent.FieldID, smartchargingevent.FieldVersion, smartchargingevent.FieldCreatedBy, smartchargingevent.FieldCreatedAt, smartchargingevent.FieldUpdatedBy, smartchargingevent.FieldUpdatedAt, smartchargingevent.FieldSmartID, smartchargingevent.FieldEquipmentID, smartchargingevent.FieldConnectorID, smartchargingevent.FieldOrderID, smartchargingevent.FieldValidFrom, smartchargingevent.FieldValidTo:
 			values[i] = new(sql.NullInt64)
 		case smartchargingevent.FieldUnit:
 			values[i] = new(sql.NullString)
@@ -63,11 +74,41 @@ func (sce *SmartChargingEvent) assignValues(columns []string, values []any) erro
 	for i := range columns {
 		switch columns[i] {
 		case smartchargingevent.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				sce.ID = datasource.UUID(value.Int64)
 			}
-			sce.ID = int(value.Int64)
+		case smartchargingevent.FieldVersion:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field version", values[i])
+			} else if value.Valid {
+				sce.Version = value.Int64
+			}
+		case smartchargingevent.FieldCreatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_by", values[i])
+			} else if value.Valid {
+				sce.CreatedBy = datasource.UUID(value.Int64)
+			}
+		case smartchargingevent.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				sce.CreatedAt = value.Int64
+			}
+		case smartchargingevent.FieldUpdatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
+			} else if value.Valid {
+				sce.UpdatedBy = datasource.UUID(value.Int64)
+			}
+		case smartchargingevent.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				sce.UpdatedAt = value.Int64
+			}
 		case smartchargingevent.FieldSmartID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field smart_id", values[i])
@@ -146,6 +187,21 @@ func (sce *SmartChargingEvent) String() string {
 	var builder strings.Builder
 	builder.WriteString("SmartChargingEvent(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", sce.ID))
+	builder.WriteString("version=")
+	builder.WriteString(fmt.Sprintf("%v", sce.Version))
+	builder.WriteString(", ")
+	builder.WriteString("created_by=")
+	builder.WriteString(fmt.Sprintf("%v", sce.CreatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(fmt.Sprintf("%v", sce.CreatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("updated_by=")
+	builder.WriteString(fmt.Sprintf("%v", sce.UpdatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(fmt.Sprintf("%v", sce.UpdatedAt))
+	builder.WriteString(", ")
 	builder.WriteString("smart_id=")
 	builder.WriteString(fmt.Sprintf("%v", sce.SmartID))
 	builder.WriteString(", ")

@@ -13,7 +13,7 @@ type SmartChargingEvent struct {
 	ent.Schema
 }
 
-func (SmartChargingEvent) Mixins() []ent.Mixin {
+func (SmartChargingEvent) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}

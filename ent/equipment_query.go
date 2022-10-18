@@ -21,6 +21,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
 	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentQuery is the builder for querying Equipment entities.
@@ -276,8 +277,8 @@ func (eq *EquipmentQuery) FirstX(ctx context.Context) *Equipment {
 
 // FirstID returns the first Equipment ID from the query.
 // Returns a *NotFoundError when no Equipment ID was found.
-func (eq *EquipmentQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (eq *EquipmentQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = eq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -289,7 +290,7 @@ func (eq *EquipmentQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (eq *EquipmentQuery) FirstIDX(ctx context.Context) int {
+func (eq *EquipmentQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := eq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -327,8 +328,8 @@ func (eq *EquipmentQuery) OnlyX(ctx context.Context) *Equipment {
 // OnlyID is like Only, but returns the only Equipment ID in the query.
 // Returns a *NotSingularError when more than one Equipment ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (eq *EquipmentQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (eq *EquipmentQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = eq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -344,7 +345,7 @@ func (eq *EquipmentQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (eq *EquipmentQuery) OnlyIDX(ctx context.Context) int {
+func (eq *EquipmentQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := eq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -370,8 +371,8 @@ func (eq *EquipmentQuery) AllX(ctx context.Context) []*Equipment {
 }
 
 // IDs executes the query and returns a list of Equipment IDs.
-func (eq *EquipmentQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (eq *EquipmentQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := eq.Select(equipment.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -379,7 +380,7 @@ func (eq *EquipmentQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (eq *EquipmentQuery) IDsX(ctx context.Context) []int {
+func (eq *EquipmentQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := eq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -542,12 +543,12 @@ func (eq *EquipmentQuery) WithReservation(opts ...func(*ReservationQuery)) *Equi
 // Example:
 //
 //	var v []struct {
-//		Sn string `json:"sn,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Equipment.Query().
-//		GroupBy(equipment.FieldSn).
+//		GroupBy(equipment.FieldVersion).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (eq *EquipmentQuery) GroupBy(field string, fields ...string) *EquipmentGroupBy {
@@ -570,11 +571,11 @@ func (eq *EquipmentQuery) GroupBy(field string, fields ...string) *EquipmentGrou
 // Example:
 //
 //	var v []struct {
-//		Sn string `json:"sn,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //	}
 //
 //	client.Equipment.Query().
-//		Select(equipment.FieldSn).
+//		Select(equipment.FieldVersion).
 //		Scan(ctx, &v)
 func (eq *EquipmentQuery) Select(fields ...string) *EquipmentSelect {
 	eq.fields = append(eq.fields, fields...)
@@ -694,7 +695,7 @@ func (eq *EquipmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Eq
 
 func (eq *EquipmentQuery) loadEquipmentInfo(ctx context.Context, query *EquipmentInfoQuery, nodes []*Equipment, init func(*Equipment), assign func(*Equipment, *EquipmentInfo)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Equipment)
+	nodeids := make(map[datasource.UUID]*Equipment)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -722,7 +723,7 @@ func (eq *EquipmentQuery) loadEquipmentInfo(ctx context.Context, query *Equipmen
 }
 func (eq *EquipmentQuery) loadEvse(ctx context.Context, query *EvseQuery, nodes []*Equipment, init func(*Equipment), assign func(*Equipment, *Evse)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Equipment)
+	nodeids := make(map[datasource.UUID]*Equipment)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -753,7 +754,7 @@ func (eq *EquipmentQuery) loadEvse(ctx context.Context, query *EvseQuery, nodes 
 }
 func (eq *EquipmentQuery) loadConnector(ctx context.Context, query *ConnectorQuery, nodes []*Equipment, init func(*Equipment), assign func(*Equipment, *Connector)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Equipment)
+	nodeids := make(map[datasource.UUID]*Equipment)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -784,7 +785,7 @@ func (eq *EquipmentQuery) loadConnector(ctx context.Context, query *ConnectorQue
 }
 func (eq *EquipmentQuery) loadEquipmentAlarm(ctx context.Context, query *EquipmentAlarmQuery, nodes []*Equipment, init func(*Equipment), assign func(*Equipment, *EquipmentAlarm)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Equipment)
+	nodeids := make(map[datasource.UUID]*Equipment)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -815,7 +816,7 @@ func (eq *EquipmentQuery) loadEquipmentAlarm(ctx context.Context, query *Equipme
 }
 func (eq *EquipmentQuery) loadEquipmentIot(ctx context.Context, query *EquipmentIotQuery, nodes []*Equipment, init func(*Equipment), assign func(*Equipment, *EquipmentIot)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Equipment)
+	nodeids := make(map[datasource.UUID]*Equipment)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -843,7 +844,7 @@ func (eq *EquipmentQuery) loadEquipmentIot(ctx context.Context, query *Equipment
 }
 func (eq *EquipmentQuery) loadEquipmentFirmwareEffect(ctx context.Context, query *EquipmentFirmwareEffectQuery, nodes []*Equipment, init func(*Equipment), assign func(*Equipment, *EquipmentFirmwareEffect)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Equipment)
+	nodeids := make(map[datasource.UUID]*Equipment)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -874,7 +875,7 @@ func (eq *EquipmentQuery) loadEquipmentFirmwareEffect(ctx context.Context, query
 }
 func (eq *EquipmentQuery) loadOrderInfo(ctx context.Context, query *OrderInfoQuery, nodes []*Equipment, init func(*Equipment), assign func(*Equipment, *OrderInfo)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Equipment)
+	nodeids := make(map[datasource.UUID]*Equipment)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -905,7 +906,7 @@ func (eq *EquipmentQuery) loadOrderInfo(ctx context.Context, query *OrderInfoQue
 }
 func (eq *EquipmentQuery) loadReservation(ctx context.Context, query *ReservationQuery, nodes []*Equipment, init func(*Equipment), assign func(*Equipment, *Reservation)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Equipment)
+	nodeids := make(map[datasource.UUID]*Equipment)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -961,7 +962,7 @@ func (eq *EquipmentQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   equipment.Table,
 			Columns: equipment.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipment.FieldID,
 			},
 		},

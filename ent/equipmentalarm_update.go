@@ -13,6 +13,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentalarm"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentAlarmUpdate is the builder for updating EquipmentAlarm entities.
@@ -25,6 +26,69 @@ type EquipmentAlarmUpdate struct {
 // Where appends a list predicates to the EquipmentAlarmUpdate builder.
 func (eau *EquipmentAlarmUpdate) Where(ps ...predicate.EquipmentAlarm) *EquipmentAlarmUpdate {
 	eau.mutation.Where(ps...)
+	return eau
+}
+
+// SetVersion sets the "version" field.
+func (eau *EquipmentAlarmUpdate) SetVersion(i int64) *EquipmentAlarmUpdate {
+	eau.mutation.ResetVersion()
+	eau.mutation.SetVersion(i)
+	return eau
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (eau *EquipmentAlarmUpdate) SetNillableVersion(i *int64) *EquipmentAlarmUpdate {
+	if i != nil {
+		eau.SetVersion(*i)
+	}
+	return eau
+}
+
+// AddVersion adds i to the "version" field.
+func (eau *EquipmentAlarmUpdate) AddVersion(i int64) *EquipmentAlarmUpdate {
+	eau.mutation.AddVersion(i)
+	return eau
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (eau *EquipmentAlarmUpdate) SetUpdatedBy(d datasource.UUID) *EquipmentAlarmUpdate {
+	eau.mutation.ResetUpdatedBy()
+	eau.mutation.SetUpdatedBy(d)
+	return eau
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (eau *EquipmentAlarmUpdate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentAlarmUpdate {
+	if d != nil {
+		eau.SetUpdatedBy(*d)
+	}
+	return eau
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (eau *EquipmentAlarmUpdate) AddUpdatedBy(d datasource.UUID) *EquipmentAlarmUpdate {
+	eau.mutation.AddUpdatedBy(d)
+	return eau
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (eau *EquipmentAlarmUpdate) SetUpdatedAt(i int64) *EquipmentAlarmUpdate {
+	eau.mutation.ResetUpdatedAt()
+	eau.mutation.SetUpdatedAt(i)
+	return eau
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (eau *EquipmentAlarmUpdate) SetNillableUpdatedAt(i *int64) *EquipmentAlarmUpdate {
+	if i != nil {
+		eau.SetUpdatedAt(*i)
+	}
+	return eau
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (eau *EquipmentAlarmUpdate) AddUpdatedAt(i int64) *EquipmentAlarmUpdate {
+	eau.mutation.AddUpdatedAt(i)
 	return eau
 }
 
@@ -123,7 +187,7 @@ func (eau *EquipmentAlarmUpdate) AddCount(i int) *EquipmentAlarmUpdate {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eau *EquipmentAlarmUpdate) SetEquipmentID(id int) *EquipmentAlarmUpdate {
+func (eau *EquipmentAlarmUpdate) SetEquipmentID(id datasource.UUID) *EquipmentAlarmUpdate {
 	eau.mutation.SetEquipmentID(id)
 	return eau
 }
@@ -218,7 +282,7 @@ func (eau *EquipmentAlarmUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Table:   equipmentalarm.Table,
 			Columns: equipmentalarm.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentalarm.FieldID,
 			},
 		},
@@ -229,6 +293,48 @@ func (eau *EquipmentAlarmUpdate) sqlSave(ctx context.Context) (n int, err error)
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := eau.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentalarm.FieldVersion,
+		})
+	}
+	if value, ok := eau.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentalarm.FieldVersion,
+		})
+	}
+	if value, ok := eau.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentalarm.FieldUpdatedBy,
+		})
+	}
+	if value, ok := eau.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentalarm.FieldUpdatedBy,
+		})
+	}
+	if value, ok := eau.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentalarm.FieldUpdatedAt,
+		})
+	}
+	if value, ok := eau.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentalarm.FieldUpdatedAt,
+		})
 	}
 	if value, ok := eau.mutation.DtcCode(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -314,7 +420,7 @@ func (eau *EquipmentAlarmUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -330,7 +436,7 @@ func (eau *EquipmentAlarmUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -357,6 +463,69 @@ type EquipmentAlarmUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *EquipmentAlarmMutation
+}
+
+// SetVersion sets the "version" field.
+func (eauo *EquipmentAlarmUpdateOne) SetVersion(i int64) *EquipmentAlarmUpdateOne {
+	eauo.mutation.ResetVersion()
+	eauo.mutation.SetVersion(i)
+	return eauo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (eauo *EquipmentAlarmUpdateOne) SetNillableVersion(i *int64) *EquipmentAlarmUpdateOne {
+	if i != nil {
+		eauo.SetVersion(*i)
+	}
+	return eauo
+}
+
+// AddVersion adds i to the "version" field.
+func (eauo *EquipmentAlarmUpdateOne) AddVersion(i int64) *EquipmentAlarmUpdateOne {
+	eauo.mutation.AddVersion(i)
+	return eauo
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (eauo *EquipmentAlarmUpdateOne) SetUpdatedBy(d datasource.UUID) *EquipmentAlarmUpdateOne {
+	eauo.mutation.ResetUpdatedBy()
+	eauo.mutation.SetUpdatedBy(d)
+	return eauo
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (eauo *EquipmentAlarmUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentAlarmUpdateOne {
+	if d != nil {
+		eauo.SetUpdatedBy(*d)
+	}
+	return eauo
+}
+
+// AddUpdatedBy adds d to the "updated_by" field.
+func (eauo *EquipmentAlarmUpdateOne) AddUpdatedBy(d datasource.UUID) *EquipmentAlarmUpdateOne {
+	eauo.mutation.AddUpdatedBy(d)
+	return eauo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (eauo *EquipmentAlarmUpdateOne) SetUpdatedAt(i int64) *EquipmentAlarmUpdateOne {
+	eauo.mutation.ResetUpdatedAt()
+	eauo.mutation.SetUpdatedAt(i)
+	return eauo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (eauo *EquipmentAlarmUpdateOne) SetNillableUpdatedAt(i *int64) *EquipmentAlarmUpdateOne {
+	if i != nil {
+		eauo.SetUpdatedAt(*i)
+	}
+	return eauo
+}
+
+// AddUpdatedAt adds i to the "updated_at" field.
+func (eauo *EquipmentAlarmUpdateOne) AddUpdatedAt(i int64) *EquipmentAlarmUpdateOne {
+	eauo.mutation.AddUpdatedAt(i)
+	return eauo
 }
 
 // SetDtcCode sets the "dtc_code" field.
@@ -454,7 +623,7 @@ func (eauo *EquipmentAlarmUpdateOne) AddCount(i int) *EquipmentAlarmUpdateOne {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eauo *EquipmentAlarmUpdateOne) SetEquipmentID(id int) *EquipmentAlarmUpdateOne {
+func (eauo *EquipmentAlarmUpdateOne) SetEquipmentID(id datasource.UUID) *EquipmentAlarmUpdateOne {
 	eauo.mutation.SetEquipmentID(id)
 	return eauo
 }
@@ -562,7 +731,7 @@ func (eauo *EquipmentAlarmUpdateOne) sqlSave(ctx context.Context) (_node *Equipm
 			Table:   equipmentalarm.Table,
 			Columns: equipmentalarm.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentalarm.FieldID,
 			},
 		},
@@ -590,6 +759,48 @@ func (eauo *EquipmentAlarmUpdateOne) sqlSave(ctx context.Context) (_node *Equipm
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := eauo.mutation.Version(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentalarm.FieldVersion,
+		})
+	}
+	if value, ok := eauo.mutation.AddedVersion(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentalarm.FieldVersion,
+		})
+	}
+	if value, ok := eauo.mutation.UpdatedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentalarm.FieldUpdatedBy,
+		})
+	}
+	if value, ok := eauo.mutation.AddedUpdatedBy(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentalarm.FieldUpdatedBy,
+		})
+	}
+	if value, ok := eauo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentalarm.FieldUpdatedAt,
+		})
+	}
+	if value, ok := eauo.mutation.AddedUpdatedAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentalarm.FieldUpdatedAt,
+		})
 	}
 	if value, ok := eauo.mutation.DtcCode(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -675,7 +886,7 @@ func (eauo *EquipmentAlarmUpdateOne) sqlSave(ctx context.Context) (_node *Equipm
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -691,7 +902,7 @@ func (eauo *EquipmentAlarmUpdateOne) sqlSave(ctx context.Context) (_node *Equipm
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},

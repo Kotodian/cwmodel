@@ -17,6 +17,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
 	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // ConnectorQuery is the builder for querying Connector entities.
@@ -181,8 +182,8 @@ func (cq *ConnectorQuery) FirstX(ctx context.Context) *Connector {
 
 // FirstID returns the first Connector ID from the query.
 // Returns a *NotFoundError when no Connector ID was found.
-func (cq *ConnectorQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (cq *ConnectorQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = cq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -194,7 +195,7 @@ func (cq *ConnectorQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (cq *ConnectorQuery) FirstIDX(ctx context.Context) int {
+func (cq *ConnectorQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := cq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -232,8 +233,8 @@ func (cq *ConnectorQuery) OnlyX(ctx context.Context) *Connector {
 // OnlyID is like Only, but returns the only Connector ID in the query.
 // Returns a *NotSingularError when more than one Connector ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (cq *ConnectorQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (cq *ConnectorQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = cq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -249,7 +250,7 @@ func (cq *ConnectorQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (cq *ConnectorQuery) OnlyIDX(ctx context.Context) int {
+func (cq *ConnectorQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := cq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -275,8 +276,8 @@ func (cq *ConnectorQuery) AllX(ctx context.Context) []*Connector {
 }
 
 // IDs executes the query and returns a list of Connector IDs.
-func (cq *ConnectorQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (cq *ConnectorQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := cq.Select(connector.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -284,7 +285,7 @@ func (cq *ConnectorQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (cq *ConnectorQuery) IDsX(ctx context.Context) []int {
+func (cq *ConnectorQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := cq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -399,12 +400,12 @@ func (cq *ConnectorQuery) WithReservation(opts ...func(*ReservationQuery)) *Conn
 // Example:
 //
 //	var v []struct {
-//		EquipmentSn string `json:"equipment_sn,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Connector.Query().
-//		GroupBy(connector.FieldEquipmentSn).
+//		GroupBy(connector.FieldVersion).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (cq *ConnectorQuery) GroupBy(field string, fields ...string) *ConnectorGroupBy {
@@ -427,11 +428,11 @@ func (cq *ConnectorQuery) GroupBy(field string, fields ...string) *ConnectorGrou
 // Example:
 //
 //	var v []struct {
-//		EquipmentSn string `json:"equipment_sn,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //	}
 //
 //	client.Connector.Query().
-//		Select(connector.FieldEquipmentSn).
+//		Select(connector.FieldVersion).
 //		Scan(ctx, &v)
 func (cq *ConnectorQuery) Select(fields ...string) *ConnectorSelect {
 	cq.fields = append(cq.fields, fields...)
@@ -523,13 +524,13 @@ func (cq *ConnectorQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Co
 }
 
 func (cq *ConnectorQuery) loadEvse(ctx context.Context, query *EvseQuery, nodes []*Connector, init func(*Connector), assign func(*Connector, *Evse)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Connector)
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*Connector)
 	for i := range nodes {
-		if nodes[i].evse_connector == nil {
+		if nodes[i].evse_id == nil {
 			continue
 		}
-		fk := *nodes[i].evse_connector
+		fk := *nodes[i].evse_id
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -543,7 +544,7 @@ func (cq *ConnectorQuery) loadEvse(ctx context.Context, query *EvseQuery, nodes 
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "evse_connector" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "evse_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -552,8 +553,8 @@ func (cq *ConnectorQuery) loadEvse(ctx context.Context, query *EvseQuery, nodes 
 	return nil
 }
 func (cq *ConnectorQuery) loadEquipment(ctx context.Context, query *EquipmentQuery, nodes []*Connector, init func(*Connector), assign func(*Connector, *Equipment)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Connector)
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*Connector)
 	for i := range nodes {
 		if nodes[i].equipment_id == nil {
 			continue
@@ -582,7 +583,7 @@ func (cq *ConnectorQuery) loadEquipment(ctx context.Context, query *EquipmentQue
 }
 func (cq *ConnectorQuery) loadOrderInfo(ctx context.Context, query *OrderInfoQuery, nodes []*Connector, init func(*Connector), assign func(*Connector, *OrderInfo)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Connector)
+	nodeids := make(map[datasource.UUID]*Connector)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -613,7 +614,7 @@ func (cq *ConnectorQuery) loadOrderInfo(ctx context.Context, query *OrderInfoQue
 }
 func (cq *ConnectorQuery) loadReservation(ctx context.Context, query *ReservationQuery, nodes []*Connector, init func(*Connector), assign func(*Connector, *Reservation)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Connector)
+	nodeids := make(map[datasource.UUID]*Connector)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -669,7 +670,7 @@ func (cq *ConnectorQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   connector.Table,
 			Columns: connector.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: connector.FieldID,
 			},
 		},

@@ -12,7 +12,7 @@ type EquipmentAlarm struct {
 	ent.Schema
 }
 
-func (EquipmentAlarm) Mixins() []ent.Mixin {
+func (EquipmentAlarm) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}

@@ -9,13 +9,25 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentalarm"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentAlarm is the model entity for the EquipmentAlarm schema.
 type EquipmentAlarm struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	// 主键
+	ID datasource.UUID `json:"id,omitempty"`
+	// 乐观锁
+	Version int64 `json:"version,omitempty"`
+	// 创建者
+	CreatedBy datasource.UUID `json:"created_by,omitempty"`
+	// 创建时间
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// 修改者
+	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
+	// 修改时间
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 告警代码
 	DtcCode int64 `json:"dtc_code,omitempty"`
 	// ip地址
@@ -29,7 +41,7 @@ type EquipmentAlarm struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentAlarmQuery when eager-loading is set.
 	Edges        EquipmentAlarmEdges `json:"edges"`
-	equipment_id *int
+	equipment_id *datasource.UUID
 }
 
 // EquipmentAlarmEdges holds the relations/edges for other nodes in the graph.
@@ -59,7 +71,7 @@ func (*EquipmentAlarm) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case equipmentalarm.FieldID, equipmentalarm.FieldDtcCode, equipmentalarm.FieldTriggerTime, equipmentalarm.FieldFinalTime, equipmentalarm.FieldCount:
+		case equipmentalarm.FieldID, equipmentalarm.FieldVersion, equipmentalarm.FieldCreatedBy, equipmentalarm.FieldCreatedAt, equipmentalarm.FieldUpdatedBy, equipmentalarm.FieldUpdatedAt, equipmentalarm.FieldDtcCode, equipmentalarm.FieldTriggerTime, equipmentalarm.FieldFinalTime, equipmentalarm.FieldCount:
 			values[i] = new(sql.NullInt64)
 		case equipmentalarm.FieldRemoteAddress:
 			values[i] = new(sql.NullString)
@@ -81,11 +93,41 @@ func (ea *EquipmentAlarm) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case equipmentalarm.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				ea.ID = datasource.UUID(value.Int64)
 			}
-			ea.ID = int(value.Int64)
+		case equipmentalarm.FieldVersion:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field version", values[i])
+			} else if value.Valid {
+				ea.Version = value.Int64
+			}
+		case equipmentalarm.FieldCreatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_by", values[i])
+			} else if value.Valid {
+				ea.CreatedBy = datasource.UUID(value.Int64)
+			}
+		case equipmentalarm.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				ea.CreatedAt = value.Int64
+			}
+		case equipmentalarm.FieldUpdatedBy:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
+			} else if value.Valid {
+				ea.UpdatedBy = datasource.UUID(value.Int64)
+			}
+		case equipmentalarm.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				ea.UpdatedAt = value.Int64
+			}
 		case equipmentalarm.FieldDtcCode:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field dtc_code", values[i])
@@ -118,10 +160,10 @@ func (ea *EquipmentAlarm) assignValues(columns []string, values []any) error {
 			}
 		case equipmentalarm.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field equipment_id", value)
+				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
 			} else if value.Valid {
-				ea.equipment_id = new(int)
-				*ea.equipment_id = int(value.Int64)
+				ea.equipment_id = new(datasource.UUID)
+				*ea.equipment_id = datasource.UUID(value.Int64)
 			}
 		}
 	}
@@ -156,6 +198,21 @@ func (ea *EquipmentAlarm) String() string {
 	var builder strings.Builder
 	builder.WriteString("EquipmentAlarm(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", ea.ID))
+	builder.WriteString("version=")
+	builder.WriteString(fmt.Sprintf("%v", ea.Version))
+	builder.WriteString(", ")
+	builder.WriteString("created_by=")
+	builder.WriteString(fmt.Sprintf("%v", ea.CreatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(fmt.Sprintf("%v", ea.CreatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("updated_by=")
+	builder.WriteString(fmt.Sprintf("%v", ea.UpdatedBy))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(fmt.Sprintf("%v", ea.UpdatedAt))
+	builder.WriteString(", ")
 	builder.WriteString("dtc_code=")
 	builder.WriteString(fmt.Sprintf("%v", ea.DtcCode))
 	builder.WriteString(", ")

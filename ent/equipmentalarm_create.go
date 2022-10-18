@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/equipmentalarm"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // EquipmentAlarmCreate is the builder for creating a EquipmentAlarm entity.
@@ -18,6 +19,76 @@ type EquipmentAlarmCreate struct {
 	config
 	mutation *EquipmentAlarmMutation
 	hooks    []Hook
+}
+
+// SetVersion sets the "version" field.
+func (eac *EquipmentAlarmCreate) SetVersion(i int64) *EquipmentAlarmCreate {
+	eac.mutation.SetVersion(i)
+	return eac
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (eac *EquipmentAlarmCreate) SetNillableVersion(i *int64) *EquipmentAlarmCreate {
+	if i != nil {
+		eac.SetVersion(*i)
+	}
+	return eac
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (eac *EquipmentAlarmCreate) SetCreatedBy(d datasource.UUID) *EquipmentAlarmCreate {
+	eac.mutation.SetCreatedBy(d)
+	return eac
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (eac *EquipmentAlarmCreate) SetNillableCreatedBy(d *datasource.UUID) *EquipmentAlarmCreate {
+	if d != nil {
+		eac.SetCreatedBy(*d)
+	}
+	return eac
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (eac *EquipmentAlarmCreate) SetCreatedAt(i int64) *EquipmentAlarmCreate {
+	eac.mutation.SetCreatedAt(i)
+	return eac
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (eac *EquipmentAlarmCreate) SetNillableCreatedAt(i *int64) *EquipmentAlarmCreate {
+	if i != nil {
+		eac.SetCreatedAt(*i)
+	}
+	return eac
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (eac *EquipmentAlarmCreate) SetUpdatedBy(d datasource.UUID) *EquipmentAlarmCreate {
+	eac.mutation.SetUpdatedBy(d)
+	return eac
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (eac *EquipmentAlarmCreate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentAlarmCreate {
+	if d != nil {
+		eac.SetUpdatedBy(*d)
+	}
+	return eac
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (eac *EquipmentAlarmCreate) SetUpdatedAt(i int64) *EquipmentAlarmCreate {
+	eac.mutation.SetUpdatedAt(i)
+	return eac
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (eac *EquipmentAlarmCreate) SetNillableUpdatedAt(i *int64) *EquipmentAlarmCreate {
+	if i != nil {
+		eac.SetUpdatedAt(*i)
+	}
+	return eac
 }
 
 // SetDtcCode sets the "dtc_code" field.
@@ -74,8 +145,22 @@ func (eac *EquipmentAlarmCreate) SetNillableCount(i *int) *EquipmentAlarmCreate 
 	return eac
 }
 
+// SetID sets the "id" field.
+func (eac *EquipmentAlarmCreate) SetID(d datasource.UUID) *EquipmentAlarmCreate {
+	eac.mutation.SetID(d)
+	return eac
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (eac *EquipmentAlarmCreate) SetNillableID(d *datasource.UUID) *EquipmentAlarmCreate {
+	if d != nil {
+		eac.SetID(*d)
+	}
+	return eac
+}
+
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eac *EquipmentAlarmCreate) SetEquipmentID(id int) *EquipmentAlarmCreate {
+func (eac *EquipmentAlarmCreate) SetEquipmentID(id datasource.UUID) *EquipmentAlarmCreate {
 	eac.mutation.SetEquipmentID(id)
 	return eac
 }
@@ -162,14 +247,53 @@ func (eac *EquipmentAlarmCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (eac *EquipmentAlarmCreate) defaults() {
+	if _, ok := eac.mutation.Version(); !ok {
+		v := equipmentalarm.DefaultVersion
+		eac.mutation.SetVersion(v)
+	}
+	if _, ok := eac.mutation.CreatedBy(); !ok {
+		v := equipmentalarm.DefaultCreatedBy
+		eac.mutation.SetCreatedBy(v)
+	}
+	if _, ok := eac.mutation.CreatedAt(); !ok {
+		v := equipmentalarm.DefaultCreatedAt
+		eac.mutation.SetCreatedAt(v)
+	}
+	if _, ok := eac.mutation.UpdatedBy(); !ok {
+		v := equipmentalarm.DefaultUpdatedBy
+		eac.mutation.SetUpdatedBy(v)
+	}
+	if _, ok := eac.mutation.UpdatedAt(); !ok {
+		v := equipmentalarm.DefaultUpdatedAt
+		eac.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := eac.mutation.Count(); !ok {
 		v := equipmentalarm.DefaultCount
 		eac.mutation.SetCount(v)
+	}
+	if _, ok := eac.mutation.ID(); !ok {
+		v := equipmentalarm.DefaultID
+		eac.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (eac *EquipmentAlarmCreate) check() error {
+	if _, ok := eac.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "EquipmentAlarm.version"`)}
+	}
+	if _, ok := eac.mutation.CreatedBy(); !ok {
+		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "EquipmentAlarm.created_by"`)}
+	}
+	if _, ok := eac.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "EquipmentAlarm.created_at"`)}
+	}
+	if _, ok := eac.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "EquipmentAlarm.updated_by"`)}
+	}
+	if _, ok := eac.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "EquipmentAlarm.updated_at"`)}
+	}
 	if _, ok := eac.mutation.DtcCode(); !ok {
 		return &ValidationError{Name: "dtc_code", err: errors.New(`ent: missing required field "EquipmentAlarm.dtc_code"`)}
 	}
@@ -193,8 +317,10 @@ func (eac *EquipmentAlarmCreate) sqlSave(ctx context.Context) (*EquipmentAlarm, 
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -204,11 +330,55 @@ func (eac *EquipmentAlarmCreate) createSpec() (*EquipmentAlarm, *sqlgraph.Create
 		_spec = &sqlgraph.CreateSpec{
 			Table: equipmentalarm.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentalarm.FieldID,
 			},
 		}
 	)
+	if id, ok := eac.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := eac.mutation.Version(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentalarm.FieldVersion,
+		})
+		_node.Version = value
+	}
+	if value, ok := eac.mutation.CreatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentalarm.FieldCreatedBy,
+		})
+		_node.CreatedBy = value
+	}
+	if value, ok := eac.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentalarm.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := eac.mutation.UpdatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: equipmentalarm.FieldUpdatedBy,
+		})
+		_node.UpdatedBy = value
+	}
+	if value, ok := eac.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentalarm.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := eac.mutation.DtcCode(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
@@ -258,7 +428,7 @@ func (eac *EquipmentAlarmCreate) createSpec() (*EquipmentAlarm, *sqlgraph.Create
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -313,9 +483,9 @@ func (eacb *EquipmentAlarmCreateBulk) Save(ctx context.Context) ([]*EquipmentAla
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

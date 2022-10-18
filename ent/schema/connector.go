@@ -6,7 +6,6 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/ent-practice/ent/types"
 )
 
 // Connector holds the schema definition for the Connector entity.
@@ -14,7 +13,7 @@ type Connector struct {
 	ent.Schema
 }
 
-func (Connector) Mixins() []ent.Mixin {
+func (Connector) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		ModelMixin{},
 	}
@@ -32,8 +31,8 @@ func (Connector) Fields() []ent.Field {
 		field.String("equipment_sn").Comment("桩序列号"),
 		field.String("evse_serial").Comment("设备序列号"),
 		field.String("serial").Comment("枪序列号"),
-		field.Enum("current_state").GoType(types.ConnectorState(0)).Comment("当前状态"),
-		field.Enum("before_state").GoType(types.ConnectorState(0)).Comment("之前状态"),
+		field.Int("current_state").Comment("当前状态"),
+		field.Int("before_state").Comment("之前状态"),
 	}
 }
 

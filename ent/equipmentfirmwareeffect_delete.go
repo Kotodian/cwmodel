@@ -72,7 +72,7 @@ func (efed *EquipmentFirmwareEffectDelete) sqlExec(ctx context.Context) (int, er
 		Node: &sqlgraph.NodeSpec{
 			Table: equipmentfirmwareeffect.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: equipmentfirmwareeffect.FieldID,
 			},
 		},

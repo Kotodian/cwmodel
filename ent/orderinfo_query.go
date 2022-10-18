@@ -16,6 +16,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderevent"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // OrderInfoQuery is the builder for querying OrderInfo entities.
@@ -157,8 +158,8 @@ func (oiq *OrderInfoQuery) FirstX(ctx context.Context) *OrderInfo {
 
 // FirstID returns the first OrderInfo ID from the query.
 // Returns a *NotFoundError when no OrderInfo ID was found.
-func (oiq *OrderInfoQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (oiq *OrderInfoQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = oiq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -170,7 +171,7 @@ func (oiq *OrderInfoQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (oiq *OrderInfoQuery) FirstIDX(ctx context.Context) int {
+func (oiq *OrderInfoQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := oiq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -208,8 +209,8 @@ func (oiq *OrderInfoQuery) OnlyX(ctx context.Context) *OrderInfo {
 // OnlyID is like Only, but returns the only OrderInfo ID in the query.
 // Returns a *NotSingularError when more than one OrderInfo ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (oiq *OrderInfoQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (oiq *OrderInfoQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = oiq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -225,7 +226,7 @@ func (oiq *OrderInfoQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (oiq *OrderInfoQuery) OnlyIDX(ctx context.Context) int {
+func (oiq *OrderInfoQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := oiq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -251,8 +252,8 @@ func (oiq *OrderInfoQuery) AllX(ctx context.Context) []*OrderInfo {
 }
 
 // IDs executes the query and returns a list of OrderInfo IDs.
-func (oiq *OrderInfoQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (oiq *OrderInfoQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := oiq.Select(orderinfo.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -260,7 +261,7 @@ func (oiq *OrderInfoQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (oiq *OrderInfoQuery) IDsX(ctx context.Context) []int {
+func (oiq *OrderInfoQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := oiq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -363,12 +364,12 @@ func (oiq *OrderInfoQuery) WithOrderEvent(opts ...func(*OrderEventQuery)) *Order
 // Example:
 //
 //	var v []struct {
-//		RemoteStartID int64 `json:"remote_start_id,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.OrderInfo.Query().
-//		GroupBy(orderinfo.FieldRemoteStartID).
+//		GroupBy(orderinfo.FieldVersion).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (oiq *OrderInfoQuery) GroupBy(field string, fields ...string) *OrderInfoGroupBy {
@@ -391,11 +392,11 @@ func (oiq *OrderInfoQuery) GroupBy(field string, fields ...string) *OrderInfoGro
 // Example:
 //
 //	var v []struct {
-//		RemoteStartID int64 `json:"remote_start_id,omitempty"`
+//		Version int64 `json:"version,omitempty"`
 //	}
 //
 //	client.OrderInfo.Query().
-//		Select(orderinfo.FieldRemoteStartID).
+//		Select(orderinfo.FieldVersion).
 //		Scan(ctx, &v)
 func (oiq *OrderInfoQuery) Select(fields ...string) *OrderInfoSelect {
 	oiq.fields = append(oiq.fields, fields...)
@@ -479,8 +480,8 @@ func (oiq *OrderInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*O
 }
 
 func (oiq *OrderInfoQuery) loadConnector(ctx context.Context, query *ConnectorQuery, nodes []*OrderInfo, init func(*OrderInfo), assign func(*OrderInfo, *Connector)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*OrderInfo)
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*OrderInfo)
 	for i := range nodes {
 		if nodes[i].connector_id == nil {
 			continue
@@ -508,8 +509,8 @@ func (oiq *OrderInfoQuery) loadConnector(ctx context.Context, query *ConnectorQu
 	return nil
 }
 func (oiq *OrderInfoQuery) loadEquipment(ctx context.Context, query *EquipmentQuery, nodes []*OrderInfo, init func(*OrderInfo), assign func(*OrderInfo, *Equipment)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*OrderInfo)
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*OrderInfo)
 	for i := range nodes {
 		if nodes[i].equipment_id == nil {
 			continue
@@ -538,7 +539,7 @@ func (oiq *OrderInfoQuery) loadEquipment(ctx context.Context, query *EquipmentQu
 }
 func (oiq *OrderInfoQuery) loadOrderEvent(ctx context.Context, query *OrderEventQuery, nodes []*OrderInfo, init func(*OrderInfo), assign func(*OrderInfo, *OrderEvent)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*OrderInfo)
+	nodeids := make(map[datasource.UUID]*OrderInfo)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -594,7 +595,7 @@ func (oiq *OrderInfoQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   orderinfo.Table,
 			Columns: orderinfo.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: orderinfo.FieldID,
 			},
 		},

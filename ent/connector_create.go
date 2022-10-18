@@ -14,7 +14,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/reservation"
-	"github.com/Kotodian/ent-practice/ent/types"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // ConnectorCreate is the builder for creating a Connector entity.
@@ -22,6 +22,76 @@ type ConnectorCreate struct {
 	config
 	mutation *ConnectorMutation
 	hooks    []Hook
+}
+
+// SetVersion sets the "version" field.
+func (cc *ConnectorCreate) SetVersion(i int64) *ConnectorCreate {
+	cc.mutation.SetVersion(i)
+	return cc
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (cc *ConnectorCreate) SetNillableVersion(i *int64) *ConnectorCreate {
+	if i != nil {
+		cc.SetVersion(*i)
+	}
+	return cc
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (cc *ConnectorCreate) SetCreatedBy(d datasource.UUID) *ConnectorCreate {
+	cc.mutation.SetCreatedBy(d)
+	return cc
+}
+
+// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
+func (cc *ConnectorCreate) SetNillableCreatedBy(d *datasource.UUID) *ConnectorCreate {
+	if d != nil {
+		cc.SetCreatedBy(*d)
+	}
+	return cc
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (cc *ConnectorCreate) SetCreatedAt(i int64) *ConnectorCreate {
+	cc.mutation.SetCreatedAt(i)
+	return cc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (cc *ConnectorCreate) SetNillableCreatedAt(i *int64) *ConnectorCreate {
+	if i != nil {
+		cc.SetCreatedAt(*i)
+	}
+	return cc
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (cc *ConnectorCreate) SetUpdatedBy(d datasource.UUID) *ConnectorCreate {
+	cc.mutation.SetUpdatedBy(d)
+	return cc
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (cc *ConnectorCreate) SetNillableUpdatedBy(d *datasource.UUID) *ConnectorCreate {
+	if d != nil {
+		cc.SetUpdatedBy(*d)
+	}
+	return cc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (cc *ConnectorCreate) SetUpdatedAt(i int64) *ConnectorCreate {
+	cc.mutation.SetUpdatedAt(i)
+	return cc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (cc *ConnectorCreate) SetNillableUpdatedAt(i *int64) *ConnectorCreate {
+	if i != nil {
+		cc.SetUpdatedAt(*i)
+	}
+	return cc
 }
 
 // SetEquipmentSn sets the "equipment_sn" field.
@@ -43,19 +113,33 @@ func (cc *ConnectorCreate) SetSerial(s string) *ConnectorCreate {
 }
 
 // SetCurrentState sets the "current_state" field.
-func (cc *ConnectorCreate) SetCurrentState(ts types.ConnectorState) *ConnectorCreate {
-	cc.mutation.SetCurrentState(ts)
+func (cc *ConnectorCreate) SetCurrentState(i int) *ConnectorCreate {
+	cc.mutation.SetCurrentState(i)
 	return cc
 }
 
 // SetBeforeState sets the "before_state" field.
-func (cc *ConnectorCreate) SetBeforeState(ts types.ConnectorState) *ConnectorCreate {
-	cc.mutation.SetBeforeState(ts)
+func (cc *ConnectorCreate) SetBeforeState(i int) *ConnectorCreate {
+	cc.mutation.SetBeforeState(i)
+	return cc
+}
+
+// SetID sets the "id" field.
+func (cc *ConnectorCreate) SetID(d datasource.UUID) *ConnectorCreate {
+	cc.mutation.SetID(d)
+	return cc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (cc *ConnectorCreate) SetNillableID(d *datasource.UUID) *ConnectorCreate {
+	if d != nil {
+		cc.SetID(*d)
+	}
 	return cc
 }
 
 // SetEvseID sets the "evse" edge to the Evse entity by ID.
-func (cc *ConnectorCreate) SetEvseID(id int) *ConnectorCreate {
+func (cc *ConnectorCreate) SetEvseID(id datasource.UUID) *ConnectorCreate {
 	cc.mutation.SetEvseID(id)
 	return cc
 }
@@ -66,7 +150,7 @@ func (cc *ConnectorCreate) SetEvse(e *Evse) *ConnectorCreate {
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (cc *ConnectorCreate) SetEquipmentID(id int) *ConnectorCreate {
+func (cc *ConnectorCreate) SetEquipmentID(id datasource.UUID) *ConnectorCreate {
 	cc.mutation.SetEquipmentID(id)
 	return cc
 }
@@ -77,14 +161,14 @@ func (cc *ConnectorCreate) SetEquipment(e *Equipment) *ConnectorCreate {
 }
 
 // AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
-func (cc *ConnectorCreate) AddOrderInfoIDs(ids ...int) *ConnectorCreate {
+func (cc *ConnectorCreate) AddOrderInfoIDs(ids ...datasource.UUID) *ConnectorCreate {
 	cc.mutation.AddOrderInfoIDs(ids...)
 	return cc
 }
 
 // AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
 func (cc *ConnectorCreate) AddOrderInfo(o ...*OrderInfo) *ConnectorCreate {
-	ids := make([]int, len(o))
+	ids := make([]datasource.UUID, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
@@ -92,14 +176,14 @@ func (cc *ConnectorCreate) AddOrderInfo(o ...*OrderInfo) *ConnectorCreate {
 }
 
 // AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
-func (cc *ConnectorCreate) AddReservationIDs(ids ...int) *ConnectorCreate {
+func (cc *ConnectorCreate) AddReservationIDs(ids ...datasource.UUID) *ConnectorCreate {
 	cc.mutation.AddReservationIDs(ids...)
 	return cc
 }
 
 // AddReservation adds the "reservation" edges to the Reservation entity.
 func (cc *ConnectorCreate) AddReservation(r ...*Reservation) *ConnectorCreate {
-	ids := make([]int, len(r))
+	ids := make([]datasource.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -117,6 +201,7 @@ func (cc *ConnectorCreate) Save(ctx context.Context) (*Connector, error) {
 		err  error
 		node *Connector
 	)
+	cc.defaults()
 	if len(cc.hooks) == 0 {
 		if err = cc.check(); err != nil {
 			return nil, err
@@ -180,8 +265,51 @@ func (cc *ConnectorCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (cc *ConnectorCreate) defaults() {
+	if _, ok := cc.mutation.Version(); !ok {
+		v := connector.DefaultVersion
+		cc.mutation.SetVersion(v)
+	}
+	if _, ok := cc.mutation.CreatedBy(); !ok {
+		v := connector.DefaultCreatedBy
+		cc.mutation.SetCreatedBy(v)
+	}
+	if _, ok := cc.mutation.CreatedAt(); !ok {
+		v := connector.DefaultCreatedAt
+		cc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := cc.mutation.UpdatedBy(); !ok {
+		v := connector.DefaultUpdatedBy
+		cc.mutation.SetUpdatedBy(v)
+	}
+	if _, ok := cc.mutation.UpdatedAt(); !ok {
+		v := connector.DefaultUpdatedAt
+		cc.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := cc.mutation.ID(); !ok {
+		v := connector.DefaultID
+		cc.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (cc *ConnectorCreate) check() error {
+	if _, ok := cc.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "Connector.version"`)}
+	}
+	if _, ok := cc.mutation.CreatedBy(); !ok {
+		return &ValidationError{Name: "created_by", err: errors.New(`ent: missing required field "Connector.created_by"`)}
+	}
+	if _, ok := cc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Connector.created_at"`)}
+	}
+	if _, ok := cc.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "Connector.updated_by"`)}
+	}
+	if _, ok := cc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Connector.updated_at"`)}
+	}
 	if _, ok := cc.mutation.EquipmentSn(); !ok {
 		return &ValidationError{Name: "equipment_sn", err: errors.New(`ent: missing required field "Connector.equipment_sn"`)}
 	}
@@ -194,18 +322,8 @@ func (cc *ConnectorCreate) check() error {
 	if _, ok := cc.mutation.CurrentState(); !ok {
 		return &ValidationError{Name: "current_state", err: errors.New(`ent: missing required field "Connector.current_state"`)}
 	}
-	if v, ok := cc.mutation.CurrentState(); ok {
-		if err := connector.CurrentStateValidator(v); err != nil {
-			return &ValidationError{Name: "current_state", err: fmt.Errorf(`ent: validator failed for field "Connector.current_state": %w`, err)}
-		}
-	}
 	if _, ok := cc.mutation.BeforeState(); !ok {
 		return &ValidationError{Name: "before_state", err: errors.New(`ent: missing required field "Connector.before_state"`)}
-	}
-	if v, ok := cc.mutation.BeforeState(); ok {
-		if err := connector.BeforeStateValidator(v); err != nil {
-			return &ValidationError{Name: "before_state", err: fmt.Errorf(`ent: validator failed for field "Connector.before_state": %w`, err)}
-		}
 	}
 	if _, ok := cc.mutation.EvseID(); !ok {
 		return &ValidationError{Name: "evse", err: errors.New(`ent: missing required edge "Connector.evse"`)}
@@ -224,8 +342,10 @@ func (cc *ConnectorCreate) sqlSave(ctx context.Context) (*Connector, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -235,11 +355,55 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: connector.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: connector.FieldID,
 			},
 		}
 	)
+	if id, ok := cc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := cc.mutation.Version(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: connector.FieldVersion,
+		})
+		_node.Version = value
+	}
+	if value, ok := cc.mutation.CreatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: connector.FieldCreatedBy,
+		})
+		_node.CreatedBy = value
+	}
+	if value, ok := cc.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: connector.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := cc.mutation.UpdatedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: connector.FieldUpdatedBy,
+		})
+		_node.UpdatedBy = value
+	}
+	if value, ok := cc.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: connector.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := cc.mutation.EquipmentSn(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -266,7 +430,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := cc.mutation.CurrentState(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: connector.FieldCurrentState,
 		})
@@ -274,7 +438,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := cc.mutation.BeforeState(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: connector.FieldBeforeState,
 		})
@@ -289,7 +453,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: evse.FieldID,
 				},
 			},
@@ -297,7 +461,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.evse_connector = &nodes[0]
+		_node.evse_id = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := cc.mutation.EquipmentIDs(); len(nodes) > 0 {
@@ -309,7 +473,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
 				},
 			},
@@ -329,7 +493,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
 				},
 			},
@@ -348,7 +512,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
 				},
 			},
@@ -375,6 +539,7 @@ func (ccb *ConnectorCreateBulk) Save(ctx context.Context) ([]*Connector, error) 
 	for i := range ccb.builders {
 		func(i int, root context.Context) {
 			builder := ccb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ConnectorMutation)
 				if !ok {
@@ -401,9 +566,9 @@ func (ccb *ConnectorCreateBulk) Save(ctx context.Context) ([]*Connector, error) 
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
