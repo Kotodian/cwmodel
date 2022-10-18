@@ -126,6 +126,10 @@ var (
 		{Name: "firmware_id", Type: field.TypeUint64},
 		{Name: "access_pod", Type: field.TypeString},
 		{Name: "state", Type: field.TypeBool},
+		{Name: "evse_number", Type: field.TypeUint},
+		{Name: "alarm_number", Type: field.TypeUint},
+		{Name: "register_datetime", Type: field.TypeInt64},
+		{Name: "remote_address", Type: field.TypeInt64},
 		{Name: "equipment_id", Type: field.TypeInt, Unique: true},
 	}
 	// BaseEquipmentExtraTable holds the schema information for the "base_equipment_extra" table.
@@ -136,7 +140,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "base_equipment_extra_base_equipment_equipment_info",
-				Columns:    []*schema.Column{BaseEquipmentExtraColumns[7]},
+				Columns:    []*schema.Column{BaseEquipmentExtraColumns[11]},
 				RefColumns: []*schema.Column{BaseEquipmentColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

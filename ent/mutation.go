@@ -3691,24 +3691,32 @@ func (m *EquipmentFirmwareEffectMutation) ResetEdge(name string) error {
 // EquipmentInfoMutation represents an operation that mutates the EquipmentInfo nodes in the graph.
 type EquipmentInfoMutation struct {
 	config
-	op                 Op
-	typ                string
-	id                 *int
-	equipment_sn       *string
-	model_id           *datasource.UUID
-	addmodel_id        *datasource.UUID
-	manufacturer_id    *datasource.UUID
-	addmanufacturer_id *datasource.UUID
-	firmware_id        *datasource.UUID
-	addfirmware_id     *datasource.UUID
-	access_pod         *string
-	state              *bool
-	clearedFields      map[string]struct{}
-	equipment          *int
-	clearedequipment   bool
-	done               bool
-	oldValue           func(context.Context) (*EquipmentInfo, error)
-	predicates         []predicate.EquipmentInfo
+	op                   Op
+	typ                  string
+	id                   *int
+	equipment_sn         *string
+	model_id             *datasource.UUID
+	addmodel_id          *datasource.UUID
+	manufacturer_id      *datasource.UUID
+	addmanufacturer_id   *datasource.UUID
+	firmware_id          *datasource.UUID
+	addfirmware_id       *datasource.UUID
+	access_pod           *string
+	state                *bool
+	evse_number          *uint
+	addevse_number       *int
+	alarm_number         *uint
+	addalarm_number      *int
+	register_datetime    *int64
+	addregister_datetime *int64
+	remote_address       *int64
+	addremote_address    *int64
+	clearedFields        map[string]struct{}
+	equipment            *int
+	clearedequipment     bool
+	done                 bool
+	oldValue             func(context.Context) (*EquipmentInfo, error)
+	predicates           []predicate.EquipmentInfo
 }
 
 var _ ent.Mutation = (*EquipmentInfoMutation)(nil)
@@ -4085,6 +4093,230 @@ func (m *EquipmentInfoMutation) ResetState() {
 	m.state = nil
 }
 
+// SetEvseNumber sets the "evse_number" field.
+func (m *EquipmentInfoMutation) SetEvseNumber(u uint) {
+	m.evse_number = &u
+	m.addevse_number = nil
+}
+
+// EvseNumber returns the value of the "evse_number" field in the mutation.
+func (m *EquipmentInfoMutation) EvseNumber() (r uint, exists bool) {
+	v := m.evse_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEvseNumber returns the old "evse_number" field's value of the EquipmentInfo entity.
+// If the EquipmentInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentInfoMutation) OldEvseNumber(ctx context.Context) (v uint, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEvseNumber is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEvseNumber requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEvseNumber: %w", err)
+	}
+	return oldValue.EvseNumber, nil
+}
+
+// AddEvseNumber adds u to the "evse_number" field.
+func (m *EquipmentInfoMutation) AddEvseNumber(u int) {
+	if m.addevse_number != nil {
+		*m.addevse_number += u
+	} else {
+		m.addevse_number = &u
+	}
+}
+
+// AddedEvseNumber returns the value that was added to the "evse_number" field in this mutation.
+func (m *EquipmentInfoMutation) AddedEvseNumber() (r int, exists bool) {
+	v := m.addevse_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetEvseNumber resets all changes to the "evse_number" field.
+func (m *EquipmentInfoMutation) ResetEvseNumber() {
+	m.evse_number = nil
+	m.addevse_number = nil
+}
+
+// SetAlarmNumber sets the "alarm_number" field.
+func (m *EquipmentInfoMutation) SetAlarmNumber(u uint) {
+	m.alarm_number = &u
+	m.addalarm_number = nil
+}
+
+// AlarmNumber returns the value of the "alarm_number" field in the mutation.
+func (m *EquipmentInfoMutation) AlarmNumber() (r uint, exists bool) {
+	v := m.alarm_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAlarmNumber returns the old "alarm_number" field's value of the EquipmentInfo entity.
+// If the EquipmentInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentInfoMutation) OldAlarmNumber(ctx context.Context) (v uint, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAlarmNumber is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAlarmNumber requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAlarmNumber: %w", err)
+	}
+	return oldValue.AlarmNumber, nil
+}
+
+// AddAlarmNumber adds u to the "alarm_number" field.
+func (m *EquipmentInfoMutation) AddAlarmNumber(u int) {
+	if m.addalarm_number != nil {
+		*m.addalarm_number += u
+	} else {
+		m.addalarm_number = &u
+	}
+}
+
+// AddedAlarmNumber returns the value that was added to the "alarm_number" field in this mutation.
+func (m *EquipmentInfoMutation) AddedAlarmNumber() (r int, exists bool) {
+	v := m.addalarm_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAlarmNumber resets all changes to the "alarm_number" field.
+func (m *EquipmentInfoMutation) ResetAlarmNumber() {
+	m.alarm_number = nil
+	m.addalarm_number = nil
+}
+
+// SetRegisterDatetime sets the "register_datetime" field.
+func (m *EquipmentInfoMutation) SetRegisterDatetime(i int64) {
+	m.register_datetime = &i
+	m.addregister_datetime = nil
+}
+
+// RegisterDatetime returns the value of the "register_datetime" field in the mutation.
+func (m *EquipmentInfoMutation) RegisterDatetime() (r int64, exists bool) {
+	v := m.register_datetime
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRegisterDatetime returns the old "register_datetime" field's value of the EquipmentInfo entity.
+// If the EquipmentInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentInfoMutation) OldRegisterDatetime(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRegisterDatetime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRegisterDatetime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRegisterDatetime: %w", err)
+	}
+	return oldValue.RegisterDatetime, nil
+}
+
+// AddRegisterDatetime adds i to the "register_datetime" field.
+func (m *EquipmentInfoMutation) AddRegisterDatetime(i int64) {
+	if m.addregister_datetime != nil {
+		*m.addregister_datetime += i
+	} else {
+		m.addregister_datetime = &i
+	}
+}
+
+// AddedRegisterDatetime returns the value that was added to the "register_datetime" field in this mutation.
+func (m *EquipmentInfoMutation) AddedRegisterDatetime() (r int64, exists bool) {
+	v := m.addregister_datetime
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRegisterDatetime resets all changes to the "register_datetime" field.
+func (m *EquipmentInfoMutation) ResetRegisterDatetime() {
+	m.register_datetime = nil
+	m.addregister_datetime = nil
+}
+
+// SetRemoteAddress sets the "remote_address" field.
+func (m *EquipmentInfoMutation) SetRemoteAddress(i int64) {
+	m.remote_address = &i
+	m.addremote_address = nil
+}
+
+// RemoteAddress returns the value of the "remote_address" field in the mutation.
+func (m *EquipmentInfoMutation) RemoteAddress() (r int64, exists bool) {
+	v := m.remote_address
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRemoteAddress returns the old "remote_address" field's value of the EquipmentInfo entity.
+// If the EquipmentInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentInfoMutation) OldRemoteAddress(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRemoteAddress is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRemoteAddress requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRemoteAddress: %w", err)
+	}
+	return oldValue.RemoteAddress, nil
+}
+
+// AddRemoteAddress adds i to the "remote_address" field.
+func (m *EquipmentInfoMutation) AddRemoteAddress(i int64) {
+	if m.addremote_address != nil {
+		*m.addremote_address += i
+	} else {
+		m.addremote_address = &i
+	}
+}
+
+// AddedRemoteAddress returns the value that was added to the "remote_address" field in this mutation.
+func (m *EquipmentInfoMutation) AddedRemoteAddress() (r int64, exists bool) {
+	v := m.addremote_address
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRemoteAddress resets all changes to the "remote_address" field.
+func (m *EquipmentInfoMutation) ResetRemoteAddress() {
+	m.remote_address = nil
+	m.addremote_address = nil
+}
+
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by id.
 func (m *EquipmentInfoMutation) SetEquipmentID(id int) {
 	m.equipment = &id
@@ -4143,7 +4375,7 @@ func (m *EquipmentInfoMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EquipmentInfoMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 10)
 	if m.equipment_sn != nil {
 		fields = append(fields, equipmentinfo.FieldEquipmentSn)
 	}
@@ -4161,6 +4393,18 @@ func (m *EquipmentInfoMutation) Fields() []string {
 	}
 	if m.state != nil {
 		fields = append(fields, equipmentinfo.FieldState)
+	}
+	if m.evse_number != nil {
+		fields = append(fields, equipmentinfo.FieldEvseNumber)
+	}
+	if m.alarm_number != nil {
+		fields = append(fields, equipmentinfo.FieldAlarmNumber)
+	}
+	if m.register_datetime != nil {
+		fields = append(fields, equipmentinfo.FieldRegisterDatetime)
+	}
+	if m.remote_address != nil {
+		fields = append(fields, equipmentinfo.FieldRemoteAddress)
 	}
 	return fields
 }
@@ -4182,6 +4426,14 @@ func (m *EquipmentInfoMutation) Field(name string) (ent.Value, bool) {
 		return m.AccessPod()
 	case equipmentinfo.FieldState:
 		return m.State()
+	case equipmentinfo.FieldEvseNumber:
+		return m.EvseNumber()
+	case equipmentinfo.FieldAlarmNumber:
+		return m.AlarmNumber()
+	case equipmentinfo.FieldRegisterDatetime:
+		return m.RegisterDatetime()
+	case equipmentinfo.FieldRemoteAddress:
+		return m.RemoteAddress()
 	}
 	return nil, false
 }
@@ -4203,6 +4455,14 @@ func (m *EquipmentInfoMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldAccessPod(ctx)
 	case equipmentinfo.FieldState:
 		return m.OldState(ctx)
+	case equipmentinfo.FieldEvseNumber:
+		return m.OldEvseNumber(ctx)
+	case equipmentinfo.FieldAlarmNumber:
+		return m.OldAlarmNumber(ctx)
+	case equipmentinfo.FieldRegisterDatetime:
+		return m.OldRegisterDatetime(ctx)
+	case equipmentinfo.FieldRemoteAddress:
+		return m.OldRemoteAddress(ctx)
 	}
 	return nil, fmt.Errorf("unknown EquipmentInfo field %s", name)
 }
@@ -4254,6 +4514,34 @@ func (m *EquipmentInfoMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetState(v)
 		return nil
+	case equipmentinfo.FieldEvseNumber:
+		v, ok := value.(uint)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEvseNumber(v)
+		return nil
+	case equipmentinfo.FieldAlarmNumber:
+		v, ok := value.(uint)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAlarmNumber(v)
+		return nil
+	case equipmentinfo.FieldRegisterDatetime:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRegisterDatetime(v)
+		return nil
+	case equipmentinfo.FieldRemoteAddress:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRemoteAddress(v)
+		return nil
 	}
 	return fmt.Errorf("unknown EquipmentInfo field %s", name)
 }
@@ -4271,6 +4559,18 @@ func (m *EquipmentInfoMutation) AddedFields() []string {
 	if m.addfirmware_id != nil {
 		fields = append(fields, equipmentinfo.FieldFirmwareID)
 	}
+	if m.addevse_number != nil {
+		fields = append(fields, equipmentinfo.FieldEvseNumber)
+	}
+	if m.addalarm_number != nil {
+		fields = append(fields, equipmentinfo.FieldAlarmNumber)
+	}
+	if m.addregister_datetime != nil {
+		fields = append(fields, equipmentinfo.FieldRegisterDatetime)
+	}
+	if m.addremote_address != nil {
+		fields = append(fields, equipmentinfo.FieldRemoteAddress)
+	}
 	return fields
 }
 
@@ -4285,6 +4585,14 @@ func (m *EquipmentInfoMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedManufacturerID()
 	case equipmentinfo.FieldFirmwareID:
 		return m.AddedFirmwareID()
+	case equipmentinfo.FieldEvseNumber:
+		return m.AddedEvseNumber()
+	case equipmentinfo.FieldAlarmNumber:
+		return m.AddedAlarmNumber()
+	case equipmentinfo.FieldRegisterDatetime:
+		return m.AddedRegisterDatetime()
+	case equipmentinfo.FieldRemoteAddress:
+		return m.AddedRemoteAddress()
 	}
 	return nil, false
 }
@@ -4314,6 +4622,34 @@ func (m *EquipmentInfoMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddFirmwareID(v)
+		return nil
+	case equipmentinfo.FieldEvseNumber:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddEvseNumber(v)
+		return nil
+	case equipmentinfo.FieldAlarmNumber:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAlarmNumber(v)
+		return nil
+	case equipmentinfo.FieldRegisterDatetime:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRegisterDatetime(v)
+		return nil
+	case equipmentinfo.FieldRemoteAddress:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRemoteAddress(v)
 		return nil
 	}
 	return fmt.Errorf("unknown EquipmentInfo numeric field %s", name)
@@ -4359,6 +4695,18 @@ func (m *EquipmentInfoMutation) ResetField(name string) error {
 		return nil
 	case equipmentinfo.FieldState:
 		m.ResetState()
+		return nil
+	case equipmentinfo.FieldEvseNumber:
+		m.ResetEvseNumber()
+		return nil
+	case equipmentinfo.FieldAlarmNumber:
+		m.ResetAlarmNumber()
+		return nil
+	case equipmentinfo.FieldRegisterDatetime:
+		m.ResetRegisterDatetime()
+		return nil
+	case equipmentinfo.FieldRemoteAddress:
+		m.ResetRemoteAddress()
 		return nil
 	}
 	return fmt.Errorf("unknown EquipmentInfo field %s", name)

@@ -57,6 +57,30 @@ func (eic *EquipmentInfoCreate) SetState(b bool) *EquipmentInfoCreate {
 	return eic
 }
 
+// SetEvseNumber sets the "evse_number" field.
+func (eic *EquipmentInfoCreate) SetEvseNumber(u uint) *EquipmentInfoCreate {
+	eic.mutation.SetEvseNumber(u)
+	return eic
+}
+
+// SetAlarmNumber sets the "alarm_number" field.
+func (eic *EquipmentInfoCreate) SetAlarmNumber(u uint) *EquipmentInfoCreate {
+	eic.mutation.SetAlarmNumber(u)
+	return eic
+}
+
+// SetRegisterDatetime sets the "register_datetime" field.
+func (eic *EquipmentInfoCreate) SetRegisterDatetime(i int64) *EquipmentInfoCreate {
+	eic.mutation.SetRegisterDatetime(i)
+	return eic
+}
+
+// SetRemoteAddress sets the "remote_address" field.
+func (eic *EquipmentInfoCreate) SetRemoteAddress(i int64) *EquipmentInfoCreate {
+	eic.mutation.SetRemoteAddress(i)
+	return eic
+}
+
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
 func (eic *EquipmentInfoCreate) SetEquipmentID(id int) *EquipmentInfoCreate {
 	eic.mutation.SetEquipmentID(id)
@@ -162,6 +186,18 @@ func (eic *EquipmentInfoCreate) check() error {
 	if _, ok := eic.mutation.State(); !ok {
 		return &ValidationError{Name: "state", err: errors.New(`ent: missing required field "EquipmentInfo.state"`)}
 	}
+	if _, ok := eic.mutation.EvseNumber(); !ok {
+		return &ValidationError{Name: "evse_number", err: errors.New(`ent: missing required field "EquipmentInfo.evse_number"`)}
+	}
+	if _, ok := eic.mutation.AlarmNumber(); !ok {
+		return &ValidationError{Name: "alarm_number", err: errors.New(`ent: missing required field "EquipmentInfo.alarm_number"`)}
+	}
+	if _, ok := eic.mutation.RegisterDatetime(); !ok {
+		return &ValidationError{Name: "register_datetime", err: errors.New(`ent: missing required field "EquipmentInfo.register_datetime"`)}
+	}
+	if _, ok := eic.mutation.RemoteAddress(); !ok {
+		return &ValidationError{Name: "remote_address", err: errors.New(`ent: missing required field "EquipmentInfo.remote_address"`)}
+	}
 	if _, ok := eic.mutation.EquipmentID(); !ok {
 		return &ValidationError{Name: "equipment", err: errors.New(`ent: missing required edge "EquipmentInfo.equipment"`)}
 	}
@@ -239,6 +275,38 @@ func (eic *EquipmentInfoCreate) createSpec() (*EquipmentInfo, *sqlgraph.CreateSp
 			Column: equipmentinfo.FieldState,
 		})
 		_node.State = value
+	}
+	if value, ok := eic.mutation.EvseNumber(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: equipmentinfo.FieldEvseNumber,
+		})
+		_node.EvseNumber = value
+	}
+	if value, ok := eic.mutation.AlarmNumber(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: equipmentinfo.FieldAlarmNumber,
+		})
+		_node.AlarmNumber = value
+	}
+	if value, ok := eic.mutation.RegisterDatetime(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldRegisterDatetime,
+		})
+		_node.RegisterDatetime = value
+	}
+	if value, ok := eic.mutation.RemoteAddress(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldRemoteAddress,
+		})
+		_node.RemoteAddress = value
 	}
 	if nodes := eic.mutation.EquipmentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

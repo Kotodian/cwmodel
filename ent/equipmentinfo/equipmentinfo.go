@@ -19,6 +19,14 @@ const (
 	FieldAccessPod = "access_pod"
 	// FieldState holds the string denoting the state field in the database.
 	FieldState = "state"
+	// FieldEvseNumber holds the string denoting the evse_number field in the database.
+	FieldEvseNumber = "evse_number"
+	// FieldAlarmNumber holds the string denoting the alarm_number field in the database.
+	FieldAlarmNumber = "alarm_number"
+	// FieldRegisterDatetime holds the string denoting the register_datetime field in the database.
+	FieldRegisterDatetime = "register_datetime"
+	// FieldRemoteAddress holds the string denoting the remote_address field in the database.
+	FieldRemoteAddress = "remote_address"
 	// EdgeEquipment holds the string denoting the equipment edge name in mutations.
 	EdgeEquipment = "equipment"
 	// Table holds the table name of the equipmentinfo in the database.
@@ -41,6 +49,10 @@ var Columns = []string{
 	FieldFirmwareID,
 	FieldAccessPod,
 	FieldState,
+	FieldEvseNumber,
+	FieldAlarmNumber,
+	FieldRegisterDatetime,
+	FieldRemoteAddress,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "base_equipment_extra"

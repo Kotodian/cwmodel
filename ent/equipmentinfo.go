@@ -29,6 +29,14 @@ type EquipmentInfo struct {
 	AccessPod string `json:"access_pod,omitempty"`
 	// 在线或者离线
 	State bool `json:"state,omitempty"`
+	// evse数量
+	EvseNumber uint `json:"evse_number,omitempty"`
+	// 告警数量
+	AlarmNumber uint `json:"alarm_number,omitempty"`
+	// 注册时间
+	RegisterDatetime int64 `json:"register_datetime,omitempty"`
+	// 远程ip地址
+	RemoteAddress int64 `json:"remote_address,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentInfoQuery when eager-loading is set.
 	Edges        EquipmentInfoEdges `json:"edges"`
@@ -64,7 +72,7 @@ func (*EquipmentInfo) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case equipmentinfo.FieldState:
 			values[i] = new(sql.NullBool)
-		case equipmentinfo.FieldID, equipmentinfo.FieldModelID, equipmentinfo.FieldManufacturerID, equipmentinfo.FieldFirmwareID:
+		case equipmentinfo.FieldID, equipmentinfo.FieldModelID, equipmentinfo.FieldManufacturerID, equipmentinfo.FieldFirmwareID, equipmentinfo.FieldEvseNumber, equipmentinfo.FieldAlarmNumber, equipmentinfo.FieldRegisterDatetime, equipmentinfo.FieldRemoteAddress:
 			values[i] = new(sql.NullInt64)
 		case equipmentinfo.FieldEquipmentSn, equipmentinfo.FieldAccessPod:
 			values[i] = new(sql.NullString)
@@ -127,6 +135,30 @@ func (ei *EquipmentInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ei.State = value.Bool
 			}
+		case equipmentinfo.FieldEvseNumber:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field evse_number", values[i])
+			} else if value.Valid {
+				ei.EvseNumber = uint(value.Int64)
+			}
+		case equipmentinfo.FieldAlarmNumber:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field alarm_number", values[i])
+			} else if value.Valid {
+				ei.AlarmNumber = uint(value.Int64)
+			}
+		case equipmentinfo.FieldRegisterDatetime:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field register_datetime", values[i])
+			} else if value.Valid {
+				ei.RegisterDatetime = value.Int64
+			}
+		case equipmentinfo.FieldRemoteAddress:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field remote_address", values[i])
+			} else if value.Valid {
+				ei.RemoteAddress = value.Int64
+			}
 		case equipmentinfo.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field equipment_id", value)
@@ -184,6 +216,18 @@ func (ei *EquipmentInfo) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("state=")
 	builder.WriteString(fmt.Sprintf("%v", ei.State))
+	builder.WriteString(", ")
+	builder.WriteString("evse_number=")
+	builder.WriteString(fmt.Sprintf("%v", ei.EvseNumber))
+	builder.WriteString(", ")
+	builder.WriteString("alarm_number=")
+	builder.WriteString(fmt.Sprintf("%v", ei.AlarmNumber))
+	builder.WriteString(", ")
+	builder.WriteString("register_datetime=")
+	builder.WriteString(fmt.Sprintf("%v", ei.RegisterDatetime))
+	builder.WriteString(", ")
+	builder.WriteString("remote_address=")
+	builder.WriteString(fmt.Sprintf("%v", ei.RemoteAddress))
 	builder.WriteByte(')')
 	return builder.String()
 }

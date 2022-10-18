@@ -35,6 +35,10 @@ func (EquipmentInfo) Fields() []ent.Field {
 		field.Uint64("firmware_id").GoType(datasource.UUID(0)).Comment("固件id"),
 		field.String("access_pod").Comment("所连接的pod"),
 		field.Bool("state").Comment("在线或者离线"),
+		field.Uint("evse_number").Comment("evse数量"),
+		field.Uint("alarm_number").Comment("告警数量"),
+		field.Int64("register_datetime").Comment("注册时间"),
+		field.Int64("remote_address").Comment("远程ip地址"),
 	}
 }
 

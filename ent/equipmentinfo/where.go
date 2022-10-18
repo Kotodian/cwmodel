@@ -125,6 +125,34 @@ func State(v bool) predicate.EquipmentInfo {
 	})
 }
 
+// EvseNumber applies equality check predicate on the "evse_number" field. It's identical to EvseNumberEQ.
+func EvseNumber(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldEvseNumber), v))
+	})
+}
+
+// AlarmNumber applies equality check predicate on the "alarm_number" field. It's identical to AlarmNumberEQ.
+func AlarmNumber(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAlarmNumber), v))
+	})
+}
+
+// RegisterDatetime applies equality check predicate on the "register_datetime" field. It's identical to RegisterDatetimeEQ.
+func RegisterDatetime(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRegisterDatetime), v))
+	})
+}
+
+// RemoteAddress applies equality check predicate on the "remote_address" field. It's identical to RemoteAddressEQ.
+func RemoteAddress(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRemoteAddress), v))
+	})
+}
+
 // EquipmentSnEQ applies the EQ predicate on the "equipment_sn" field.
 func EquipmentSnEQ(v string) predicate.EquipmentInfo {
 	return predicate.EquipmentInfo(func(s *sql.Selector) {
@@ -544,6 +572,262 @@ func StateEQ(v bool) predicate.EquipmentInfo {
 func StateNEQ(v bool) predicate.EquipmentInfo {
 	return predicate.EquipmentInfo(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldState), v))
+	})
+}
+
+// EvseNumberEQ applies the EQ predicate on the "evse_number" field.
+func EvseNumberEQ(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldEvseNumber), v))
+	})
+}
+
+// EvseNumberNEQ applies the NEQ predicate on the "evse_number" field.
+func EvseNumberNEQ(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldEvseNumber), v))
+	})
+}
+
+// EvseNumberIn applies the In predicate on the "evse_number" field.
+func EvseNumberIn(vs ...uint) predicate.EquipmentInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldEvseNumber), v...))
+	})
+}
+
+// EvseNumberNotIn applies the NotIn predicate on the "evse_number" field.
+func EvseNumberNotIn(vs ...uint) predicate.EquipmentInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldEvseNumber), v...))
+	})
+}
+
+// EvseNumberGT applies the GT predicate on the "evse_number" field.
+func EvseNumberGT(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldEvseNumber), v))
+	})
+}
+
+// EvseNumberGTE applies the GTE predicate on the "evse_number" field.
+func EvseNumberGTE(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldEvseNumber), v))
+	})
+}
+
+// EvseNumberLT applies the LT predicate on the "evse_number" field.
+func EvseNumberLT(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldEvseNumber), v))
+	})
+}
+
+// EvseNumberLTE applies the LTE predicate on the "evse_number" field.
+func EvseNumberLTE(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldEvseNumber), v))
+	})
+}
+
+// AlarmNumberEQ applies the EQ predicate on the "alarm_number" field.
+func AlarmNumberEQ(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAlarmNumber), v))
+	})
+}
+
+// AlarmNumberNEQ applies the NEQ predicate on the "alarm_number" field.
+func AlarmNumberNEQ(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldAlarmNumber), v))
+	})
+}
+
+// AlarmNumberIn applies the In predicate on the "alarm_number" field.
+func AlarmNumberIn(vs ...uint) predicate.EquipmentInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldAlarmNumber), v...))
+	})
+}
+
+// AlarmNumberNotIn applies the NotIn predicate on the "alarm_number" field.
+func AlarmNumberNotIn(vs ...uint) predicate.EquipmentInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldAlarmNumber), v...))
+	})
+}
+
+// AlarmNumberGT applies the GT predicate on the "alarm_number" field.
+func AlarmNumberGT(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldAlarmNumber), v))
+	})
+}
+
+// AlarmNumberGTE applies the GTE predicate on the "alarm_number" field.
+func AlarmNumberGTE(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldAlarmNumber), v))
+	})
+}
+
+// AlarmNumberLT applies the LT predicate on the "alarm_number" field.
+func AlarmNumberLT(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldAlarmNumber), v))
+	})
+}
+
+// AlarmNumberLTE applies the LTE predicate on the "alarm_number" field.
+func AlarmNumberLTE(v uint) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldAlarmNumber), v))
+	})
+}
+
+// RegisterDatetimeEQ applies the EQ predicate on the "register_datetime" field.
+func RegisterDatetimeEQ(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRegisterDatetime), v))
+	})
+}
+
+// RegisterDatetimeNEQ applies the NEQ predicate on the "register_datetime" field.
+func RegisterDatetimeNEQ(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldRegisterDatetime), v))
+	})
+}
+
+// RegisterDatetimeIn applies the In predicate on the "register_datetime" field.
+func RegisterDatetimeIn(vs ...int64) predicate.EquipmentInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldRegisterDatetime), v...))
+	})
+}
+
+// RegisterDatetimeNotIn applies the NotIn predicate on the "register_datetime" field.
+func RegisterDatetimeNotIn(vs ...int64) predicate.EquipmentInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldRegisterDatetime), v...))
+	})
+}
+
+// RegisterDatetimeGT applies the GT predicate on the "register_datetime" field.
+func RegisterDatetimeGT(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldRegisterDatetime), v))
+	})
+}
+
+// RegisterDatetimeGTE applies the GTE predicate on the "register_datetime" field.
+func RegisterDatetimeGTE(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldRegisterDatetime), v))
+	})
+}
+
+// RegisterDatetimeLT applies the LT predicate on the "register_datetime" field.
+func RegisterDatetimeLT(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldRegisterDatetime), v))
+	})
+}
+
+// RegisterDatetimeLTE applies the LTE predicate on the "register_datetime" field.
+func RegisterDatetimeLTE(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldRegisterDatetime), v))
+	})
+}
+
+// RemoteAddressEQ applies the EQ predicate on the "remote_address" field.
+func RemoteAddressEQ(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRemoteAddress), v))
+	})
+}
+
+// RemoteAddressNEQ applies the NEQ predicate on the "remote_address" field.
+func RemoteAddressNEQ(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldRemoteAddress), v))
+	})
+}
+
+// RemoteAddressIn applies the In predicate on the "remote_address" field.
+func RemoteAddressIn(vs ...int64) predicate.EquipmentInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldRemoteAddress), v...))
+	})
+}
+
+// RemoteAddressNotIn applies the NotIn predicate on the "remote_address" field.
+func RemoteAddressNotIn(vs ...int64) predicate.EquipmentInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldRemoteAddress), v...))
+	})
+}
+
+// RemoteAddressGT applies the GT predicate on the "remote_address" field.
+func RemoteAddressGT(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldRemoteAddress), v))
+	})
+}
+
+// RemoteAddressGTE applies the GTE predicate on the "remote_address" field.
+func RemoteAddressGTE(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldRemoteAddress), v))
+	})
+}
+
+// RemoteAddressLT applies the LT predicate on the "remote_address" field.
+func RemoteAddressLT(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldRemoteAddress), v))
+	})
+}
+
+// RemoteAddressLTE applies the LTE predicate on the "remote_address" field.
+func RemoteAddressLTE(v int64) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldRemoteAddress), v))
 	})
 }
 

@@ -86,6 +86,58 @@ func (eiu *EquipmentInfoUpdate) SetState(b bool) *EquipmentInfoUpdate {
 	return eiu
 }
 
+// SetEvseNumber sets the "evse_number" field.
+func (eiu *EquipmentInfoUpdate) SetEvseNumber(u uint) *EquipmentInfoUpdate {
+	eiu.mutation.ResetEvseNumber()
+	eiu.mutation.SetEvseNumber(u)
+	return eiu
+}
+
+// AddEvseNumber adds u to the "evse_number" field.
+func (eiu *EquipmentInfoUpdate) AddEvseNumber(u int) *EquipmentInfoUpdate {
+	eiu.mutation.AddEvseNumber(u)
+	return eiu
+}
+
+// SetAlarmNumber sets the "alarm_number" field.
+func (eiu *EquipmentInfoUpdate) SetAlarmNumber(u uint) *EquipmentInfoUpdate {
+	eiu.mutation.ResetAlarmNumber()
+	eiu.mutation.SetAlarmNumber(u)
+	return eiu
+}
+
+// AddAlarmNumber adds u to the "alarm_number" field.
+func (eiu *EquipmentInfoUpdate) AddAlarmNumber(u int) *EquipmentInfoUpdate {
+	eiu.mutation.AddAlarmNumber(u)
+	return eiu
+}
+
+// SetRegisterDatetime sets the "register_datetime" field.
+func (eiu *EquipmentInfoUpdate) SetRegisterDatetime(i int64) *EquipmentInfoUpdate {
+	eiu.mutation.ResetRegisterDatetime()
+	eiu.mutation.SetRegisterDatetime(i)
+	return eiu
+}
+
+// AddRegisterDatetime adds i to the "register_datetime" field.
+func (eiu *EquipmentInfoUpdate) AddRegisterDatetime(i int64) *EquipmentInfoUpdate {
+	eiu.mutation.AddRegisterDatetime(i)
+	return eiu
+}
+
+// SetRemoteAddress sets the "remote_address" field.
+func (eiu *EquipmentInfoUpdate) SetRemoteAddress(i int64) *EquipmentInfoUpdate {
+	eiu.mutation.ResetRemoteAddress()
+	eiu.mutation.SetRemoteAddress(i)
+	return eiu
+}
+
+// AddRemoteAddress adds i to the "remote_address" field.
+func (eiu *EquipmentInfoUpdate) AddRemoteAddress(i int64) *EquipmentInfoUpdate {
+	eiu.mutation.AddRemoteAddress(i)
+	return eiu
+}
+
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
 func (eiu *EquipmentInfoUpdate) SetEquipmentID(id int) *EquipmentInfoUpdate {
 	eiu.mutation.SetEquipmentID(id)
@@ -257,6 +309,62 @@ func (eiu *EquipmentInfoUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Column: equipmentinfo.FieldState,
 		})
 	}
+	if value, ok := eiu.mutation.EvseNumber(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: equipmentinfo.FieldEvseNumber,
+		})
+	}
+	if value, ok := eiu.mutation.AddedEvseNumber(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: equipmentinfo.FieldEvseNumber,
+		})
+	}
+	if value, ok := eiu.mutation.AlarmNumber(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: equipmentinfo.FieldAlarmNumber,
+		})
+	}
+	if value, ok := eiu.mutation.AddedAlarmNumber(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: equipmentinfo.FieldAlarmNumber,
+		})
+	}
+	if value, ok := eiu.mutation.RegisterDatetime(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldRegisterDatetime,
+		})
+	}
+	if value, ok := eiu.mutation.AddedRegisterDatetime(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldRegisterDatetime,
+		})
+	}
+	if value, ok := eiu.mutation.RemoteAddress(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldRemoteAddress,
+		})
+	}
+	if value, ok := eiu.mutation.AddedRemoteAddress(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldRemoteAddress,
+		})
+	}
 	if eiu.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -365,6 +473,58 @@ func (eiuo *EquipmentInfoUpdateOne) SetAccessPod(s string) *EquipmentInfoUpdateO
 // SetState sets the "state" field.
 func (eiuo *EquipmentInfoUpdateOne) SetState(b bool) *EquipmentInfoUpdateOne {
 	eiuo.mutation.SetState(b)
+	return eiuo
+}
+
+// SetEvseNumber sets the "evse_number" field.
+func (eiuo *EquipmentInfoUpdateOne) SetEvseNumber(u uint) *EquipmentInfoUpdateOne {
+	eiuo.mutation.ResetEvseNumber()
+	eiuo.mutation.SetEvseNumber(u)
+	return eiuo
+}
+
+// AddEvseNumber adds u to the "evse_number" field.
+func (eiuo *EquipmentInfoUpdateOne) AddEvseNumber(u int) *EquipmentInfoUpdateOne {
+	eiuo.mutation.AddEvseNumber(u)
+	return eiuo
+}
+
+// SetAlarmNumber sets the "alarm_number" field.
+func (eiuo *EquipmentInfoUpdateOne) SetAlarmNumber(u uint) *EquipmentInfoUpdateOne {
+	eiuo.mutation.ResetAlarmNumber()
+	eiuo.mutation.SetAlarmNumber(u)
+	return eiuo
+}
+
+// AddAlarmNumber adds u to the "alarm_number" field.
+func (eiuo *EquipmentInfoUpdateOne) AddAlarmNumber(u int) *EquipmentInfoUpdateOne {
+	eiuo.mutation.AddAlarmNumber(u)
+	return eiuo
+}
+
+// SetRegisterDatetime sets the "register_datetime" field.
+func (eiuo *EquipmentInfoUpdateOne) SetRegisterDatetime(i int64) *EquipmentInfoUpdateOne {
+	eiuo.mutation.ResetRegisterDatetime()
+	eiuo.mutation.SetRegisterDatetime(i)
+	return eiuo
+}
+
+// AddRegisterDatetime adds i to the "register_datetime" field.
+func (eiuo *EquipmentInfoUpdateOne) AddRegisterDatetime(i int64) *EquipmentInfoUpdateOne {
+	eiuo.mutation.AddRegisterDatetime(i)
+	return eiuo
+}
+
+// SetRemoteAddress sets the "remote_address" field.
+func (eiuo *EquipmentInfoUpdateOne) SetRemoteAddress(i int64) *EquipmentInfoUpdateOne {
+	eiuo.mutation.ResetRemoteAddress()
+	eiuo.mutation.SetRemoteAddress(i)
+	return eiuo
+}
+
+// AddRemoteAddress adds i to the "remote_address" field.
+func (eiuo *EquipmentInfoUpdateOne) AddRemoteAddress(i int64) *EquipmentInfoUpdateOne {
+	eiuo.mutation.AddRemoteAddress(i)
 	return eiuo
 }
 
@@ -567,6 +727,62 @@ func (eiuo *EquipmentInfoUpdateOne) sqlSave(ctx context.Context) (_node *Equipme
 			Type:   field.TypeBool,
 			Value:  value,
 			Column: equipmentinfo.FieldState,
+		})
+	}
+	if value, ok := eiuo.mutation.EvseNumber(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: equipmentinfo.FieldEvseNumber,
+		})
+	}
+	if value, ok := eiuo.mutation.AddedEvseNumber(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: equipmentinfo.FieldEvseNumber,
+		})
+	}
+	if value, ok := eiuo.mutation.AlarmNumber(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: equipmentinfo.FieldAlarmNumber,
+		})
+	}
+	if value, ok := eiuo.mutation.AddedAlarmNumber(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: equipmentinfo.FieldAlarmNumber,
+		})
+	}
+	if value, ok := eiuo.mutation.RegisterDatetime(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldRegisterDatetime,
+		})
+	}
+	if value, ok := eiuo.mutation.AddedRegisterDatetime(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldRegisterDatetime,
+		})
+	}
+	if value, ok := eiuo.mutation.RemoteAddress(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldRemoteAddress,
+		})
+	}
+	if value, ok := eiuo.mutation.AddedRemoteAddress(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: equipmentinfo.FieldRemoteAddress,
 		})
 	}
 	if eiuo.mutation.EquipmentCleared() {
