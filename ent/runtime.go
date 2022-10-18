@@ -50,6 +50,10 @@ func init() {
 	connectorDescUpdatedAt := connectorMixinFields0[5].Descriptor()
 	// connector.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	connector.DefaultUpdatedAt = connectorDescUpdatedAt.Default.(int64)
+	// connectorDescParkNo is the schema descriptor for park_no field.
+	connectorDescParkNo := connectorFields[7].Descriptor()
+	// connector.DefaultParkNo holds the default value on creation for the park_no field.
+	connector.DefaultParkNo = connectorDescParkNo.Default.(string)
 	// connectorDescID is the schema descriptor for id field.
 	connectorDescID := connectorMixinFields0[0].Descriptor()
 	// connector.DefaultID holds the default value on creation for the id field.

@@ -60,7 +60,7 @@ func Open(t TestingT, driverName, dataSourceName string, opts ...Option) *ent.Cl
 		t.Error(err)
 		t.FailNow()
 	}
-	// migrateSchema(t, c, o)
+	migrateSchema(t, c, o)
 	return c
 }
 
@@ -68,7 +68,7 @@ func Open(t TestingT, driverName, dataSourceName string, opts ...Option) *ent.Cl
 func NewClient(t TestingT, opts ...Option) *ent.Client {
 	o := newOptions(opts)
 	c := ent.NewClient(o.opts...)
-	// migrateSchema(t, c, o)
+	migrateSchema(t, c, o)
 	return c
 }
 func migrateSchema(t TestingT, c *ent.Client, o *options) {

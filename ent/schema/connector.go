@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // Connector holds the schema definition for the Connector entity.
@@ -33,6 +34,10 @@ func (Connector) Fields() []ent.Field {
 		field.String("serial").Comment("枪序列号"),
 		field.Int("current_state").Comment("当前状态"),
 		field.Int("before_state").Comment("之前状态"),
+		field.Int("charging_state").Optional().Comment("充电状态"),
+		field.Uint64("reservation_id").Optional().GoType(datasource.UUID(0)).Comment("预约id"),
+		field.String("park_no").Default("0001").Comment("停车编号"),
+		
 	}
 }
 

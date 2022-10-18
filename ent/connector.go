@@ -39,11 +39,23 @@ type Connector struct {
 	CurrentState int `json:"current_state,omitempty"`
 	// 之前状态
 	BeforeState int `json:"before_state,omitempty"`
+	// 充电状态
+	ChargingState int `json:"charging_state,omitempty"`
+	// 预约id
+	ReservationID datasource.UUID `json:"reservation_id,omitempty"`
+	// 停车编号
+	ParkNo string `json:"park_no,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ConnectorQuery when eager-loading is set.
 	Edges        ConnectorEdges `json:"edges"`
 	equipment_id *datasource.UUID
 	evse_id      *datasource.UUID
+
+	// StaticField defined by template.
+	PushInterval int             `json:"push_interval"`
+	LastPushTime int64           `json:"last_push_time"`
+	OrderState   int             `json:"order_state"`
+	StationID    datasource.UUID `json:"station_id"`
 }
 
 // ConnectorEdges holds the relations/edges for other nodes in the graph.
@@ -110,9 +122,9 @@ func (*Connector) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case connector.FieldID, connector.FieldVersion, connector.FieldCreatedBy, connector.FieldCreatedAt, connector.FieldUpdatedBy, connector.FieldUpdatedAt, connector.FieldCurrentState, connector.FieldBeforeState:
+		case connector.FieldID, connector.FieldVersion, connector.FieldCreatedBy, connector.FieldCreatedAt, connector.FieldUpdatedBy, connector.FieldUpdatedAt, connector.FieldCurrentState, connector.FieldBeforeState, connector.FieldChargingState, connector.FieldReservationID:
 			values[i] = new(sql.NullInt64)
-		case connector.FieldEquipmentSn, connector.FieldEvseSerial, connector.FieldSerial:
+		case connector.FieldEquipmentSn, connector.FieldEvseSerial, connector.FieldSerial, connector.FieldParkNo:
 			values[i] = new(sql.NullString)
 		case connector.ForeignKeys[0]: // equipment_id
 			values[i] = new(sql.NullInt64)
@@ -198,6 +210,24 @@ func (c *Connector) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field before_state", values[i])
 			} else if value.Valid {
 				c.BeforeState = int(value.Int64)
+			}
+		case connector.FieldChargingState:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field charging_state", values[i])
+			} else if value.Valid {
+				c.ChargingState = int(value.Int64)
+			}
+		case connector.FieldReservationID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field reservation_id", values[i])
+			} else if value.Valid {
+				c.ReservationID = datasource.UUID(value.Int64)
+			}
+		case connector.FieldParkNo:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field park_no", values[i])
+			} else if value.Valid {
+				c.ParkNo = value.String
 			}
 		case connector.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -290,6 +320,15 @@ func (c *Connector) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("before_state=")
 	builder.WriteString(fmt.Sprintf("%v", c.BeforeState))
+	builder.WriteString(", ")
+	builder.WriteString("charging_state=")
+	builder.WriteString(fmt.Sprintf("%v", c.ChargingState))
+	builder.WriteString(", ")
+	builder.WriteString("reservation_id=")
+	builder.WriteString(fmt.Sprintf("%v", c.ReservationID))
+	builder.WriteString(", ")
+	builder.WriteString("park_no=")
+	builder.WriteString(c.ParkNo)
 	builder.WriteByte(')')
 	return builder.String()
 }

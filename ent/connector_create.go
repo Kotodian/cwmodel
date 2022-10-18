@@ -124,6 +124,48 @@ func (cc *ConnectorCreate) SetBeforeState(i int) *ConnectorCreate {
 	return cc
 }
 
+// SetChargingState sets the "charging_state" field.
+func (cc *ConnectorCreate) SetChargingState(i int) *ConnectorCreate {
+	cc.mutation.SetChargingState(i)
+	return cc
+}
+
+// SetNillableChargingState sets the "charging_state" field if the given value is not nil.
+func (cc *ConnectorCreate) SetNillableChargingState(i *int) *ConnectorCreate {
+	if i != nil {
+		cc.SetChargingState(*i)
+	}
+	return cc
+}
+
+// SetReservationID sets the "reservation_id" field.
+func (cc *ConnectorCreate) SetReservationID(d datasource.UUID) *ConnectorCreate {
+	cc.mutation.SetReservationID(d)
+	return cc
+}
+
+// SetNillableReservationID sets the "reservation_id" field if the given value is not nil.
+func (cc *ConnectorCreate) SetNillableReservationID(d *datasource.UUID) *ConnectorCreate {
+	if d != nil {
+		cc.SetReservationID(*d)
+	}
+	return cc
+}
+
+// SetParkNo sets the "park_no" field.
+func (cc *ConnectorCreate) SetParkNo(s string) *ConnectorCreate {
+	cc.mutation.SetParkNo(s)
+	return cc
+}
+
+// SetNillableParkNo sets the "park_no" field if the given value is not nil.
+func (cc *ConnectorCreate) SetNillableParkNo(s *string) *ConnectorCreate {
+	if s != nil {
+		cc.SetParkNo(*s)
+	}
+	return cc
+}
+
 // SetID sets the "id" field.
 func (cc *ConnectorCreate) SetID(d datasource.UUID) *ConnectorCreate {
 	cc.mutation.SetID(d)
@@ -287,6 +329,10 @@ func (cc *ConnectorCreate) defaults() {
 		v := connector.DefaultUpdatedAt
 		cc.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := cc.mutation.ParkNo(); !ok {
+		v := connector.DefaultParkNo
+		cc.mutation.SetParkNo(v)
+	}
 	if _, ok := cc.mutation.ID(); !ok {
 		v := connector.DefaultID
 		cc.mutation.SetID(v)
@@ -324,6 +370,9 @@ func (cc *ConnectorCreate) check() error {
 	}
 	if _, ok := cc.mutation.BeforeState(); !ok {
 		return &ValidationError{Name: "before_state", err: errors.New(`ent: missing required field "Connector.before_state"`)}
+	}
+	if _, ok := cc.mutation.ParkNo(); !ok {
+		return &ValidationError{Name: "park_no", err: errors.New(`ent: missing required field "Connector.park_no"`)}
 	}
 	if _, ok := cc.mutation.EvseID(); !ok {
 		return &ValidationError{Name: "evse", err: errors.New(`ent: missing required edge "Connector.evse"`)}
@@ -443,6 +492,30 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 			Column: connector.FieldBeforeState,
 		})
 		_node.BeforeState = value
+	}
+	if value, ok := cc.mutation.ChargingState(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: connector.FieldChargingState,
+		})
+		_node.ChargingState = value
+	}
+	if value, ok := cc.mutation.ReservationID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: connector.FieldReservationID,
+		})
+		_node.ReservationID = value
+	}
+	if value, ok := cc.mutation.ParkNo(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: connector.FieldParkNo,
+		})
+		_node.ParkNo = value
 	}
 	if nodes := cc.mutation.EvseIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

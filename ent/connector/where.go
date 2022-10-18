@@ -152,6 +152,28 @@ func BeforeState(v int) predicate.Connector {
 	})
 }
 
+// ChargingState applies equality check predicate on the "charging_state" field. It's identical to ChargingStateEQ.
+func ChargingState(v int) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldChargingState), v))
+	})
+}
+
+// ReservationID applies equality check predicate on the "reservation_id" field. It's identical to ReservationIDEQ.
+func ReservationID(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldReservationID), vc))
+	})
+}
+
+// ParkNo applies equality check predicate on the "park_no" field. It's identical to ParkNoEQ.
+func ParkNo(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldParkNo), v))
+	})
+}
+
 // VersionEQ applies the EQ predicate on the "version" field.
 func VersionEQ(v int64) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
@@ -906,6 +928,267 @@ func BeforeStateLT(v int) predicate.Connector {
 func BeforeStateLTE(v int) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldBeforeState), v))
+	})
+}
+
+// ChargingStateEQ applies the EQ predicate on the "charging_state" field.
+func ChargingStateEQ(v int) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldChargingState), v))
+	})
+}
+
+// ChargingStateNEQ applies the NEQ predicate on the "charging_state" field.
+func ChargingStateNEQ(v int) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldChargingState), v))
+	})
+}
+
+// ChargingStateIn applies the In predicate on the "charging_state" field.
+func ChargingStateIn(vs ...int) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldChargingState), v...))
+	})
+}
+
+// ChargingStateNotIn applies the NotIn predicate on the "charging_state" field.
+func ChargingStateNotIn(vs ...int) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldChargingState), v...))
+	})
+}
+
+// ChargingStateGT applies the GT predicate on the "charging_state" field.
+func ChargingStateGT(v int) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldChargingState), v))
+	})
+}
+
+// ChargingStateGTE applies the GTE predicate on the "charging_state" field.
+func ChargingStateGTE(v int) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldChargingState), v))
+	})
+}
+
+// ChargingStateLT applies the LT predicate on the "charging_state" field.
+func ChargingStateLT(v int) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldChargingState), v))
+	})
+}
+
+// ChargingStateLTE applies the LTE predicate on the "charging_state" field.
+func ChargingStateLTE(v int) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldChargingState), v))
+	})
+}
+
+// ChargingStateIsNil applies the IsNil predicate on the "charging_state" field.
+func ChargingStateIsNil() predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldChargingState)))
+	})
+}
+
+// ChargingStateNotNil applies the NotNil predicate on the "charging_state" field.
+func ChargingStateNotNil() predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldChargingState)))
+	})
+}
+
+// ReservationIDEQ applies the EQ predicate on the "reservation_id" field.
+func ReservationIDEQ(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldReservationID), vc))
+	})
+}
+
+// ReservationIDNEQ applies the NEQ predicate on the "reservation_id" field.
+func ReservationIDNEQ(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldReservationID), vc))
+	})
+}
+
+// ReservationIDIn applies the In predicate on the "reservation_id" field.
+func ReservationIDIn(vs ...datasource.UUID) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldReservationID), v...))
+	})
+}
+
+// ReservationIDNotIn applies the NotIn predicate on the "reservation_id" field.
+func ReservationIDNotIn(vs ...datasource.UUID) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldReservationID), v...))
+	})
+}
+
+// ReservationIDGT applies the GT predicate on the "reservation_id" field.
+func ReservationIDGT(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldReservationID), vc))
+	})
+}
+
+// ReservationIDGTE applies the GTE predicate on the "reservation_id" field.
+func ReservationIDGTE(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldReservationID), vc))
+	})
+}
+
+// ReservationIDLT applies the LT predicate on the "reservation_id" field.
+func ReservationIDLT(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldReservationID), vc))
+	})
+}
+
+// ReservationIDLTE applies the LTE predicate on the "reservation_id" field.
+func ReservationIDLTE(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldReservationID), vc))
+	})
+}
+
+// ReservationIDIsNil applies the IsNil predicate on the "reservation_id" field.
+func ReservationIDIsNil() predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldReservationID)))
+	})
+}
+
+// ReservationIDNotNil applies the NotNil predicate on the "reservation_id" field.
+func ReservationIDNotNil() predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldReservationID)))
+	})
+}
+
+// ParkNoEQ applies the EQ predicate on the "park_no" field.
+func ParkNoEQ(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldParkNo), v))
+	})
+}
+
+// ParkNoNEQ applies the NEQ predicate on the "park_no" field.
+func ParkNoNEQ(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldParkNo), v))
+	})
+}
+
+// ParkNoIn applies the In predicate on the "park_no" field.
+func ParkNoIn(vs ...string) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldParkNo), v...))
+	})
+}
+
+// ParkNoNotIn applies the NotIn predicate on the "park_no" field.
+func ParkNoNotIn(vs ...string) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldParkNo), v...))
+	})
+}
+
+// ParkNoGT applies the GT predicate on the "park_no" field.
+func ParkNoGT(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldParkNo), v))
+	})
+}
+
+// ParkNoGTE applies the GTE predicate on the "park_no" field.
+func ParkNoGTE(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldParkNo), v))
+	})
+}
+
+// ParkNoLT applies the LT predicate on the "park_no" field.
+func ParkNoLT(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldParkNo), v))
+	})
+}
+
+// ParkNoLTE applies the LTE predicate on the "park_no" field.
+func ParkNoLTE(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldParkNo), v))
+	})
+}
+
+// ParkNoContains applies the Contains predicate on the "park_no" field.
+func ParkNoContains(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldParkNo), v))
+	})
+}
+
+// ParkNoHasPrefix applies the HasPrefix predicate on the "park_no" field.
+func ParkNoHasPrefix(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldParkNo), v))
+	})
+}
+
+// ParkNoHasSuffix applies the HasSuffix predicate on the "park_no" field.
+func ParkNoHasSuffix(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldParkNo), v))
+	})
+}
+
+// ParkNoEqualFold applies the EqualFold predicate on the "park_no" field.
+func ParkNoEqualFold(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldParkNo), v))
+	})
+}
+
+// ParkNoContainsFold applies the ContainsFold predicate on the "park_no" field.
+func ParkNoContainsFold(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldParkNo), v))
 	})
 }
 

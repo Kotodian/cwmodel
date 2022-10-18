@@ -139,6 +139,74 @@ func (cu *ConnectorUpdate) AddBeforeState(i int) *ConnectorUpdate {
 	return cu
 }
 
+// SetChargingState sets the "charging_state" field.
+func (cu *ConnectorUpdate) SetChargingState(i int) *ConnectorUpdate {
+	cu.mutation.ResetChargingState()
+	cu.mutation.SetChargingState(i)
+	return cu
+}
+
+// SetNillableChargingState sets the "charging_state" field if the given value is not nil.
+func (cu *ConnectorUpdate) SetNillableChargingState(i *int) *ConnectorUpdate {
+	if i != nil {
+		cu.SetChargingState(*i)
+	}
+	return cu
+}
+
+// AddChargingState adds i to the "charging_state" field.
+func (cu *ConnectorUpdate) AddChargingState(i int) *ConnectorUpdate {
+	cu.mutation.AddChargingState(i)
+	return cu
+}
+
+// ClearChargingState clears the value of the "charging_state" field.
+func (cu *ConnectorUpdate) ClearChargingState() *ConnectorUpdate {
+	cu.mutation.ClearChargingState()
+	return cu
+}
+
+// SetReservationID sets the "reservation_id" field.
+func (cu *ConnectorUpdate) SetReservationID(d datasource.UUID) *ConnectorUpdate {
+	cu.mutation.ResetReservationID()
+	cu.mutation.SetReservationID(d)
+	return cu
+}
+
+// SetNillableReservationID sets the "reservation_id" field if the given value is not nil.
+func (cu *ConnectorUpdate) SetNillableReservationID(d *datasource.UUID) *ConnectorUpdate {
+	if d != nil {
+		cu.SetReservationID(*d)
+	}
+	return cu
+}
+
+// AddReservationID adds d to the "reservation_id" field.
+func (cu *ConnectorUpdate) AddReservationID(d datasource.UUID) *ConnectorUpdate {
+	cu.mutation.AddReservationID(d)
+	return cu
+}
+
+// ClearReservationID clears the value of the "reservation_id" field.
+func (cu *ConnectorUpdate) ClearReservationID() *ConnectorUpdate {
+	cu.mutation.ClearReservationID()
+	return cu
+}
+
+// SetParkNo sets the "park_no" field.
+func (cu *ConnectorUpdate) SetParkNo(s string) *ConnectorUpdate {
+	cu.mutation.SetParkNo(s)
+	return cu
+}
+
+// SetNillableParkNo sets the "park_no" field if the given value is not nil.
+func (cu *ConnectorUpdate) SetNillableParkNo(s *string) *ConnectorUpdate {
+	if s != nil {
+		cu.SetParkNo(*s)
+	}
+	return cu
+}
+
 // SetEvseID sets the "evse" edge to the Evse entity by ID.
 func (cu *ConnectorUpdate) SetEvseID(id datasource.UUID) *ConnectorUpdate {
 	cu.mutation.SetEvseID(id)
@@ -428,6 +496,53 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeInt,
 			Value:  value,
 			Column: connector.FieldBeforeState,
+		})
+	}
+	if value, ok := cu.mutation.ChargingState(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: connector.FieldChargingState,
+		})
+	}
+	if value, ok := cu.mutation.AddedChargingState(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: connector.FieldChargingState,
+		})
+	}
+	if cu.mutation.ChargingStateCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Column: connector.FieldChargingState,
+		})
+	}
+	if value, ok := cu.mutation.ReservationID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: connector.FieldReservationID,
+		})
+	}
+	if value, ok := cu.mutation.AddedReservationID(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: connector.FieldReservationID,
+		})
+	}
+	if cu.mutation.ReservationIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Column: connector.FieldReservationID,
+		})
+	}
+	if value, ok := cu.mutation.ParkNo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: connector.FieldParkNo,
 		})
 	}
 	if cu.mutation.EvseCleared() {
@@ -731,6 +846,74 @@ func (cuo *ConnectorUpdateOne) SetBeforeState(i int) *ConnectorUpdateOne {
 // AddBeforeState adds i to the "before_state" field.
 func (cuo *ConnectorUpdateOne) AddBeforeState(i int) *ConnectorUpdateOne {
 	cuo.mutation.AddBeforeState(i)
+	return cuo
+}
+
+// SetChargingState sets the "charging_state" field.
+func (cuo *ConnectorUpdateOne) SetChargingState(i int) *ConnectorUpdateOne {
+	cuo.mutation.ResetChargingState()
+	cuo.mutation.SetChargingState(i)
+	return cuo
+}
+
+// SetNillableChargingState sets the "charging_state" field if the given value is not nil.
+func (cuo *ConnectorUpdateOne) SetNillableChargingState(i *int) *ConnectorUpdateOne {
+	if i != nil {
+		cuo.SetChargingState(*i)
+	}
+	return cuo
+}
+
+// AddChargingState adds i to the "charging_state" field.
+func (cuo *ConnectorUpdateOne) AddChargingState(i int) *ConnectorUpdateOne {
+	cuo.mutation.AddChargingState(i)
+	return cuo
+}
+
+// ClearChargingState clears the value of the "charging_state" field.
+func (cuo *ConnectorUpdateOne) ClearChargingState() *ConnectorUpdateOne {
+	cuo.mutation.ClearChargingState()
+	return cuo
+}
+
+// SetReservationID sets the "reservation_id" field.
+func (cuo *ConnectorUpdateOne) SetReservationID(d datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.ResetReservationID()
+	cuo.mutation.SetReservationID(d)
+	return cuo
+}
+
+// SetNillableReservationID sets the "reservation_id" field if the given value is not nil.
+func (cuo *ConnectorUpdateOne) SetNillableReservationID(d *datasource.UUID) *ConnectorUpdateOne {
+	if d != nil {
+		cuo.SetReservationID(*d)
+	}
+	return cuo
+}
+
+// AddReservationID adds d to the "reservation_id" field.
+func (cuo *ConnectorUpdateOne) AddReservationID(d datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.AddReservationID(d)
+	return cuo
+}
+
+// ClearReservationID clears the value of the "reservation_id" field.
+func (cuo *ConnectorUpdateOne) ClearReservationID() *ConnectorUpdateOne {
+	cuo.mutation.ClearReservationID()
+	return cuo
+}
+
+// SetParkNo sets the "park_no" field.
+func (cuo *ConnectorUpdateOne) SetParkNo(s string) *ConnectorUpdateOne {
+	cuo.mutation.SetParkNo(s)
+	return cuo
+}
+
+// SetNillableParkNo sets the "park_no" field if the given value is not nil.
+func (cuo *ConnectorUpdateOne) SetNillableParkNo(s *string) *ConnectorUpdateOne {
+	if s != nil {
+		cuo.SetParkNo(*s)
+	}
 	return cuo
 }
 
@@ -1053,6 +1236,53 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 			Type:   field.TypeInt,
 			Value:  value,
 			Column: connector.FieldBeforeState,
+		})
+	}
+	if value, ok := cuo.mutation.ChargingState(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: connector.FieldChargingState,
+		})
+	}
+	if value, ok := cuo.mutation.AddedChargingState(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: connector.FieldChargingState,
+		})
+	}
+	if cuo.mutation.ChargingStateCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Column: connector.FieldChargingState,
+		})
+	}
+	if value, ok := cuo.mutation.ReservationID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: connector.FieldReservationID,
+		})
+	}
+	if value, ok := cuo.mutation.AddedReservationID(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Value:  value,
+			Column: connector.FieldReservationID,
+		})
+	}
+	if cuo.mutation.ReservationIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint64,
+			Column: connector.FieldReservationID,
+		})
+	}
+	if value, ok := cuo.mutation.ParkNo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: connector.FieldParkNo,
 		})
 	}
 	if cuo.mutation.EvseCleared() {
