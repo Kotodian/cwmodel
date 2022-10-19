@@ -51,6 +51,8 @@ func init() {
 	connectorDescUpdatedAt := connectorMixinFields0[5].Descriptor()
 	// connector.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	connector.DefaultUpdatedAt = connectorDescUpdatedAt.Default.(int64)
+	// connector.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	connector.UpdateDefaultUpdatedAt = connectorDescUpdatedAt.UpdateDefault.(func() int64)
 	// connectorDescParkNo is the schema descriptor for park_no field.
 	connectorDescParkNo := connectorFields[7].Descriptor()
 	// connector.DefaultParkNo holds the default value on creation for the park_no field.
@@ -84,6 +86,8 @@ func init() {
 	equipmentDescUpdatedAt := equipmentMixinFields0[5].Descriptor()
 	// equipment.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	equipment.DefaultUpdatedAt = equipmentDescUpdatedAt.Default.(int64)
+	// equipment.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	equipment.UpdateDefaultUpdatedAt = equipmentDescUpdatedAt.UpdateDefault.(func() int64)
 	// equipmentDescSn is the schema descriptor for sn field.
 	equipmentDescSn := equipmentFields[0].Descriptor()
 	// equipment.SnValidator is a validator for the "sn" field. It is called by the builders before save.
@@ -117,6 +121,8 @@ func init() {
 	equipmentalarmDescUpdatedAt := equipmentalarmMixinFields0[5].Descriptor()
 	// equipmentalarm.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	equipmentalarm.DefaultUpdatedAt = equipmentalarmDescUpdatedAt.Default.(int64)
+	// equipmentalarm.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	equipmentalarm.UpdateDefaultUpdatedAt = equipmentalarmDescUpdatedAt.UpdateDefault.(func() int64)
 	// equipmentalarmDescCount is the schema descriptor for count field.
 	equipmentalarmDescCount := equipmentalarmFields[4].Descriptor()
 	// equipmentalarm.DefaultCount holds the default value on creation for the count field.
@@ -150,6 +156,8 @@ func init() {
 	equipmentfirmwareeffectDescUpdatedAt := equipmentfirmwareeffectMixinFields0[5].Descriptor()
 	// equipmentfirmwareeffect.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	equipmentfirmwareeffect.DefaultUpdatedAt = equipmentfirmwareeffectDescUpdatedAt.Default.(int64)
+	// equipmentfirmwareeffect.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	equipmentfirmwareeffect.UpdateDefaultUpdatedAt = equipmentfirmwareeffectDescUpdatedAt.UpdateDefault.(func() int64)
 	// equipmentfirmwareeffectDescID is the schema descriptor for id field.
 	equipmentfirmwareeffectDescID := equipmentfirmwareeffectMixinFields0[0].Descriptor()
 	// equipmentfirmwareeffect.DefaultID holds the default value on creation for the id field.
@@ -179,6 +187,8 @@ func init() {
 	equipmentinfoDescUpdatedAt := equipmentinfoMixinFields0[5].Descriptor()
 	// equipmentinfo.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	equipmentinfo.DefaultUpdatedAt = equipmentinfoDescUpdatedAt.Default.(int64)
+	// equipmentinfo.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	equipmentinfo.UpdateDefaultUpdatedAt = equipmentinfoDescUpdatedAt.UpdateDefault.(func() int64)
 	// equipmentinfoDescID is the schema descriptor for id field.
 	equipmentinfoDescID := equipmentinfoMixinFields0[0].Descriptor()
 	// equipmentinfo.DefaultID holds the default value on creation for the id field.
@@ -208,6 +218,8 @@ func init() {
 	equipmentiotDescUpdatedAt := equipmentiotMixinFields0[5].Descriptor()
 	// equipmentiot.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	equipmentiot.DefaultUpdatedAt = equipmentiotDescUpdatedAt.Default.(int64)
+	// equipmentiot.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	equipmentiot.UpdateDefaultUpdatedAt = equipmentiotDescUpdatedAt.UpdateDefault.(func() int64)
 	// equipmentiotDescID is the schema descriptor for id field.
 	equipmentiotDescID := equipmentiotMixinFields0[0].Descriptor()
 	// equipmentiot.DefaultID holds the default value on creation for the id field.
@@ -237,6 +249,8 @@ func init() {
 	equipmentlogDescUpdatedAt := equipmentlogMixinFields0[5].Descriptor()
 	// equipmentlog.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	equipmentlog.DefaultUpdatedAt = equipmentlogDescUpdatedAt.Default.(int64)
+	// equipmentlog.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	equipmentlog.UpdateDefaultUpdatedAt = equipmentlogDescUpdatedAt.UpdateDefault.(func() int64)
 	// equipmentlogDescID is the schema descriptor for id field.
 	equipmentlogDescID := equipmentlogMixinFields0[0].Descriptor()
 	// equipmentlog.DefaultID holds the default value on creation for the id field.
@@ -266,6 +280,8 @@ func init() {
 	evseDescUpdatedAt := evseMixinFields0[5].Descriptor()
 	// evse.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	evse.DefaultUpdatedAt = evseDescUpdatedAt.Default.(int64)
+	// evse.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	evse.UpdateDefaultUpdatedAt = evseDescUpdatedAt.UpdateDefault.(func() int64)
 	// evseDescID is the schema descriptor for id field.
 	evseDescID := evseMixinFields0[0].Descriptor()
 	// evse.DefaultID holds the default value on creation for the id field.
@@ -295,6 +311,8 @@ func init() {
 	firmwareDescUpdatedAt := firmwareMixinFields0[5].Descriptor()
 	// firmware.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	firmware.DefaultUpdatedAt = firmwareDescUpdatedAt.Default.(int64)
+	// firmware.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	firmware.UpdateDefaultUpdatedAt = firmwareDescUpdatedAt.UpdateDefault.(func() int64)
 	// firmwareDescID is the schema descriptor for id field.
 	firmwareDescID := firmwareMixinFields0[0].Descriptor()
 	// firmware.DefaultID holds the default value on creation for the id field.
@@ -324,6 +342,8 @@ func init() {
 	manufacturerDescUpdatedAt := manufacturerMixinFields0[5].Descriptor()
 	// manufacturer.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	manufacturer.DefaultUpdatedAt = manufacturerDescUpdatedAt.Default.(int64)
+	// manufacturer.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	manufacturer.UpdateDefaultUpdatedAt = manufacturerDescUpdatedAt.UpdateDefault.(func() int64)
 	// manufacturerDescID is the schema descriptor for id field.
 	manufacturerDescID := manufacturerMixinFields0[0].Descriptor()
 	// manufacturer.DefaultID holds the default value on creation for the id field.
@@ -353,6 +373,8 @@ func init() {
 	modelDescUpdatedAt := modelMixinFields0[5].Descriptor()
 	// model.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	model.DefaultUpdatedAt = modelDescUpdatedAt.Default.(int64)
+	// model.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	model.UpdateDefaultUpdatedAt = modelDescUpdatedAt.UpdateDefault.(func() int64)
 	// modelDescID is the schema descriptor for id field.
 	modelDescID := modelMixinFields0[0].Descriptor()
 	// model.DefaultID holds the default value on creation for the id field.
@@ -388,6 +410,8 @@ func init() {
 	orderinfoDescUpdatedAt := orderinfoMixinFields0[5].Descriptor()
 	// orderinfo.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	orderinfo.DefaultUpdatedAt = orderinfoDescUpdatedAt.Default.(int64)
+	// orderinfo.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	orderinfo.UpdateDefaultUpdatedAt = orderinfoDescUpdatedAt.UpdateDefault.(func() int64)
 	// orderinfoDescID is the schema descriptor for id field.
 	orderinfoDescID := orderinfoMixinFields0[0].Descriptor()
 	// orderinfo.DefaultID holds the default value on creation for the id field.
@@ -417,6 +441,8 @@ func init() {
 	reservationDescUpdatedAt := reservationMixinFields0[5].Descriptor()
 	// reservation.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	reservation.DefaultUpdatedAt = reservationDescUpdatedAt.Default.(int64)
+	// reservation.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	reservation.UpdateDefaultUpdatedAt = reservationDescUpdatedAt.UpdateDefault.(func() int64)
 	// reservationDescID is the schema descriptor for id field.
 	reservationDescID := reservationMixinFields0[0].Descriptor()
 	// reservation.DefaultID holds the default value on creation for the id field.
@@ -446,6 +472,8 @@ func init() {
 	smartchargingeffectDescUpdatedAt := smartchargingeffectMixinFields0[5].Descriptor()
 	// smartchargingeffect.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	smartchargingeffect.DefaultUpdatedAt = smartchargingeffectDescUpdatedAt.Default.(int64)
+	// smartchargingeffect.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	smartchargingeffect.UpdateDefaultUpdatedAt = smartchargingeffectDescUpdatedAt.UpdateDefault.(func() int64)
 	// smartchargingeffectDescID is the schema descriptor for id field.
 	smartchargingeffectDescID := smartchargingeffectMixinFields0[0].Descriptor()
 	// smartchargingeffect.DefaultID holds the default value on creation for the id field.

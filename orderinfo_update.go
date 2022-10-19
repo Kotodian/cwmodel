@@ -81,14 +81,6 @@ func (oiu *OrderInfoUpdate) SetUpdatedAt(i int64) *OrderInfoUpdate {
 	return oiu
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (oiu *OrderInfoUpdate) SetNillableUpdatedAt(i *int64) *OrderInfoUpdate {
-	if i != nil {
-		oiu.SetUpdatedAt(*i)
-	}
-	return oiu
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (oiu *OrderInfoUpdate) AddUpdatedAt(i int64) *OrderInfoUpdate {
 	oiu.mutation.AddUpdatedAt(i)
@@ -734,6 +726,7 @@ func (oiu *OrderInfoUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	oiu.defaults()
 	if len(oiu.hooks) == 0 {
 		affected, err = oiu.sqlSave(ctx)
 	} else {
@@ -779,6 +772,14 @@ func (oiu *OrderInfoUpdate) Exec(ctx context.Context) error {
 func (oiu *OrderInfoUpdate) ExecX(ctx context.Context) {
 	if err := oiu.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (oiu *OrderInfoUpdate) defaults() {
+	if _, ok := oiu.mutation.UpdatedAt(); !ok {
+		v := orderinfo.UpdateDefaultUpdatedAt()
+		oiu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -1216,14 +1217,6 @@ func (oiuo *OrderInfoUpdateOne) AddUpdatedBy(d datasource.UUID) *OrderInfoUpdate
 func (oiuo *OrderInfoUpdateOne) SetUpdatedAt(i int64) *OrderInfoUpdateOne {
 	oiuo.mutation.ResetUpdatedAt()
 	oiuo.mutation.SetUpdatedAt(i)
-	return oiuo
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (oiuo *OrderInfoUpdateOne) SetNillableUpdatedAt(i *int64) *OrderInfoUpdateOne {
-	if i != nil {
-		oiuo.SetUpdatedAt(*i)
-	}
 	return oiuo
 }
 
@@ -1879,6 +1872,7 @@ func (oiuo *OrderInfoUpdateOne) Save(ctx context.Context) (*OrderInfo, error) {
 		err  error
 		node *OrderInfo
 	)
+	oiuo.defaults()
 	if len(oiuo.hooks) == 0 {
 		node, err = oiuo.sqlSave(ctx)
 	} else {
@@ -1930,6 +1924,14 @@ func (oiuo *OrderInfoUpdateOne) Exec(ctx context.Context) error {
 func (oiuo *OrderInfoUpdateOne) ExecX(ctx context.Context) {
 	if err := oiuo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (oiuo *OrderInfoUpdateOne) defaults() {
+	if _, ok := oiuo.mutation.UpdatedAt(); !ok {
+		v := orderinfo.UpdateDefaultUpdatedAt()
+		oiuo.mutation.SetUpdatedAt(v)
 	}
 }
 

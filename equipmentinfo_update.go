@@ -78,14 +78,6 @@ func (eiu *EquipmentInfoUpdate) SetUpdatedAt(i int64) *EquipmentInfoUpdate {
 	return eiu
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (eiu *EquipmentInfoUpdate) SetNillableUpdatedAt(i *int64) *EquipmentInfoUpdate {
-	if i != nil {
-		eiu.SetUpdatedAt(*i)
-	}
-	return eiu
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (eiu *EquipmentInfoUpdate) AddUpdatedAt(i int64) *EquipmentInfoUpdate {
 	eiu.mutation.AddUpdatedAt(i)
@@ -222,6 +214,7 @@ func (eiu *EquipmentInfoUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	eiu.defaults()
 	if len(eiu.hooks) == 0 {
 		if err = eiu.check(); err != nil {
 			return 0, err
@@ -273,6 +266,14 @@ func (eiu *EquipmentInfoUpdate) Exec(ctx context.Context) error {
 func (eiu *EquipmentInfoUpdate) ExecX(ctx context.Context) {
 	if err := eiu.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (eiu *EquipmentInfoUpdate) defaults() {
+	if _, ok := eiu.mutation.UpdatedAt(); !ok {
+		v := equipmentinfo.UpdateDefaultUpdatedAt()
+		eiu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -471,14 +472,6 @@ func (eiuo *EquipmentInfoUpdateOne) SetUpdatedAt(i int64) *EquipmentInfoUpdateOn
 	return eiuo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (eiuo *EquipmentInfoUpdateOne) SetNillableUpdatedAt(i *int64) *EquipmentInfoUpdateOne {
-	if i != nil {
-		eiuo.SetUpdatedAt(*i)
-	}
-	return eiuo
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (eiuo *EquipmentInfoUpdateOne) AddUpdatedAt(i int64) *EquipmentInfoUpdateOne {
 	eiuo.mutation.AddUpdatedAt(i)
@@ -622,6 +615,7 @@ func (eiuo *EquipmentInfoUpdateOne) Save(ctx context.Context) (*EquipmentInfo, e
 		err  error
 		node *EquipmentInfo
 	)
+	eiuo.defaults()
 	if len(eiuo.hooks) == 0 {
 		if err = eiuo.check(); err != nil {
 			return nil, err
@@ -679,6 +673,14 @@ func (eiuo *EquipmentInfoUpdateOne) Exec(ctx context.Context) error {
 func (eiuo *EquipmentInfoUpdateOne) ExecX(ctx context.Context) {
 	if err := eiuo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (eiuo *EquipmentInfoUpdateOne) defaults() {
+	if _, ok := eiuo.mutation.UpdatedAt(); !ok {
+		v := equipmentinfo.UpdateDefaultUpdatedAt()
+		eiuo.mutation.SetUpdatedAt(v)
 	}
 }
 

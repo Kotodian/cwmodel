@@ -91,6 +91,8 @@ var (
 	DefaultUpdatedBy datasource.UUID
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt int64
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() int64
 	// DefaultCount holds the default value on creation for the "count" field.
 	DefaultCount int
 	// DefaultID holds the default value on creation for the "id" field.

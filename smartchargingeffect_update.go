@@ -82,14 +82,6 @@ func (sceu *SmartChargingEffectUpdate) SetUpdatedAt(i int64) *SmartChargingEffec
 	return sceu
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (sceu *SmartChargingEffectUpdate) SetNillableUpdatedAt(i *int64) *SmartChargingEffectUpdate {
-	if i != nil {
-		sceu.SetUpdatedAt(*i)
-	}
-	return sceu
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (sceu *SmartChargingEffectUpdate) AddUpdatedAt(i int64) *SmartChargingEffectUpdate {
 	sceu.mutation.AddUpdatedAt(i)
@@ -283,6 +275,7 @@ func (sceu *SmartChargingEffectUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	sceu.defaults()
 	if len(sceu.hooks) == 0 {
 		if err = sceu.check(); err != nil {
 			return 0, err
@@ -334,6 +327,14 @@ func (sceu *SmartChargingEffectUpdate) Exec(ctx context.Context) error {
 func (sceu *SmartChargingEffectUpdate) ExecX(ctx context.Context) {
 	if err := sceu.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (sceu *SmartChargingEffectUpdate) defaults() {
+	if _, ok := sceu.mutation.UpdatedAt(); !ok {
+		v := smartchargingeffect.UpdateDefaultUpdatedAt()
+		sceu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -607,14 +608,6 @@ func (sceuo *SmartChargingEffectUpdateOne) SetUpdatedAt(i int64) *SmartChargingE
 	return sceuo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (sceuo *SmartChargingEffectUpdateOne) SetNillableUpdatedAt(i *int64) *SmartChargingEffectUpdateOne {
-	if i != nil {
-		sceuo.SetUpdatedAt(*i)
-	}
-	return sceuo
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (sceuo *SmartChargingEffectUpdateOne) AddUpdatedAt(i int64) *SmartChargingEffectUpdateOne {
 	sceuo.mutation.AddUpdatedAt(i)
@@ -815,6 +808,7 @@ func (sceuo *SmartChargingEffectUpdateOne) Save(ctx context.Context) (*SmartChar
 		err  error
 		node *SmartChargingEffect
 	)
+	sceuo.defaults()
 	if len(sceuo.hooks) == 0 {
 		if err = sceuo.check(); err != nil {
 			return nil, err
@@ -872,6 +866,14 @@ func (sceuo *SmartChargingEffectUpdateOne) Exec(ctx context.Context) error {
 func (sceuo *SmartChargingEffectUpdateOne) ExecX(ctx context.Context) {
 	if err := sceuo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (sceuo *SmartChargingEffectUpdateOne) defaults() {
+	if _, ok := sceuo.mutation.UpdatedAt(); !ok {
+		v := smartchargingeffect.UpdateDefaultUpdatedAt()
+		sceuo.mutation.SetUpdatedAt(v)
 	}
 }
 

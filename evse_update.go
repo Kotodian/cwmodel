@@ -79,14 +79,6 @@ func (eu *EvseUpdate) SetUpdatedAt(i int64) *EvseUpdate {
 	return eu
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (eu *EvseUpdate) SetNillableUpdatedAt(i *int64) *EvseUpdate {
-	if i != nil {
-		eu.SetUpdatedAt(*i)
-	}
-	return eu
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (eu *EvseUpdate) AddUpdatedAt(i int64) *EvseUpdate {
 	eu.mutation.AddUpdatedAt(i)
@@ -176,6 +168,7 @@ func (eu *EvseUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	eu.defaults()
 	if len(eu.hooks) == 0 {
 		if err = eu.check(); err != nil {
 			return 0, err
@@ -227,6 +220,14 @@ func (eu *EvseUpdate) Exec(ctx context.Context) error {
 func (eu *EvseUpdate) ExecX(ctx context.Context) {
 	if err := eu.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (eu *EvseUpdate) defaults() {
+	if _, ok := eu.mutation.UpdatedAt(); !ok {
+		v := evse.UpdateDefaultUpdatedAt()
+		eu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -440,14 +441,6 @@ func (euo *EvseUpdateOne) SetUpdatedAt(i int64) *EvseUpdateOne {
 	return euo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (euo *EvseUpdateOne) SetNillableUpdatedAt(i *int64) *EvseUpdateOne {
-	if i != nil {
-		euo.SetUpdatedAt(*i)
-	}
-	return euo
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (euo *EvseUpdateOne) AddUpdatedAt(i int64) *EvseUpdateOne {
 	euo.mutation.AddUpdatedAt(i)
@@ -544,6 +537,7 @@ func (euo *EvseUpdateOne) Save(ctx context.Context) (*Evse, error) {
 		err  error
 		node *Evse
 	)
+	euo.defaults()
 	if len(euo.hooks) == 0 {
 		if err = euo.check(); err != nil {
 			return nil, err
@@ -601,6 +595,14 @@ func (euo *EvseUpdateOne) Exec(ctx context.Context) error {
 func (euo *EvseUpdateOne) ExecX(ctx context.Context) {
 	if err := euo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (euo *EvseUpdateOne) defaults() {
+	if _, ok := euo.mutation.UpdatedAt(); !ok {
+		v := evse.UpdateDefaultUpdatedAt()
+		euo.mutation.SetUpdatedAt(v)
 	}
 }
 

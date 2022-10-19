@@ -78,14 +78,6 @@ func (fu *FirmwareUpdate) SetUpdatedAt(i int64) *FirmwareUpdate {
 	return fu
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (fu *FirmwareUpdate) SetNillableUpdatedAt(i *int64) *FirmwareUpdate {
-	if i != nil {
-		fu.SetUpdatedAt(*i)
-	}
-	return fu
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (fu *FirmwareUpdate) AddUpdatedAt(i int64) *FirmwareUpdate {
 	fu.mutation.AddUpdatedAt(i)
@@ -145,6 +137,7 @@ func (fu *FirmwareUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	fu.defaults()
 	if len(fu.hooks) == 0 {
 		affected, err = fu.sqlSave(ctx)
 	} else {
@@ -190,6 +183,14 @@ func (fu *FirmwareUpdate) Exec(ctx context.Context) error {
 func (fu *FirmwareUpdate) ExecX(ctx context.Context) {
 	if err := fu.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (fu *FirmwareUpdate) defaults() {
+	if _, ok := fu.mutation.UpdatedAt(); !ok {
+		v := firmware.UpdateDefaultUpdatedAt()
+		fu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -354,14 +355,6 @@ func (fuo *FirmwareUpdateOne) SetUpdatedAt(i int64) *FirmwareUpdateOne {
 	return fuo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (fuo *FirmwareUpdateOne) SetNillableUpdatedAt(i *int64) *FirmwareUpdateOne {
-	if i != nil {
-		fuo.SetUpdatedAt(*i)
-	}
-	return fuo
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (fuo *FirmwareUpdateOne) AddUpdatedAt(i int64) *FirmwareUpdateOne {
 	fuo.mutation.AddUpdatedAt(i)
@@ -428,6 +421,7 @@ func (fuo *FirmwareUpdateOne) Save(ctx context.Context) (*Firmware, error) {
 		err  error
 		node *Firmware
 	)
+	fuo.defaults()
 	if len(fuo.hooks) == 0 {
 		node, err = fuo.sqlSave(ctx)
 	} else {
@@ -479,6 +473,14 @@ func (fuo *FirmwareUpdateOne) Exec(ctx context.Context) error {
 func (fuo *FirmwareUpdateOne) ExecX(ctx context.Context) {
 	if err := fuo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (fuo *FirmwareUpdateOne) defaults() {
+	if _, ok := fuo.mutation.UpdatedAt(); !ok {
+		v := firmware.UpdateDefaultUpdatedAt()
+		fuo.mutation.SetUpdatedAt(v)
 	}
 }
 

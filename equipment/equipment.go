@@ -155,6 +155,8 @@ var (
 	DefaultUpdatedBy datasource.UUID
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt int64
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() int64
 	// SnValidator is a validator for the "sn" field. It is called by the builders before save.
 	SnValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.

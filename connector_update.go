@@ -82,14 +82,6 @@ func (cu *ConnectorUpdate) SetUpdatedAt(i int64) *ConnectorUpdate {
 	return cu
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (cu *ConnectorUpdate) SetNillableUpdatedAt(i *int64) *ConnectorUpdate {
-	if i != nil {
-		cu.SetUpdatedAt(*i)
-	}
-	return cu
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (cu *ConnectorUpdate) AddUpdatedAt(i int64) *ConnectorUpdate {
 	cu.mutation.AddUpdatedAt(i)
@@ -361,6 +353,7 @@ func (cu *ConnectorUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	cu.defaults()
 	if len(cu.hooks) == 0 {
 		if err = cu.check(); err != nil {
 			return 0, err
@@ -412,6 +405,14 @@ func (cu *ConnectorUpdate) Exec(ctx context.Context) error {
 func (cu *ConnectorUpdate) ExecX(ctx context.Context) {
 	if err := cu.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (cu *ConnectorUpdate) defaults() {
+	if _, ok := cu.mutation.UpdatedAt(); !ok {
+		v := connector.UpdateDefaultUpdatedAt()
+		cu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -804,14 +805,6 @@ func (cuo *ConnectorUpdateOne) SetUpdatedAt(i int64) *ConnectorUpdateOne {
 	return cuo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (cuo *ConnectorUpdateOne) SetNillableUpdatedAt(i *int64) *ConnectorUpdateOne {
-	if i != nil {
-		cuo.SetUpdatedAt(*i)
-	}
-	return cuo
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (cuo *ConnectorUpdateOne) AddUpdatedAt(i int64) *ConnectorUpdateOne {
 	cuo.mutation.AddUpdatedAt(i)
@@ -1090,6 +1083,7 @@ func (cuo *ConnectorUpdateOne) Save(ctx context.Context) (*Connector, error) {
 		err  error
 		node *Connector
 	)
+	cuo.defaults()
 	if len(cuo.hooks) == 0 {
 		if err = cuo.check(); err != nil {
 			return nil, err
@@ -1147,6 +1141,14 @@ func (cuo *ConnectorUpdateOne) Exec(ctx context.Context) error {
 func (cuo *ConnectorUpdateOne) ExecX(ctx context.Context) {
 	if err := cuo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (cuo *ConnectorUpdateOne) defaults() {
+	if _, ok := cuo.mutation.UpdatedAt(); !ok {
+		v := connector.UpdateDefaultUpdatedAt()
+		cuo.mutation.SetUpdatedAt(v)
 	}
 }
 

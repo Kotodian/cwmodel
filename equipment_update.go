@@ -87,14 +87,6 @@ func (eu *EquipmentUpdate) SetUpdatedAt(i int64) *EquipmentUpdate {
 	return eu
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (eu *EquipmentUpdate) SetNillableUpdatedAt(i *int64) *EquipmentUpdate {
-	if i != nil {
-		eu.SetUpdatedAt(*i)
-	}
-	return eu
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (eu *EquipmentUpdate) AddUpdatedAt(i int64) *EquipmentUpdate {
 	eu.mutation.AddUpdatedAt(i)
@@ -482,6 +474,7 @@ func (eu *EquipmentUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	eu.defaults()
 	if len(eu.hooks) == 0 {
 		if err = eu.check(); err != nil {
 			return 0, err
@@ -533,6 +526,14 @@ func (eu *EquipmentUpdate) Exec(ctx context.Context) error {
 func (eu *EquipmentUpdate) ExecX(ctx context.Context) {
 	if err := eu.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (eu *EquipmentUpdate) defaults() {
+	if _, ok := eu.mutation.UpdatedAt(); !ok {
+		v := equipment.UpdateDefaultUpdatedAt()
+		eu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -1167,14 +1168,6 @@ func (euo *EquipmentUpdateOne) SetUpdatedAt(i int64) *EquipmentUpdateOne {
 	return euo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (euo *EquipmentUpdateOne) SetNillableUpdatedAt(i *int64) *EquipmentUpdateOne {
-	if i != nil {
-		euo.SetUpdatedAt(*i)
-	}
-	return euo
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (euo *EquipmentUpdateOne) AddUpdatedAt(i int64) *EquipmentUpdateOne {
 	euo.mutation.AddUpdatedAt(i)
@@ -1569,6 +1562,7 @@ func (euo *EquipmentUpdateOne) Save(ctx context.Context) (*Equipment, error) {
 		err  error
 		node *Equipment
 	)
+	euo.defaults()
 	if len(euo.hooks) == 0 {
 		if err = euo.check(); err != nil {
 			return nil, err
@@ -1626,6 +1620,14 @@ func (euo *EquipmentUpdateOne) Exec(ctx context.Context) error {
 func (euo *EquipmentUpdateOne) ExecX(ctx context.Context) {
 	if err := euo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (euo *EquipmentUpdateOne) defaults() {
+	if _, ok := euo.mutation.UpdatedAt(); !ok {
+		v := equipment.UpdateDefaultUpdatedAt()
+		euo.mutation.SetUpdatedAt(v)
 	}
 }
 

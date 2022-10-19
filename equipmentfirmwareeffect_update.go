@@ -79,14 +79,6 @@ func (efeu *EquipmentFirmwareEffectUpdate) SetUpdatedAt(i int64) *EquipmentFirmw
 	return efeu
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (efeu *EquipmentFirmwareEffectUpdate) SetNillableUpdatedAt(i *int64) *EquipmentFirmwareEffectUpdate {
-	if i != nil {
-		efeu.SetUpdatedAt(*i)
-	}
-	return efeu
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (efeu *EquipmentFirmwareEffectUpdate) AddUpdatedAt(i int64) *EquipmentFirmwareEffectUpdate {
 	efeu.mutation.AddUpdatedAt(i)
@@ -180,6 +172,7 @@ func (efeu *EquipmentFirmwareEffectUpdate) Save(ctx context.Context) (int, error
 		err      error
 		affected int
 	)
+	efeu.defaults()
 	if len(efeu.hooks) == 0 {
 		affected, err = efeu.sqlSave(ctx)
 	} else {
@@ -225,6 +218,14 @@ func (efeu *EquipmentFirmwareEffectUpdate) Exec(ctx context.Context) error {
 func (efeu *EquipmentFirmwareEffectUpdate) ExecX(ctx context.Context) {
 	if err := efeu.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (efeu *EquipmentFirmwareEffectUpdate) defaults() {
+	if _, ok := efeu.mutation.UpdatedAt(); !ok {
+		v := equipmentfirmwareeffect.UpdateDefaultUpdatedAt()
+		efeu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -414,14 +415,6 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) SetUpdatedAt(i int64) *EquipmentF
 	return efeuo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (efeuo *EquipmentFirmwareEffectUpdateOne) SetNillableUpdatedAt(i *int64) *EquipmentFirmwareEffectUpdateOne {
-	if i != nil {
-		efeuo.SetUpdatedAt(*i)
-	}
-	return efeuo
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (efeuo *EquipmentFirmwareEffectUpdateOne) AddUpdatedAt(i int64) *EquipmentFirmwareEffectUpdateOne {
 	efeuo.mutation.AddUpdatedAt(i)
@@ -522,6 +515,7 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) Save(ctx context.Context) (*Equip
 		err  error
 		node *EquipmentFirmwareEffect
 	)
+	efeuo.defaults()
 	if len(efeuo.hooks) == 0 {
 		node, err = efeuo.sqlSave(ctx)
 	} else {
@@ -573,6 +567,14 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) Exec(ctx context.Context) error {
 func (efeuo *EquipmentFirmwareEffectUpdateOne) ExecX(ctx context.Context) {
 	if err := efeuo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) defaults() {
+	if _, ok := efeuo.mutation.UpdatedAt(); !ok {
+		v := equipmentfirmwareeffect.UpdateDefaultUpdatedAt()
+		efeuo.mutation.SetUpdatedAt(v)
 	}
 }
 

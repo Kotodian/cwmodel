@@ -77,14 +77,6 @@ func (mu *ModelUpdate) SetUpdatedAt(i int64) *ModelUpdate {
 	return mu
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (mu *ModelUpdate) SetNillableUpdatedAt(i *int64) *ModelUpdate {
-	if i != nil {
-		mu.SetUpdatedAt(*i)
-	}
-	return mu
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (mu *ModelUpdate) AddUpdatedAt(i int64) *ModelUpdate {
 	mu.mutation.AddUpdatedAt(i)
@@ -126,6 +118,7 @@ func (mu *ModelUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	mu.defaults()
 	if len(mu.hooks) == 0 {
 		affected, err = mu.sqlSave(ctx)
 	} else {
@@ -171,6 +164,14 @@ func (mu *ModelUpdate) Exec(ctx context.Context) error {
 func (mu *ModelUpdate) ExecX(ctx context.Context) {
 	if err := mu.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (mu *ModelUpdate) defaults() {
+	if _, ok := mu.mutation.UpdatedAt(); !ok {
+		v := model.UpdateDefaultUpdatedAt()
+		mu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -290,14 +291,6 @@ func (muo *ModelUpdateOne) SetUpdatedAt(i int64) *ModelUpdateOne {
 	return muo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (muo *ModelUpdateOne) SetNillableUpdatedAt(i *int64) *ModelUpdateOne {
-	if i != nil {
-		muo.SetUpdatedAt(*i)
-	}
-	return muo
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (muo *ModelUpdateOne) AddUpdatedAt(i int64) *ModelUpdateOne {
 	muo.mutation.AddUpdatedAt(i)
@@ -346,6 +339,7 @@ func (muo *ModelUpdateOne) Save(ctx context.Context) (*Model, error) {
 		err  error
 		node *Model
 	)
+	muo.defaults()
 	if len(muo.hooks) == 0 {
 		node, err = muo.sqlSave(ctx)
 	} else {
@@ -397,6 +391,14 @@ func (muo *ModelUpdateOne) Exec(ctx context.Context) error {
 func (muo *ModelUpdateOne) ExecX(ctx context.Context) {
 	if err := muo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (muo *ModelUpdateOne) defaults() {
+	if _, ok := muo.mutation.UpdatedAt(); !ok {
+		v := model.UpdateDefaultUpdatedAt()
+		muo.mutation.SetUpdatedAt(v)
 	}
 }
 

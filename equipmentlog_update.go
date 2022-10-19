@@ -78,14 +78,6 @@ func (elu *EquipmentLogUpdate) SetUpdatedAt(i int64) *EquipmentLogUpdate {
 	return elu
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (elu *EquipmentLogUpdate) SetNillableUpdatedAt(i *int64) *EquipmentLogUpdate {
-	if i != nil {
-		elu.SetUpdatedAt(*i)
-	}
-	return elu
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (elu *EquipmentLogUpdate) AddUpdatedAt(i int64) *EquipmentLogUpdate {
 	elu.mutation.AddUpdatedAt(i)
@@ -167,6 +159,7 @@ func (elu *EquipmentLogUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	elu.defaults()
 	if len(elu.hooks) == 0 {
 		affected, err = elu.sqlSave(ctx)
 	} else {
@@ -212,6 +205,14 @@ func (elu *EquipmentLogUpdate) Exec(ctx context.Context) error {
 func (elu *EquipmentLogUpdate) ExecX(ctx context.Context) {
 	if err := elu.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (elu *EquipmentLogUpdate) defaults() {
+	if _, ok := elu.mutation.UpdatedAt(); !ok {
+		v := equipmentlog.UpdateDefaultUpdatedAt()
+		elu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -372,14 +373,6 @@ func (eluo *EquipmentLogUpdateOne) SetUpdatedAt(i int64) *EquipmentLogUpdateOne 
 	return eluo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (eluo *EquipmentLogUpdateOne) SetNillableUpdatedAt(i *int64) *EquipmentLogUpdateOne {
-	if i != nil {
-		eluo.SetUpdatedAt(*i)
-	}
-	return eluo
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (eluo *EquipmentLogUpdateOne) AddUpdatedAt(i int64) *EquipmentLogUpdateOne {
 	eluo.mutation.AddUpdatedAt(i)
@@ -468,6 +461,7 @@ func (eluo *EquipmentLogUpdateOne) Save(ctx context.Context) (*EquipmentLog, err
 		err  error
 		node *EquipmentLog
 	)
+	eluo.defaults()
 	if len(eluo.hooks) == 0 {
 		node, err = eluo.sqlSave(ctx)
 	} else {
@@ -519,6 +513,14 @@ func (eluo *EquipmentLogUpdateOne) Exec(ctx context.Context) error {
 func (eluo *EquipmentLogUpdateOne) ExecX(ctx context.Context) {
 	if err := eluo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (eluo *EquipmentLogUpdateOne) defaults() {
+	if _, ok := eluo.mutation.UpdatedAt(); !ok {
+		v := equipmentlog.UpdateDefaultUpdatedAt()
+		eluo.mutation.SetUpdatedAt(v)
 	}
 }
 

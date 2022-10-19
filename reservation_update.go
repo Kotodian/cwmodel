@@ -79,14 +79,6 @@ func (ru *ReservationUpdate) SetUpdatedAt(i int64) *ReservationUpdate {
 	return ru
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ru *ReservationUpdate) SetNillableUpdatedAt(i *int64) *ReservationUpdate {
-	if i != nil {
-		ru.SetUpdatedAt(*i)
-	}
-	return ru
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (ru *ReservationUpdate) AddUpdatedAt(i int64) *ReservationUpdate {
 	ru.mutation.AddUpdatedAt(i)
@@ -252,6 +244,7 @@ func (ru *ReservationUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	ru.defaults()
 	if len(ru.hooks) == 0 {
 		affected, err = ru.sqlSave(ctx)
 	} else {
@@ -297,6 +290,14 @@ func (ru *ReservationUpdate) Exec(ctx context.Context) error {
 func (ru *ReservationUpdate) ExecX(ctx context.Context) {
 	if err := ru.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (ru *ReservationUpdate) defaults() {
+	if _, ok := ru.mutation.UpdatedAt(); !ok {
+		v := reservation.UpdateDefaultUpdatedAt()
+		ru.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -513,14 +514,6 @@ func (ruo *ReservationUpdateOne) SetUpdatedAt(i int64) *ReservationUpdateOne {
 	return ruo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ruo *ReservationUpdateOne) SetNillableUpdatedAt(i *int64) *ReservationUpdateOne {
-	if i != nil {
-		ruo.SetUpdatedAt(*i)
-	}
-	return ruo
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (ruo *ReservationUpdateOne) AddUpdatedAt(i int64) *ReservationUpdateOne {
 	ruo.mutation.AddUpdatedAt(i)
@@ -693,6 +686,7 @@ func (ruo *ReservationUpdateOne) Save(ctx context.Context) (*Reservation, error)
 		err  error
 		node *Reservation
 	)
+	ruo.defaults()
 	if len(ruo.hooks) == 0 {
 		node, err = ruo.sqlSave(ctx)
 	} else {
@@ -744,6 +738,14 @@ func (ruo *ReservationUpdateOne) Exec(ctx context.Context) error {
 func (ruo *ReservationUpdateOne) ExecX(ctx context.Context) {
 	if err := ruo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (ruo *ReservationUpdateOne) defaults() {
+	if _, ok := ruo.mutation.UpdatedAt(); !ok {
+		v := reservation.UpdateDefaultUpdatedAt()
+		ruo.mutation.SetUpdatedAt(v)
 	}
 }
 

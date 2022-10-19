@@ -78,14 +78,6 @@ func (eau *EquipmentAlarmUpdate) SetUpdatedAt(i int64) *EquipmentAlarmUpdate {
 	return eau
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (eau *EquipmentAlarmUpdate) SetNillableUpdatedAt(i *int64) *EquipmentAlarmUpdate {
-	if i != nil {
-		eau.SetUpdatedAt(*i)
-	}
-	return eau
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (eau *EquipmentAlarmUpdate) AddUpdatedAt(i int64) *EquipmentAlarmUpdate {
 	eau.mutation.AddUpdatedAt(i)
@@ -214,6 +206,7 @@ func (eau *EquipmentAlarmUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	eau.defaults()
 	if len(eau.hooks) == 0 {
 		if err = eau.check(); err != nil {
 			return 0, err
@@ -265,6 +258,14 @@ func (eau *EquipmentAlarmUpdate) Exec(ctx context.Context) error {
 func (eau *EquipmentAlarmUpdate) ExecX(ctx context.Context) {
 	if err := eau.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (eau *EquipmentAlarmUpdate) defaults() {
+	if _, ok := eau.mutation.UpdatedAt(); !ok {
+		v := equipmentalarm.UpdateDefaultUpdatedAt()
+		eau.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -448,14 +449,6 @@ func (eauo *EquipmentAlarmUpdateOne) SetUpdatedAt(i int64) *EquipmentAlarmUpdate
 	return eauo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (eauo *EquipmentAlarmUpdateOne) SetNillableUpdatedAt(i *int64) *EquipmentAlarmUpdateOne {
-	if i != nil {
-		eauo.SetUpdatedAt(*i)
-	}
-	return eauo
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (eauo *EquipmentAlarmUpdateOne) AddUpdatedAt(i int64) *EquipmentAlarmUpdateOne {
 	eauo.mutation.AddUpdatedAt(i)
@@ -591,6 +584,7 @@ func (eauo *EquipmentAlarmUpdateOne) Save(ctx context.Context) (*EquipmentAlarm,
 		err  error
 		node *EquipmentAlarm
 	)
+	eauo.defaults()
 	if len(eauo.hooks) == 0 {
 		if err = eauo.check(); err != nil {
 			return nil, err
@@ -648,6 +642,14 @@ func (eauo *EquipmentAlarmUpdateOne) Exec(ctx context.Context) error {
 func (eauo *EquipmentAlarmUpdateOne) ExecX(ctx context.Context) {
 	if err := eauo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (eauo *EquipmentAlarmUpdateOne) defaults() {
+	if _, ok := eauo.mutation.UpdatedAt(); !ok {
+		v := equipmentalarm.UpdateDefaultUpdatedAt()
+		eauo.mutation.SetUpdatedAt(v)
 	}
 }
 

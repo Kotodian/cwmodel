@@ -77,14 +77,6 @@ func (mu *ManufacturerUpdate) SetUpdatedAt(i int64) *ManufacturerUpdate {
 	return mu
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (mu *ManufacturerUpdate) SetNillableUpdatedAt(i *int64) *ManufacturerUpdate {
-	if i != nil {
-		mu.SetUpdatedAt(*i)
-	}
-	return mu
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (mu *ManufacturerUpdate) AddUpdatedAt(i int64) *ManufacturerUpdate {
 	mu.mutation.AddUpdatedAt(i)
@@ -128,6 +120,7 @@ func (mu *ManufacturerUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	mu.defaults()
 	if len(mu.hooks) == 0 {
 		affected, err = mu.sqlSave(ctx)
 	} else {
@@ -173,6 +166,14 @@ func (mu *ManufacturerUpdate) Exec(ctx context.Context) error {
 func (mu *ManufacturerUpdate) ExecX(ctx context.Context) {
 	if err := mu.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (mu *ManufacturerUpdate) defaults() {
+	if _, ok := mu.mutation.UpdatedAt(); !ok {
+		v := manufacturer.UpdateDefaultUpdatedAt()
+		mu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -289,14 +290,6 @@ func (muo *ManufacturerUpdateOne) SetUpdatedAt(i int64) *ManufacturerUpdateOne {
 	return muo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (muo *ManufacturerUpdateOne) SetNillableUpdatedAt(i *int64) *ManufacturerUpdateOne {
-	if i != nil {
-		muo.SetUpdatedAt(*i)
-	}
-	return muo
-}
-
 // AddUpdatedAt adds i to the "updated_at" field.
 func (muo *ManufacturerUpdateOne) AddUpdatedAt(i int64) *ManufacturerUpdateOne {
 	muo.mutation.AddUpdatedAt(i)
@@ -347,6 +340,7 @@ func (muo *ManufacturerUpdateOne) Save(ctx context.Context) (*Manufacturer, erro
 		err  error
 		node *Manufacturer
 	)
+	muo.defaults()
 	if len(muo.hooks) == 0 {
 		node, err = muo.sqlSave(ctx)
 	} else {
@@ -398,6 +392,14 @@ func (muo *ManufacturerUpdateOne) Exec(ctx context.Context) error {
 func (muo *ManufacturerUpdateOne) ExecX(ctx context.Context) {
 	if err := muo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (muo *ManufacturerUpdateOne) defaults() {
+	if _, ok := muo.mutation.UpdatedAt(); !ok {
+		v := manufacturer.UpdateDefaultUpdatedAt()
+		muo.mutation.SetUpdatedAt(v)
 	}
 }
 
