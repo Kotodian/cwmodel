@@ -25,8 +25,17 @@ const (
 	FieldCode = "code"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// EdgeFirmware holds the string denoting the firmware edge name in mutations.
+	EdgeFirmware = "firmware"
 	// Table holds the table name of the manufacturer in the database.
 	Table = "equip_manufacturer"
+	// FirmwareTable is the table that holds the firmware relation/edge.
+	FirmwareTable = "equip_firmware_template"
+	// FirmwareInverseTable is the table name for the Firmware entity.
+	// It exists in this package in order to avoid circular dependency with the "firmware" package.
+	FirmwareInverseTable = "equip_firmware_template"
+	// FirmwareColumn is the table column denoting the firmware relation/edge.
+	FirmwareColumn = "manufacturer_id"
 )
 
 // Columns holds all SQL columns for manufacturer fields.

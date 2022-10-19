@@ -4,12 +4,14 @@ package cwmodel
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/cwmodel/firmware"
 	"github.com/Kotodian/cwmodel/model"
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/gokit/datasource"
@@ -18,12 +20,13 @@ import (
 // ModelQuery is the builder for querying Model entities.
 type ModelQuery struct {
 	config
-	limit      *int
-	offset     *int
-	unique     *bool
-	order      []OrderFunc
-	fields     []string
-	predicates []predicate.Model
+	limit        *int
+	offset       *int
+	unique       *bool
+	order        []OrderFunc
+	fields       []string
+	predicates   []predicate.Model
+	withFirmware *FirmwareQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -58,6 +61,28 @@ func (mq *ModelQuery) Unique(unique bool) *ModelQuery {
 func (mq *ModelQuery) Order(o ...OrderFunc) *ModelQuery {
 	mq.order = append(mq.order, o...)
 	return mq
+}
+
+// QueryFirmware chains the current query on the "firmware" edge.
+func (mq *ModelQuery) QueryFirmware() *FirmwareQuery {
+	query := &FirmwareQuery{config: mq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := mq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := mq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(model.Table, model.FieldID, selector),
+			sqlgraph.To(firmware.Table, firmware.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, model.FirmwareTable, model.FirmwareColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Model entity from the query.
@@ -236,16 +261,28 @@ func (mq *ModelQuery) Clone() *ModelQuery {
 		return nil
 	}
 	return &ModelQuery{
-		config:     mq.config,
-		limit:      mq.limit,
-		offset:     mq.offset,
-		order:      append([]OrderFunc{}, mq.order...),
-		predicates: append([]predicate.Model{}, mq.predicates...),
+		config:       mq.config,
+		limit:        mq.limit,
+		offset:       mq.offset,
+		order:        append([]OrderFunc{}, mq.order...),
+		predicates:   append([]predicate.Model{}, mq.predicates...),
+		withFirmware: mq.withFirmware.Clone(),
 		// clone intermediate query.
 		sql:    mq.sql.Clone(),
 		path:   mq.path,
 		unique: mq.unique,
 	}
+}
+
+// WithFirmware tells the query-builder to eager-load the nodes that are connected to
+// the "firmware" edge. The optional arguments are used to configure the query builder of the edge.
+func (mq *ModelQuery) WithFirmware(opts ...func(*FirmwareQuery)) *ModelQuery {
+	query := &FirmwareQuery{config: mq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	mq.withFirmware = query
+	return mq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -314,8 +351,11 @@ func (mq *ModelQuery) prepareQuery(ctx context.Context) error {
 
 func (mq *ModelQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Model, error) {
 	var (
-		nodes = []*Model{}
-		_spec = mq.querySpec()
+		nodes       = []*Model{}
+		_spec       = mq.querySpec()
+		loadedTypes = [1]bool{
+			mq.withFirmware != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Model).scanValues(nil, columns)
@@ -323,6 +363,7 @@ func (mq *ModelQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Model,
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Model{config: mq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -334,7 +375,46 @@ func (mq *ModelQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Model,
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := mq.withFirmware; query != nil {
+		if err := mq.loadFirmware(ctx, query, nodes,
+			func(n *Model) { n.Edges.Firmware = []*Firmware{} },
+			func(n *Model, e *Firmware) { n.Edges.Firmware = append(n.Edges.Firmware, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (mq *ModelQuery) loadFirmware(ctx context.Context, query *FirmwareQuery, nodes []*Model, init func(*Model), assign func(*Model, *Firmware)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[datasource.UUID]*Model)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Firmware(func(s *sql.Selector) {
+		s.Where(sql.InValues(model.FirmwareColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.model_id
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "model_id" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "model_id" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (mq *ModelQuery) sqlCount(ctx context.Context) (int, error) {

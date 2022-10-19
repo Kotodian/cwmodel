@@ -10589,6 +10589,10 @@ type FirmwareMutation struct {
 	equipment_firmware_effect        map[datasource.UUID]struct{}
 	removedequipment_firmware_effect map[datasource.UUID]struct{}
 	clearedequipment_firmware_effect bool
+	model                            *datasource.UUID
+	clearedmodel                     bool
+	manufacturer                     *datasource.UUID
+	clearedmanufacturer              bool
 	done                             bool
 	oldValue                         func(context.Context) (*Firmware, error)
 	predicates                       []predicate.Firmware
@@ -11068,6 +11072,84 @@ func (m *FirmwareMutation) ResetEquipmentFirmwareEffect() {
 	m.removedequipment_firmware_effect = nil
 }
 
+// SetModelID sets the "model" edge to the Model entity by id.
+func (m *FirmwareMutation) SetModelID(id datasource.UUID) {
+	m.model = &id
+}
+
+// ClearModel clears the "model" edge to the Model entity.
+func (m *FirmwareMutation) ClearModel() {
+	m.clearedmodel = true
+}
+
+// ModelCleared reports if the "model" edge to the Model entity was cleared.
+func (m *FirmwareMutation) ModelCleared() bool {
+	return m.clearedmodel
+}
+
+// ModelID returns the "model" edge ID in the mutation.
+func (m *FirmwareMutation) ModelID() (id datasource.UUID, exists bool) {
+	if m.model != nil {
+		return *m.model, true
+	}
+	return
+}
+
+// ModelIDs returns the "model" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ModelID instead. It exists only for internal usage by the builders.
+func (m *FirmwareMutation) ModelIDs() (ids []datasource.UUID) {
+	if id := m.model; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetModel resets all changes to the "model" edge.
+func (m *FirmwareMutation) ResetModel() {
+	m.model = nil
+	m.clearedmodel = false
+}
+
+// SetManufacturerID sets the "manufacturer" edge to the Manufacturer entity by id.
+func (m *FirmwareMutation) SetManufacturerID(id datasource.UUID) {
+	m.manufacturer = &id
+}
+
+// ClearManufacturer clears the "manufacturer" edge to the Manufacturer entity.
+func (m *FirmwareMutation) ClearManufacturer() {
+	m.clearedmanufacturer = true
+}
+
+// ManufacturerCleared reports if the "manufacturer" edge to the Manufacturer entity was cleared.
+func (m *FirmwareMutation) ManufacturerCleared() bool {
+	return m.clearedmanufacturer
+}
+
+// ManufacturerID returns the "manufacturer" edge ID in the mutation.
+func (m *FirmwareMutation) ManufacturerID() (id datasource.UUID, exists bool) {
+	if m.manufacturer != nil {
+		return *m.manufacturer, true
+	}
+	return
+}
+
+// ManufacturerIDs returns the "manufacturer" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ManufacturerID instead. It exists only for internal usage by the builders.
+func (m *FirmwareMutation) ManufacturerIDs() (ids []datasource.UUID) {
+	if id := m.manufacturer; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetManufacturer resets all changes to the "manufacturer" edge.
+func (m *FirmwareMutation) ResetManufacturer() {
+	m.manufacturer = nil
+	m.clearedmanufacturer = false
+}
+
 // Where appends a list predicates to the FirmwareMutation builder.
 func (m *FirmwareMutation) Where(ps ...predicate.Firmware) {
 	m.predicates = append(m.predicates, ps...)
@@ -11334,9 +11416,15 @@ func (m *FirmwareMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FirmwareMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	if m.equipment_firmware_effect != nil {
 		edges = append(edges, firmware.EdgeEquipmentFirmwareEffect)
+	}
+	if m.model != nil {
+		edges = append(edges, firmware.EdgeModel)
+	}
+	if m.manufacturer != nil {
+		edges = append(edges, firmware.EdgeManufacturer)
 	}
 	return edges
 }
@@ -11351,13 +11439,21 @@ func (m *FirmwareMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case firmware.EdgeModel:
+		if id := m.model; id != nil {
+			return []ent.Value{*id}
+		}
+	case firmware.EdgeManufacturer:
+		if id := m.manufacturer; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FirmwareMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	if m.removedequipment_firmware_effect != nil {
 		edges = append(edges, firmware.EdgeEquipmentFirmwareEffect)
 	}
@@ -11380,9 +11476,15 @@ func (m *FirmwareMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FirmwareMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	if m.clearedequipment_firmware_effect {
 		edges = append(edges, firmware.EdgeEquipmentFirmwareEffect)
+	}
+	if m.clearedmodel {
+		edges = append(edges, firmware.EdgeModel)
+	}
+	if m.clearedmanufacturer {
+		edges = append(edges, firmware.EdgeManufacturer)
 	}
 	return edges
 }
@@ -11393,6 +11495,10 @@ func (m *FirmwareMutation) EdgeCleared(name string) bool {
 	switch name {
 	case firmware.EdgeEquipmentFirmwareEffect:
 		return m.clearedequipment_firmware_effect
+	case firmware.EdgeModel:
+		return m.clearedmodel
+	case firmware.EdgeManufacturer:
+		return m.clearedmanufacturer
 	}
 	return false
 }
@@ -11401,6 +11507,12 @@ func (m *FirmwareMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *FirmwareMutation) ClearEdge(name string) error {
 	switch name {
+	case firmware.EdgeModel:
+		m.ClearModel()
+		return nil
+	case firmware.EdgeManufacturer:
+		m.ClearManufacturer()
+		return nil
 	}
 	return fmt.Errorf("unknown Firmware unique edge %s", name)
 }
@@ -11412,6 +11524,12 @@ func (m *FirmwareMutation) ResetEdge(name string) error {
 	case firmware.EdgeEquipmentFirmwareEffect:
 		m.ResetEquipmentFirmwareEffect()
 		return nil
+	case firmware.EdgeModel:
+		m.ResetModel()
+		return nil
+	case firmware.EdgeManufacturer:
+		m.ResetManufacturer()
+		return nil
 	}
 	return fmt.Errorf("unknown Firmware edge %s", name)
 }
@@ -11419,25 +11537,28 @@ func (m *FirmwareMutation) ResetEdge(name string) error {
 // ManufacturerMutation represents an operation that mutates the Manufacturer nodes in the graph.
 type ManufacturerMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *datasource.UUID
-	version       *int64
-	addversion    *int64
-	created_by    *datasource.UUID
-	addcreated_by *datasource.UUID
-	created_at    *int64
-	addcreated_at *int64
-	updated_by    *datasource.UUID
-	addupdated_by *datasource.UUID
-	updated_at    *int64
-	addupdated_at *int64
-	code          *string
-	name          *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Manufacturer, error)
-	predicates    []predicate.Manufacturer
+	op              Op
+	typ             string
+	id              *datasource.UUID
+	version         *int64
+	addversion      *int64
+	created_by      *datasource.UUID
+	addcreated_by   *datasource.UUID
+	created_at      *int64
+	addcreated_at   *int64
+	updated_by      *datasource.UUID
+	addupdated_by   *datasource.UUID
+	updated_at      *int64
+	addupdated_at   *int64
+	code            *string
+	name            *string
+	clearedFields   map[string]struct{}
+	firmware        map[datasource.UUID]struct{}
+	removedfirmware map[datasource.UUID]struct{}
+	clearedfirmware bool
+	done            bool
+	oldValue        func(context.Context) (*Manufacturer, error)
+	predicates      []predicate.Manufacturer
 }
 
 var _ ent.Mutation = (*ManufacturerMutation)(nil)
@@ -11909,6 +12030,60 @@ func (m *ManufacturerMutation) ResetName() {
 	delete(m.clearedFields, manufacturer.FieldName)
 }
 
+// AddFirmwareIDs adds the "firmware" edge to the Firmware entity by ids.
+func (m *ManufacturerMutation) AddFirmwareIDs(ids ...datasource.UUID) {
+	if m.firmware == nil {
+		m.firmware = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		m.firmware[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFirmware clears the "firmware" edge to the Firmware entity.
+func (m *ManufacturerMutation) ClearFirmware() {
+	m.clearedfirmware = true
+}
+
+// FirmwareCleared reports if the "firmware" edge to the Firmware entity was cleared.
+func (m *ManufacturerMutation) FirmwareCleared() bool {
+	return m.clearedfirmware
+}
+
+// RemoveFirmwareIDs removes the "firmware" edge to the Firmware entity by IDs.
+func (m *ManufacturerMutation) RemoveFirmwareIDs(ids ...datasource.UUID) {
+	if m.removedfirmware == nil {
+		m.removedfirmware = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.firmware, ids[i])
+		m.removedfirmware[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFirmware returns the removed IDs of the "firmware" edge to the Firmware entity.
+func (m *ManufacturerMutation) RemovedFirmwareIDs() (ids []datasource.UUID) {
+	for id := range m.removedfirmware {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FirmwareIDs returns the "firmware" edge IDs in the mutation.
+func (m *ManufacturerMutation) FirmwareIDs() (ids []datasource.UUID) {
+	for id := range m.firmware {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFirmware resets all changes to the "firmware" edge.
+func (m *ManufacturerMutation) ResetFirmware() {
+	m.firmware = nil
+	m.clearedfirmware = false
+	m.removedfirmware = nil
+}
+
 // Where appends a list predicates to the ManufacturerMutation builder.
 func (m *ManufacturerMutation) Where(ps ...predicate.Manufacturer) {
 	m.predicates = append(m.predicates, ps...)
@@ -12201,49 +12376,85 @@ func (m *ManufacturerMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ManufacturerMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.firmware != nil {
+		edges = append(edges, manufacturer.EdgeFirmware)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *ManufacturerMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case manufacturer.EdgeFirmware:
+		ids := make([]ent.Value, 0, len(m.firmware))
+		for id := range m.firmware {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ManufacturerMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.removedfirmware != nil {
+		edges = append(edges, manufacturer.EdgeFirmware)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *ManufacturerMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case manufacturer.EdgeFirmware:
+		ids := make([]ent.Value, 0, len(m.removedfirmware))
+		for id := range m.removedfirmware {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ManufacturerMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedfirmware {
+		edges = append(edges, manufacturer.EdgeFirmware)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *ManufacturerMutation) EdgeCleared(name string) bool {
+	switch name {
+	case manufacturer.EdgeFirmware:
+		return m.clearedfirmware
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *ManufacturerMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown Manufacturer unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *ManufacturerMutation) ResetEdge(name string) error {
+	switch name {
+	case manufacturer.EdgeFirmware:
+		m.ResetFirmware()
+		return nil
+	}
 	return fmt.Errorf("unknown Manufacturer edge %s", name)
 }
 
@@ -12268,6 +12479,9 @@ type ModelMutation struct {
 	phase_category   *string
 	current_category *string
 	clearedFields    map[string]struct{}
+	firmware         map[datasource.UUID]struct{}
+	removedfirmware  map[datasource.UUID]struct{}
+	clearedfirmware  bool
 	done             bool
 	oldValue         func(context.Context) (*Model, error)
 	predicates       []predicate.Model
@@ -12801,6 +13015,60 @@ func (m *ModelMutation) ResetCurrentCategory() {
 	m.current_category = nil
 }
 
+// AddFirmwareIDs adds the "firmware" edge to the Firmware entity by ids.
+func (m *ModelMutation) AddFirmwareIDs(ids ...datasource.UUID) {
+	if m.firmware == nil {
+		m.firmware = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		m.firmware[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFirmware clears the "firmware" edge to the Firmware entity.
+func (m *ModelMutation) ClearFirmware() {
+	m.clearedfirmware = true
+}
+
+// FirmwareCleared reports if the "firmware" edge to the Firmware entity was cleared.
+func (m *ModelMutation) FirmwareCleared() bool {
+	return m.clearedfirmware
+}
+
+// RemoveFirmwareIDs removes the "firmware" edge to the Firmware entity by IDs.
+func (m *ModelMutation) RemoveFirmwareIDs(ids ...datasource.UUID) {
+	if m.removedfirmware == nil {
+		m.removedfirmware = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.firmware, ids[i])
+		m.removedfirmware[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFirmware returns the removed IDs of the "firmware" edge to the Firmware entity.
+func (m *ModelMutation) RemovedFirmwareIDs() (ids []datasource.UUID) {
+	for id := range m.removedfirmware {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FirmwareIDs returns the "firmware" edge IDs in the mutation.
+func (m *ModelMutation) FirmwareIDs() (ids []datasource.UUID) {
+	for id := range m.firmware {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFirmware resets all changes to the "firmware" edge.
+func (m *ModelMutation) ResetFirmware() {
+	m.firmware = nil
+	m.clearedfirmware = false
+	m.removedfirmware = nil
+}
+
 // Where appends a list predicates to the ModelMutation builder.
 func (m *ModelMutation) Where(ps ...predicate.Model) {
 	m.predicates = append(m.predicates, ps...)
@@ -13118,49 +13386,85 @@ func (m *ModelMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ModelMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.firmware != nil {
+		edges = append(edges, model.EdgeFirmware)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *ModelMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case model.EdgeFirmware:
+		ids := make([]ent.Value, 0, len(m.firmware))
+		for id := range m.firmware {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ModelMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.removedfirmware != nil {
+		edges = append(edges, model.EdgeFirmware)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *ModelMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case model.EdgeFirmware:
+		ids := make([]ent.Value, 0, len(m.removedfirmware))
+		for id := range m.removedfirmware {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ModelMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedfirmware {
+		edges = append(edges, model.EdgeFirmware)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *ModelMutation) EdgeCleared(name string) bool {
+	switch name {
+	case model.EdgeFirmware:
+		return m.clearedfirmware
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *ModelMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown Model unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *ModelMutation) ResetEdge(name string) error {
+	switch name {
+	case model.EdgeFirmware:
+		m.ResetFirmware()
+		return nil
+	}
 	return fmt.Errorf("unknown Model edge %s", name)
 }
 

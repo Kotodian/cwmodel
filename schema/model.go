@@ -33,3 +33,9 @@ func (Model) Fields() []ent.Field {
 		field.String("current_category").Comment("电流类型"),
 	}
 }
+
+func (Model) Edges() []ent.Edge {
+	return []ent.Edge {
+		edge.To("firmware", Firmware.Type).StorageKey(edge.Column("model_id")),
+	}
+}

@@ -13,6 +13,8 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/cwmodel/equipmentfirmwareeffect"
 	"github.com/Kotodian/cwmodel/firmware"
+	"github.com/Kotodian/cwmodel/manufacturer"
+	"github.com/Kotodian/cwmodel/model"
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/gokit/datasource"
 )
@@ -27,6 +29,9 @@ type FirmwareQuery struct {
 	fields                      []string
 	predicates                  []predicate.Firmware
 	withEquipmentFirmwareEffect *EquipmentFirmwareEffectQuery
+	withModel                   *ModelQuery
+	withManufacturer            *ManufacturerQuery
+	withFKs                     bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -78,6 +83,50 @@ func (fq *FirmwareQuery) QueryEquipmentFirmwareEffect() *EquipmentFirmwareEffect
 			sqlgraph.From(firmware.Table, firmware.FieldID, selector),
 			sqlgraph.To(equipmentfirmwareeffect.Table, equipmentfirmwareeffect.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, firmware.EquipmentFirmwareEffectTable, firmware.EquipmentFirmwareEffectColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(fq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryModel chains the current query on the "model" edge.
+func (fq *FirmwareQuery) QueryModel() *ModelQuery {
+	query := &ModelQuery{config: fq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := fq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := fq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(firmware.Table, firmware.FieldID, selector),
+			sqlgraph.To(model.Table, model.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, firmware.ModelTable, firmware.ModelColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(fq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryManufacturer chains the current query on the "manufacturer" edge.
+func (fq *FirmwareQuery) QueryManufacturer() *ManufacturerQuery {
+	query := &ManufacturerQuery{config: fq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := fq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := fq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(firmware.Table, firmware.FieldID, selector),
+			sqlgraph.To(manufacturer.Table, manufacturer.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, firmware.ManufacturerTable, firmware.ManufacturerColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(fq.driver.Dialect(), step)
 		return fromU, nil
@@ -267,6 +316,8 @@ func (fq *FirmwareQuery) Clone() *FirmwareQuery {
 		order:                       append([]OrderFunc{}, fq.order...),
 		predicates:                  append([]predicate.Firmware{}, fq.predicates...),
 		withEquipmentFirmwareEffect: fq.withEquipmentFirmwareEffect.Clone(),
+		withModel:                   fq.withModel.Clone(),
+		withManufacturer:            fq.withManufacturer.Clone(),
 		// clone intermediate query.
 		sql:    fq.sql.Clone(),
 		path:   fq.path,
@@ -282,6 +333,28 @@ func (fq *FirmwareQuery) WithEquipmentFirmwareEffect(opts ...func(*EquipmentFirm
 		opt(query)
 	}
 	fq.withEquipmentFirmwareEffect = query
+	return fq
+}
+
+// WithModel tells the query-builder to eager-load the nodes that are connected to
+// the "model" edge. The optional arguments are used to configure the query builder of the edge.
+func (fq *FirmwareQuery) WithModel(opts ...func(*ModelQuery)) *FirmwareQuery {
+	query := &ModelQuery{config: fq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	fq.withModel = query
+	return fq
+}
+
+// WithManufacturer tells the query-builder to eager-load the nodes that are connected to
+// the "manufacturer" edge. The optional arguments are used to configure the query builder of the edge.
+func (fq *FirmwareQuery) WithManufacturer(opts ...func(*ManufacturerQuery)) *FirmwareQuery {
+	query := &ManufacturerQuery{config: fq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	fq.withManufacturer = query
 	return fq
 }
 
@@ -352,11 +425,20 @@ func (fq *FirmwareQuery) prepareQuery(ctx context.Context) error {
 func (fq *FirmwareQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Firmware, error) {
 	var (
 		nodes       = []*Firmware{}
+		withFKs     = fq.withFKs
 		_spec       = fq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [3]bool{
 			fq.withEquipmentFirmwareEffect != nil,
+			fq.withModel != nil,
+			fq.withManufacturer != nil,
 		}
 	)
+	if fq.withModel != nil || fq.withManufacturer != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, firmware.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Firmware).scanValues(nil, columns)
 	}
@@ -381,6 +463,18 @@ func (fq *FirmwareQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Fir
 			func(n *Firmware, e *EquipmentFirmwareEffect) {
 				n.Edges.EquipmentFirmwareEffect = append(n.Edges.EquipmentFirmwareEffect, e)
 			}); err != nil {
+			return nil, err
+		}
+	}
+	if query := fq.withModel; query != nil {
+		if err := fq.loadModel(ctx, query, nodes, nil,
+			func(n *Firmware, e *Model) { n.Edges.Model = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := fq.withManufacturer; query != nil {
+		if err := fq.loadManufacturer(ctx, query, nodes, nil,
+			func(n *Firmware, e *Manufacturer) { n.Edges.Manufacturer = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -415,6 +509,64 @@ func (fq *FirmwareQuery) loadEquipmentFirmwareEffect(ctx context.Context, query 
 			return fmt.Errorf(`unexpected foreign-key "firmware_id" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
+	}
+	return nil
+}
+func (fq *FirmwareQuery) loadModel(ctx context.Context, query *ModelQuery, nodes []*Firmware, init func(*Firmware), assign func(*Firmware, *Model)) error {
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*Firmware)
+	for i := range nodes {
+		if nodes[i].model_id == nil {
+			continue
+		}
+		fk := *nodes[i].model_id
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	query.Where(model.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "model_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (fq *FirmwareQuery) loadManufacturer(ctx context.Context, query *ManufacturerQuery, nodes []*Firmware, init func(*Firmware), assign func(*Firmware, *Manufacturer)) error {
+	ids := make([]datasource.UUID, 0, len(nodes))
+	nodeids := make(map[datasource.UUID][]*Firmware)
+	for i := range nodes {
+		if nodes[i].manufacturer_id == nil {
+			continue
+		}
+		fk := *nodes[i].manufacturer_id
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	query.Where(manufacturer.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "manufacturer_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
 	}
 	return nil
 }

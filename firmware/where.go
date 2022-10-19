@@ -583,6 +583,62 @@ func HasEquipmentFirmwareEffectWith(preds ...predicate.EquipmentFirmwareEffect) 
 	})
 }
 
+// HasModel applies the HasEdge predicate on the "model" edge.
+func HasModel() predicate.Firmware {
+	return predicate.Firmware(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ModelTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ModelTable, ModelColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasModelWith applies the HasEdge predicate on the "model" edge with a given conditions (other predicates).
+func HasModelWith(preds ...predicate.Model) predicate.Firmware {
+	return predicate.Firmware(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ModelInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ModelTable, ModelColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasManufacturer applies the HasEdge predicate on the "manufacturer" edge.
+func HasManufacturer() predicate.Firmware {
+	return predicate.Firmware(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ManufacturerTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ManufacturerTable, ManufacturerColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasManufacturerWith applies the HasEdge predicate on the "manufacturer" edge with a given conditions (other predicates).
+func HasManufacturerWith(preds ...predicate.Manufacturer) predicate.Firmware {
+	return predicate.Firmware(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ManufacturerInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ManufacturerTable, ManufacturerColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Firmware) predicate.Firmware {
 	return predicate.Firmware(func(s *sql.Selector) {

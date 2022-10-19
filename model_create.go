@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/cwmodel/firmware"
 	"github.com/Kotodian/cwmodel/model"
 	"github.com/Kotodian/gokit/datasource"
 )
@@ -126,6 +127,21 @@ func (mc *ModelCreate) SetNillableID(d *datasource.UUID) *ModelCreate {
 		mc.SetID(*d)
 	}
 	return mc
+}
+
+// AddFirmwareIDs adds the "firmware" edge to the Firmware entity by IDs.
+func (mc *ModelCreate) AddFirmwareIDs(ids ...datasource.UUID) *ModelCreate {
+	mc.mutation.AddFirmwareIDs(ids...)
+	return mc
+}
+
+// AddFirmware adds the "firmware" edges to the Firmware entity.
+func (mc *ModelCreate) AddFirmware(f ...*Firmware) *ModelCreate {
+	ids := make([]datasource.UUID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return mc.AddFirmwareIDs(ids...)
 }
 
 // Mutation returns the ModelMutation object of the builder.
@@ -328,6 +344,25 @@ func (mc *ModelCreate) createSpec() (*Model, *sqlgraph.CreateSpec) {
 	if value, ok := mc.mutation.CurrentCategory(); ok {
 		_spec.SetField(model.FieldCurrentCategory, field.TypeString, value)
 		_node.CurrentCategory = value
+	}
+	if nodes := mc.mutation.FirmwareIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   model.FirmwareTable,
+			Columns: []string{model.FirmwareColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: firmware.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

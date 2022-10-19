@@ -1508,6 +1508,38 @@ func (c *FirmwareClient) QueryEquipmentFirmwareEffect(f *Firmware) *EquipmentFir
 	return query
 }
 
+// QueryModel queries the model edge of a Firmware.
+func (c *FirmwareClient) QueryModel(f *Firmware) *ModelQuery {
+	query := &ModelQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := f.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(firmware.Table, firmware.FieldID, id),
+			sqlgraph.To(model.Table, model.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, firmware.ModelTable, firmware.ModelColumn),
+		)
+		fromV = sqlgraph.Neighbors(f.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryManufacturer queries the manufacturer edge of a Firmware.
+func (c *FirmwareClient) QueryManufacturer(f *Firmware) *ManufacturerQuery {
+	query := &ManufacturerQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := f.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(firmware.Table, firmware.FieldID, id),
+			sqlgraph.To(manufacturer.Table, manufacturer.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, firmware.ManufacturerTable, firmware.ManufacturerColumn),
+		)
+		fromV = sqlgraph.Neighbors(f.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *FirmwareClient) Hooks() []Hook {
 	return c.hooks.Firmware
@@ -1598,6 +1630,22 @@ func (c *ManufacturerClient) GetX(ctx context.Context, id datasource.UUID) *Manu
 	return obj
 }
 
+// QueryFirmware queries the firmware edge of a Manufacturer.
+func (c *ManufacturerClient) QueryFirmware(m *Manufacturer) *FirmwareQuery {
+	query := &FirmwareQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(manufacturer.Table, manufacturer.FieldID, id),
+			sqlgraph.To(firmware.Table, firmware.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, manufacturer.FirmwareTable, manufacturer.FirmwareColumn),
+		)
+		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ManufacturerClient) Hooks() []Hook {
 	return c.hooks.Manufacturer
@@ -1686,6 +1734,22 @@ func (c *ModelClient) GetX(ctx context.Context, id datasource.UUID) *Model {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryFirmware queries the firmware edge of a Model.
+func (c *ModelClient) QueryFirmware(m *Model) *FirmwareQuery {
+	query := &FirmwareQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(model.Table, model.FieldID, id),
+			sqlgraph.To(firmware.Table, firmware.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, model.FirmwareTable, model.FirmwareColumn),
+		)
+		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.

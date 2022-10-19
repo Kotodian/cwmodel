@@ -4,12 +4,14 @@ package cwmodel
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/cwmodel/firmware"
 	"github.com/Kotodian/cwmodel/manufacturer"
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/gokit/datasource"
@@ -18,12 +20,13 @@ import (
 // ManufacturerQuery is the builder for querying Manufacturer entities.
 type ManufacturerQuery struct {
 	config
-	limit      *int
-	offset     *int
-	unique     *bool
-	order      []OrderFunc
-	fields     []string
-	predicates []predicate.Manufacturer
+	limit        *int
+	offset       *int
+	unique       *bool
+	order        []OrderFunc
+	fields       []string
+	predicates   []predicate.Manufacturer
+	withFirmware *FirmwareQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -58,6 +61,28 @@ func (mq *ManufacturerQuery) Unique(unique bool) *ManufacturerQuery {
 func (mq *ManufacturerQuery) Order(o ...OrderFunc) *ManufacturerQuery {
 	mq.order = append(mq.order, o...)
 	return mq
+}
+
+// QueryFirmware chains the current query on the "firmware" edge.
+func (mq *ManufacturerQuery) QueryFirmware() *FirmwareQuery {
+	query := &FirmwareQuery{config: mq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := mq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := mq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(manufacturer.Table, manufacturer.FieldID, selector),
+			sqlgraph.To(firmware.Table, firmware.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, manufacturer.FirmwareTable, manufacturer.FirmwareColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Manufacturer entity from the query.
@@ -236,16 +261,28 @@ func (mq *ManufacturerQuery) Clone() *ManufacturerQuery {
 		return nil
 	}
 	return &ManufacturerQuery{
-		config:     mq.config,
-		limit:      mq.limit,
-		offset:     mq.offset,
-		order:      append([]OrderFunc{}, mq.order...),
-		predicates: append([]predicate.Manufacturer{}, mq.predicates...),
+		config:       mq.config,
+		limit:        mq.limit,
+		offset:       mq.offset,
+		order:        append([]OrderFunc{}, mq.order...),
+		predicates:   append([]predicate.Manufacturer{}, mq.predicates...),
+		withFirmware: mq.withFirmware.Clone(),
 		// clone intermediate query.
 		sql:    mq.sql.Clone(),
 		path:   mq.path,
 		unique: mq.unique,
 	}
+}
+
+// WithFirmware tells the query-builder to eager-load the nodes that are connected to
+// the "firmware" edge. The optional arguments are used to configure the query builder of the edge.
+func (mq *ManufacturerQuery) WithFirmware(opts ...func(*FirmwareQuery)) *ManufacturerQuery {
+	query := &FirmwareQuery{config: mq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	mq.withFirmware = query
+	return mq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -314,8 +351,11 @@ func (mq *ManufacturerQuery) prepareQuery(ctx context.Context) error {
 
 func (mq *ManufacturerQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Manufacturer, error) {
 	var (
-		nodes = []*Manufacturer{}
-		_spec = mq.querySpec()
+		nodes       = []*Manufacturer{}
+		_spec       = mq.querySpec()
+		loadedTypes = [1]bool{
+			mq.withFirmware != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Manufacturer).scanValues(nil, columns)
@@ -323,6 +363,7 @@ func (mq *ManufacturerQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Manufacturer{config: mq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -334,7 +375,46 @@ func (mq *ManufacturerQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := mq.withFirmware; query != nil {
+		if err := mq.loadFirmware(ctx, query, nodes,
+			func(n *Manufacturer) { n.Edges.Firmware = []*Firmware{} },
+			func(n *Manufacturer, e *Firmware) { n.Edges.Firmware = append(n.Edges.Firmware, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (mq *ManufacturerQuery) loadFirmware(ctx context.Context, query *FirmwareQuery, nodes []*Manufacturer, init func(*Manufacturer), assign func(*Manufacturer, *Firmware)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[datasource.UUID]*Manufacturer)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Firmware(func(s *sql.Selector) {
+		s.Where(sql.InValues(manufacturer.FirmwareColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.manufacturer_id
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "manufacturer_id" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "manufacturer_id" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (mq *ManufacturerQuery) sqlCount(ctx context.Context) (int, error) {

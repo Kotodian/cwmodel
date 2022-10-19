@@ -31,3 +31,9 @@ func (Manufacturer) Fields() []ent.Field {
 		field.String("name").Optional().Nillable().Comment("产商名称"),
 	}
 }
+
+func (Manufacturer) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.To("firmware", Firmware.Type).StorageKey(edge.Column("manufacturer_id")),
+	}
+}

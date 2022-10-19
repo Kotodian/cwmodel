@@ -4,6 +4,7 @@ package model
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/gokit/datasource"
 )
@@ -869,6 +870,34 @@ func CurrentCategoryEqualFold(v string) predicate.Model {
 func CurrentCategoryContainsFold(v string) predicate.Model {
 	return predicate.Model(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldCurrentCategory), v))
+	})
+}
+
+// HasFirmware applies the HasEdge predicate on the "firmware" edge.
+func HasFirmware() predicate.Model {
+	return predicate.Model(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(FirmwareTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FirmwareTable, FirmwareColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFirmwareWith applies the HasEdge predicate on the "firmware" edge with a given conditions (other predicates).
+func HasFirmwareWith(preds ...predicate.Firmware) predicate.Model {
+	return predicate.Model(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(FirmwareInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FirmwareTable, FirmwareColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 

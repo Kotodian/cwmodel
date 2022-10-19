@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/cwmodel/firmware"
 	"github.com/Kotodian/cwmodel/model"
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/gokit/datasource"
@@ -107,9 +108,45 @@ func (mu *ModelUpdate) SetCurrentCategory(s string) *ModelUpdate {
 	return mu
 }
 
+// AddFirmwareIDs adds the "firmware" edge to the Firmware entity by IDs.
+func (mu *ModelUpdate) AddFirmwareIDs(ids ...datasource.UUID) *ModelUpdate {
+	mu.mutation.AddFirmwareIDs(ids...)
+	return mu
+}
+
+// AddFirmware adds the "firmware" edges to the Firmware entity.
+func (mu *ModelUpdate) AddFirmware(f ...*Firmware) *ModelUpdate {
+	ids := make([]datasource.UUID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return mu.AddFirmwareIDs(ids...)
+}
+
 // Mutation returns the ModelMutation object of the builder.
 func (mu *ModelUpdate) Mutation() *ModelMutation {
 	return mu.mutation
+}
+
+// ClearFirmware clears all "firmware" edges to the Firmware entity.
+func (mu *ModelUpdate) ClearFirmware() *ModelUpdate {
+	mu.mutation.ClearFirmware()
+	return mu
+}
+
+// RemoveFirmwareIDs removes the "firmware" edge to Firmware entities by IDs.
+func (mu *ModelUpdate) RemoveFirmwareIDs(ids ...datasource.UUID) *ModelUpdate {
+	mu.mutation.RemoveFirmwareIDs(ids...)
+	return mu
+}
+
+// RemoveFirmware removes "firmware" edges to Firmware entities.
+func (mu *ModelUpdate) RemoveFirmware(f ...*Firmware) *ModelUpdate {
+	ids := make([]datasource.UUID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return mu.RemoveFirmwareIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -223,6 +260,60 @@ func (mu *ModelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := mu.mutation.CurrentCategory(); ok {
 		_spec.SetField(model.FieldCurrentCategory, field.TypeString, value)
 	}
+	if mu.mutation.FirmwareCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   model.FirmwareTable,
+			Columns: []string{model.FirmwareColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: firmware.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := mu.mutation.RemovedFirmwareIDs(); len(nodes) > 0 && !mu.mutation.FirmwareCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   model.FirmwareTable,
+			Columns: []string{model.FirmwareColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: firmware.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := mu.mutation.FirmwareIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   model.FirmwareTable,
+			Columns: []string{model.FirmwareColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: firmware.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, mu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{model.Label}
@@ -321,9 +412,45 @@ func (muo *ModelUpdateOne) SetCurrentCategory(s string) *ModelUpdateOne {
 	return muo
 }
 
+// AddFirmwareIDs adds the "firmware" edge to the Firmware entity by IDs.
+func (muo *ModelUpdateOne) AddFirmwareIDs(ids ...datasource.UUID) *ModelUpdateOne {
+	muo.mutation.AddFirmwareIDs(ids...)
+	return muo
+}
+
+// AddFirmware adds the "firmware" edges to the Firmware entity.
+func (muo *ModelUpdateOne) AddFirmware(f ...*Firmware) *ModelUpdateOne {
+	ids := make([]datasource.UUID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return muo.AddFirmwareIDs(ids...)
+}
+
 // Mutation returns the ModelMutation object of the builder.
 func (muo *ModelUpdateOne) Mutation() *ModelMutation {
 	return muo.mutation
+}
+
+// ClearFirmware clears all "firmware" edges to the Firmware entity.
+func (muo *ModelUpdateOne) ClearFirmware() *ModelUpdateOne {
+	muo.mutation.ClearFirmware()
+	return muo
+}
+
+// RemoveFirmwareIDs removes the "firmware" edge to Firmware entities by IDs.
+func (muo *ModelUpdateOne) RemoveFirmwareIDs(ids ...datasource.UUID) *ModelUpdateOne {
+	muo.mutation.RemoveFirmwareIDs(ids...)
+	return muo
+}
+
+// RemoveFirmware removes "firmware" edges to Firmware entities.
+func (muo *ModelUpdateOne) RemoveFirmware(f ...*Firmware) *ModelUpdateOne {
+	ids := make([]datasource.UUID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return muo.RemoveFirmwareIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -466,6 +593,60 @@ func (muo *ModelUpdateOne) sqlSave(ctx context.Context) (_node *Model, err error
 	}
 	if value, ok := muo.mutation.CurrentCategory(); ok {
 		_spec.SetField(model.FieldCurrentCategory, field.TypeString, value)
+	}
+	if muo.mutation.FirmwareCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   model.FirmwareTable,
+			Columns: []string{model.FirmwareColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: firmware.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := muo.mutation.RemovedFirmwareIDs(); len(nodes) > 0 && !muo.mutation.FirmwareCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   model.FirmwareTable,
+			Columns: []string{model.FirmwareColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: firmware.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := muo.mutation.FirmwareIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   model.FirmwareTable,
+			Columns: []string{model.FirmwareColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: firmware.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Model{config: muo.config}
 	_spec.Assign = _node.assignValues

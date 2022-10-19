@@ -34,5 +34,7 @@ func (Firmware) Fields() []ent.Field {
 func (Firmware) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("equipment_firmware_effect", EquipmentFirmwareEffect.Type).StorageKey(edge.Column("firmware_id")),
+		edge.From("model", Model.Type).Ref("firmware").Unique().Required(),
+		edge.From("manufacturer", Manufacturer.Type).Ref("firmware").Unique().Required(),
 	}
 }

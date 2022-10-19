@@ -29,8 +29,17 @@ const (
 	FieldPhaseCategory = "phase_category"
 	// FieldCurrentCategory holds the string denoting the current_category field in the database.
 	FieldCurrentCategory = "current_category"
+	// EdgeFirmware holds the string denoting the firmware edge name in mutations.
+	EdgeFirmware = "firmware"
 	// Table holds the table name of the model in the database.
 	Table = "equip_model"
+	// FirmwareTable is the table that holds the firmware relation/edge.
+	FirmwareTable = "equip_firmware_template"
+	// FirmwareInverseTable is the table name for the Firmware entity.
+	// It exists in this package in order to avoid circular dependency with the "firmware" package.
+	FirmwareInverseTable = "equip_firmware_template"
+	// FirmwareColumn is the table column denoting the firmware relation/edge.
+	FirmwareColumn = "model_id"
 )
 
 // Columns holds all SQL columns for model fields.

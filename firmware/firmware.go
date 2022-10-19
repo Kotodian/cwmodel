@@ -25,6 +25,10 @@ const (
 	FieldEquipVersion = "equip_version"
 	// EdgeEquipmentFirmwareEffect holds the string denoting the equipment_firmware_effect edge name in mutations.
 	EdgeEquipmentFirmwareEffect = "equipment_firmware_effect"
+	// EdgeModel holds the string denoting the model edge name in mutations.
+	EdgeModel = "model"
+	// EdgeManufacturer holds the string denoting the manufacturer edge name in mutations.
+	EdgeManufacturer = "manufacturer"
 	// Table holds the table name of the firmware in the database.
 	Table = "equip_firmware_template"
 	// EquipmentFirmwareEffectTable is the table that holds the equipment_firmware_effect relation/edge.
@@ -34,6 +38,20 @@ const (
 	EquipmentFirmwareEffectInverseTable = "equip_firmware_effect"
 	// EquipmentFirmwareEffectColumn is the table column denoting the equipment_firmware_effect relation/edge.
 	EquipmentFirmwareEffectColumn = "firmware_id"
+	// ModelTable is the table that holds the model relation/edge.
+	ModelTable = "equip_firmware_template"
+	// ModelInverseTable is the table name for the Model entity.
+	// It exists in this package in order to avoid circular dependency with the "model" package.
+	ModelInverseTable = "equip_model"
+	// ModelColumn is the table column denoting the model relation/edge.
+	ModelColumn = "model_id"
+	// ManufacturerTable is the table that holds the manufacturer relation/edge.
+	ManufacturerTable = "equip_firmware_template"
+	// ManufacturerInverseTable is the table name for the Manufacturer entity.
+	// It exists in this package in order to avoid circular dependency with the "manufacturer" package.
+	ManufacturerInverseTable = "equip_manufacturer"
+	// ManufacturerColumn is the table column denoting the manufacturer relation/edge.
+	ManufacturerColumn = "manufacturer_id"
 )
 
 // Columns holds all SQL columns for firmware fields.
@@ -47,10 +65,22 @@ var Columns = []string{
 	FieldEquipVersion,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "equip_firmware_template"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"manufacturer_id",
+	"model_id",
+}
+
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}

@@ -35,6 +35,27 @@ type Model struct {
 	PhaseCategory string `json:"phase_category,omitempty"`
 	// 电流类型
 	CurrentCategory string `json:"current_category,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the ModelQuery when eager-loading is set.
+	Edges ModelEdges `json:"-"`
+}
+
+// ModelEdges holds the relations/edges for other nodes in the graph.
+type ModelEdges struct {
+	// Firmware holds the value of the firmware edge.
+	Firmware []*Firmware `json:"firmware,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// FirmwareOrErr returns the Firmware value or an error if the edge
+// was not loaded in eager-loading.
+func (e ModelEdges) FirmwareOrErr() ([]*Firmware, error) {
+	if e.loadedTypes[0] {
+		return e.Firmware, nil
+	}
+	return nil, &NotLoadedError{edge: "firmware"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -124,6 +145,11 @@ func (m *Model) assignValues(columns []string, values []any) error {
 		}
 	}
 	return nil
+}
+
+// QueryFirmware queries the "firmware" edge of the Model entity.
+func (m *Model) QueryFirmware() *FirmwareQuery {
+	return (&ModelClient{config: m.config}).QueryFirmware(m)
 }
 
 // Update returns a builder for updating this Model.

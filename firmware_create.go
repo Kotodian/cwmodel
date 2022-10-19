@@ -11,6 +11,8 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/cwmodel/equipmentfirmwareeffect"
 	"github.com/Kotodian/cwmodel/firmware"
+	"github.com/Kotodian/cwmodel/manufacturer"
+	"github.com/Kotodian/cwmodel/model"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -124,6 +126,28 @@ func (fc *FirmwareCreate) AddEquipmentFirmwareEffect(e ...*EquipmentFirmwareEffe
 		ids[i] = e[i].ID
 	}
 	return fc.AddEquipmentFirmwareEffectIDs(ids...)
+}
+
+// SetModelID sets the "model" edge to the Model entity by ID.
+func (fc *FirmwareCreate) SetModelID(id datasource.UUID) *FirmwareCreate {
+	fc.mutation.SetModelID(id)
+	return fc
+}
+
+// SetModel sets the "model" edge to the Model entity.
+func (fc *FirmwareCreate) SetModel(m *Model) *FirmwareCreate {
+	return fc.SetModelID(m.ID)
+}
+
+// SetManufacturerID sets the "manufacturer" edge to the Manufacturer entity by ID.
+func (fc *FirmwareCreate) SetManufacturerID(id datasource.UUID) *FirmwareCreate {
+	fc.mutation.SetManufacturerID(id)
+	return fc
+}
+
+// SetManufacturer sets the "manufacturer" edge to the Manufacturer entity.
+func (fc *FirmwareCreate) SetManufacturer(m *Manufacturer) *FirmwareCreate {
+	return fc.SetManufacturerID(m.ID)
 }
 
 // Mutation returns the FirmwareMutation object of the builder.
@@ -249,6 +273,12 @@ func (fc *FirmwareCreate) check() error {
 	if _, ok := fc.mutation.EquipVersion(); !ok {
 		return &ValidationError{Name: "equip_version", err: errors.New(`cwmodel: missing required field "Firmware.equip_version"`)}
 	}
+	if _, ok := fc.mutation.ModelID(); !ok {
+		return &ValidationError{Name: "model", err: errors.New(`cwmodel: missing required edge "Firmware.model"`)}
+	}
+	if _, ok := fc.mutation.ManufacturerID(); !ok {
+		return &ValidationError{Name: "manufacturer", err: errors.New(`cwmodel: missing required edge "Firmware.manufacturer"`)}
+	}
 	return nil
 }
 
@@ -323,6 +353,46 @@ func (fc *FirmwareCreate) createSpec() (*Firmware, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := fc.mutation.ModelIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   firmware.ModelTable,
+			Columns: []string{firmware.ModelColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: model.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.model_id = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := fc.mutation.ManufacturerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   firmware.ManufacturerTable,
+			Columns: []string{firmware.ManufacturerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: manufacturer.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.manufacturer_id = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

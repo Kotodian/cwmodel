@@ -8,6 +8,8 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/Kotodian/cwmodel/firmware"
+	"github.com/Kotodian/cwmodel/manufacturer"
+	"github.com/Kotodian/cwmodel/model"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -31,16 +33,22 @@ type Firmware struct {
 	EquipVersion string `json:"equip_version,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FirmwareQuery when eager-loading is set.
-	Edges FirmwareEdges `json:"-"`
+	Edges           FirmwareEdges `json:"-"`
+	manufacturer_id *datasource.UUID
+	model_id        *datasource.UUID
 }
 
 // FirmwareEdges holds the relations/edges for other nodes in the graph.
 type FirmwareEdges struct {
 	// EquipmentFirmwareEffect holds the value of the equipment_firmware_effect edge.
 	EquipmentFirmwareEffect []*EquipmentFirmwareEffect `json:"equipment_firmware_effect,omitempty"`
+	// Model holds the value of the model edge.
+	Model *Model `json:"model,omitempty"`
+	// Manufacturer holds the value of the manufacturer edge.
+	Manufacturer *Manufacturer `json:"manufacturer,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [3]bool
 }
 
 // EquipmentFirmwareEffectOrErr returns the EquipmentFirmwareEffect value or an error if the edge
@@ -52,6 +60,32 @@ func (e FirmwareEdges) EquipmentFirmwareEffectOrErr() ([]*EquipmentFirmwareEffec
 	return nil, &NotLoadedError{edge: "equipment_firmware_effect"}
 }
 
+// ModelOrErr returns the Model value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e FirmwareEdges) ModelOrErr() (*Model, error) {
+	if e.loadedTypes[1] {
+		if e.Model == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: model.Label}
+		}
+		return e.Model, nil
+	}
+	return nil, &NotLoadedError{edge: "model"}
+}
+
+// ManufacturerOrErr returns the Manufacturer value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e FirmwareEdges) ManufacturerOrErr() (*Manufacturer, error) {
+	if e.loadedTypes[2] {
+		if e.Manufacturer == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: manufacturer.Label}
+		}
+		return e.Manufacturer, nil
+	}
+	return nil, &NotLoadedError{edge: "manufacturer"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Firmware) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -61,6 +95,10 @@ func (*Firmware) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case firmware.FieldEquipVersion:
 			values[i] = new(sql.NullString)
+		case firmware.ForeignKeys[0]: // manufacturer_id
+			values[i] = new(sql.NullInt64)
+		case firmware.ForeignKeys[1]: // model_id
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Firmware", columns[i])
 		}
@@ -118,6 +156,20 @@ func (f *Firmware) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				f.EquipVersion = value.String
 			}
+		case firmware.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field manufacturer_id", values[i])
+			} else if value.Valid {
+				f.manufacturer_id = new(datasource.UUID)
+				*f.manufacturer_id = datasource.UUID(value.Int64)
+			}
+		case firmware.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field model_id", values[i])
+			} else if value.Valid {
+				f.model_id = new(datasource.UUID)
+				*f.model_id = datasource.UUID(value.Int64)
+			}
 		}
 	}
 	return nil
@@ -126,6 +178,16 @@ func (f *Firmware) assignValues(columns []string, values []any) error {
 // QueryEquipmentFirmwareEffect queries the "equipment_firmware_effect" edge of the Firmware entity.
 func (f *Firmware) QueryEquipmentFirmwareEffect() *EquipmentFirmwareEffectQuery {
 	return (&FirmwareClient{config: f.config}).QueryEquipmentFirmwareEffect(f)
+}
+
+// QueryModel queries the "model" edge of the Firmware entity.
+func (f *Firmware) QueryModel() *ModelQuery {
+	return (&FirmwareClient{config: f.config}).QueryModel(f)
+}
+
+// QueryManufacturer queries the "manufacturer" edge of the Firmware entity.
+func (f *Firmware) QueryManufacturer() *ManufacturerQuery {
+	return (&FirmwareClient{config: f.config}).QueryManufacturer(f)
 }
 
 // Update returns a builder for updating this Firmware.

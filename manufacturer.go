@@ -31,6 +31,27 @@ type Manufacturer struct {
 	Code string `json:"code,omitempty"`
 	// 产商名称
 	Name *string `json:"name,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the ManufacturerQuery when eager-loading is set.
+	Edges ManufacturerEdges `json:"-"`
+}
+
+// ManufacturerEdges holds the relations/edges for other nodes in the graph.
+type ManufacturerEdges struct {
+	// Firmware holds the value of the firmware edge.
+	Firmware []*Firmware `json:"firmware,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// FirmwareOrErr returns the Firmware value or an error if the edge
+// was not loaded in eager-loading.
+func (e ManufacturerEdges) FirmwareOrErr() ([]*Firmware, error) {
+	if e.loadedTypes[0] {
+		return e.Firmware, nil
+	}
+	return nil, &NotLoadedError{edge: "firmware"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -109,6 +130,11 @@ func (m *Manufacturer) assignValues(columns []string, values []any) error {
 		}
 	}
 	return nil
+}
+
+// QueryFirmware queries the "firmware" edge of the Manufacturer entity.
+func (m *Manufacturer) QueryFirmware() *FirmwareQuery {
+	return (&ManufacturerClient{config: m.config}).QueryFirmware(m)
 }
 
 // Update returns a builder for updating this Manufacturer.
