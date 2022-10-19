@@ -13,6 +13,8 @@ import (
 	"github.com/Kotodian/ent-practice/ent/migrate"
 )
 
+const dsn = "root:jqcsms@uat123@tcp(192.168.0.4:3306)/jx-csms?parseTime=True"
+
 type (
 	// TestingT is the interface that is shared between
 	// testing.T and testing.B and used by enttest.

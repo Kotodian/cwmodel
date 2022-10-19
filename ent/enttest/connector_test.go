@@ -10,7 +10,7 @@ import (
 )
 
 func TestCreateConnector(t *testing.T) {
-	cli := Open(t, "mysql", "root:jqcsms@uat123@tcp(192.168.0.4:3306)/jx-csms?parseTime=True")
+	cli := Open(t, "mysql", dsn)
 	cli = cli.Debug()
 	defer cli.Close()
 	ctx := context.TODO()
