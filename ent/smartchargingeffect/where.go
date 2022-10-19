@@ -124,6 +124,13 @@ func SmartID(v int64) predicate.SmartChargingEffect {
 	})
 }
 
+// StartTime applies equality check predicate on the "start_time" field. It's identical to StartTimeEQ.
+func StartTime(v int64) predicate.SmartChargingEffect {
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldStartTime), v))
+	})
+}
+
 // Pid applies equality check predicate on the "pid" field. It's identical to PidEQ.
 func Pid(v datasource.UUID) predicate.SmartChargingEffect {
 	vc := uint64(v)
@@ -553,6 +560,70 @@ func SmartIDLT(v int64) predicate.SmartChargingEffect {
 func SmartIDLTE(v int64) predicate.SmartChargingEffect {
 	return predicate.SmartChargingEffect(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldSmartID), v))
+	})
+}
+
+// StartTimeEQ applies the EQ predicate on the "start_time" field.
+func StartTimeEQ(v int64) predicate.SmartChargingEffect {
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldStartTime), v))
+	})
+}
+
+// StartTimeNEQ applies the NEQ predicate on the "start_time" field.
+func StartTimeNEQ(v int64) predicate.SmartChargingEffect {
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldStartTime), v))
+	})
+}
+
+// StartTimeIn applies the In predicate on the "start_time" field.
+func StartTimeIn(vs ...int64) predicate.SmartChargingEffect {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldStartTime), v...))
+	})
+}
+
+// StartTimeNotIn applies the NotIn predicate on the "start_time" field.
+func StartTimeNotIn(vs ...int64) predicate.SmartChargingEffect {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldStartTime), v...))
+	})
+}
+
+// StartTimeGT applies the GT predicate on the "start_time" field.
+func StartTimeGT(v int64) predicate.SmartChargingEffect {
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldStartTime), v))
+	})
+}
+
+// StartTimeGTE applies the GTE predicate on the "start_time" field.
+func StartTimeGTE(v int64) predicate.SmartChargingEffect {
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldStartTime), v))
+	})
+}
+
+// StartTimeLT applies the LT predicate on the "start_time" field.
+func StartTimeLT(v int64) predicate.SmartChargingEffect {
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldStartTime), v))
+	})
+}
+
+// StartTimeLTE applies the LTE predicate on the "start_time" field.
+func StartTimeLTE(v int64) predicate.SmartChargingEffect {
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldStartTime), v))
 	})
 }
 

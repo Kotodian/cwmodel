@@ -34,6 +34,8 @@ type SmartChargingEffect struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 智慧id
 	SmartID int64 `json:"smart_id,omitempty"`
+	// 开始时间
+	StartTime int64 `json:"start_time,omitempty"`
 	// 父id
 	Pid datasource.UUID `json:"pid,omitempty"`
 	// 单位(W或者A)
@@ -41,9 +43,9 @@ type SmartChargingEffect struct {
 	// 桩sn号
 	EquipmentSn string `json:"equipment_sn,omitempty"`
 	// 有效开始时间
-	ValidFrom int64 `json:"valid_from,omitempty"`
+	ValidFrom *int64 `json:"valid_from,omitempty"`
 	// 有效结束时间
-	ValidTo int64 `json:"valid_to,omitempty"`
+	ValidTo *int64 `json:"valid_to,omitempty"`
 	// 时间间隔
 	Spec []types.ChargingSchedulePeriod `json:"spec,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -113,7 +115,7 @@ func (*SmartChargingEffect) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case smartchargingeffect.FieldSpec:
 			values[i] = new([]byte)
-		case smartchargingeffect.FieldID, smartchargingeffect.FieldVersion, smartchargingeffect.FieldCreatedBy, smartchargingeffect.FieldCreatedAt, smartchargingeffect.FieldUpdatedBy, smartchargingeffect.FieldUpdatedAt, smartchargingeffect.FieldSmartID, smartchargingeffect.FieldPid, smartchargingeffect.FieldValidFrom, smartchargingeffect.FieldValidTo:
+		case smartchargingeffect.FieldID, smartchargingeffect.FieldVersion, smartchargingeffect.FieldCreatedBy, smartchargingeffect.FieldCreatedAt, smartchargingeffect.FieldUpdatedBy, smartchargingeffect.FieldUpdatedAt, smartchargingeffect.FieldSmartID, smartchargingeffect.FieldStartTime, smartchargingeffect.FieldPid, smartchargingeffect.FieldValidFrom, smartchargingeffect.FieldValidTo:
 			values[i] = new(sql.NullInt64)
 		case smartchargingeffect.FieldUnit, smartchargingeffect.FieldEquipmentSn:
 			values[i] = new(sql.NullString)
@@ -180,6 +182,12 @@ func (sce *SmartChargingEffect) assignValues(columns []string, values []any) err
 			} else if value.Valid {
 				sce.SmartID = value.Int64
 			}
+		case smartchargingeffect.FieldStartTime:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field start_time", values[i])
+			} else if value.Valid {
+				sce.StartTime = value.Int64
+			}
 		case smartchargingeffect.FieldPid:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field pid", values[i])
@@ -202,13 +210,15 @@ func (sce *SmartChargingEffect) assignValues(columns []string, values []any) err
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field valid_from", values[i])
 			} else if value.Valid {
-				sce.ValidFrom = value.Int64
+				sce.ValidFrom = new(int64)
+				*sce.ValidFrom = value.Int64
 			}
 		case smartchargingeffect.FieldValidTo:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field valid_to", values[i])
 			} else if value.Valid {
-				sce.ValidTo = value.Int64
+				sce.ValidTo = new(int64)
+				*sce.ValidTo = value.Int64
 			}
 		case smartchargingeffect.FieldSpec:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -300,6 +310,9 @@ func (sce *SmartChargingEffect) String() string {
 	builder.WriteString("smart_id=")
 	builder.WriteString(fmt.Sprintf("%v", sce.SmartID))
 	builder.WriteString(", ")
+	builder.WriteString("start_time=")
+	builder.WriteString(fmt.Sprintf("%v", sce.StartTime))
+	builder.WriteString(", ")
 	builder.WriteString("pid=")
 	builder.WriteString(fmt.Sprintf("%v", sce.Pid))
 	builder.WriteString(", ")
@@ -309,11 +322,15 @@ func (sce *SmartChargingEffect) String() string {
 	builder.WriteString("equipment_sn=")
 	builder.WriteString(sce.EquipmentSn)
 	builder.WriteString(", ")
-	builder.WriteString("valid_from=")
-	builder.WriteString(fmt.Sprintf("%v", sce.ValidFrom))
+	if v := sce.ValidFrom; v != nil {
+		builder.WriteString("valid_from=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("valid_to=")
-	builder.WriteString(fmt.Sprintf("%v", sce.ValidTo))
+	if v := sce.ValidTo; v != nil {
+		builder.WriteString("valid_to=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("spec=")
 	builder.WriteString(fmt.Sprintf("%v", sce.Spec))

@@ -100,6 +100,12 @@ func (scec *SmartChargingEffectCreate) SetSmartID(i int64) *SmartChargingEffectC
 	return scec
 }
 
+// SetStartTime sets the "start_time" field.
+func (scec *SmartChargingEffectCreate) SetStartTime(i int64) *SmartChargingEffectCreate {
+	scec.mutation.SetStartTime(i)
+	return scec
+}
+
 // SetPid sets the "pid" field.
 func (scec *SmartChargingEffectCreate) SetPid(d datasource.UUID) *SmartChargingEffectCreate {
 	scec.mutation.SetPid(d)
@@ -330,6 +336,9 @@ func (scec *SmartChargingEffectCreate) check() error {
 	if _, ok := scec.mutation.SmartID(); !ok {
 		return &ValidationError{Name: "smart_id", err: errors.New(`ent: missing required field "SmartChargingEffect.smart_id"`)}
 	}
+	if _, ok := scec.mutation.StartTime(); !ok {
+		return &ValidationError{Name: "start_time", err: errors.New(`ent: missing required field "SmartChargingEffect.start_time"`)}
+	}
 	if _, ok := scec.mutation.Pid(); !ok {
 		return &ValidationError{Name: "pid", err: errors.New(`ent: missing required field "SmartChargingEffect.pid"`)}
 	}
@@ -405,6 +414,10 @@ func (scec *SmartChargingEffectCreate) createSpec() (*SmartChargingEffect, *sqlg
 		_spec.SetField(smartchargingeffect.FieldSmartID, field.TypeInt64, value)
 		_node.SmartID = value
 	}
+	if value, ok := scec.mutation.StartTime(); ok {
+		_spec.SetField(smartchargingeffect.FieldStartTime, field.TypeInt64, value)
+		_node.StartTime = value
+	}
 	if value, ok := scec.mutation.Pid(); ok {
 		_spec.SetField(smartchargingeffect.FieldPid, field.TypeUint64, value)
 		_node.Pid = value
@@ -419,11 +432,11 @@ func (scec *SmartChargingEffectCreate) createSpec() (*SmartChargingEffect, *sqlg
 	}
 	if value, ok := scec.mutation.ValidFrom(); ok {
 		_spec.SetField(smartchargingeffect.FieldValidFrom, field.TypeInt64, value)
-		_node.ValidFrom = value
+		_node.ValidFrom = &value
 	}
 	if value, ok := scec.mutation.ValidTo(); ok {
 		_spec.SetField(smartchargingeffect.FieldValidTo, field.TypeInt64, value)
-		_node.ValidTo = value
+		_node.ValidTo = &value
 	}
 	if value, ok := scec.mutation.Spec(); ok {
 		_spec.SetField(smartchargingeffect.FieldSpec, field.TypeJSON, value)

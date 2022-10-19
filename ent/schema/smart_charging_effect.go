@@ -33,11 +33,12 @@ func (SmartChargingEffect) Fields() []ent.Field {
 		// field.Uint64("connector_id").GoType(datasource.UUID(0)).Comment("枪id"),
 		// field.Uint64("order_id").Optional().GoType(datasource.UUID(0)).Comment("订单id"),
 		field.Int64("smart_id").Comment("智慧id"),
+		field.Int64("start_time").Comment("开始时间"),
 		field.Uint64("pid").GoType(datasource.UUID(0)).Comment("父id"),
 		field.String("unit").Comment("单位(W或者A)"),
 		field.String("equipment_sn").Comment("桩sn号"),
-		field.Int64("valid_from").Optional().Comment("有效开始时间"),
-		field.Int64("valid_to").Optional().Comment("有效结束时间"),
+		field.Int64("valid_from").Optional().Nillable().Comment("有效开始时间"),
+		field.Int64("valid_to").Optional().Nillable().Comment("有效结束时间"),
 		field.JSON("spec", []types.ChargingSchedulePeriod{}).Comment("时间间隔"),
 	}
 }

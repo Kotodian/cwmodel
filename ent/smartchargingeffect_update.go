@@ -109,6 +109,19 @@ func (sceu *SmartChargingEffectUpdate) AddSmartID(i int64) *SmartChargingEffectU
 	return sceu
 }
 
+// SetStartTime sets the "start_time" field.
+func (sceu *SmartChargingEffectUpdate) SetStartTime(i int64) *SmartChargingEffectUpdate {
+	sceu.mutation.ResetStartTime()
+	sceu.mutation.SetStartTime(i)
+	return sceu
+}
+
+// AddStartTime adds i to the "start_time" field.
+func (sceu *SmartChargingEffectUpdate) AddStartTime(i int64) *SmartChargingEffectUpdate {
+	sceu.mutation.AddStartTime(i)
+	return sceu
+}
+
 // SetPid sets the "pid" field.
 func (sceu *SmartChargingEffectUpdate) SetPid(d datasource.UUID) *SmartChargingEffectUpdate {
 	sceu.mutation.ResetPid()
@@ -377,6 +390,12 @@ func (sceu *SmartChargingEffectUpdate) sqlSave(ctx context.Context) (n int, err 
 	if value, ok := sceu.mutation.AddedSmartID(); ok {
 		_spec.AddField(smartchargingeffect.FieldSmartID, field.TypeInt64, value)
 	}
+	if value, ok := sceu.mutation.StartTime(); ok {
+		_spec.SetField(smartchargingeffect.FieldStartTime, field.TypeInt64, value)
+	}
+	if value, ok := sceu.mutation.AddedStartTime(); ok {
+		_spec.AddField(smartchargingeffect.FieldStartTime, field.TypeInt64, value)
+	}
 	if value, ok := sceu.mutation.Pid(); ok {
 		_spec.SetField(smartchargingeffect.FieldPid, field.TypeUint64, value)
 	}
@@ -612,6 +631,19 @@ func (sceuo *SmartChargingEffectUpdateOne) SetSmartID(i int64) *SmartChargingEff
 // AddSmartID adds i to the "smart_id" field.
 func (sceuo *SmartChargingEffectUpdateOne) AddSmartID(i int64) *SmartChargingEffectUpdateOne {
 	sceuo.mutation.AddSmartID(i)
+	return sceuo
+}
+
+// SetStartTime sets the "start_time" field.
+func (sceuo *SmartChargingEffectUpdateOne) SetStartTime(i int64) *SmartChargingEffectUpdateOne {
+	sceuo.mutation.ResetStartTime()
+	sceuo.mutation.SetStartTime(i)
+	return sceuo
+}
+
+// AddStartTime adds i to the "start_time" field.
+func (sceuo *SmartChargingEffectUpdateOne) AddStartTime(i int64) *SmartChargingEffectUpdateOne {
+	sceuo.mutation.AddStartTime(i)
 	return sceuo
 }
 
@@ -912,6 +944,12 @@ func (sceuo *SmartChargingEffectUpdateOne) sqlSave(ctx context.Context) (_node *
 	}
 	if value, ok := sceuo.mutation.AddedSmartID(); ok {
 		_spec.AddField(smartchargingeffect.FieldSmartID, field.TypeInt64, value)
+	}
+	if value, ok := sceuo.mutation.StartTime(); ok {
+		_spec.SetField(smartchargingeffect.FieldStartTime, field.TypeInt64, value)
+	}
+	if value, ok := sceuo.mutation.AddedStartTime(); ok {
+		_spec.AddField(smartchargingeffect.FieldStartTime, field.TypeInt64, value)
 	}
 	if value, ok := sceuo.mutation.Pid(); ok {
 		_spec.SetField(smartchargingeffect.FieldPid, field.TypeUint64, value)

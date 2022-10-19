@@ -23,6 +23,8 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldSmartID holds the string denoting the smart_id field in the database.
 	FieldSmartID = "smart_id"
+	// FieldStartTime holds the string denoting the start_time field in the database.
+	FieldStartTime = "start_time"
 	// FieldPid holds the string denoting the pid field in the database.
 	FieldPid = "pid"
 	// FieldUnit holds the string denoting the unit field in the database.
@@ -75,6 +77,7 @@ var Columns = []string{
 	FieldUpdatedBy,
 	FieldUpdatedAt,
 	FieldSmartID,
+	FieldStartTime,
 	FieldPid,
 	FieldUnit,
 	FieldEquipmentSn,

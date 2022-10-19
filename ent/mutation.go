@@ -18128,6 +18128,8 @@ type SmartChargingEffectMutation struct {
 	addupdated_at     *int64
 	smart_id          *int64
 	addsmart_id       *int64
+	start_time        *int64
+	addstart_time     *int64
 	pid               *datasource.UUID
 	addpid            *datasource.UUID
 	unit              *string
@@ -18590,6 +18592,62 @@ func (m *SmartChargingEffectMutation) ResetSmartID() {
 	m.addsmart_id = nil
 }
 
+// SetStartTime sets the "start_time" field.
+func (m *SmartChargingEffectMutation) SetStartTime(i int64) {
+	m.start_time = &i
+	m.addstart_time = nil
+}
+
+// StartTime returns the value of the "start_time" field in the mutation.
+func (m *SmartChargingEffectMutation) StartTime() (r int64, exists bool) {
+	v := m.start_time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStartTime returns the old "start_time" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SmartChargingEffectMutation) OldStartTime(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStartTime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStartTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStartTime: %w", err)
+	}
+	return oldValue.StartTime, nil
+}
+
+// AddStartTime adds i to the "start_time" field.
+func (m *SmartChargingEffectMutation) AddStartTime(i int64) {
+	if m.addstart_time != nil {
+		*m.addstart_time += i
+	} else {
+		m.addstart_time = &i
+	}
+}
+
+// AddedStartTime returns the value that was added to the "start_time" field in this mutation.
+func (m *SmartChargingEffectMutation) AddedStartTime() (r int64, exists bool) {
+	v := m.addstart_time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetStartTime resets all changes to the "start_time" field.
+func (m *SmartChargingEffectMutation) ResetStartTime() {
+	m.start_time = nil
+	m.addstart_time = nil
+}
+
 // SetPid sets the "pid" field.
 func (m *SmartChargingEffectMutation) SetPid(d datasource.UUID) {
 	m.pid = &d
@@ -18736,7 +18794,7 @@ func (m *SmartChargingEffectMutation) ValidFrom() (r int64, exists bool) {
 // OldValidFrom returns the old "valid_from" field's value of the SmartChargingEffect entity.
 // If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEffectMutation) OldValidFrom(ctx context.Context) (v int64, err error) {
+func (m *SmartChargingEffectMutation) OldValidFrom(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldValidFrom is only allowed on UpdateOne operations")
 	}
@@ -18806,7 +18864,7 @@ func (m *SmartChargingEffectMutation) ValidTo() (r int64, exists bool) {
 // OldValidTo returns the old "valid_to" field's value of the SmartChargingEffect entity.
 // If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEffectMutation) OldValidTo(ctx context.Context) (v int64, err error) {
+func (m *SmartChargingEffectMutation) OldValidTo(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldValidTo is only allowed on UpdateOne operations")
 	}
@@ -19045,7 +19103,7 @@ func (m *SmartChargingEffectMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SmartChargingEffectMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.version != nil {
 		fields = append(fields, smartchargingeffect.FieldVersion)
 	}
@@ -19063,6 +19121,9 @@ func (m *SmartChargingEffectMutation) Fields() []string {
 	}
 	if m.smart_id != nil {
 		fields = append(fields, smartchargingeffect.FieldSmartID)
+	}
+	if m.start_time != nil {
+		fields = append(fields, smartchargingeffect.FieldStartTime)
 	}
 	if m.pid != nil {
 		fields = append(fields, smartchargingeffect.FieldPid)
@@ -19102,6 +19163,8 @@ func (m *SmartChargingEffectMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case smartchargingeffect.FieldSmartID:
 		return m.SmartID()
+	case smartchargingeffect.FieldStartTime:
+		return m.StartTime()
 	case smartchargingeffect.FieldPid:
 		return m.Pid()
 	case smartchargingeffect.FieldUnit:
@@ -19135,6 +19198,8 @@ func (m *SmartChargingEffectMutation) OldField(ctx context.Context, name string)
 		return m.OldUpdatedAt(ctx)
 	case smartchargingeffect.FieldSmartID:
 		return m.OldSmartID(ctx)
+	case smartchargingeffect.FieldStartTime:
+		return m.OldStartTime(ctx)
 	case smartchargingeffect.FieldPid:
 		return m.OldPid(ctx)
 	case smartchargingeffect.FieldUnit:
@@ -19197,6 +19262,13 @@ func (m *SmartChargingEffectMutation) SetField(name string, value ent.Value) err
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSmartID(v)
+		return nil
+	case smartchargingeffect.FieldStartTime:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStartTime(v)
 		return nil
 	case smartchargingeffect.FieldPid:
 		v, ok := value.(datasource.UUID)
@@ -19266,6 +19338,9 @@ func (m *SmartChargingEffectMutation) AddedFields() []string {
 	if m.addsmart_id != nil {
 		fields = append(fields, smartchargingeffect.FieldSmartID)
 	}
+	if m.addstart_time != nil {
+		fields = append(fields, smartchargingeffect.FieldStartTime)
+	}
 	if m.addpid != nil {
 		fields = append(fields, smartchargingeffect.FieldPid)
 	}
@@ -19295,6 +19370,8 @@ func (m *SmartChargingEffectMutation) AddedField(name string) (ent.Value, bool) 
 		return m.AddedUpdatedAt()
 	case smartchargingeffect.FieldSmartID:
 		return m.AddedSmartID()
+	case smartchargingeffect.FieldStartTime:
+		return m.AddedStartTime()
 	case smartchargingeffect.FieldPid:
 		return m.AddedPid()
 	case smartchargingeffect.FieldValidFrom:
@@ -19351,6 +19428,13 @@ func (m *SmartChargingEffectMutation) AddField(name string, value ent.Value) err
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddSmartID(v)
+		return nil
+	case smartchargingeffect.FieldStartTime:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddStartTime(v)
 		return nil
 	case smartchargingeffect.FieldPid:
 		v, ok := value.(datasource.UUID)
@@ -19432,6 +19516,9 @@ func (m *SmartChargingEffectMutation) ResetField(name string) error {
 		return nil
 	case smartchargingeffect.FieldSmartID:
 		m.ResetSmartID()
+		return nil
+	case smartchargingeffect.FieldStartTime:
+		m.ResetStartTime()
 		return nil
 	case smartchargingeffect.FieldPid:
 		m.ResetPid()
