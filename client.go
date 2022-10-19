@@ -269,7 +269,7 @@ func (c *AppModuleInfoClient) UpdateOne(ami *AppModuleInfo) *AppModuleInfoUpdate
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AppModuleInfoClient) UpdateOneID(id int) *AppModuleInfoUpdateOne {
+func (c *AppModuleInfoClient) UpdateOneID(id datasource.UUID) *AppModuleInfoUpdateOne {
 	mutation := newAppModuleInfoMutation(c.config, OpUpdateOne, withAppModuleInfoID(id))
 	return &AppModuleInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -286,7 +286,7 @@ func (c *AppModuleInfoClient) DeleteOne(ami *AppModuleInfo) *AppModuleInfoDelete
 }
 
 // DeleteOne returns a builder for deleting the given entity by its id.
-func (c *AppModuleInfoClient) DeleteOneID(id int) *AppModuleInfoDeleteOne {
+func (c *AppModuleInfoClient) DeleteOneID(id datasource.UUID) *AppModuleInfoDeleteOne {
 	builder := c.Delete().Where(appmoduleinfo.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -301,12 +301,12 @@ func (c *AppModuleInfoClient) Query() *AppModuleInfoQuery {
 }
 
 // Get returns a AppModuleInfo entity by its id.
-func (c *AppModuleInfoClient) Get(ctx context.Context, id int) (*AppModuleInfo, error) {
+func (c *AppModuleInfoClient) Get(ctx context.Context, id datasource.UUID) (*AppModuleInfo, error) {
 	return c.Query().Unique(false).Where(appmoduleinfo.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AppModuleInfoClient) GetX(ctx context.Context, id int) *AppModuleInfo {
+func (c *AppModuleInfoClient) GetX(ctx context.Context, id datasource.UUID) *AppModuleInfo {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)

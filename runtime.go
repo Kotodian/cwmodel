@@ -3,6 +3,7 @@
 package cwmodel
 
 import (
+	"github.com/Kotodian/cwmodel/appmoduleinfo"
 	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/equipmentalarm"
@@ -26,6 +27,12 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	appmoduleinfoFields := schema.AppModuleInfo{}.Fields()
+	_ = appmoduleinfoFields
+	// appmoduleinfoDescID is the schema descriptor for id field.
+	appmoduleinfoDescID := appmoduleinfoFields[0].Descriptor()
+	// appmoduleinfo.DefaultID holds the default value on creation for the id field.
+	appmoduleinfo.DefaultID = datasource.UUID(appmoduleinfoDescID.Default.(uint64))
 	connectorMixin := schema.Connector{}.Mixin()
 	connectorMixinFields0 := connectorMixin[0].Fields()
 	_ = connectorMixinFields0

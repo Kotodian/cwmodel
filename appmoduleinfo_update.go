@@ -104,7 +104,7 @@ func (amiu *AppModuleInfoUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Table:   appmoduleinfo.Table,
 			Columns: appmoduleinfo.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: appmoduleinfo.FieldID,
 			},
 		},
@@ -231,7 +231,7 @@ func (amiuo *AppModuleInfoUpdateOne) sqlSave(ctx context.Context) (_node *AppMod
 			Table:   appmoduleinfo.Table,
 			Columns: appmoduleinfo.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: appmoduleinfo.FieldID,
 			},
 		},

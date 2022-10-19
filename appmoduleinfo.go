@@ -8,13 +8,15 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/Kotodian/cwmodel/appmoduleinfo"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // AppModuleInfo is the model entity for the AppModuleInfo schema.
 type AppModuleInfo struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	// 主键
+	ID datasource.UUID `json:"id,omitempty"`
 	// 名称
 	Name string `json:"name,omitempty"`
 	// 描述
@@ -46,11 +48,11 @@ func (ami *AppModuleInfo) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case appmoduleinfo.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				ami.ID = datasource.UUID(value.Int64)
 			}
-			ami.ID = int(value.Int64)
 		case appmoduleinfo.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])

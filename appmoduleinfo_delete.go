@@ -72,7 +72,7 @@ func (amid *AppModuleInfoDelete) sqlExec(ctx context.Context) (int, error) {
 		Node: &sqlgraph.NodeSpec{
 			Table: appmoduleinfo.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: appmoduleinfo.FieldID,
 			},
 		},

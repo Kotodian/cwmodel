@@ -2,6 +2,10 @@
 
 package appmoduleinfo
 
+import (
+	"github.com/Kotodian/gokit/datasource"
+)
+
 const (
 	// Label holds the string label denoting the appmoduleinfo type in the database.
 	Label = "app_module_info"
@@ -31,3 +35,8 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID datasource.UUID
+)

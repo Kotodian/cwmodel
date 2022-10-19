@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/cwmodel/appmoduleinfo"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // AppModuleInfoCreate is the builder for creating a AppModuleInfo entity.
@@ -31,6 +32,20 @@ func (amic *AppModuleInfoCreate) SetDesc(s string) *AppModuleInfoCreate {
 	return amic
 }
 
+// SetID sets the "id" field.
+func (amic *AppModuleInfoCreate) SetID(d datasource.UUID) *AppModuleInfoCreate {
+	amic.mutation.SetID(d)
+	return amic
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (amic *AppModuleInfoCreate) SetNillableID(d *datasource.UUID) *AppModuleInfoCreate {
+	if d != nil {
+		amic.SetID(*d)
+	}
+	return amic
+}
+
 // Mutation returns the AppModuleInfoMutation object of the builder.
 func (amic *AppModuleInfoCreate) Mutation() *AppModuleInfoMutation {
 	return amic.mutation
@@ -42,6 +57,7 @@ func (amic *AppModuleInfoCreate) Save(ctx context.Context) (*AppModuleInfo, erro
 		err  error
 		node *AppModuleInfo
 	)
+	amic.defaults()
 	if len(amic.hooks) == 0 {
 		if err = amic.check(); err != nil {
 			return nil, err
@@ -105,6 +121,14 @@ func (amic *AppModuleInfoCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (amic *AppModuleInfoCreate) defaults() {
+	if _, ok := amic.mutation.ID(); !ok {
+		v := appmoduleinfo.DefaultID
+		amic.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (amic *AppModuleInfoCreate) check() error {
 	if _, ok := amic.mutation.Name(); !ok {
@@ -124,8 +148,10 @@ func (amic *AppModuleInfoCreate) sqlSave(ctx context.Context) (*AppModuleInfo, e
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = datasource.UUID(id)
+	}
 	return _node, nil
 }
 
@@ -135,11 +161,15 @@ func (amic *AppModuleInfoCreate) createSpec() (*AppModuleInfo, *sqlgraph.CreateS
 		_spec = &sqlgraph.CreateSpec{
 			Table: appmoduleinfo.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: appmoduleinfo.FieldID,
 			},
 		}
 	)
+	if id, ok := amic.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := amic.mutation.Name(); ok {
 		_spec.SetField(appmoduleinfo.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -165,6 +195,7 @@ func (amicb *AppModuleInfoCreateBulk) Save(ctx context.Context) ([]*AppModuleInf
 	for i := range amicb.builders {
 		func(i int, root context.Context) {
 			builder := amicb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppModuleInfoMutation)
 				if !ok {
@@ -191,9 +222,9 @@ func (amicb *AppModuleInfoCreateBulk) Save(ctx context.Context) ([]*AppModuleInf
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = datasource.UUID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

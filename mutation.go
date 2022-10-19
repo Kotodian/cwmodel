@@ -63,7 +63,7 @@ type AppModuleInfoMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *int
+	id            *datasource.UUID
 	name          *string
 	desc          *string
 	clearedFields map[string]struct{}
@@ -92,7 +92,7 @@ func newAppModuleInfoMutation(c config, op Op, opts ...appmoduleinfoOption) *App
 }
 
 // withAppModuleInfoID sets the ID field of the mutation.
-func withAppModuleInfoID(id int) appmoduleinfoOption {
+func withAppModuleInfoID(id datasource.UUID) appmoduleinfoOption {
 	return func(m *AppModuleInfoMutation) {
 		var (
 			err   error
@@ -142,9 +142,15 @@ func (m AppModuleInfoMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of AppModuleInfo entities.
+func (m *AppModuleInfoMutation) SetID(id datasource.UUID) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AppModuleInfoMutation) ID() (id int, exists bool) {
+func (m *AppModuleInfoMutation) ID() (id datasource.UUID, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -155,12 +161,12 @@ func (m *AppModuleInfoMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AppModuleInfoMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *AppModuleInfoMutation) IDs(ctx context.Context) ([]datasource.UUID, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []datasource.UUID{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):

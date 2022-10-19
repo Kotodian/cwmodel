@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/cwmodel/appmoduleinfo"
 	"github.com/Kotodian/cwmodel/predicate"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // AppModuleInfoQuery is the builder for querying AppModuleInfo entities.
@@ -83,8 +84,8 @@ func (amiq *AppModuleInfoQuery) FirstX(ctx context.Context) *AppModuleInfo {
 
 // FirstID returns the first AppModuleInfo ID from the query.
 // Returns a *NotFoundError when no AppModuleInfo ID was found.
-func (amiq *AppModuleInfoQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (amiq *AppModuleInfoQuery) FirstID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = amiq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -96,7 +97,7 @@ func (amiq *AppModuleInfoQuery) FirstID(ctx context.Context) (id int, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (amiq *AppModuleInfoQuery) FirstIDX(ctx context.Context) int {
+func (amiq *AppModuleInfoQuery) FirstIDX(ctx context.Context) datasource.UUID {
 	id, err := amiq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -134,8 +135,8 @@ func (amiq *AppModuleInfoQuery) OnlyX(ctx context.Context) *AppModuleInfo {
 // OnlyID is like Only, but returns the only AppModuleInfo ID in the query.
 // Returns a *NotSingularError when more than one AppModuleInfo ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (amiq *AppModuleInfoQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (amiq *AppModuleInfoQuery) OnlyID(ctx context.Context) (id datasource.UUID, err error) {
+	var ids []datasource.UUID
 	if ids, err = amiq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -151,7 +152,7 @@ func (amiq *AppModuleInfoQuery) OnlyID(ctx context.Context) (id int, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (amiq *AppModuleInfoQuery) OnlyIDX(ctx context.Context) int {
+func (amiq *AppModuleInfoQuery) OnlyIDX(ctx context.Context) datasource.UUID {
 	id, err := amiq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -177,8 +178,8 @@ func (amiq *AppModuleInfoQuery) AllX(ctx context.Context) []*AppModuleInfo {
 }
 
 // IDs executes the query and returns a list of AppModuleInfo IDs.
-func (amiq *AppModuleInfoQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (amiq *AppModuleInfoQuery) IDs(ctx context.Context) ([]datasource.UUID, error) {
+	var ids []datasource.UUID
 	if err := amiq.Select(appmoduleinfo.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -186,7 +187,7 @@ func (amiq *AppModuleInfoQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (amiq *AppModuleInfoQuery) IDsX(ctx context.Context) []int {
+func (amiq *AppModuleInfoQuery) IDsX(ctx context.Context) []datasource.UUID {
 	ids, err := amiq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -362,7 +363,7 @@ func (amiq *AppModuleInfoQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   appmoduleinfo.Table,
 			Columns: appmoduleinfo.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUint64,
 				Column: appmoduleinfo.FieldID,
 			},
 		},
