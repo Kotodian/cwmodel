@@ -2,6 +2,8 @@ module github.com/Kotodian/ent-practice
 
 go 1.18
 
+replace entgo.io/ent => github.com/Kotodian/ent v0.0.1
+
 require (
 	entgo.io/ent v0.11.3
 	github.com/Kotodian/gokit v1.0.73
@@ -14,7 +16,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.7.2-0.20220927111110-867ee0cca56a // indirect
+	ariga.io/atlas v0.7.3-0.20221011160332-3ca609863edd // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect

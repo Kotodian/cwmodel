@@ -141,19 +141,11 @@ func (amic *AppModuleInfoCreate) createSpec() (*AppModuleInfo, *sqlgraph.CreateS
 		}
 	)
 	if value, ok := amic.mutation.Name(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: appmoduleinfo.FieldName,
-		})
+		_spec.SetField(appmoduleinfo.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
 	if value, ok := amic.mutation.Desc(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: appmoduleinfo.FieldDesc,
-		})
+		_spec.SetField(appmoduleinfo.FieldDesc, field.TypeString, value)
 		_node.Desc = value
 	}
 	return _node, _spec

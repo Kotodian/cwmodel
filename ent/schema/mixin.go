@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/mixin"
 	"github.com/Kotodian/gokit/datasource"
@@ -12,6 +13,10 @@ import (
 
 type ModelMixin struct {
 	mixin.Schema
+}
+
+func (ModelMixin) Annotations() []schema.Annotation {
+	return []schema.Annotation{}
 }
 
 func (ModelMixin) Fields() []ent.Field {

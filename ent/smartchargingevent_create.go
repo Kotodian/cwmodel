@@ -346,107 +346,55 @@ func (scec *SmartChargingEventCreate) createSpec() (*SmartChargingEvent, *sqlgra
 		_spec.ID.Value = id
 	}
 	if value, ok := scec.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldVersion,
-		})
+		_spec.SetField(smartchargingevent.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := scec.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldCreatedBy,
-		})
+		_spec.SetField(smartchargingevent.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := scec.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldCreatedAt,
-		})
+		_spec.SetField(smartchargingevent.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := scec.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldUpdatedBy,
-		})
+		_spec.SetField(smartchargingevent.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := scec.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldUpdatedAt,
-		})
+		_spec.SetField(smartchargingevent.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := scec.mutation.SmartID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldSmartID,
-		})
+		_spec.SetField(smartchargingevent.FieldSmartID, field.TypeUint64, value)
 		_node.SmartID = value
 	}
 	if value, ok := scec.mutation.EquipmentID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldEquipmentID,
-		})
+		_spec.SetField(smartchargingevent.FieldEquipmentID, field.TypeUint64, value)
 		_node.EquipmentID = value
 	}
 	if value, ok := scec.mutation.ConnectorID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldConnectorID,
-		})
+		_spec.SetField(smartchargingevent.FieldConnectorID, field.TypeUint64, value)
 		_node.ConnectorID = value
 	}
 	if value, ok := scec.mutation.OrderID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldOrderID,
-		})
+		_spec.SetField(smartchargingevent.FieldOrderID, field.TypeUint64, value)
 		_node.OrderID = value
 	}
 	if value, ok := scec.mutation.Unit(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: smartchargingevent.FieldUnit,
-		})
+		_spec.SetField(smartchargingevent.FieldUnit, field.TypeString, value)
 		_node.Unit = value
 	}
 	if value, ok := scec.mutation.ValidFrom(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldValidFrom,
-		})
+		_spec.SetField(smartchargingevent.FieldValidFrom, field.TypeInt64, value)
 		_node.ValidFrom = value
 	}
 	if value, ok := scec.mutation.ValidTo(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldValidTo,
-		})
+		_spec.SetField(smartchargingevent.FieldValidTo, field.TypeInt64, value)
 		_node.ValidTo = value
 	}
 	if value, ok := scec.mutation.Spec(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: smartchargingevent.FieldSpec,
-		})
+		_spec.SetField(smartchargingevent.FieldSpec, field.TypeJSON, value)
 		_node.Spec = value
 	}
 	return _node, _spec

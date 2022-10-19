@@ -234,88 +234,40 @@ func (elu *EquipmentLogUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := elu.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldVersion,
-		})
+		_spec.SetField(equipmentlog.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := elu.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldVersion,
-		})
+		_spec.AddField(equipmentlog.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := elu.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentlog.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentlog.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := elu.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentlog.FieldUpdatedBy,
-		})
+		_spec.AddField(equipmentlog.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := elu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentlog.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := elu.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldUpdatedAt,
-		})
+		_spec.AddField(equipmentlog.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := elu.mutation.RequestId(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldRequestId,
-		})
+		_spec.SetField(equipmentlog.FieldRequestId, field.TypeInt64, value)
 	}
 	if value, ok := elu.mutation.AddedRequestId(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldRequestId,
-		})
+		_spec.AddField(equipmentlog.FieldRequestId, field.TypeInt64, value)
 	}
 	if value, ok := elu.mutation.State(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentlog.FieldState,
-		})
+		_spec.SetField(equipmentlog.FieldState, field.TypeInt, value)
 	}
 	if value, ok := elu.mutation.AddedState(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentlog.FieldState,
-		})
+		_spec.AddField(equipmentlog.FieldState, field.TypeInt, value)
 	}
 	if value, ok := elu.mutation.DataLink(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentlog.FieldDataLink,
-		})
+		_spec.SetField(equipmentlog.FieldDataLink, field.TypeUint64, value)
 	}
 	if value, ok := elu.mutation.AddedDataLink(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentlog.FieldDataLink,
-		})
+		_spec.AddField(equipmentlog.FieldDataLink, field.TypeUint64, value)
 	}
 	if elu.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -606,88 +558,40 @@ func (eluo *EquipmentLogUpdateOne) sqlSave(ctx context.Context) (_node *Equipmen
 		}
 	}
 	if value, ok := eluo.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldVersion,
-		})
+		_spec.SetField(equipmentlog.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eluo.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldVersion,
-		})
+		_spec.AddField(equipmentlog.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eluo.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentlog.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentlog.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eluo.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentlog.FieldUpdatedBy,
-		})
+		_spec.AddField(equipmentlog.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eluo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentlog.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eluo.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldUpdatedAt,
-		})
+		_spec.AddField(equipmentlog.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eluo.mutation.RequestId(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldRequestId,
-		})
+		_spec.SetField(equipmentlog.FieldRequestId, field.TypeInt64, value)
 	}
 	if value, ok := eluo.mutation.AddedRequestId(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldRequestId,
-		})
+		_spec.AddField(equipmentlog.FieldRequestId, field.TypeInt64, value)
 	}
 	if value, ok := eluo.mutation.State(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentlog.FieldState,
-		})
+		_spec.SetField(equipmentlog.FieldState, field.TypeInt, value)
 	}
 	if value, ok := eluo.mutation.AddedState(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentlog.FieldState,
-		})
+		_spec.AddField(equipmentlog.FieldState, field.TypeInt, value)
 	}
 	if value, ok := eluo.mutation.DataLink(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentlog.FieldDataLink,
-		})
+		_spec.SetField(equipmentlog.FieldDataLink, field.TypeUint64, value)
 	}
 	if value, ok := eluo.mutation.AddedDataLink(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentlog.FieldDataLink,
-		})
+		_spec.AddField(equipmentlog.FieldDataLink, field.TypeUint64, value)
 	}
 	if eluo.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -255,85 +255,40 @@ func (eiu *EquipmentIotUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := eiu.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentiot.FieldVersion,
-		})
+		_spec.SetField(equipmentiot.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eiu.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentiot.FieldVersion,
-		})
+		_spec.AddField(equipmentiot.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eiu.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentiot.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentiot.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eiu.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentiot.FieldUpdatedBy,
-		})
+		_spec.AddField(equipmentiot.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eiu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentiot.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentiot.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eiu.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentiot.FieldUpdatedAt,
-		})
+		_spec.AddField(equipmentiot.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eiu.mutation.Iccid(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentiot.FieldIccid,
-		})
+		_spec.SetField(equipmentiot.FieldIccid, field.TypeString, value)
 	}
 	if eiu.mutation.IccidCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: equipmentiot.FieldIccid,
-		})
+		_spec.ClearField(equipmentiot.FieldIccid, field.TypeString)
 	}
 	if value, ok := eiu.mutation.Imei(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentiot.FieldImei,
-		})
+		_spec.SetField(equipmentiot.FieldImei, field.TypeString, value)
 	}
 	if eiu.mutation.ImeiCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: equipmentiot.FieldImei,
-		})
+		_spec.ClearField(equipmentiot.FieldImei, field.TypeString)
 	}
 	if value, ok := eiu.mutation.RemoteAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentiot.FieldRemoteAddress,
-		})
+		_spec.SetField(equipmentiot.FieldRemoteAddress, field.TypeString, value)
 	}
 	if eiu.mutation.RemoteAddressCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: equipmentiot.FieldRemoteAddress,
-		})
+		_spec.ClearField(equipmentiot.FieldRemoteAddress, field.TypeString)
 	}
 	if eiu.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -645,85 +600,40 @@ func (eiuo *EquipmentIotUpdateOne) sqlSave(ctx context.Context) (_node *Equipmen
 		}
 	}
 	if value, ok := eiuo.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentiot.FieldVersion,
-		})
+		_spec.SetField(equipmentiot.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eiuo.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentiot.FieldVersion,
-		})
+		_spec.AddField(equipmentiot.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eiuo.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentiot.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentiot.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eiuo.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentiot.FieldUpdatedBy,
-		})
+		_spec.AddField(equipmentiot.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eiuo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentiot.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentiot.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eiuo.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentiot.FieldUpdatedAt,
-		})
+		_spec.AddField(equipmentiot.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eiuo.mutation.Iccid(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentiot.FieldIccid,
-		})
+		_spec.SetField(equipmentiot.FieldIccid, field.TypeString, value)
 	}
 	if eiuo.mutation.IccidCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: equipmentiot.FieldIccid,
-		})
+		_spec.ClearField(equipmentiot.FieldIccid, field.TypeString)
 	}
 	if value, ok := eiuo.mutation.Imei(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentiot.FieldImei,
-		})
+		_spec.SetField(equipmentiot.FieldImei, field.TypeString, value)
 	}
 	if eiuo.mutation.ImeiCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: equipmentiot.FieldImei,
-		})
+		_spec.ClearField(equipmentiot.FieldImei, field.TypeString)
 	}
 	if value, ok := eiuo.mutation.RemoteAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentiot.FieldRemoteAddress,
-		})
+		_spec.SetField(equipmentiot.FieldRemoteAddress, field.TypeString, value)
 	}
 	if eiuo.mutation.RemoteAddressCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: equipmentiot.FieldRemoteAddress,
-		})
+		_spec.ClearField(equipmentiot.FieldRemoteAddress, field.TypeString)
 	}
 	if eiuo.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{

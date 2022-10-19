@@ -305,67 +305,35 @@ func (elc *EquipmentLogCreate) createSpec() (*EquipmentLog, *sqlgraph.CreateSpec
 		_spec.ID.Value = id
 	}
 	if value, ok := elc.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldVersion,
-		})
+		_spec.SetField(equipmentlog.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := elc.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentlog.FieldCreatedBy,
-		})
+		_spec.SetField(equipmentlog.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := elc.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldCreatedAt,
-		})
+		_spec.SetField(equipmentlog.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := elc.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentlog.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentlog.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := elc.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentlog.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := elc.mutation.RequestId(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentlog.FieldRequestId,
-		})
+		_spec.SetField(equipmentlog.FieldRequestId, field.TypeInt64, value)
 		_node.RequestId = value
 	}
 	if value, ok := elc.mutation.State(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentlog.FieldState,
-		})
+		_spec.SetField(equipmentlog.FieldState, field.TypeInt, value)
 		_node.State = value
 	}
 	if value, ok := elc.mutation.DataLink(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentlog.FieldDataLink,
-		})
+		_spec.SetField(equipmentlog.FieldDataLink, field.TypeUint64, value)
 		_node.DataLink = value
 	}
 	if nodes := elc.mutation.EquipmentIDs(); len(nodes) > 0 {

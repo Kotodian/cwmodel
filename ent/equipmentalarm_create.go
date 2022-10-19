@@ -340,83 +340,43 @@ func (eac *EquipmentAlarmCreate) createSpec() (*EquipmentAlarm, *sqlgraph.Create
 		_spec.ID.Value = id
 	}
 	if value, ok := eac.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldVersion,
-		})
+		_spec.SetField(equipmentalarm.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := eac.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentalarm.FieldCreatedBy,
-		})
+		_spec.SetField(equipmentalarm.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := eac.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldCreatedAt,
-		})
+		_spec.SetField(equipmentalarm.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := eac.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentalarm.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentalarm.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := eac.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentalarm.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := eac.mutation.DtcCode(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldDtcCode,
-		})
+		_spec.SetField(equipmentalarm.FieldDtcCode, field.TypeInt64, value)
 		_node.DtcCode = value
 	}
 	if value, ok := eac.mutation.RemoteAddress(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentalarm.FieldRemoteAddress,
-		})
+		_spec.SetField(equipmentalarm.FieldRemoteAddress, field.TypeString, value)
 		_node.RemoteAddress = value
 	}
 	if value, ok := eac.mutation.TriggerTime(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldTriggerTime,
-		})
+		_spec.SetField(equipmentalarm.FieldTriggerTime, field.TypeInt64, value)
 		_node.TriggerTime = &value
 	}
 	if value, ok := eac.mutation.FinalTime(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldFinalTime,
-		})
+		_spec.SetField(equipmentalarm.FieldFinalTime, field.TypeInt64, value)
 		_node.FinalTime = &value
 	}
 	if value, ok := eac.mutation.Count(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentalarm.FieldCount,
-		})
+		_spec.SetField(equipmentalarm.FieldCount, field.TypeInt, value)
 		_node.Count = value
 	}
 	if nodes := eac.mutation.EquipmentIDs(); len(nodes) > 0 {

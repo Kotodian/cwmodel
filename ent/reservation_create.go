@@ -371,99 +371,51 @@ func (rc *ReservationCreate) createSpec() (*Reservation, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := rc.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: reservation.FieldVersion,
-		})
+		_spec.SetField(reservation.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := rc.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: reservation.FieldCreatedBy,
-		})
+		_spec.SetField(reservation.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := rc.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: reservation.FieldCreatedAt,
-		})
+		_spec.SetField(reservation.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := rc.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: reservation.FieldUpdatedBy,
-		})
+		_spec.SetField(reservation.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := rc.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: reservation.FieldUpdatedAt,
-		})
+		_spec.SetField(reservation.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := rc.mutation.ReservationID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: reservation.FieldReservationID,
-		})
+		_spec.SetField(reservation.FieldReservationID, field.TypeInt64, value)
 		_node.ReservationID = value
 	}
 	if value, ok := rc.mutation.AuthorizationMode(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: reservation.FieldAuthorizationMode,
-		})
+		_spec.SetField(reservation.FieldAuthorizationMode, field.TypeInt, value)
 		_node.AuthorizationMode = value
 	}
 	if value, ok := rc.mutation.AuthorizationID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: reservation.FieldAuthorizationID,
-		})
+		_spec.SetField(reservation.FieldAuthorizationID, field.TypeString, value)
 		_node.AuthorizationID = value
 	}
 	if value, ok := rc.mutation.Additional(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: reservation.FieldAdditional,
-		})
+		_spec.SetField(reservation.FieldAdditional, field.TypeString, value)
 		_node.Additional = &value
 	}
 	if value, ok := rc.mutation.CustomerID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: reservation.FieldCustomerID,
-		})
+		_spec.SetField(reservation.FieldCustomerID, field.TypeString, value)
 		_node.CustomerID = &value
 	}
 	if value, ok := rc.mutation.Expired(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: reservation.FieldExpired,
-		})
+		_spec.SetField(reservation.FieldExpired, field.TypeInt64, value)
 		_node.Expired = value
 	}
 	if value, ok := rc.mutation.State(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: reservation.FieldState,
-		})
+		_spec.SetField(reservation.FieldState, field.TypeInt, value)
 		_node.State = value
 	}
 	if nodes := rc.mutation.EquipmentIDs(); len(nodes) > 0 {

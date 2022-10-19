@@ -607,219 +607,111 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := oic.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldVersion,
-		})
+		_spec.SetField(orderinfo.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := oic.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldCreatedBy,
-		})
+		_spec.SetField(orderinfo.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := oic.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldCreatedAt,
-		})
+		_spec.SetField(orderinfo.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := oic.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldUpdatedBy,
-		})
+		_spec.SetField(orderinfo.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := oic.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldUpdatedAt,
-		})
+		_spec.SetField(orderinfo.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := oic.mutation.RemoteStartID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldRemoteStartID,
-		})
+		_spec.SetField(orderinfo.FieldRemoteStartID, field.TypeInt64, value)
 		_node.RemoteStartID = &value
 	}
 	if value, ok := oic.mutation.TransactionID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderinfo.FieldTransactionID,
-		})
+		_spec.SetField(orderinfo.FieldTransactionID, field.TypeString, value)
 		_node.TransactionID = value
 	}
 	if value, ok := oic.mutation.AuthorizationID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderinfo.FieldAuthorizationID,
-		})
+		_spec.SetField(orderinfo.FieldAuthorizationID, field.TypeString, value)
 		_node.AuthorizationID = &value
 	}
 	if value, ok := oic.mutation.CustomerID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderinfo.FieldCustomerID,
-		})
+		_spec.SetField(orderinfo.FieldCustomerID, field.TypeString, value)
 		_node.CustomerID = &value
 	}
 	if value, ok := oic.mutation.CallerOrderID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderinfo.FieldCallerOrderID,
-		})
+		_spec.SetField(orderinfo.FieldCallerOrderID, field.TypeString, value)
 		_node.CallerOrderID = &value
 	}
 	if value, ok := oic.mutation.TotalElectricity(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldTotalElectricity,
-		})
+		_spec.SetField(orderinfo.FieldTotalElectricity, field.TypeFloat64, value)
 		_node.TotalElectricity = &value
 	}
 	if value, ok := oic.mutation.ChargeStartElectricity(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStartElectricity,
-		})
+		_spec.SetField(orderinfo.FieldChargeStartElectricity, field.TypeFloat64, value)
 		_node.ChargeStartElectricity = &value
 	}
 	if value, ok := oic.mutation.ChargeStopElectricity(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStopElectricity,
-		})
+		_spec.SetField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64, value)
 		_node.ChargeStopElectricity = &value
 	}
 	if value, ok := oic.mutation.SharpElectricity(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldSharpElectricity,
-		})
+		_spec.SetField(orderinfo.FieldSharpElectricity, field.TypeFloat64, value)
 		_node.SharpElectricity = &value
 	}
 	if value, ok := oic.mutation.PeakElectricity(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldPeakElectricity,
-		})
+		_spec.SetField(orderinfo.FieldPeakElectricity, field.TypeFloat64, value)
 		_node.PeakElectricity = &value
 	}
 	if value, ok := oic.mutation.FlatElectricity(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldFlatElectricity,
-		})
+		_spec.SetField(orderinfo.FieldFlatElectricity, field.TypeFloat64, value)
 		_node.FlatElectricity = &value
 	}
 	if value, ok := oic.mutation.ValleyElectricity(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldValleyElectricity,
-		})
+		_spec.SetField(orderinfo.FieldValleyElectricity, field.TypeFloat64, value)
 		_node.ValleyElectricity = &value
 	}
 	if value, ok := oic.mutation.StopReasonCode(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt32,
-			Value:  value,
-			Column: orderinfo.FieldStopReasonCode,
-		})
+		_spec.SetField(orderinfo.FieldStopReasonCode, field.TypeInt32, value)
 		_node.StopReasonCode = &value
 	}
 	if value, ok := oic.mutation.Offline(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: orderinfo.FieldOffline,
-		})
+		_spec.SetField(orderinfo.FieldOffline, field.TypeBool, value)
 		_node.Offline = value
 	}
 	if value, ok := oic.mutation.PriceSchemeReleaseID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldPriceSchemeReleaseID,
-		})
+		_spec.SetField(orderinfo.FieldPriceSchemeReleaseID, field.TypeInt64, value)
 		_node.PriceSchemeReleaseID = value
 	}
 	if value, ok := oic.mutation.OrderStartTime(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldOrderStartTime,
-		})
+		_spec.SetField(orderinfo.FieldOrderStartTime, field.TypeInt64, value)
 		_node.OrderStartTime = &value
 	}
 	if value, ok := oic.mutation.OrderFinalTime(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldOrderFinalTime,
-		})
+		_spec.SetField(orderinfo.FieldOrderFinalTime, field.TypeInt64, value)
 		_node.OrderFinalTime = &value
 	}
 	if value, ok := oic.mutation.ChargeStartTime(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStartTime,
-		})
+		_spec.SetField(orderinfo.FieldChargeStartTime, field.TypeInt64, value)
 		_node.ChargeStartTime = &value
 	}
 	if value, ok := oic.mutation.ChargeFinalTime(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldChargeFinalTime,
-		})
+		_spec.SetField(orderinfo.FieldChargeFinalTime, field.TypeInt64, value)
 		_node.ChargeFinalTime = &value
 	}
 	if value, ok := oic.mutation.IntellectID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldIntellectID,
-		})
+		_spec.SetField(orderinfo.FieldIntellectID, field.TypeInt64, value)
 		_node.IntellectID = &value
 	}
 	if value, ok := oic.mutation.StationID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldStationID,
-		})
+		_spec.SetField(orderinfo.FieldStationID, field.TypeUint64, value)
 		_node.StationID = &value
 	}
 	if value, ok := oic.mutation.OperatorID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldOperatorID,
-		})
+		_spec.SetField(orderinfo.FieldOperatorID, field.TypeUint64, value)
 		_node.OperatorID = &value
 	}
 	if nodes := oic.mutation.ConnectorIDs(); len(nodes) > 0 {

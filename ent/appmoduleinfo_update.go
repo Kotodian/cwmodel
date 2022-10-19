@@ -117,18 +117,10 @@ func (amiu *AppModuleInfoUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 	}
 	if value, ok := amiu.mutation.Name(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: appmoduleinfo.FieldName,
-		})
+		_spec.SetField(appmoduleinfo.FieldName, field.TypeString, value)
 	}
 	if value, ok := amiu.mutation.Desc(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: appmoduleinfo.FieldDesc,
-		})
+		_spec.SetField(appmoduleinfo.FieldDesc, field.TypeString, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, amiu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -269,18 +261,10 @@ func (amiuo *AppModuleInfoUpdateOne) sqlSave(ctx context.Context) (_node *AppMod
 		}
 	}
 	if value, ok := amiuo.mutation.Name(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: appmoduleinfo.FieldName,
-		})
+		_spec.SetField(appmoduleinfo.FieldName, field.TypeString, value)
 	}
 	if value, ok := amiuo.mutation.Desc(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: appmoduleinfo.FieldDesc,
-		})
+		_spec.SetField(appmoduleinfo.FieldDesc, field.TypeString, value)
 	}
 	_node = &AppModuleInfo{config: amiuo.config}
 	_spec.Assign = _node.assignValues

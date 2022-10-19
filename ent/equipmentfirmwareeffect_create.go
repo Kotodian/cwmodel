@@ -316,59 +316,31 @@ func (efec *EquipmentFirmwareEffectCreate) createSpec() (*EquipmentFirmwareEffec
 		_spec.ID.Value = id
 	}
 	if value, ok := efec.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldVersion,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := efec.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldCreatedBy,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := efec.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldCreatedAt,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := efec.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := efec.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := efec.mutation.RequestID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldRequestID,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldRequestID, field.TypeInt64, value)
 		_node.RequestID = value
 	}
 	if value, ok := efec.mutation.State(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldState,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldState, field.TypeInt, value)
 		_node.State = value
 	}
 	if nodes := efec.mutation.EquipmentIDs(); len(nodes) > 0 {

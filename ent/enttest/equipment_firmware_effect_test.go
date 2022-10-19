@@ -4,10 +4,11 @@ import (
 	"context"
 	"testing"
 
+	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateAlarm(t *testing.T) {
+func TestUpdateFirmwareEffect(t *testing.T) {
 	cli := Open(t, "mysql", dsn)
 	cli = cli.Debug()
 	defer cli.Close()
@@ -15,14 +16,15 @@ func TestCreateAlarm(t *testing.T) {
 	equip, err := cli.Equipment.Get(ctx, 244667116421190)
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
-	err = cli.EquipmentAlarm.Create().
-		SetDtcCode(16715009).
-		SetCount(0).
+
+	firmware, err := cli.Firmware.Get(ctx, 343755557568517)
+	assert.Nil(t, err)
+	assert.NotNil(t, firmware)
+
+	err = cli.EquipmentFirmwareEffect.Update().
 		SetEquipment(equip).
-		SetRemoteAddress("127.0.0.1").
+		Where(equipmentfirmwareeffect.RequestIDEQ(1666080165)).
+		SetState(6).
 		Exec(ctx)
 	assert.Nil(t, err)
 }
-
-
-

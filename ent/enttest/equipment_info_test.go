@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/Kotodian/ent-practice/ent/equipment"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"
 )
@@ -26,7 +27,7 @@ func TestCreateEquipmentInfo(t *testing.T) {
 	cli = cli.Debug()
 	defer cli.Close()
 	ctx := context.TODO()
-	equip, err := cli.Equipment.Get(ctx, 336379858853894)
+	equip, err := cli.Equipment.Query().Unique(false).Where(equipment.IDEQ(336379858853894)).First(ctx)
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
 	err = cli.EquipmentInfo.Create().SetEquipment(equip).

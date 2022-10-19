@@ -414,107 +414,55 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := cc.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: connector.FieldVersion,
-		})
+		_spec.SetField(connector.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := cc.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: connector.FieldCreatedBy,
-		})
+		_spec.SetField(connector.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := cc.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: connector.FieldCreatedAt,
-		})
+		_spec.SetField(connector.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := cc.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: connector.FieldUpdatedBy,
-		})
+		_spec.SetField(connector.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := cc.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: connector.FieldUpdatedAt,
-		})
+		_spec.SetField(connector.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := cc.mutation.EquipmentSn(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: connector.FieldEquipmentSn,
-		})
+		_spec.SetField(connector.FieldEquipmentSn, field.TypeString, value)
 		_node.EquipmentSn = value
 	}
 	if value, ok := cc.mutation.EvseSerial(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: connector.FieldEvseSerial,
-		})
+		_spec.SetField(connector.FieldEvseSerial, field.TypeString, value)
 		_node.EvseSerial = value
 	}
 	if value, ok := cc.mutation.Serial(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: connector.FieldSerial,
-		})
+		_spec.SetField(connector.FieldSerial, field.TypeString, value)
 		_node.Serial = value
 	}
 	if value, ok := cc.mutation.CurrentState(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldCurrentState,
-		})
+		_spec.SetField(connector.FieldCurrentState, field.TypeInt, value)
 		_node.CurrentState = value
 	}
 	if value, ok := cc.mutation.BeforeState(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldBeforeState,
-		})
+		_spec.SetField(connector.FieldBeforeState, field.TypeInt, value)
 		_node.BeforeState = value
 	}
 	if value, ok := cc.mutation.ChargingState(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldChargingState,
-		})
+		_spec.SetField(connector.FieldChargingState, field.TypeInt, value)
 		_node.ChargingState = value
 	}
 	if value, ok := cc.mutation.ReservationID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: connector.FieldReservationID,
-		})
+		_spec.SetField(connector.FieldReservationID, field.TypeUint64, value)
 		_node.ReservationID = &value
 	}
 	if value, ok := cc.mutation.ParkNo(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: connector.FieldParkNo,
-		})
+		_spec.SetField(connector.FieldParkNo, field.TypeString, value)
 		_node.ParkNo = value
 	}
 	if nodes := cc.mutation.EvseIDs(); len(nodes) > 0 {

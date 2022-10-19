@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/predicate"
 	"github.com/Kotodian/ent-practice/ent/smartchargingevent"
@@ -224,6 +225,12 @@ func (sceu *SmartChargingEventUpdate) SetSpec(tsp []types.ChargingSchedulePeriod
 	return sceu
 }
 
+// AppendSpec appends tsp to the "spec" field.
+func (sceu *SmartChargingEventUpdate) AppendSpec(tsp []types.ChargingSchedulePeriod) *SmartChargingEventUpdate {
+	sceu.mutation.AppendSpec(tsp)
+	return sceu
+}
+
 // Mutation returns the SmartChargingEventMutation object of the builder.
 func (sceu *SmartChargingEventUpdate) Mutation() *SmartChargingEventMutation {
 	return sceu.mutation
@@ -302,161 +309,77 @@ func (sceu *SmartChargingEventUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 	}
 	if value, ok := sceu.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldVersion,
-		})
+		_spec.SetField(smartchargingevent.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := sceu.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldVersion,
-		})
+		_spec.AddField(smartchargingevent.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := sceu.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldUpdatedBy,
-		})
+		_spec.SetField(smartchargingevent.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := sceu.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldUpdatedBy,
-		})
+		_spec.AddField(smartchargingevent.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := sceu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldUpdatedAt,
-		})
+		_spec.SetField(smartchargingevent.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := sceu.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldUpdatedAt,
-		})
+		_spec.AddField(smartchargingevent.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := sceu.mutation.SmartID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldSmartID,
-		})
+		_spec.SetField(smartchargingevent.FieldSmartID, field.TypeUint64, value)
 	}
 	if value, ok := sceu.mutation.AddedSmartID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldSmartID,
-		})
+		_spec.AddField(smartchargingevent.FieldSmartID, field.TypeUint64, value)
 	}
 	if value, ok := sceu.mutation.EquipmentID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldEquipmentID,
-		})
+		_spec.SetField(smartchargingevent.FieldEquipmentID, field.TypeUint64, value)
 	}
 	if value, ok := sceu.mutation.AddedEquipmentID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldEquipmentID,
-		})
+		_spec.AddField(smartchargingevent.FieldEquipmentID, field.TypeUint64, value)
 	}
 	if value, ok := sceu.mutation.ConnectorID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldConnectorID,
-		})
+		_spec.SetField(smartchargingevent.FieldConnectorID, field.TypeUint64, value)
 	}
 	if value, ok := sceu.mutation.AddedConnectorID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldConnectorID,
-		})
+		_spec.AddField(smartchargingevent.FieldConnectorID, field.TypeUint64, value)
 	}
 	if value, ok := sceu.mutation.OrderID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldOrderID,
-		})
+		_spec.SetField(smartchargingevent.FieldOrderID, field.TypeUint64, value)
 	}
 	if value, ok := sceu.mutation.AddedOrderID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldOrderID,
-		})
+		_spec.AddField(smartchargingevent.FieldOrderID, field.TypeUint64, value)
 	}
 	if sceu.mutation.OrderIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Column: smartchargingevent.FieldOrderID,
-		})
+		_spec.ClearField(smartchargingevent.FieldOrderID, field.TypeUint64)
 	}
 	if value, ok := sceu.mutation.Unit(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: smartchargingevent.FieldUnit,
-		})
+		_spec.SetField(smartchargingevent.FieldUnit, field.TypeString, value)
 	}
 	if value, ok := sceu.mutation.ValidFrom(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldValidFrom,
-		})
+		_spec.SetField(smartchargingevent.FieldValidFrom, field.TypeInt64, value)
 	}
 	if value, ok := sceu.mutation.AddedValidFrom(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldValidFrom,
-		})
+		_spec.AddField(smartchargingevent.FieldValidFrom, field.TypeInt64, value)
 	}
 	if sceu.mutation.ValidFromCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: smartchargingevent.FieldValidFrom,
-		})
+		_spec.ClearField(smartchargingevent.FieldValidFrom, field.TypeInt64)
 	}
 	if value, ok := sceu.mutation.ValidTo(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldValidTo,
-		})
+		_spec.SetField(smartchargingevent.FieldValidTo, field.TypeInt64, value)
 	}
 	if value, ok := sceu.mutation.AddedValidTo(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldValidTo,
-		})
+		_spec.AddField(smartchargingevent.FieldValidTo, field.TypeInt64, value)
 	}
 	if sceu.mutation.ValidToCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: smartchargingevent.FieldValidTo,
-		})
+		_spec.ClearField(smartchargingevent.FieldValidTo, field.TypeInt64)
 	}
 	if value, ok := sceu.mutation.Spec(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: smartchargingevent.FieldSpec,
+		_spec.SetField(smartchargingevent.FieldSpec, field.TypeJSON, value)
+	}
+	if value, ok := sceu.mutation.AppendedSpec(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, smartchargingevent.FieldSpec, value)
 		})
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, sceu.driver, _spec); err != nil {
@@ -673,6 +596,12 @@ func (sceuo *SmartChargingEventUpdateOne) SetSpec(tsp []types.ChargingSchedulePe
 	return sceuo
 }
 
+// AppendSpec appends tsp to the "spec" field.
+func (sceuo *SmartChargingEventUpdateOne) AppendSpec(tsp []types.ChargingSchedulePeriod) *SmartChargingEventUpdateOne {
+	sceuo.mutation.AppendSpec(tsp)
+	return sceuo
+}
+
 // Mutation returns the SmartChargingEventMutation object of the builder.
 func (sceuo *SmartChargingEventUpdateOne) Mutation() *SmartChargingEventMutation {
 	return sceuo.mutation
@@ -781,161 +710,77 @@ func (sceuo *SmartChargingEventUpdateOne) sqlSave(ctx context.Context) (_node *S
 		}
 	}
 	if value, ok := sceuo.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldVersion,
-		})
+		_spec.SetField(smartchargingevent.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := sceuo.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldVersion,
-		})
+		_spec.AddField(smartchargingevent.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := sceuo.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldUpdatedBy,
-		})
+		_spec.SetField(smartchargingevent.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := sceuo.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldUpdatedBy,
-		})
+		_spec.AddField(smartchargingevent.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := sceuo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldUpdatedAt,
-		})
+		_spec.SetField(smartchargingevent.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := sceuo.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldUpdatedAt,
-		})
+		_spec.AddField(smartchargingevent.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := sceuo.mutation.SmartID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldSmartID,
-		})
+		_spec.SetField(smartchargingevent.FieldSmartID, field.TypeUint64, value)
 	}
 	if value, ok := sceuo.mutation.AddedSmartID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldSmartID,
-		})
+		_spec.AddField(smartchargingevent.FieldSmartID, field.TypeUint64, value)
 	}
 	if value, ok := sceuo.mutation.EquipmentID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldEquipmentID,
-		})
+		_spec.SetField(smartchargingevent.FieldEquipmentID, field.TypeUint64, value)
 	}
 	if value, ok := sceuo.mutation.AddedEquipmentID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldEquipmentID,
-		})
+		_spec.AddField(smartchargingevent.FieldEquipmentID, field.TypeUint64, value)
 	}
 	if value, ok := sceuo.mutation.ConnectorID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldConnectorID,
-		})
+		_spec.SetField(smartchargingevent.FieldConnectorID, field.TypeUint64, value)
 	}
 	if value, ok := sceuo.mutation.AddedConnectorID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldConnectorID,
-		})
+		_spec.AddField(smartchargingevent.FieldConnectorID, field.TypeUint64, value)
 	}
 	if value, ok := sceuo.mutation.OrderID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldOrderID,
-		})
+		_spec.SetField(smartchargingevent.FieldOrderID, field.TypeUint64, value)
 	}
 	if value, ok := sceuo.mutation.AddedOrderID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: smartchargingevent.FieldOrderID,
-		})
+		_spec.AddField(smartchargingevent.FieldOrderID, field.TypeUint64, value)
 	}
 	if sceuo.mutation.OrderIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Column: smartchargingevent.FieldOrderID,
-		})
+		_spec.ClearField(smartchargingevent.FieldOrderID, field.TypeUint64)
 	}
 	if value, ok := sceuo.mutation.Unit(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: smartchargingevent.FieldUnit,
-		})
+		_spec.SetField(smartchargingevent.FieldUnit, field.TypeString, value)
 	}
 	if value, ok := sceuo.mutation.ValidFrom(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldValidFrom,
-		})
+		_spec.SetField(smartchargingevent.FieldValidFrom, field.TypeInt64, value)
 	}
 	if value, ok := sceuo.mutation.AddedValidFrom(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldValidFrom,
-		})
+		_spec.AddField(smartchargingevent.FieldValidFrom, field.TypeInt64, value)
 	}
 	if sceuo.mutation.ValidFromCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: smartchargingevent.FieldValidFrom,
-		})
+		_spec.ClearField(smartchargingevent.FieldValidFrom, field.TypeInt64)
 	}
 	if value, ok := sceuo.mutation.ValidTo(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldValidTo,
-		})
+		_spec.SetField(smartchargingevent.FieldValidTo, field.TypeInt64, value)
 	}
 	if value, ok := sceuo.mutation.AddedValidTo(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: smartchargingevent.FieldValidTo,
-		})
+		_spec.AddField(smartchargingevent.FieldValidTo, field.TypeInt64, value)
 	}
 	if sceuo.mutation.ValidToCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: smartchargingevent.FieldValidTo,
-		})
+		_spec.ClearField(smartchargingevent.FieldValidTo, field.TypeInt64)
 	}
 	if value, ok := sceuo.mutation.Spec(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: smartchargingevent.FieldSpec,
+		_spec.SetField(smartchargingevent.FieldSpec, field.TypeJSON, value)
+	}
+	if value, ok := sceuo.mutation.AppendedSpec(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, smartchargingevent.FieldSpec, value)
 		})
 	}
 	_node = &SmartChargingEvent{config: sceuo.config}

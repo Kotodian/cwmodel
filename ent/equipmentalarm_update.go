@@ -295,121 +295,55 @@ func (eau *EquipmentAlarmUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 	}
 	if value, ok := eau.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldVersion,
-		})
+		_spec.SetField(equipmentalarm.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eau.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldVersion,
-		})
+		_spec.AddField(equipmentalarm.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eau.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentalarm.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentalarm.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eau.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentalarm.FieldUpdatedBy,
-		})
+		_spec.AddField(equipmentalarm.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eau.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentalarm.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eau.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldUpdatedAt,
-		})
+		_spec.AddField(equipmentalarm.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eau.mutation.DtcCode(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldDtcCode,
-		})
+		_spec.SetField(equipmentalarm.FieldDtcCode, field.TypeInt64, value)
 	}
 	if value, ok := eau.mutation.AddedDtcCode(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldDtcCode,
-		})
+		_spec.AddField(equipmentalarm.FieldDtcCode, field.TypeInt64, value)
 	}
 	if value, ok := eau.mutation.RemoteAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentalarm.FieldRemoteAddress,
-		})
+		_spec.SetField(equipmentalarm.FieldRemoteAddress, field.TypeString, value)
 	}
 	if value, ok := eau.mutation.TriggerTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldTriggerTime,
-		})
+		_spec.SetField(equipmentalarm.FieldTriggerTime, field.TypeInt64, value)
 	}
 	if value, ok := eau.mutation.AddedTriggerTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldTriggerTime,
-		})
+		_spec.AddField(equipmentalarm.FieldTriggerTime, field.TypeInt64, value)
 	}
 	if eau.mutation.TriggerTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: equipmentalarm.FieldTriggerTime,
-		})
+		_spec.ClearField(equipmentalarm.FieldTriggerTime, field.TypeInt64)
 	}
 	if value, ok := eau.mutation.FinalTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldFinalTime,
-		})
+		_spec.SetField(equipmentalarm.FieldFinalTime, field.TypeInt64, value)
 	}
 	if value, ok := eau.mutation.AddedFinalTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldFinalTime,
-		})
+		_spec.AddField(equipmentalarm.FieldFinalTime, field.TypeInt64, value)
 	}
 	if eau.mutation.FinalTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: equipmentalarm.FieldFinalTime,
-		})
+		_spec.ClearField(equipmentalarm.FieldFinalTime, field.TypeInt64)
 	}
 	if value, ok := eau.mutation.Count(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentalarm.FieldCount,
-		})
+		_spec.SetField(equipmentalarm.FieldCount, field.TypeInt, value)
 	}
 	if value, ok := eau.mutation.AddedCount(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentalarm.FieldCount,
-		})
+		_spec.AddField(equipmentalarm.FieldCount, field.TypeInt, value)
 	}
 	if eau.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -761,121 +695,55 @@ func (eauo *EquipmentAlarmUpdateOne) sqlSave(ctx context.Context) (_node *Equipm
 		}
 	}
 	if value, ok := eauo.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldVersion,
-		})
+		_spec.SetField(equipmentalarm.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eauo.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldVersion,
-		})
+		_spec.AddField(equipmentalarm.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eauo.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentalarm.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentalarm.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eauo.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentalarm.FieldUpdatedBy,
-		})
+		_spec.AddField(equipmentalarm.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eauo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentalarm.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eauo.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldUpdatedAt,
-		})
+		_spec.AddField(equipmentalarm.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eauo.mutation.DtcCode(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldDtcCode,
-		})
+		_spec.SetField(equipmentalarm.FieldDtcCode, field.TypeInt64, value)
 	}
 	if value, ok := eauo.mutation.AddedDtcCode(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldDtcCode,
-		})
+		_spec.AddField(equipmentalarm.FieldDtcCode, field.TypeInt64, value)
 	}
 	if value, ok := eauo.mutation.RemoteAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentalarm.FieldRemoteAddress,
-		})
+		_spec.SetField(equipmentalarm.FieldRemoteAddress, field.TypeString, value)
 	}
 	if value, ok := eauo.mutation.TriggerTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldTriggerTime,
-		})
+		_spec.SetField(equipmentalarm.FieldTriggerTime, field.TypeInt64, value)
 	}
 	if value, ok := eauo.mutation.AddedTriggerTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldTriggerTime,
-		})
+		_spec.AddField(equipmentalarm.FieldTriggerTime, field.TypeInt64, value)
 	}
 	if eauo.mutation.TriggerTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: equipmentalarm.FieldTriggerTime,
-		})
+		_spec.ClearField(equipmentalarm.FieldTriggerTime, field.TypeInt64)
 	}
 	if value, ok := eauo.mutation.FinalTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldFinalTime,
-		})
+		_spec.SetField(equipmentalarm.FieldFinalTime, field.TypeInt64, value)
 	}
 	if value, ok := eauo.mutation.AddedFinalTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentalarm.FieldFinalTime,
-		})
+		_spec.AddField(equipmentalarm.FieldFinalTime, field.TypeInt64, value)
 	}
 	if eauo.mutation.FinalTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: equipmentalarm.FieldFinalTime,
-		})
+		_spec.ClearField(equipmentalarm.FieldFinalTime, field.TypeInt64)
 	}
 	if value, ok := eauo.mutation.Count(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentalarm.FieldCount,
-		})
+		_spec.SetField(equipmentalarm.FieldCount, field.TypeInt, value)
 	}
 	if value, ok := eauo.mutation.AddedCount(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentalarm.FieldCount,
-		})
+		_spec.AddField(equipmentalarm.FieldCount, field.TypeInt, value)
 	}
 	if eauo.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{

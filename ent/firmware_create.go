@@ -283,51 +283,27 @@ func (fc *FirmwareCreate) createSpec() (*Firmware, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := fc.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: firmware.FieldVersion,
-		})
+		_spec.SetField(firmware.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := fc.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: firmware.FieldCreatedBy,
-		})
+		_spec.SetField(firmware.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := fc.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: firmware.FieldCreatedAt,
-		})
+		_spec.SetField(firmware.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := fc.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: firmware.FieldUpdatedBy,
-		})
+		_spec.SetField(firmware.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := fc.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: firmware.FieldUpdatedAt,
-		})
+		_spec.SetField(firmware.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := fc.mutation.EquipVersion(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: firmware.FieldEquipVersion,
-		})
+		_spec.SetField(firmware.FieldEquipVersion, field.TypeString, value)
 		_node.EquipVersion = value
 	}
 	if nodes := fc.mutation.EquipmentFirmwareEffectIDs(); len(nodes) > 0 {

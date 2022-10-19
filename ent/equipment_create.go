@@ -442,67 +442,35 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := ec.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipment.FieldVersion,
-		})
+		_spec.SetField(equipment.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := ec.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipment.FieldCreatedBy,
-		})
+		_spec.SetField(equipment.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := ec.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipment.FieldCreatedAt,
-		})
+		_spec.SetField(equipment.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := ec.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipment.FieldUpdatedBy,
-		})
+		_spec.SetField(equipment.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := ec.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipment.FieldUpdatedAt,
-		})
+		_spec.SetField(equipment.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := ec.mutation.Sn(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipment.FieldSn,
-		})
+		_spec.SetField(equipment.FieldSn, field.TypeString, value)
 		_node.Sn = value
 	}
 	if value, ok := ec.mutation.OperatorID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipment.FieldOperatorID,
-		})
+		_spec.SetField(equipment.FieldOperatorID, field.TypeUint64, value)
 		_node.OperatorID = value
 	}
 	if value, ok := ec.mutation.StationID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipment.FieldStationID,
-		})
+		_spec.SetField(equipment.FieldStationID, field.TypeUint64, value)
 		_node.StationID = value
 	}
 	if nodes := ec.mutation.EquipmentInfoIDs(); len(nodes) > 0 {

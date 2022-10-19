@@ -294,75 +294,39 @@ func (mc *ModelCreate) createSpec() (*Model, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := mc.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: model.FieldVersion,
-		})
+		_spec.SetField(model.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := mc.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: model.FieldCreatedBy,
-		})
+		_spec.SetField(model.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := mc.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: model.FieldCreatedAt,
-		})
+		_spec.SetField(model.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := mc.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: model.FieldUpdatedBy,
-		})
+		_spec.SetField(model.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := mc.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: model.FieldUpdatedAt,
-		})
+		_spec.SetField(model.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := mc.mutation.Code(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: model.FieldCode,
-		})
+		_spec.SetField(model.FieldCode, field.TypeString, value)
 		_node.Code = value
 	}
 	if value, ok := mc.mutation.Name(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: model.FieldName,
-		})
+		_spec.SetField(model.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
 	if value, ok := mc.mutation.PhaseCategory(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: model.FieldPhaseCategory,
-		})
+		_spec.SetField(model.FieldPhaseCategory, field.TypeString, value)
 		_node.PhaseCategory = value
 	}
 	if value, ok := mc.mutation.CurrentCategory(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: model.FieldCurrentCategory,
-		})
+		_spec.SetField(model.FieldCurrentCategory, field.TypeString, value)
 		_node.CurrentCategory = value
 	}
 	return _node, _spec

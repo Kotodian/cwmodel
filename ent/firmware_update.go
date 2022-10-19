@@ -212,53 +212,25 @@ func (fu *FirmwareUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := fu.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: firmware.FieldVersion,
-		})
+		_spec.SetField(firmware.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := fu.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: firmware.FieldVersion,
-		})
+		_spec.AddField(firmware.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := fu.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: firmware.FieldUpdatedBy,
-		})
+		_spec.SetField(firmware.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := fu.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: firmware.FieldUpdatedBy,
-		})
+		_spec.AddField(firmware.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := fu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: firmware.FieldUpdatedAt,
-		})
+		_spec.SetField(firmware.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := fu.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: firmware.FieldUpdatedAt,
-		})
+		_spec.AddField(firmware.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := fu.mutation.EquipVersion(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: firmware.FieldEquipVersion,
-		})
+		_spec.SetField(firmware.FieldEquipVersion, field.TypeString, value)
 	}
 	if fu.mutation.EquipmentFirmwareEffectCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -546,53 +518,25 @@ func (fuo *FirmwareUpdateOne) sqlSave(ctx context.Context) (_node *Firmware, err
 		}
 	}
 	if value, ok := fuo.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: firmware.FieldVersion,
-		})
+		_spec.SetField(firmware.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := fuo.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: firmware.FieldVersion,
-		})
+		_spec.AddField(firmware.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := fuo.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: firmware.FieldUpdatedBy,
-		})
+		_spec.SetField(firmware.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := fuo.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: firmware.FieldUpdatedBy,
-		})
+		_spec.AddField(firmware.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := fuo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: firmware.FieldUpdatedAt,
-		})
+		_spec.SetField(firmware.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := fuo.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: firmware.FieldUpdatedAt,
-		})
+		_spec.AddField(firmware.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := fuo.mutation.EquipVersion(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: firmware.FieldEquipVersion,
-		})
+		_spec.SetField(firmware.FieldEquipVersion, field.TypeString, value)
 	}
 	if fuo.mutation.EquipmentFirmwareEffectCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -193,74 +193,34 @@ func (mu *ModelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := mu.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: model.FieldVersion,
-		})
+		_spec.SetField(model.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := mu.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: model.FieldVersion,
-		})
+		_spec.AddField(model.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := mu.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: model.FieldUpdatedBy,
-		})
+		_spec.SetField(model.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := mu.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: model.FieldUpdatedBy,
-		})
+		_spec.AddField(model.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := mu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: model.FieldUpdatedAt,
-		})
+		_spec.SetField(model.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := mu.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: model.FieldUpdatedAt,
-		})
+		_spec.AddField(model.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := mu.mutation.Code(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: model.FieldCode,
-		})
+		_spec.SetField(model.FieldCode, field.TypeString, value)
 	}
 	if value, ok := mu.mutation.Name(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: model.FieldName,
-		})
+		_spec.SetField(model.FieldName, field.TypeString, value)
 	}
 	if value, ok := mu.mutation.PhaseCategory(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: model.FieldPhaseCategory,
-		})
+		_spec.SetField(model.FieldPhaseCategory, field.TypeString, value)
 	}
 	if value, ok := mu.mutation.CurrentCategory(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: model.FieldCurrentCategory,
-		})
+		_spec.SetField(model.FieldCurrentCategory, field.TypeString, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, mu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -476,74 +436,34 @@ func (muo *ModelUpdateOne) sqlSave(ctx context.Context) (_node *Model, err error
 		}
 	}
 	if value, ok := muo.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: model.FieldVersion,
-		})
+		_spec.SetField(model.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := muo.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: model.FieldVersion,
-		})
+		_spec.AddField(model.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := muo.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: model.FieldUpdatedBy,
-		})
+		_spec.SetField(model.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := muo.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: model.FieldUpdatedBy,
-		})
+		_spec.AddField(model.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := muo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: model.FieldUpdatedAt,
-		})
+		_spec.SetField(model.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := muo.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: model.FieldUpdatedAt,
-		})
+		_spec.AddField(model.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := muo.mutation.Code(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: model.FieldCode,
-		})
+		_spec.SetField(model.FieldCode, field.TypeString, value)
 	}
 	if value, ok := muo.mutation.Name(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: model.FieldName,
-		})
+		_spec.SetField(model.FieldName, field.TypeString, value)
 	}
 	if value, ok := muo.mutation.PhaseCategory(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: model.FieldPhaseCategory,
-		})
+		_spec.SetField(model.FieldPhaseCategory, field.TypeString, value)
 	}
 	if value, ok := muo.mutation.CurrentCategory(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: model.FieldCurrentCategory,
-		})
+		_spec.SetField(model.FieldCurrentCategory, field.TypeString, value)
 	}
 	_node = &Model{config: muo.config}
 	_spec.Assign = _node.assignValues

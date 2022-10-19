@@ -227,81 +227,37 @@ func (oeu *OrderEventUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := oeu.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldVersion,
-		})
+		_spec.SetField(orderevent.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := oeu.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldVersion,
-		})
+		_spec.AddField(orderevent.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := oeu.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderevent.FieldUpdatedBy,
-		})
+		_spec.SetField(orderevent.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := oeu.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderevent.FieldUpdatedBy,
-		})
+		_spec.AddField(orderevent.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := oeu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldUpdatedAt,
-		})
+		_spec.SetField(orderevent.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := oeu.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldUpdatedAt,
-		})
+		_spec.AddField(orderevent.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := oeu.mutation.OrderID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderevent.FieldOrderID,
-		})
+		_spec.SetField(orderevent.FieldOrderID, field.TypeUint64, value)
 	}
 	if value, ok := oeu.mutation.AddedOrderID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderevent.FieldOrderID,
-		})
+		_spec.AddField(orderevent.FieldOrderID, field.TypeUint64, value)
 	}
 	if value, ok := oeu.mutation.Content(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderevent.FieldContent,
-		})
+		_spec.SetField(orderevent.FieldContent, field.TypeString, value)
 	}
 	if value, ok := oeu.mutation.Occurrence(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldOccurrence,
-		})
+		_spec.SetField(orderevent.FieldOccurrence, field.TypeInt64, value)
 	}
 	if value, ok := oeu.mutation.AddedOccurrence(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldOccurrence,
-		})
+		_spec.AddField(orderevent.FieldOccurrence, field.TypeInt64, value)
 	}
 	if oeu.mutation.OrderInfoCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -585,81 +541,37 @@ func (oeuo *OrderEventUpdateOne) sqlSave(ctx context.Context) (_node *OrderEvent
 		}
 	}
 	if value, ok := oeuo.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldVersion,
-		})
+		_spec.SetField(orderevent.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := oeuo.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldVersion,
-		})
+		_spec.AddField(orderevent.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := oeuo.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderevent.FieldUpdatedBy,
-		})
+		_spec.SetField(orderevent.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := oeuo.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderevent.FieldUpdatedBy,
-		})
+		_spec.AddField(orderevent.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := oeuo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldUpdatedAt,
-		})
+		_spec.SetField(orderevent.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := oeuo.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldUpdatedAt,
-		})
+		_spec.AddField(orderevent.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := oeuo.mutation.OrderID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderevent.FieldOrderID,
-		})
+		_spec.SetField(orderevent.FieldOrderID, field.TypeUint64, value)
 	}
 	if value, ok := oeuo.mutation.AddedOrderID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderevent.FieldOrderID,
-		})
+		_spec.AddField(orderevent.FieldOrderID, field.TypeUint64, value)
 	}
 	if value, ok := oeuo.mutation.Content(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderevent.FieldContent,
-		})
+		_spec.SetField(orderevent.FieldContent, field.TypeString, value)
 	}
 	if value, ok := oeuo.mutation.Occurrence(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldOccurrence,
-		})
+		_spec.SetField(orderevent.FieldOccurrence, field.TypeInt64, value)
 	}
 	if value, ok := oeuo.mutation.AddedOccurrence(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldOccurrence,
-		})
+		_spec.AddField(orderevent.FieldOccurrence, field.TypeInt64, value)
 	}
 	if oeuo.mutation.OrderInfoCleared() {
 		edge := &sqlgraph.EdgeSpec{

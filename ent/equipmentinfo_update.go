@@ -310,165 +310,73 @@ func (eiu *EquipmentInfoUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 	}
 	if value, ok := eiu.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldVersion,
-		})
+		_spec.SetField(equipmentinfo.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eiu.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldVersion,
-		})
+		_spec.AddField(equipmentinfo.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eiu.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentinfo.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eiu.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldUpdatedBy,
-		})
+		_spec.AddField(equipmentinfo.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eiu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentinfo.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eiu.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldUpdatedAt,
-		})
+		_spec.AddField(equipmentinfo.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eiu.mutation.EquipmentSn(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentinfo.FieldEquipmentSn,
-		})
+		_spec.SetField(equipmentinfo.FieldEquipmentSn, field.TypeString, value)
 	}
 	if value, ok := eiu.mutation.ModelID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldModelID,
-		})
+		_spec.SetField(equipmentinfo.FieldModelID, field.TypeUint64, value)
 	}
 	if value, ok := eiu.mutation.AddedModelID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldModelID,
-		})
+		_spec.AddField(equipmentinfo.FieldModelID, field.TypeUint64, value)
 	}
 	if value, ok := eiu.mutation.ManufacturerID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldManufacturerID,
-		})
+		_spec.SetField(equipmentinfo.FieldManufacturerID, field.TypeUint64, value)
 	}
 	if value, ok := eiu.mutation.AddedManufacturerID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldManufacturerID,
-		})
+		_spec.AddField(equipmentinfo.FieldManufacturerID, field.TypeUint64, value)
 	}
 	if value, ok := eiu.mutation.FirmwareID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldFirmwareID,
-		})
+		_spec.SetField(equipmentinfo.FieldFirmwareID, field.TypeUint64, value)
 	}
 	if value, ok := eiu.mutation.AddedFirmwareID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldFirmwareID,
-		})
+		_spec.AddField(equipmentinfo.FieldFirmwareID, field.TypeUint64, value)
 	}
 	if value, ok := eiu.mutation.AccessPod(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentinfo.FieldAccessPod,
-		})
+		_spec.SetField(equipmentinfo.FieldAccessPod, field.TypeString, value)
 	}
 	if value, ok := eiu.mutation.State(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: equipmentinfo.FieldState,
-		})
+		_spec.SetField(equipmentinfo.FieldState, field.TypeBool, value)
 	}
 	if value, ok := eiu.mutation.EvseNumber(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: equipmentinfo.FieldEvseNumber,
-		})
+		_spec.SetField(equipmentinfo.FieldEvseNumber, field.TypeUint, value)
 	}
 	if value, ok := eiu.mutation.AddedEvseNumber(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: equipmentinfo.FieldEvseNumber,
-		})
+		_spec.AddField(equipmentinfo.FieldEvseNumber, field.TypeUint, value)
 	}
 	if value, ok := eiu.mutation.AlarmNumber(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: equipmentinfo.FieldAlarmNumber,
-		})
+		_spec.SetField(equipmentinfo.FieldAlarmNumber, field.TypeUint, value)
 	}
 	if value, ok := eiu.mutation.AddedAlarmNumber(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: equipmentinfo.FieldAlarmNumber,
-		})
+		_spec.AddField(equipmentinfo.FieldAlarmNumber, field.TypeUint, value)
 	}
 	if value, ok := eiu.mutation.RegisterDatetime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldRegisterDatetime,
-		})
+		_spec.SetField(equipmentinfo.FieldRegisterDatetime, field.TypeInt64, value)
 	}
 	if value, ok := eiu.mutation.AddedRegisterDatetime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldRegisterDatetime,
-		})
+		_spec.AddField(equipmentinfo.FieldRegisterDatetime, field.TypeInt64, value)
 	}
 	if value, ok := eiu.mutation.RemoteAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldRemoteAddress,
-		})
+		_spec.SetField(equipmentinfo.FieldRemoteAddress, field.TypeInt64, value)
 	}
 	if value, ok := eiu.mutation.AddedRemoteAddress(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldRemoteAddress,
-		})
+		_spec.AddField(equipmentinfo.FieldRemoteAddress, field.TypeInt64, value)
 	}
 	if eiu.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -835,165 +743,73 @@ func (eiuo *EquipmentInfoUpdateOne) sqlSave(ctx context.Context) (_node *Equipme
 		}
 	}
 	if value, ok := eiuo.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldVersion,
-		})
+		_spec.SetField(equipmentinfo.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eiuo.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldVersion,
-		})
+		_spec.AddField(equipmentinfo.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eiuo.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentinfo.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eiuo.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldUpdatedBy,
-		})
+		_spec.AddField(equipmentinfo.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eiuo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentinfo.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eiuo.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldUpdatedAt,
-		})
+		_spec.AddField(equipmentinfo.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eiuo.mutation.EquipmentSn(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentinfo.FieldEquipmentSn,
-		})
+		_spec.SetField(equipmentinfo.FieldEquipmentSn, field.TypeString, value)
 	}
 	if value, ok := eiuo.mutation.ModelID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldModelID,
-		})
+		_spec.SetField(equipmentinfo.FieldModelID, field.TypeUint64, value)
 	}
 	if value, ok := eiuo.mutation.AddedModelID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldModelID,
-		})
+		_spec.AddField(equipmentinfo.FieldModelID, field.TypeUint64, value)
 	}
 	if value, ok := eiuo.mutation.ManufacturerID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldManufacturerID,
-		})
+		_spec.SetField(equipmentinfo.FieldManufacturerID, field.TypeUint64, value)
 	}
 	if value, ok := eiuo.mutation.AddedManufacturerID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldManufacturerID,
-		})
+		_spec.AddField(equipmentinfo.FieldManufacturerID, field.TypeUint64, value)
 	}
 	if value, ok := eiuo.mutation.FirmwareID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldFirmwareID,
-		})
+		_spec.SetField(equipmentinfo.FieldFirmwareID, field.TypeUint64, value)
 	}
 	if value, ok := eiuo.mutation.AddedFirmwareID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentinfo.FieldFirmwareID,
-		})
+		_spec.AddField(equipmentinfo.FieldFirmwareID, field.TypeUint64, value)
 	}
 	if value, ok := eiuo.mutation.AccessPod(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipmentinfo.FieldAccessPod,
-		})
+		_spec.SetField(equipmentinfo.FieldAccessPod, field.TypeString, value)
 	}
 	if value, ok := eiuo.mutation.State(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: equipmentinfo.FieldState,
-		})
+		_spec.SetField(equipmentinfo.FieldState, field.TypeBool, value)
 	}
 	if value, ok := eiuo.mutation.EvseNumber(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: equipmentinfo.FieldEvseNumber,
-		})
+		_spec.SetField(equipmentinfo.FieldEvseNumber, field.TypeUint, value)
 	}
 	if value, ok := eiuo.mutation.AddedEvseNumber(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: equipmentinfo.FieldEvseNumber,
-		})
+		_spec.AddField(equipmentinfo.FieldEvseNumber, field.TypeUint, value)
 	}
 	if value, ok := eiuo.mutation.AlarmNumber(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: equipmentinfo.FieldAlarmNumber,
-		})
+		_spec.SetField(equipmentinfo.FieldAlarmNumber, field.TypeUint, value)
 	}
 	if value, ok := eiuo.mutation.AddedAlarmNumber(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: equipmentinfo.FieldAlarmNumber,
-		})
+		_spec.AddField(equipmentinfo.FieldAlarmNumber, field.TypeUint, value)
 	}
 	if value, ok := eiuo.mutation.RegisterDatetime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldRegisterDatetime,
-		})
+		_spec.SetField(equipmentinfo.FieldRegisterDatetime, field.TypeInt64, value)
 	}
 	if value, ok := eiuo.mutation.AddedRegisterDatetime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldRegisterDatetime,
-		})
+		_spec.AddField(equipmentinfo.FieldRegisterDatetime, field.TypeInt64, value)
 	}
 	if value, ok := eiuo.mutation.RemoteAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldRemoteAddress,
-		})
+		_spec.SetField(equipmentinfo.FieldRemoteAddress, field.TypeInt64, value)
 	}
 	if value, ok := eiuo.mutation.AddedRemoteAddress(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentinfo.FieldRemoteAddress,
-		})
+		_spec.AddField(equipmentinfo.FieldRemoteAddress, field.TypeInt64, value)
 	}
 	if eiuo.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{

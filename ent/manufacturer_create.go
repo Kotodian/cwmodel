@@ -281,59 +281,31 @@ func (mc *ManufacturerCreate) createSpec() (*Manufacturer, *sqlgraph.CreateSpec)
 		_spec.ID.Value = id
 	}
 	if value, ok := mc.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: manufacturer.FieldVersion,
-		})
+		_spec.SetField(manufacturer.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := mc.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: manufacturer.FieldCreatedBy,
-		})
+		_spec.SetField(manufacturer.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := mc.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: manufacturer.FieldCreatedAt,
-		})
+		_spec.SetField(manufacturer.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := mc.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: manufacturer.FieldUpdatedBy,
-		})
+		_spec.SetField(manufacturer.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := mc.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: manufacturer.FieldUpdatedAt,
-		})
+		_spec.SetField(manufacturer.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := mc.mutation.Code(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: manufacturer.FieldCode,
-		})
+		_spec.SetField(manufacturer.FieldCode, field.TypeString, value)
 		_node.Code = value
 	}
 	if value, ok := mc.mutation.Name(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: manufacturer.FieldName,
-		})
+		_spec.SetField(manufacturer.FieldName, field.TypeString, value)
 		_node.Name = &value
 	}
 	return _node, _spec

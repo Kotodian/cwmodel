@@ -18470,6 +18470,7 @@ type SmartChargingEventMutation struct {
 	valid_to        *int64
 	addvalid_to     *int64
 	spec            *[]types.ChargingSchedulePeriod
+	appendspec      []types.ChargingSchedulePeriod
 	clearedFields   map[string]struct{}
 	done            bool
 	oldValue        func(context.Context) (*SmartChargingEvent, error)
@@ -19277,6 +19278,7 @@ func (m *SmartChargingEventMutation) ResetValidTo() {
 // SetSpec sets the "spec" field.
 func (m *SmartChargingEventMutation) SetSpec(tsp []types.ChargingSchedulePeriod) {
 	m.spec = &tsp
+	m.appendspec = nil
 }
 
 // Spec returns the value of the "spec" field in the mutation.
@@ -19305,9 +19307,23 @@ func (m *SmartChargingEventMutation) OldSpec(ctx context.Context) (v []types.Cha
 	return oldValue.Spec, nil
 }
 
+// AppendSpec adds tsp to the "spec" field.
+func (m *SmartChargingEventMutation) AppendSpec(tsp []types.ChargingSchedulePeriod) {
+	m.appendspec = append(m.appendspec, tsp...)
+}
+
+// AppendedSpec returns the list of values that were appended to the "spec" field in this mutation.
+func (m *SmartChargingEventMutation) AppendedSpec() ([]types.ChargingSchedulePeriod, bool) {
+	if len(m.appendspec) == 0 {
+		return nil, false
+	}
+	return m.appendspec, true
+}
+
 // ResetSpec resets all changes to the "spec" field.
 func (m *SmartChargingEventMutation) ResetSpec() {
 	m.spec = nil
+	m.appendspec = nil
 }
 
 // Where appends a list predicates to the SmartChargingEventMutation builder.

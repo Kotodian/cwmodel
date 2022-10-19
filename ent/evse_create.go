@@ -307,59 +307,31 @@ func (ec *EvseCreate) createSpec() (*Evse, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := ec.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: evse.FieldVersion,
-		})
+		_spec.SetField(evse.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := ec.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: evse.FieldCreatedBy,
-		})
+		_spec.SetField(evse.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := ec.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: evse.FieldCreatedAt,
-		})
+		_spec.SetField(evse.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := ec.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: evse.FieldUpdatedBy,
-		})
+		_spec.SetField(evse.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := ec.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: evse.FieldUpdatedAt,
-		})
+		_spec.SetField(evse.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := ec.mutation.Serial(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: evse.FieldSerial,
-		})
+		_spec.SetField(evse.FieldSerial, field.TypeString, value)
 		_node.Serial = value
 	}
 	if value, ok := ec.mutation.ConnectorNumber(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: evse.FieldConnectorNumber,
-		})
+		_spec.SetField(evse.FieldConnectorNumber, field.TypeInt, value)
 		_node.ConnectorNumber = value
 	}
 	if nodes := ec.mutation.EquipmentIDs(); len(nodes) > 0 {

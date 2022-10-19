@@ -247,74 +247,34 @@ func (efeu *EquipmentFirmwareEffectUpdate) sqlSave(ctx context.Context) (n int, 
 		}
 	}
 	if value, ok := efeu.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldVersion,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := efeu.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldVersion,
-		})
+		_spec.AddField(equipmentfirmwareeffect.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := efeu.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := efeu.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldUpdatedBy,
-		})
+		_spec.AddField(equipmentfirmwareeffect.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := efeu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := efeu.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldUpdatedAt,
-		})
+		_spec.AddField(equipmentfirmwareeffect.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := efeu.mutation.RequestID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldRequestID,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldRequestID, field.TypeInt64, value)
 	}
 	if value, ok := efeu.mutation.AddedRequestID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldRequestID,
-		})
+		_spec.AddField(equipmentfirmwareeffect.FieldRequestID, field.TypeInt64, value)
 	}
 	if value, ok := efeu.mutation.State(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldState,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldState, field.TypeInt, value)
 	}
 	if value, ok := efeu.mutation.AddedState(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldState,
-		})
+		_spec.AddField(equipmentfirmwareeffect.FieldState, field.TypeInt, value)
 	}
 	if efeu.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -652,74 +612,34 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) sqlSave(ctx context.Context) (_no
 		}
 	}
 	if value, ok := efeuo.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldVersion,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := efeuo.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldVersion,
-		})
+		_spec.AddField(equipmentfirmwareeffect.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := efeuo.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldUpdatedBy,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := efeuo.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldUpdatedBy,
-		})
+		_spec.AddField(equipmentfirmwareeffect.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := efeuo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldUpdatedAt,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := efeuo.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldUpdatedAt,
-		})
+		_spec.AddField(equipmentfirmwareeffect.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := efeuo.mutation.RequestID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldRequestID,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldRequestID, field.TypeInt64, value)
 	}
 	if value, ok := efeuo.mutation.AddedRequestID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldRequestID,
-		})
+		_spec.AddField(equipmentfirmwareeffect.FieldRequestID, field.TypeInt64, value)
 	}
 	if value, ok := efeuo.mutation.State(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldState,
-		})
+		_spec.SetField(equipmentfirmwareeffect.FieldState, field.TypeInt, value)
 	}
 	if value, ok := efeuo.mutation.AddedState(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: equipmentfirmwareeffect.FieldState,
-		})
+		_spec.AddField(equipmentfirmwareeffect.FieldState, field.TypeInt, value)
 	}
 	if efeuo.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{

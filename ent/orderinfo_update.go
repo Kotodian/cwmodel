@@ -775,433 +775,196 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := oiu.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldVersion,
-		})
+		_spec.SetField(orderinfo.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := oiu.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldVersion,
-		})
+		_spec.AddField(orderinfo.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := oiu.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldUpdatedBy,
-		})
+		_spec.SetField(orderinfo.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := oiu.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldUpdatedBy,
-		})
+		_spec.AddField(orderinfo.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := oiu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldUpdatedAt,
-		})
+		_spec.SetField(orderinfo.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := oiu.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldUpdatedAt,
-		})
+		_spec.AddField(orderinfo.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := oiu.mutation.RemoteStartID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldRemoteStartID,
-		})
+		_spec.SetField(orderinfo.FieldRemoteStartID, field.TypeInt64, value)
 	}
 	if value, ok := oiu.mutation.AddedRemoteStartID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldRemoteStartID,
-		})
+		_spec.AddField(orderinfo.FieldRemoteStartID, field.TypeInt64, value)
 	}
 	if oiu.mutation.RemoteStartIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: orderinfo.FieldRemoteStartID,
-		})
+		_spec.ClearField(orderinfo.FieldRemoteStartID, field.TypeInt64)
 	}
 	if value, ok := oiu.mutation.TransactionID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderinfo.FieldTransactionID,
-		})
+		_spec.SetField(orderinfo.FieldTransactionID, field.TypeString, value)
 	}
 	if value, ok := oiu.mutation.AuthorizationID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderinfo.FieldAuthorizationID,
-		})
+		_spec.SetField(orderinfo.FieldAuthorizationID, field.TypeString, value)
 	}
 	if oiu.mutation.AuthorizationIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderinfo.FieldAuthorizationID,
-		})
+		_spec.ClearField(orderinfo.FieldAuthorizationID, field.TypeString)
 	}
 	if value, ok := oiu.mutation.CustomerID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderinfo.FieldCustomerID,
-		})
+		_spec.SetField(orderinfo.FieldCustomerID, field.TypeString, value)
 	}
 	if oiu.mutation.CustomerIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderinfo.FieldCustomerID,
-		})
+		_spec.ClearField(orderinfo.FieldCustomerID, field.TypeString)
 	}
 	if value, ok := oiu.mutation.CallerOrderID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderinfo.FieldCallerOrderID,
-		})
+		_spec.SetField(orderinfo.FieldCallerOrderID, field.TypeString, value)
 	}
 	if oiu.mutation.CallerOrderIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderinfo.FieldCallerOrderID,
-		})
+		_spec.ClearField(orderinfo.FieldCallerOrderID, field.TypeString)
 	}
 	if value, ok := oiu.mutation.TotalElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldTotalElectricity,
-		})
+		_spec.SetField(orderinfo.FieldTotalElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiu.mutation.AddedTotalElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldTotalElectricity,
-		})
+		_spec.AddField(orderinfo.FieldTotalElectricity, field.TypeFloat64, value)
 	}
 	if oiu.mutation.TotalElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldTotalElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldTotalElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiu.mutation.ChargeStartElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStartElectricity,
-		})
+		_spec.SetField(orderinfo.FieldChargeStartElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiu.mutation.AddedChargeStartElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStartElectricity,
-		})
+		_spec.AddField(orderinfo.FieldChargeStartElectricity, field.TypeFloat64, value)
 	}
 	if oiu.mutation.ChargeStartElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldChargeStartElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldChargeStartElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiu.mutation.ChargeStopElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStopElectricity,
-		})
+		_spec.SetField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiu.mutation.AddedChargeStopElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStopElectricity,
-		})
+		_spec.AddField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64, value)
 	}
 	if oiu.mutation.ChargeStopElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldChargeStopElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiu.mutation.SharpElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldSharpElectricity,
-		})
+		_spec.SetField(orderinfo.FieldSharpElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiu.mutation.AddedSharpElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldSharpElectricity,
-		})
+		_spec.AddField(orderinfo.FieldSharpElectricity, field.TypeFloat64, value)
 	}
 	if oiu.mutation.SharpElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldSharpElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldSharpElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiu.mutation.PeakElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldPeakElectricity,
-		})
+		_spec.SetField(orderinfo.FieldPeakElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiu.mutation.AddedPeakElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldPeakElectricity,
-		})
+		_spec.AddField(orderinfo.FieldPeakElectricity, field.TypeFloat64, value)
 	}
 	if oiu.mutation.PeakElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldPeakElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldPeakElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiu.mutation.FlatElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldFlatElectricity,
-		})
+		_spec.SetField(orderinfo.FieldFlatElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiu.mutation.AddedFlatElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldFlatElectricity,
-		})
+		_spec.AddField(orderinfo.FieldFlatElectricity, field.TypeFloat64, value)
 	}
 	if oiu.mutation.FlatElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldFlatElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldFlatElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiu.mutation.ValleyElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldValleyElectricity,
-		})
+		_spec.SetField(orderinfo.FieldValleyElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiu.mutation.AddedValleyElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldValleyElectricity,
-		})
+		_spec.AddField(orderinfo.FieldValleyElectricity, field.TypeFloat64, value)
 	}
 	if oiu.mutation.ValleyElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldValleyElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldValleyElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiu.mutation.StopReasonCode(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt32,
-			Value:  value,
-			Column: orderinfo.FieldStopReasonCode,
-		})
+		_spec.SetField(orderinfo.FieldStopReasonCode, field.TypeInt32, value)
 	}
 	if value, ok := oiu.mutation.AddedStopReasonCode(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt32,
-			Value:  value,
-			Column: orderinfo.FieldStopReasonCode,
-		})
+		_spec.AddField(orderinfo.FieldStopReasonCode, field.TypeInt32, value)
 	}
 	if oiu.mutation.StopReasonCodeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt32,
-			Column: orderinfo.FieldStopReasonCode,
-		})
+		_spec.ClearField(orderinfo.FieldStopReasonCode, field.TypeInt32)
 	}
 	if value, ok := oiu.mutation.Offline(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: orderinfo.FieldOffline,
-		})
+		_spec.SetField(orderinfo.FieldOffline, field.TypeBool, value)
 	}
 	if value, ok := oiu.mutation.PriceSchemeReleaseID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldPriceSchemeReleaseID,
-		})
+		_spec.SetField(orderinfo.FieldPriceSchemeReleaseID, field.TypeInt64, value)
 	}
 	if value, ok := oiu.mutation.AddedPriceSchemeReleaseID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldPriceSchemeReleaseID,
-		})
+		_spec.AddField(orderinfo.FieldPriceSchemeReleaseID, field.TypeInt64, value)
 	}
 	if value, ok := oiu.mutation.OrderStartTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldOrderStartTime,
-		})
+		_spec.SetField(orderinfo.FieldOrderStartTime, field.TypeInt64, value)
 	}
 	if value, ok := oiu.mutation.AddedOrderStartTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldOrderStartTime,
-		})
+		_spec.AddField(orderinfo.FieldOrderStartTime, field.TypeInt64, value)
 	}
 	if oiu.mutation.OrderStartTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: orderinfo.FieldOrderStartTime,
-		})
+		_spec.ClearField(orderinfo.FieldOrderStartTime, field.TypeInt64)
 	}
 	if value, ok := oiu.mutation.OrderFinalTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldOrderFinalTime,
-		})
+		_spec.SetField(orderinfo.FieldOrderFinalTime, field.TypeInt64, value)
 	}
 	if value, ok := oiu.mutation.AddedOrderFinalTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldOrderFinalTime,
-		})
+		_spec.AddField(orderinfo.FieldOrderFinalTime, field.TypeInt64, value)
 	}
 	if oiu.mutation.OrderFinalTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: orderinfo.FieldOrderFinalTime,
-		})
+		_spec.ClearField(orderinfo.FieldOrderFinalTime, field.TypeInt64)
 	}
 	if value, ok := oiu.mutation.ChargeStartTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStartTime,
-		})
+		_spec.SetField(orderinfo.FieldChargeStartTime, field.TypeInt64, value)
 	}
 	if value, ok := oiu.mutation.AddedChargeStartTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStartTime,
-		})
+		_spec.AddField(orderinfo.FieldChargeStartTime, field.TypeInt64, value)
 	}
 	if oiu.mutation.ChargeStartTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: orderinfo.FieldChargeStartTime,
-		})
+		_spec.ClearField(orderinfo.FieldChargeStartTime, field.TypeInt64)
 	}
 	if value, ok := oiu.mutation.ChargeFinalTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldChargeFinalTime,
-		})
+		_spec.SetField(orderinfo.FieldChargeFinalTime, field.TypeInt64, value)
 	}
 	if value, ok := oiu.mutation.AddedChargeFinalTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldChargeFinalTime,
-		})
+		_spec.AddField(orderinfo.FieldChargeFinalTime, field.TypeInt64, value)
 	}
 	if oiu.mutation.ChargeFinalTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: orderinfo.FieldChargeFinalTime,
-		})
+		_spec.ClearField(orderinfo.FieldChargeFinalTime, field.TypeInt64)
 	}
 	if value, ok := oiu.mutation.IntellectID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldIntellectID,
-		})
+		_spec.SetField(orderinfo.FieldIntellectID, field.TypeInt64, value)
 	}
 	if value, ok := oiu.mutation.AddedIntellectID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldIntellectID,
-		})
+		_spec.AddField(orderinfo.FieldIntellectID, field.TypeInt64, value)
 	}
 	if oiu.mutation.IntellectIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: orderinfo.FieldIntellectID,
-		})
+		_spec.ClearField(orderinfo.FieldIntellectID, field.TypeInt64)
 	}
 	if value, ok := oiu.mutation.StationID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldStationID,
-		})
+		_spec.SetField(orderinfo.FieldStationID, field.TypeUint64, value)
 	}
 	if value, ok := oiu.mutation.AddedStationID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldStationID,
-		})
+		_spec.AddField(orderinfo.FieldStationID, field.TypeUint64, value)
 	}
 	if oiu.mutation.StationIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Column: orderinfo.FieldStationID,
-		})
+		_spec.ClearField(orderinfo.FieldStationID, field.TypeUint64)
 	}
 	if value, ok := oiu.mutation.OperatorID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldOperatorID,
-		})
+		_spec.SetField(orderinfo.FieldOperatorID, field.TypeUint64, value)
 	}
 	if value, ok := oiu.mutation.AddedOperatorID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldOperatorID,
-		})
+		_spec.AddField(orderinfo.FieldOperatorID, field.TypeUint64, value)
 	}
 	if oiu.mutation.OperatorIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Column: orderinfo.FieldOperatorID,
-		})
+		_spec.ClearField(orderinfo.FieldOperatorID, field.TypeUint64)
 	}
 	if oiu.mutation.ConnectorCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -2120,433 +1883,196 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 		}
 	}
 	if value, ok := oiuo.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldVersion,
-		})
+		_spec.SetField(orderinfo.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := oiuo.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldVersion,
-		})
+		_spec.AddField(orderinfo.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := oiuo.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldUpdatedBy,
-		})
+		_spec.SetField(orderinfo.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := oiuo.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldUpdatedBy,
-		})
+		_spec.AddField(orderinfo.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := oiuo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldUpdatedAt,
-		})
+		_spec.SetField(orderinfo.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := oiuo.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldUpdatedAt,
-		})
+		_spec.AddField(orderinfo.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := oiuo.mutation.RemoteStartID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldRemoteStartID,
-		})
+		_spec.SetField(orderinfo.FieldRemoteStartID, field.TypeInt64, value)
 	}
 	if value, ok := oiuo.mutation.AddedRemoteStartID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldRemoteStartID,
-		})
+		_spec.AddField(orderinfo.FieldRemoteStartID, field.TypeInt64, value)
 	}
 	if oiuo.mutation.RemoteStartIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: orderinfo.FieldRemoteStartID,
-		})
+		_spec.ClearField(orderinfo.FieldRemoteStartID, field.TypeInt64)
 	}
 	if value, ok := oiuo.mutation.TransactionID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderinfo.FieldTransactionID,
-		})
+		_spec.SetField(orderinfo.FieldTransactionID, field.TypeString, value)
 	}
 	if value, ok := oiuo.mutation.AuthorizationID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderinfo.FieldAuthorizationID,
-		})
+		_spec.SetField(orderinfo.FieldAuthorizationID, field.TypeString, value)
 	}
 	if oiuo.mutation.AuthorizationIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderinfo.FieldAuthorizationID,
-		})
+		_spec.ClearField(orderinfo.FieldAuthorizationID, field.TypeString)
 	}
 	if value, ok := oiuo.mutation.CustomerID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderinfo.FieldCustomerID,
-		})
+		_spec.SetField(orderinfo.FieldCustomerID, field.TypeString, value)
 	}
 	if oiuo.mutation.CustomerIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderinfo.FieldCustomerID,
-		})
+		_spec.ClearField(orderinfo.FieldCustomerID, field.TypeString)
 	}
 	if value, ok := oiuo.mutation.CallerOrderID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderinfo.FieldCallerOrderID,
-		})
+		_spec.SetField(orderinfo.FieldCallerOrderID, field.TypeString, value)
 	}
 	if oiuo.mutation.CallerOrderIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderinfo.FieldCallerOrderID,
-		})
+		_spec.ClearField(orderinfo.FieldCallerOrderID, field.TypeString)
 	}
 	if value, ok := oiuo.mutation.TotalElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldTotalElectricity,
-		})
+		_spec.SetField(orderinfo.FieldTotalElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiuo.mutation.AddedTotalElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldTotalElectricity,
-		})
+		_spec.AddField(orderinfo.FieldTotalElectricity, field.TypeFloat64, value)
 	}
 	if oiuo.mutation.TotalElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldTotalElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldTotalElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiuo.mutation.ChargeStartElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStartElectricity,
-		})
+		_spec.SetField(orderinfo.FieldChargeStartElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiuo.mutation.AddedChargeStartElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStartElectricity,
-		})
+		_spec.AddField(orderinfo.FieldChargeStartElectricity, field.TypeFloat64, value)
 	}
 	if oiuo.mutation.ChargeStartElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldChargeStartElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldChargeStartElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiuo.mutation.ChargeStopElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStopElectricity,
-		})
+		_spec.SetField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiuo.mutation.AddedChargeStopElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStopElectricity,
-		})
+		_spec.AddField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64, value)
 	}
 	if oiuo.mutation.ChargeStopElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldChargeStopElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiuo.mutation.SharpElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldSharpElectricity,
-		})
+		_spec.SetField(orderinfo.FieldSharpElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiuo.mutation.AddedSharpElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldSharpElectricity,
-		})
+		_spec.AddField(orderinfo.FieldSharpElectricity, field.TypeFloat64, value)
 	}
 	if oiuo.mutation.SharpElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldSharpElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldSharpElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiuo.mutation.PeakElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldPeakElectricity,
-		})
+		_spec.SetField(orderinfo.FieldPeakElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiuo.mutation.AddedPeakElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldPeakElectricity,
-		})
+		_spec.AddField(orderinfo.FieldPeakElectricity, field.TypeFloat64, value)
 	}
 	if oiuo.mutation.PeakElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldPeakElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldPeakElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiuo.mutation.FlatElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldFlatElectricity,
-		})
+		_spec.SetField(orderinfo.FieldFlatElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiuo.mutation.AddedFlatElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldFlatElectricity,
-		})
+		_spec.AddField(orderinfo.FieldFlatElectricity, field.TypeFloat64, value)
 	}
 	if oiuo.mutation.FlatElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldFlatElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldFlatElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiuo.mutation.ValleyElectricity(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldValleyElectricity,
-		})
+		_spec.SetField(orderinfo.FieldValleyElectricity, field.TypeFloat64, value)
 	}
 	if value, ok := oiuo.mutation.AddedValleyElectricity(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Value:  value,
-			Column: orderinfo.FieldValleyElectricity,
-		})
+		_spec.AddField(orderinfo.FieldValleyElectricity, field.TypeFloat64, value)
 	}
 	if oiuo.mutation.ValleyElectricityCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
-			Column: orderinfo.FieldValleyElectricity,
-		})
+		_spec.ClearField(orderinfo.FieldValleyElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiuo.mutation.StopReasonCode(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt32,
-			Value:  value,
-			Column: orderinfo.FieldStopReasonCode,
-		})
+		_spec.SetField(orderinfo.FieldStopReasonCode, field.TypeInt32, value)
 	}
 	if value, ok := oiuo.mutation.AddedStopReasonCode(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt32,
-			Value:  value,
-			Column: orderinfo.FieldStopReasonCode,
-		})
+		_spec.AddField(orderinfo.FieldStopReasonCode, field.TypeInt32, value)
 	}
 	if oiuo.mutation.StopReasonCodeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt32,
-			Column: orderinfo.FieldStopReasonCode,
-		})
+		_spec.ClearField(orderinfo.FieldStopReasonCode, field.TypeInt32)
 	}
 	if value, ok := oiuo.mutation.Offline(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: orderinfo.FieldOffline,
-		})
+		_spec.SetField(orderinfo.FieldOffline, field.TypeBool, value)
 	}
 	if value, ok := oiuo.mutation.PriceSchemeReleaseID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldPriceSchemeReleaseID,
-		})
+		_spec.SetField(orderinfo.FieldPriceSchemeReleaseID, field.TypeInt64, value)
 	}
 	if value, ok := oiuo.mutation.AddedPriceSchemeReleaseID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldPriceSchemeReleaseID,
-		})
+		_spec.AddField(orderinfo.FieldPriceSchemeReleaseID, field.TypeInt64, value)
 	}
 	if value, ok := oiuo.mutation.OrderStartTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldOrderStartTime,
-		})
+		_spec.SetField(orderinfo.FieldOrderStartTime, field.TypeInt64, value)
 	}
 	if value, ok := oiuo.mutation.AddedOrderStartTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldOrderStartTime,
-		})
+		_spec.AddField(orderinfo.FieldOrderStartTime, field.TypeInt64, value)
 	}
 	if oiuo.mutation.OrderStartTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: orderinfo.FieldOrderStartTime,
-		})
+		_spec.ClearField(orderinfo.FieldOrderStartTime, field.TypeInt64)
 	}
 	if value, ok := oiuo.mutation.OrderFinalTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldOrderFinalTime,
-		})
+		_spec.SetField(orderinfo.FieldOrderFinalTime, field.TypeInt64, value)
 	}
 	if value, ok := oiuo.mutation.AddedOrderFinalTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldOrderFinalTime,
-		})
+		_spec.AddField(orderinfo.FieldOrderFinalTime, field.TypeInt64, value)
 	}
 	if oiuo.mutation.OrderFinalTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: orderinfo.FieldOrderFinalTime,
-		})
+		_spec.ClearField(orderinfo.FieldOrderFinalTime, field.TypeInt64)
 	}
 	if value, ok := oiuo.mutation.ChargeStartTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStartTime,
-		})
+		_spec.SetField(orderinfo.FieldChargeStartTime, field.TypeInt64, value)
 	}
 	if value, ok := oiuo.mutation.AddedChargeStartTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldChargeStartTime,
-		})
+		_spec.AddField(orderinfo.FieldChargeStartTime, field.TypeInt64, value)
 	}
 	if oiuo.mutation.ChargeStartTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: orderinfo.FieldChargeStartTime,
-		})
+		_spec.ClearField(orderinfo.FieldChargeStartTime, field.TypeInt64)
 	}
 	if value, ok := oiuo.mutation.ChargeFinalTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldChargeFinalTime,
-		})
+		_spec.SetField(orderinfo.FieldChargeFinalTime, field.TypeInt64, value)
 	}
 	if value, ok := oiuo.mutation.AddedChargeFinalTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldChargeFinalTime,
-		})
+		_spec.AddField(orderinfo.FieldChargeFinalTime, field.TypeInt64, value)
 	}
 	if oiuo.mutation.ChargeFinalTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: orderinfo.FieldChargeFinalTime,
-		})
+		_spec.ClearField(orderinfo.FieldChargeFinalTime, field.TypeInt64)
 	}
 	if value, ok := oiuo.mutation.IntellectID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldIntellectID,
-		})
+		_spec.SetField(orderinfo.FieldIntellectID, field.TypeInt64, value)
 	}
 	if value, ok := oiuo.mutation.AddedIntellectID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderinfo.FieldIntellectID,
-		})
+		_spec.AddField(orderinfo.FieldIntellectID, field.TypeInt64, value)
 	}
 	if oiuo.mutation.IntellectIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: orderinfo.FieldIntellectID,
-		})
+		_spec.ClearField(orderinfo.FieldIntellectID, field.TypeInt64)
 	}
 	if value, ok := oiuo.mutation.StationID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldStationID,
-		})
+		_spec.SetField(orderinfo.FieldStationID, field.TypeUint64, value)
 	}
 	if value, ok := oiuo.mutation.AddedStationID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldStationID,
-		})
+		_spec.AddField(orderinfo.FieldStationID, field.TypeUint64, value)
 	}
 	if oiuo.mutation.StationIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Column: orderinfo.FieldStationID,
-		})
+		_spec.ClearField(orderinfo.FieldStationID, field.TypeUint64)
 	}
 	if value, ok := oiuo.mutation.OperatorID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldOperatorID,
-		})
+		_spec.SetField(orderinfo.FieldOperatorID, field.TypeUint64, value)
 	}
 	if value, ok := oiuo.mutation.AddedOperatorID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderinfo.FieldOperatorID,
-		})
+		_spec.AddField(orderinfo.FieldOperatorID, field.TypeUint64, value)
 	}
 	if oiuo.mutation.OperatorIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Column: orderinfo.FieldOperatorID,
-		})
+		_spec.ClearField(orderinfo.FieldOperatorID, field.TypeUint64)
 	}
 	if oiuo.mutation.ConnectorCleared() {
 		edge := &sqlgraph.EdgeSpec{

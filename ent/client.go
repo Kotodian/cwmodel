@@ -302,7 +302,7 @@ func (c *AppModuleInfoClient) Query() *AppModuleInfoQuery {
 
 // Get returns a AppModuleInfo entity by its id.
 func (c *AppModuleInfoClient) Get(ctx context.Context, id int) (*AppModuleInfo, error) {
-	return c.Query().Where(appmoduleinfo.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(appmoduleinfo.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -392,7 +392,7 @@ func (c *ConnectorClient) Query() *ConnectorQuery {
 
 // Get returns a Connector entity by its id.
 func (c *ConnectorClient) Get(ctx context.Context, id datasource.UUID) (*Connector, error) {
-	return c.Query().Where(connector.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(connector.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -407,7 +407,7 @@ func (c *ConnectorClient) GetX(ctx context.Context, id datasource.UUID) *Connect
 // QueryEvse queries the evse edge of a Connector.
 func (c *ConnectorClient) QueryEvse(co *Connector) *EvseQuery {
 	query := &EvseQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := co.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(connector.Table, connector.FieldID, id),
@@ -423,7 +423,7 @@ func (c *ConnectorClient) QueryEvse(co *Connector) *EvseQuery {
 // QueryEquipment queries the equipment edge of a Connector.
 func (c *ConnectorClient) QueryEquipment(co *Connector) *EquipmentQuery {
 	query := &EquipmentQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := co.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(connector.Table, connector.FieldID, id),
@@ -439,7 +439,7 @@ func (c *ConnectorClient) QueryEquipment(co *Connector) *EquipmentQuery {
 // QueryOrderInfo queries the order_info edge of a Connector.
 func (c *ConnectorClient) QueryOrderInfo(co *Connector) *OrderInfoQuery {
 	query := &OrderInfoQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := co.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(connector.Table, connector.FieldID, id),
@@ -455,7 +455,7 @@ func (c *ConnectorClient) QueryOrderInfo(co *Connector) *OrderInfoQuery {
 // QueryReservation queries the reservation edge of a Connector.
 func (c *ConnectorClient) QueryReservation(co *Connector) *ReservationQuery {
 	query := &ReservationQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := co.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(connector.Table, connector.FieldID, id),
@@ -546,7 +546,7 @@ func (c *EquipmentClient) Query() *EquipmentQuery {
 
 // Get returns a Equipment entity by its id.
 func (c *EquipmentClient) Get(ctx context.Context, id datasource.UUID) (*Equipment, error) {
-	return c.Query().Where(equipment.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(equipment.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -561,7 +561,7 @@ func (c *EquipmentClient) GetX(ctx context.Context, id datasource.UUID) *Equipme
 // QueryEquipmentInfo queries the equipment_info edge of a Equipment.
 func (c *EquipmentClient) QueryEquipmentInfo(e *Equipment) *EquipmentInfoQuery {
 	query := &EquipmentInfoQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipment.Table, equipment.FieldID, id),
@@ -577,7 +577,7 @@ func (c *EquipmentClient) QueryEquipmentInfo(e *Equipment) *EquipmentInfoQuery {
 // QueryEvse queries the evse edge of a Equipment.
 func (c *EquipmentClient) QueryEvse(e *Equipment) *EvseQuery {
 	query := &EvseQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipment.Table, equipment.FieldID, id),
@@ -593,7 +593,7 @@ func (c *EquipmentClient) QueryEvse(e *Equipment) *EvseQuery {
 // QueryConnector queries the connector edge of a Equipment.
 func (c *EquipmentClient) QueryConnector(e *Equipment) *ConnectorQuery {
 	query := &ConnectorQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipment.Table, equipment.FieldID, id),
@@ -609,7 +609,7 @@ func (c *EquipmentClient) QueryConnector(e *Equipment) *ConnectorQuery {
 // QueryEquipmentAlarm queries the equipment_alarm edge of a Equipment.
 func (c *EquipmentClient) QueryEquipmentAlarm(e *Equipment) *EquipmentAlarmQuery {
 	query := &EquipmentAlarmQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipment.Table, equipment.FieldID, id),
@@ -625,7 +625,7 @@ func (c *EquipmentClient) QueryEquipmentAlarm(e *Equipment) *EquipmentAlarmQuery
 // QueryEquipmentIot queries the equipment_iot edge of a Equipment.
 func (c *EquipmentClient) QueryEquipmentIot(e *Equipment) *EquipmentIotQuery {
 	query := &EquipmentIotQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipment.Table, equipment.FieldID, id),
@@ -641,7 +641,7 @@ func (c *EquipmentClient) QueryEquipmentIot(e *Equipment) *EquipmentIotQuery {
 // QueryEquipmentFirmwareEffect queries the equipment_firmware_effect edge of a Equipment.
 func (c *EquipmentClient) QueryEquipmentFirmwareEffect(e *Equipment) *EquipmentFirmwareEffectQuery {
 	query := &EquipmentFirmwareEffectQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipment.Table, equipment.FieldID, id),
@@ -657,7 +657,7 @@ func (c *EquipmentClient) QueryEquipmentFirmwareEffect(e *Equipment) *EquipmentF
 // QueryOrderInfo queries the order_info edge of a Equipment.
 func (c *EquipmentClient) QueryOrderInfo(e *Equipment) *OrderInfoQuery {
 	query := &OrderInfoQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipment.Table, equipment.FieldID, id),
@@ -673,7 +673,7 @@ func (c *EquipmentClient) QueryOrderInfo(e *Equipment) *OrderInfoQuery {
 // QueryReservation queries the reservation edge of a Equipment.
 func (c *EquipmentClient) QueryReservation(e *Equipment) *ReservationQuery {
 	query := &ReservationQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipment.Table, equipment.FieldID, id),
@@ -689,7 +689,7 @@ func (c *EquipmentClient) QueryReservation(e *Equipment) *ReservationQuery {
 // QueryEquipmentLog queries the equipment_log edge of a Equipment.
 func (c *EquipmentClient) QueryEquipmentLog(e *Equipment) *EquipmentLogQuery {
 	query := &EquipmentLogQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipment.Table, equipment.FieldID, id),
@@ -780,7 +780,7 @@ func (c *EquipmentAlarmClient) Query() *EquipmentAlarmQuery {
 
 // Get returns a EquipmentAlarm entity by its id.
 func (c *EquipmentAlarmClient) Get(ctx context.Context, id datasource.UUID) (*EquipmentAlarm, error) {
-	return c.Query().Where(equipmentalarm.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(equipmentalarm.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -795,7 +795,7 @@ func (c *EquipmentAlarmClient) GetX(ctx context.Context, id datasource.UUID) *Eq
 // QueryEquipment queries the equipment edge of a EquipmentAlarm.
 func (c *EquipmentAlarmClient) QueryEquipment(ea *EquipmentAlarm) *EquipmentQuery {
 	query := &EquipmentQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := ea.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipmentalarm.Table, equipmentalarm.FieldID, id),
@@ -886,7 +886,7 @@ func (c *EquipmentFirmwareEffectClient) Query() *EquipmentFirmwareEffectQuery {
 
 // Get returns a EquipmentFirmwareEffect entity by its id.
 func (c *EquipmentFirmwareEffectClient) Get(ctx context.Context, id datasource.UUID) (*EquipmentFirmwareEffect, error) {
-	return c.Query().Where(equipmentfirmwareeffect.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(equipmentfirmwareeffect.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -901,7 +901,7 @@ func (c *EquipmentFirmwareEffectClient) GetX(ctx context.Context, id datasource.
 // QueryEquipment queries the equipment edge of a EquipmentFirmwareEffect.
 func (c *EquipmentFirmwareEffectClient) QueryEquipment(efe *EquipmentFirmwareEffect) *EquipmentQuery {
 	query := &EquipmentQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := efe.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipmentfirmwareeffect.Table, equipmentfirmwareeffect.FieldID, id),
@@ -917,7 +917,7 @@ func (c *EquipmentFirmwareEffectClient) QueryEquipment(efe *EquipmentFirmwareEff
 // QueryFirmware queries the firmware edge of a EquipmentFirmwareEffect.
 func (c *EquipmentFirmwareEffectClient) QueryFirmware(efe *EquipmentFirmwareEffect) *FirmwareQuery {
 	query := &FirmwareQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := efe.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipmentfirmwareeffect.Table, equipmentfirmwareeffect.FieldID, id),
@@ -1008,7 +1008,7 @@ func (c *EquipmentInfoClient) Query() *EquipmentInfoQuery {
 
 // Get returns a EquipmentInfo entity by its id.
 func (c *EquipmentInfoClient) Get(ctx context.Context, id datasource.UUID) (*EquipmentInfo, error) {
-	return c.Query().Where(equipmentinfo.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(equipmentinfo.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1023,7 +1023,7 @@ func (c *EquipmentInfoClient) GetX(ctx context.Context, id datasource.UUID) *Equ
 // QueryEquipment queries the equipment edge of a EquipmentInfo.
 func (c *EquipmentInfoClient) QueryEquipment(ei *EquipmentInfo) *EquipmentQuery {
 	query := &EquipmentQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := ei.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipmentinfo.Table, equipmentinfo.FieldID, id),
@@ -1114,7 +1114,7 @@ func (c *EquipmentIotClient) Query() *EquipmentIotQuery {
 
 // Get returns a EquipmentIot entity by its id.
 func (c *EquipmentIotClient) Get(ctx context.Context, id datasource.UUID) (*EquipmentIot, error) {
-	return c.Query().Where(equipmentiot.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(equipmentiot.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1129,7 +1129,7 @@ func (c *EquipmentIotClient) GetX(ctx context.Context, id datasource.UUID) *Equi
 // QueryEquipment queries the equipment edge of a EquipmentIot.
 func (c *EquipmentIotClient) QueryEquipment(ei *EquipmentIot) *EquipmentQuery {
 	query := &EquipmentQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := ei.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipmentiot.Table, equipmentiot.FieldID, id),
@@ -1220,7 +1220,7 @@ func (c *EquipmentLogClient) Query() *EquipmentLogQuery {
 
 // Get returns a EquipmentLog entity by its id.
 func (c *EquipmentLogClient) Get(ctx context.Context, id datasource.UUID) (*EquipmentLog, error) {
-	return c.Query().Where(equipmentlog.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(equipmentlog.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1235,7 +1235,7 @@ func (c *EquipmentLogClient) GetX(ctx context.Context, id datasource.UUID) *Equi
 // QueryEquipment queries the equipment edge of a EquipmentLog.
 func (c *EquipmentLogClient) QueryEquipment(el *EquipmentLog) *EquipmentQuery {
 	query := &EquipmentQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := el.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(equipmentlog.Table, equipmentlog.FieldID, id),
@@ -1326,7 +1326,7 @@ func (c *EvseClient) Query() *EvseQuery {
 
 // Get returns a Evse entity by its id.
 func (c *EvseClient) Get(ctx context.Context, id datasource.UUID) (*Evse, error) {
-	return c.Query().Where(evse.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(evse.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1341,7 +1341,7 @@ func (c *EvseClient) GetX(ctx context.Context, id datasource.UUID) *Evse {
 // QueryEquipment queries the equipment edge of a Evse.
 func (c *EvseClient) QueryEquipment(e *Evse) *EquipmentQuery {
 	query := &EquipmentQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(evse.Table, evse.FieldID, id),
@@ -1357,7 +1357,7 @@ func (c *EvseClient) QueryEquipment(e *Evse) *EquipmentQuery {
 // QueryConnector queries the connector edge of a Evse.
 func (c *EvseClient) QueryConnector(e *Evse) *ConnectorQuery {
 	query := &ConnectorQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := e.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(evse.Table, evse.FieldID, id),
@@ -1448,7 +1448,7 @@ func (c *FirmwareClient) Query() *FirmwareQuery {
 
 // Get returns a Firmware entity by its id.
 func (c *FirmwareClient) Get(ctx context.Context, id datasource.UUID) (*Firmware, error) {
-	return c.Query().Where(firmware.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(firmware.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1463,7 +1463,7 @@ func (c *FirmwareClient) GetX(ctx context.Context, id datasource.UUID) *Firmware
 // QueryEquipmentFirmwareEffect queries the equipment_firmware_effect edge of a Firmware.
 func (c *FirmwareClient) QueryEquipmentFirmwareEffect(f *Firmware) *EquipmentFirmwareEffectQuery {
 	query := &EquipmentFirmwareEffectQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := f.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(firmware.Table, firmware.FieldID, id),
@@ -1554,7 +1554,7 @@ func (c *ManufacturerClient) Query() *ManufacturerQuery {
 
 // Get returns a Manufacturer entity by its id.
 func (c *ManufacturerClient) Get(ctx context.Context, id datasource.UUID) (*Manufacturer, error) {
-	return c.Query().Where(manufacturer.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(manufacturer.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1644,7 +1644,7 @@ func (c *ModelClient) Query() *ModelQuery {
 
 // Get returns a Model entity by its id.
 func (c *ModelClient) Get(ctx context.Context, id datasource.UUID) (*Model, error) {
-	return c.Query().Where(model.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(model.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1734,7 +1734,7 @@ func (c *OrderEventClient) Query() *OrderEventQuery {
 
 // Get returns a OrderEvent entity by its id.
 func (c *OrderEventClient) Get(ctx context.Context, id datasource.UUID) (*OrderEvent, error) {
-	return c.Query().Where(orderevent.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(orderevent.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1749,7 +1749,7 @@ func (c *OrderEventClient) GetX(ctx context.Context, id datasource.UUID) *OrderE
 // QueryOrderInfo queries the order_info edge of a OrderEvent.
 func (c *OrderEventClient) QueryOrderInfo(oe *OrderEvent) *OrderInfoQuery {
 	query := &OrderInfoQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := oe.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(orderevent.Table, orderevent.FieldID, id),
@@ -1840,7 +1840,7 @@ func (c *OrderInfoClient) Query() *OrderInfoQuery {
 
 // Get returns a OrderInfo entity by its id.
 func (c *OrderInfoClient) Get(ctx context.Context, id datasource.UUID) (*OrderInfo, error) {
-	return c.Query().Where(orderinfo.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(orderinfo.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1855,7 +1855,7 @@ func (c *OrderInfoClient) GetX(ctx context.Context, id datasource.UUID) *OrderIn
 // QueryConnector queries the connector edge of a OrderInfo.
 func (c *OrderInfoClient) QueryConnector(oi *OrderInfo) *ConnectorQuery {
 	query := &ConnectorQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := oi.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(orderinfo.Table, orderinfo.FieldID, id),
@@ -1871,7 +1871,7 @@ func (c *OrderInfoClient) QueryConnector(oi *OrderInfo) *ConnectorQuery {
 // QueryEquipment queries the equipment edge of a OrderInfo.
 func (c *OrderInfoClient) QueryEquipment(oi *OrderInfo) *EquipmentQuery {
 	query := &EquipmentQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := oi.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(orderinfo.Table, orderinfo.FieldID, id),
@@ -1887,7 +1887,7 @@ func (c *OrderInfoClient) QueryEquipment(oi *OrderInfo) *EquipmentQuery {
 // QueryOrderEvent queries the order_event edge of a OrderInfo.
 func (c *OrderInfoClient) QueryOrderEvent(oi *OrderInfo) *OrderEventQuery {
 	query := &OrderEventQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := oi.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(orderinfo.Table, orderinfo.FieldID, id),
@@ -1978,7 +1978,7 @@ func (c *ReservationClient) Query() *ReservationQuery {
 
 // Get returns a Reservation entity by its id.
 func (c *ReservationClient) Get(ctx context.Context, id datasource.UUID) (*Reservation, error) {
-	return c.Query().Where(reservation.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(reservation.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1993,7 +1993,7 @@ func (c *ReservationClient) GetX(ctx context.Context, id datasource.UUID) *Reser
 // QueryEquipment queries the equipment edge of a Reservation.
 func (c *ReservationClient) QueryEquipment(r *Reservation) *EquipmentQuery {
 	query := &EquipmentQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := r.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(reservation.Table, reservation.FieldID, id),
@@ -2009,7 +2009,7 @@ func (c *ReservationClient) QueryEquipment(r *Reservation) *EquipmentQuery {
 // QueryConnector queries the connector edge of a Reservation.
 func (c *ReservationClient) QueryConnector(r *Reservation) *ConnectorQuery {
 	query := &ConnectorQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := r.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(reservation.Table, reservation.FieldID, id),
@@ -2100,7 +2100,7 @@ func (c *SmartChargingEventClient) Query() *SmartChargingEventQuery {
 
 // Get returns a SmartChargingEvent entity by its id.
 func (c *SmartChargingEventClient) Get(ctx context.Context, id datasource.UUID) (*SmartChargingEvent, error) {
-	return c.Query().Where(smartchargingevent.ID(id)).Only(ctx)
+	return c.Query().Unique(false).Where(smartchargingevent.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.

@@ -305,67 +305,35 @@ func (oec *OrderEventCreate) createSpec() (*OrderEvent, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := oec.mutation.Version(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldVersion,
-		})
+		_spec.SetField(orderevent.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
 	if value, ok := oec.mutation.CreatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderevent.FieldCreatedBy,
-		})
+		_spec.SetField(orderevent.FieldCreatedBy, field.TypeUint64, value)
 		_node.CreatedBy = value
 	}
 	if value, ok := oec.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldCreatedAt,
-		})
+		_spec.SetField(orderevent.FieldCreatedAt, field.TypeInt64, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := oec.mutation.UpdatedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderevent.FieldUpdatedBy,
-		})
+		_spec.SetField(orderevent.FieldUpdatedBy, field.TypeUint64, value)
 		_node.UpdatedBy = value
 	}
 	if value, ok := oec.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldUpdatedAt,
-		})
+		_spec.SetField(orderevent.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := oec.mutation.OrderID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: orderevent.FieldOrderID,
-		})
+		_spec.SetField(orderevent.FieldOrderID, field.TypeUint64, value)
 		_node.OrderID = value
 	}
 	if value, ok := oec.mutation.Content(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderevent.FieldContent,
-		})
+		_spec.SetField(orderevent.FieldContent, field.TypeString, value)
 		_node.Content = value
 	}
 	if value, ok := oec.mutation.Occurrence(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: orderevent.FieldOccurrence,
-		})
+		_spec.SetField(orderevent.FieldOccurrence, field.TypeInt64, value)
 		_node.Occurrence = value
 	}
 	if nodes := oec.mutation.OrderInfoIDs(); len(nodes) > 0 {

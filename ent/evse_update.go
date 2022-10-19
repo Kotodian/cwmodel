@@ -257,67 +257,31 @@ func (eu *EvseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := eu.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: evse.FieldVersion,
-		})
+		_spec.SetField(evse.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eu.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: evse.FieldVersion,
-		})
+		_spec.AddField(evse.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := eu.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: evse.FieldUpdatedBy,
-		})
+		_spec.SetField(evse.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eu.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: evse.FieldUpdatedBy,
-		})
+		_spec.AddField(evse.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := eu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: evse.FieldUpdatedAt,
-		})
+		_spec.SetField(evse.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eu.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: evse.FieldUpdatedAt,
-		})
+		_spec.AddField(evse.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := eu.mutation.Serial(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: evse.FieldSerial,
-		})
+		_spec.SetField(evse.FieldSerial, field.TypeString, value)
 	}
 	if value, ok := eu.mutation.ConnectorNumber(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: evse.FieldConnectorNumber,
-		})
+		_spec.SetField(evse.FieldConnectorNumber, field.TypeInt, value)
 	}
 	if value, ok := eu.mutation.AddedConnectorNumber(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: evse.FieldConnectorNumber,
-		})
+		_spec.AddField(evse.FieldConnectorNumber, field.TypeInt, value)
 	}
 	if eu.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -684,67 +648,31 @@ func (euo *EvseUpdateOne) sqlSave(ctx context.Context) (_node *Evse, err error) 
 		}
 	}
 	if value, ok := euo.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: evse.FieldVersion,
-		})
+		_spec.SetField(evse.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := euo.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: evse.FieldVersion,
-		})
+		_spec.AddField(evse.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := euo.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: evse.FieldUpdatedBy,
-		})
+		_spec.SetField(evse.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := euo.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: evse.FieldUpdatedBy,
-		})
+		_spec.AddField(evse.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := euo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: evse.FieldUpdatedAt,
-		})
+		_spec.SetField(evse.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := euo.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: evse.FieldUpdatedAt,
-		})
+		_spec.AddField(evse.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := euo.mutation.Serial(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: evse.FieldSerial,
-		})
+		_spec.SetField(evse.FieldSerial, field.TypeString, value)
 	}
 	if value, ok := euo.mutation.ConnectorNumber(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: evse.FieldConnectorNumber,
-		})
+		_spec.SetField(evse.FieldConnectorNumber, field.TypeInt, value)
 	}
 	if value, ok := euo.mutation.AddedConnectorNumber(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: evse.FieldConnectorNumber,
-		})
+		_spec.AddField(evse.FieldConnectorNumber, field.TypeInt, value)
 	}
 	if euo.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{

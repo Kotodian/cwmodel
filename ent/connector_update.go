@@ -408,142 +408,64 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := cu.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: connector.FieldVersion,
-		})
+		_spec.SetField(connector.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := cu.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: connector.FieldVersion,
-		})
+		_spec.AddField(connector.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := cu.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: connector.FieldUpdatedBy,
-		})
+		_spec.SetField(connector.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := cu.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: connector.FieldUpdatedBy,
-		})
+		_spec.AddField(connector.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := cu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: connector.FieldUpdatedAt,
-		})
+		_spec.SetField(connector.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := cu.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: connector.FieldUpdatedAt,
-		})
+		_spec.AddField(connector.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := cu.mutation.EquipmentSn(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: connector.FieldEquipmentSn,
-		})
+		_spec.SetField(connector.FieldEquipmentSn, field.TypeString, value)
 	}
 	if value, ok := cu.mutation.EvseSerial(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: connector.FieldEvseSerial,
-		})
+		_spec.SetField(connector.FieldEvseSerial, field.TypeString, value)
 	}
 	if value, ok := cu.mutation.Serial(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: connector.FieldSerial,
-		})
+		_spec.SetField(connector.FieldSerial, field.TypeString, value)
 	}
 	if value, ok := cu.mutation.CurrentState(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldCurrentState,
-		})
+		_spec.SetField(connector.FieldCurrentState, field.TypeInt, value)
 	}
 	if value, ok := cu.mutation.AddedCurrentState(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldCurrentState,
-		})
+		_spec.AddField(connector.FieldCurrentState, field.TypeInt, value)
 	}
 	if value, ok := cu.mutation.BeforeState(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldBeforeState,
-		})
+		_spec.SetField(connector.FieldBeforeState, field.TypeInt, value)
 	}
 	if value, ok := cu.mutation.AddedBeforeState(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldBeforeState,
-		})
+		_spec.AddField(connector.FieldBeforeState, field.TypeInt, value)
 	}
 	if value, ok := cu.mutation.ChargingState(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldChargingState,
-		})
+		_spec.SetField(connector.FieldChargingState, field.TypeInt, value)
 	}
 	if value, ok := cu.mutation.AddedChargingState(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldChargingState,
-		})
+		_spec.AddField(connector.FieldChargingState, field.TypeInt, value)
 	}
 	if cu.mutation.ChargingStateCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Column: connector.FieldChargingState,
-		})
+		_spec.ClearField(connector.FieldChargingState, field.TypeInt)
 	}
 	if value, ok := cu.mutation.ReservationID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: connector.FieldReservationID,
-		})
+		_spec.SetField(connector.FieldReservationID, field.TypeUint64, value)
 	}
 	if value, ok := cu.mutation.AddedReservationID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: connector.FieldReservationID,
-		})
+		_spec.AddField(connector.FieldReservationID, field.TypeUint64, value)
 	}
 	if cu.mutation.ReservationIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Column: connector.FieldReservationID,
-		})
+		_spec.ClearField(connector.FieldReservationID, field.TypeUint64)
 	}
 	if value, ok := cu.mutation.ParkNo(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: connector.FieldParkNo,
-		})
+		_spec.SetField(connector.FieldParkNo, field.TypeString, value)
 	}
 	if cu.mutation.EvseCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1148,142 +1070,64 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 		}
 	}
 	if value, ok := cuo.mutation.Version(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: connector.FieldVersion,
-		})
+		_spec.SetField(connector.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := cuo.mutation.AddedVersion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: connector.FieldVersion,
-		})
+		_spec.AddField(connector.FieldVersion, field.TypeInt64, value)
 	}
 	if value, ok := cuo.mutation.UpdatedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: connector.FieldUpdatedBy,
-		})
+		_spec.SetField(connector.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := cuo.mutation.AddedUpdatedBy(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: connector.FieldUpdatedBy,
-		})
+		_spec.AddField(connector.FieldUpdatedBy, field.TypeUint64, value)
 	}
 	if value, ok := cuo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: connector.FieldUpdatedAt,
-		})
+		_spec.SetField(connector.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := cuo.mutation.AddedUpdatedAt(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: connector.FieldUpdatedAt,
-		})
+		_spec.AddField(connector.FieldUpdatedAt, field.TypeInt64, value)
 	}
 	if value, ok := cuo.mutation.EquipmentSn(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: connector.FieldEquipmentSn,
-		})
+		_spec.SetField(connector.FieldEquipmentSn, field.TypeString, value)
 	}
 	if value, ok := cuo.mutation.EvseSerial(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: connector.FieldEvseSerial,
-		})
+		_spec.SetField(connector.FieldEvseSerial, field.TypeString, value)
 	}
 	if value, ok := cuo.mutation.Serial(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: connector.FieldSerial,
-		})
+		_spec.SetField(connector.FieldSerial, field.TypeString, value)
 	}
 	if value, ok := cuo.mutation.CurrentState(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldCurrentState,
-		})
+		_spec.SetField(connector.FieldCurrentState, field.TypeInt, value)
 	}
 	if value, ok := cuo.mutation.AddedCurrentState(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldCurrentState,
-		})
+		_spec.AddField(connector.FieldCurrentState, field.TypeInt, value)
 	}
 	if value, ok := cuo.mutation.BeforeState(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldBeforeState,
-		})
+		_spec.SetField(connector.FieldBeforeState, field.TypeInt, value)
 	}
 	if value, ok := cuo.mutation.AddedBeforeState(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldBeforeState,
-		})
+		_spec.AddField(connector.FieldBeforeState, field.TypeInt, value)
 	}
 	if value, ok := cuo.mutation.ChargingState(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldChargingState,
-		})
+		_spec.SetField(connector.FieldChargingState, field.TypeInt, value)
 	}
 	if value, ok := cuo.mutation.AddedChargingState(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: connector.FieldChargingState,
-		})
+		_spec.AddField(connector.FieldChargingState, field.TypeInt, value)
 	}
 	if cuo.mutation.ChargingStateCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Column: connector.FieldChargingState,
-		})
+		_spec.ClearField(connector.FieldChargingState, field.TypeInt)
 	}
 	if value, ok := cuo.mutation.ReservationID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: connector.FieldReservationID,
-		})
+		_spec.SetField(connector.FieldReservationID, field.TypeUint64, value)
 	}
 	if value, ok := cuo.mutation.AddedReservationID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: connector.FieldReservationID,
-		})
+		_spec.AddField(connector.FieldReservationID, field.TypeUint64, value)
 	}
 	if cuo.mutation.ReservationIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Column: connector.FieldReservationID,
-		})
+		_spec.ClearField(connector.FieldReservationID, field.TypeUint64)
 	}
 	if value, ok := cuo.mutation.ParkNo(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: connector.FieldParkNo,
-		})
+		_spec.SetField(connector.FieldParkNo, field.TypeString, value)
 	}
 	if cuo.mutation.EvseCleared() {
 		edge := &sqlgraph.EdgeSpec{
