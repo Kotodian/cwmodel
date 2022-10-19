@@ -3,11 +3,13 @@ package enttest
 import (
 	"context"
 	"testing"
+	"time"
 
+	"github.com/Kotodian/gokit/id"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateEquipmentIot(t *testing.T) {
+func TestCreateEquipmentLog(t *testing.T) {
 	cli := Open(t, "mysql", dsn)
 	cli = cli.Debug()
 	defer cli.Close()
@@ -16,16 +18,16 @@ func TestCreateEquipmentIot(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
 
-	err = cli.EquipmentIot.Create().
+	err = cli.EquipmentLog.Create().
 		SetEquipment(equip).
-		SetIccid("123456667").
-		SetImei("123127841724").
-		SetRemoteAddress("127.0.0.1").
+		SetRequestId(time.Now().Unix()).
+		SetDataLink(id.Next()).
+		SetState(0).
 		Exec(ctx)
 	assert.Nil(t, err)
 }
 
-func TestQueryEquipmentIot(t *testing.T) {
+func TestQueryEquipmentLog(t *testing.T) {
 	cli := Open(t, "mysql", dsn)
 	cli = cli.Debug()
 	defer cli.Close()
@@ -34,7 +36,7 @@ func TestQueryEquipmentIot(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
 
-	iot, err := equip.QueryEquipmentIot().Only(ctx)
+	logs, err := equip.QueryEquipmentLog().Unique(false).All(ctx)
 	assert.Nil(t, err)
-	assert.NotNil(t, iot)
+	assert.NotNil(t, logs)
 }
