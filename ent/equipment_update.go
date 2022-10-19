@@ -21,6 +21,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
 	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -275,6 +276,21 @@ func (eu *EquipmentUpdate) AddEquipmentLog(e ...*EquipmentLog) *EquipmentUpdate 
 	return eu.AddEquipmentLogIDs(ids...)
 }
 
+// AddSmartChargingEffectIDs adds the "smart_charging_effect" edge to the SmartChargingEffect entity by IDs.
+func (eu *EquipmentUpdate) AddSmartChargingEffectIDs(ids ...datasource.UUID) *EquipmentUpdate {
+	eu.mutation.AddSmartChargingEffectIDs(ids...)
+	return eu
+}
+
+// AddSmartChargingEffect adds the "smart_charging_effect" edges to the SmartChargingEffect entity.
+func (eu *EquipmentUpdate) AddSmartChargingEffect(s ...*SmartChargingEffect) *EquipmentUpdate {
+	ids := make([]datasource.UUID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return eu.AddSmartChargingEffectIDs(ids...)
+}
+
 // Mutation returns the EquipmentMutation object of the builder.
 func (eu *EquipmentUpdate) Mutation() *EquipmentMutation {
 	return eu.mutation
@@ -437,6 +453,27 @@ func (eu *EquipmentUpdate) RemoveEquipmentLog(e ...*EquipmentLog) *EquipmentUpda
 		ids[i] = e[i].ID
 	}
 	return eu.RemoveEquipmentLogIDs(ids...)
+}
+
+// ClearSmartChargingEffect clears all "smart_charging_effect" edges to the SmartChargingEffect entity.
+func (eu *EquipmentUpdate) ClearSmartChargingEffect() *EquipmentUpdate {
+	eu.mutation.ClearSmartChargingEffect()
+	return eu
+}
+
+// RemoveSmartChargingEffectIDs removes the "smart_charging_effect" edge to SmartChargingEffect entities by IDs.
+func (eu *EquipmentUpdate) RemoveSmartChargingEffectIDs(ids ...datasource.UUID) *EquipmentUpdate {
+	eu.mutation.RemoveSmartChargingEffectIDs(ids...)
+	return eu
+}
+
+// RemoveSmartChargingEffect removes "smart_charging_effect" edges to SmartChargingEffect entities.
+func (eu *EquipmentUpdate) RemoveSmartChargingEffect(s ...*SmartChargingEffect) *EquipmentUpdate {
+	ids := make([]datasource.UUID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return eu.RemoveSmartChargingEffectIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -1008,6 +1045,60 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if eu.mutation.SmartChargingEffectCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.SmartChargingEffectTable,
+			Columns: []string{equipment.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := eu.mutation.RemovedSmartChargingEffectIDs(); len(nodes) > 0 && !eu.mutation.SmartChargingEffectCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.SmartChargingEffectTable,
+			Columns: []string{equipment.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := eu.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.SmartChargingEffectTable,
+			Columns: []string{equipment.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, eu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{equipment.Label}
@@ -1265,6 +1356,21 @@ func (euo *EquipmentUpdateOne) AddEquipmentLog(e ...*EquipmentLog) *EquipmentUpd
 	return euo.AddEquipmentLogIDs(ids...)
 }
 
+// AddSmartChargingEffectIDs adds the "smart_charging_effect" edge to the SmartChargingEffect entity by IDs.
+func (euo *EquipmentUpdateOne) AddSmartChargingEffectIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
+	euo.mutation.AddSmartChargingEffectIDs(ids...)
+	return euo
+}
+
+// AddSmartChargingEffect adds the "smart_charging_effect" edges to the SmartChargingEffect entity.
+func (euo *EquipmentUpdateOne) AddSmartChargingEffect(s ...*SmartChargingEffect) *EquipmentUpdateOne {
+	ids := make([]datasource.UUID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return euo.AddSmartChargingEffectIDs(ids...)
+}
+
 // Mutation returns the EquipmentMutation object of the builder.
 func (euo *EquipmentUpdateOne) Mutation() *EquipmentMutation {
 	return euo.mutation
@@ -1427,6 +1533,27 @@ func (euo *EquipmentUpdateOne) RemoveEquipmentLog(e ...*EquipmentLog) *Equipment
 		ids[i] = e[i].ID
 	}
 	return euo.RemoveEquipmentLogIDs(ids...)
+}
+
+// ClearSmartChargingEffect clears all "smart_charging_effect" edges to the SmartChargingEffect entity.
+func (euo *EquipmentUpdateOne) ClearSmartChargingEffect() *EquipmentUpdateOne {
+	euo.mutation.ClearSmartChargingEffect()
+	return euo
+}
+
+// RemoveSmartChargingEffectIDs removes the "smart_charging_effect" edge to SmartChargingEffect entities by IDs.
+func (euo *EquipmentUpdateOne) RemoveSmartChargingEffectIDs(ids ...datasource.UUID) *EquipmentUpdateOne {
+	euo.mutation.RemoveSmartChargingEffectIDs(ids...)
+	return euo
+}
+
+// RemoveSmartChargingEffect removes "smart_charging_effect" edges to SmartChargingEffect entities.
+func (euo *EquipmentUpdateOne) RemoveSmartChargingEffect(s ...*SmartChargingEffect) *EquipmentUpdateOne {
+	ids := make([]datasource.UUID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return euo.RemoveSmartChargingEffectIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -2020,6 +2147,60 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: equipmentlog.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if euo.mutation.SmartChargingEffectCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.SmartChargingEffectTable,
+			Columns: []string{equipment.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := euo.mutation.RemovedSmartChargingEffectIDs(); len(nodes) > 0 && !euo.mutation.SmartChargingEffectCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.SmartChargingEffectTable,
+			Columns: []string{equipment.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := euo.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.SmartChargingEffectTable,
+			Columns: []string{equipment.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
 				},
 			},
 		}

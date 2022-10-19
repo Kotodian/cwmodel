@@ -25,7 +25,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderevent"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/reservation"
-	"github.com/Kotodian/ent-practice/ent/smartchargingevent"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -61,7 +61,7 @@ func columnChecker(table string) func(string) error {
 		orderevent.Table:              orderevent.ValidColumn,
 		orderinfo.Table:               orderinfo.ValidColumn,
 		reservation.Table:             reservation.ValidColumn,
-		smartchargingevent.Table:      smartchargingevent.ValidColumn,
+		smartchargingeffect.Table:     smartchargingeffect.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

@@ -16,6 +16,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
 	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -259,6 +260,21 @@ func (cu *ConnectorUpdate) AddReservation(r ...*Reservation) *ConnectorUpdate {
 	return cu.AddReservationIDs(ids...)
 }
 
+// AddSmartChargingEffectIDs adds the "smart_charging_effect" edge to the SmartChargingEffect entity by IDs.
+func (cu *ConnectorUpdate) AddSmartChargingEffectIDs(ids ...datasource.UUID) *ConnectorUpdate {
+	cu.mutation.AddSmartChargingEffectIDs(ids...)
+	return cu
+}
+
+// AddSmartChargingEffect adds the "smart_charging_effect" edges to the SmartChargingEffect entity.
+func (cu *ConnectorUpdate) AddSmartChargingEffect(s ...*SmartChargingEffect) *ConnectorUpdate {
+	ids := make([]datasource.UUID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return cu.AddSmartChargingEffectIDs(ids...)
+}
+
 // Mutation returns the ConnectorMutation object of the builder.
 func (cu *ConnectorUpdate) Mutation() *ConnectorMutation {
 	return cu.mutation
@@ -316,6 +332,27 @@ func (cu *ConnectorUpdate) RemoveReservation(r ...*Reservation) *ConnectorUpdate
 		ids[i] = r[i].ID
 	}
 	return cu.RemoveReservationIDs(ids...)
+}
+
+// ClearSmartChargingEffect clears all "smart_charging_effect" edges to the SmartChargingEffect entity.
+func (cu *ConnectorUpdate) ClearSmartChargingEffect() *ConnectorUpdate {
+	cu.mutation.ClearSmartChargingEffect()
+	return cu
+}
+
+// RemoveSmartChargingEffectIDs removes the "smart_charging_effect" edge to SmartChargingEffect entities by IDs.
+func (cu *ConnectorUpdate) RemoveSmartChargingEffectIDs(ids ...datasource.UUID) *ConnectorUpdate {
+	cu.mutation.RemoveSmartChargingEffectIDs(ids...)
+	return cu
+}
+
+// RemoveSmartChargingEffect removes "smart_charging_effect" edges to SmartChargingEffect entities.
+func (cu *ConnectorUpdate) RemoveSmartChargingEffect(s ...*SmartChargingEffect) *ConnectorUpdate {
+	ids := make([]datasource.UUID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return cu.RemoveSmartChargingEffectIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -645,6 +682,60 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if cu.mutation.SmartChargingEffectCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.SmartChargingEffectTable,
+			Columns: []string{connector.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.RemovedSmartChargingEffectIDs(); len(nodes) > 0 && !cu.mutation.SmartChargingEffectCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.SmartChargingEffectTable,
+			Columns: []string{connector.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.SmartChargingEffectTable,
+			Columns: []string{connector.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{connector.Label}
@@ -891,6 +982,21 @@ func (cuo *ConnectorUpdateOne) AddReservation(r ...*Reservation) *ConnectorUpdat
 	return cuo.AddReservationIDs(ids...)
 }
 
+// AddSmartChargingEffectIDs adds the "smart_charging_effect" edge to the SmartChargingEffect entity by IDs.
+func (cuo *ConnectorUpdateOne) AddSmartChargingEffectIDs(ids ...datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.AddSmartChargingEffectIDs(ids...)
+	return cuo
+}
+
+// AddSmartChargingEffect adds the "smart_charging_effect" edges to the SmartChargingEffect entity.
+func (cuo *ConnectorUpdateOne) AddSmartChargingEffect(s ...*SmartChargingEffect) *ConnectorUpdateOne {
+	ids := make([]datasource.UUID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return cuo.AddSmartChargingEffectIDs(ids...)
+}
+
 // Mutation returns the ConnectorMutation object of the builder.
 func (cuo *ConnectorUpdateOne) Mutation() *ConnectorMutation {
 	return cuo.mutation
@@ -948,6 +1054,27 @@ func (cuo *ConnectorUpdateOne) RemoveReservation(r ...*Reservation) *ConnectorUp
 		ids[i] = r[i].ID
 	}
 	return cuo.RemoveReservationIDs(ids...)
+}
+
+// ClearSmartChargingEffect clears all "smart_charging_effect" edges to the SmartChargingEffect entity.
+func (cuo *ConnectorUpdateOne) ClearSmartChargingEffect() *ConnectorUpdateOne {
+	cuo.mutation.ClearSmartChargingEffect()
+	return cuo
+}
+
+// RemoveSmartChargingEffectIDs removes the "smart_charging_effect" edge to SmartChargingEffect entities by IDs.
+func (cuo *ConnectorUpdateOne) RemoveSmartChargingEffectIDs(ids ...datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.RemoveSmartChargingEffectIDs(ids...)
+	return cuo
+}
+
+// RemoveSmartChargingEffect removes "smart_charging_effect" edges to SmartChargingEffect entities.
+func (cuo *ConnectorUpdateOne) RemoveSmartChargingEffect(s ...*SmartChargingEffect) *ConnectorUpdateOne {
+	ids := make([]datasource.UUID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return cuo.RemoveSmartChargingEffectIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -1299,6 +1426,60 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cuo.mutation.SmartChargingEffectCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.SmartChargingEffectTable,
+			Columns: []string{connector.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.RemovedSmartChargingEffectIDs(); len(nodes) > 0 && !cuo.mutation.SmartChargingEffectCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.SmartChargingEffectTable,
+			Columns: []string{connector.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.SmartChargingEffectTable,
+			Columns: []string{connector.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
 				},
 			},
 		}

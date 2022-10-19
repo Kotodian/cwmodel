@@ -35,7 +35,7 @@ func (OrderInfo) Fields() []ent.Field {
 		field.String("caller_order_id").Optional().Nillable().Comment("第三方订单id"),
 		field.Float("total_electricity").Optional().Nillable().Comment("总充电电量"),
 		field.Float("charge_start_electricity").Optional().Nillable().Comment("起始电量"),
-		field.Float("charge_stop_electricity").Optional().Nillable().Comment("结束电量"),
+		field.Float("charge_final_electricity").Optional().Nillable().Comment("结束电量"),
 		field.Float("sharp_electricity").Optional().Nillable().Comment("尖电量"),
 		field.Float("peak_electricity").Optional().Nillable().Comment("峰电量"),
 		field.Float("flat_electricity").Optional().Nillable().Comment("平电量"),
@@ -57,6 +57,7 @@ func (OrderInfo) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("connector", Connector.Type).Ref("order_info").Unique(),
 		edge.From("equipment", Equipment.Type).Ref("order_info").Unique(),
-		edge.To("order_event", OrderEvent.Type),
+		edge.To("order_event", OrderEvent.Type).StorageKey(edge.Column("order_id")),
+		edge.To("smart_charging_effect", SmartChargingEffect.Type).StorageKey(edge.Column("order_id")).Unique(),
 	}
 }

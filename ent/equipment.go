@@ -62,9 +62,11 @@ type EquipmentEdges struct {
 	Reservation []*Reservation `json:"reservation,omitempty"`
 	// EquipmentLog holds the value of the equipment_log edge.
 	EquipmentLog []*EquipmentLog `json:"equipment_log,omitempty"`
+	// SmartChargingEffect holds the value of the smart_charging_effect edge.
+	SmartChargingEffect []*SmartChargingEffect `json:"smart_charging_effect,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [9]bool
+	loadedTypes [10]bool
 }
 
 // EquipmentInfoOrErr returns the EquipmentInfo value or an error if the edge
@@ -154,6 +156,15 @@ func (e EquipmentEdges) EquipmentLogOrErr() ([]*EquipmentLog, error) {
 		return e.EquipmentLog, nil
 	}
 	return nil, &NotLoadedError{edge: "equipment_log"}
+}
+
+// SmartChargingEffectOrErr returns the SmartChargingEffect value or an error if the edge
+// was not loaded in eager-loading.
+func (e EquipmentEdges) SmartChargingEffectOrErr() ([]*SmartChargingEffect, error) {
+	if e.loadedTypes[9] {
+		return e.SmartChargingEffect, nil
+	}
+	return nil, &NotLoadedError{edge: "smart_charging_effect"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -282,6 +293,11 @@ func (e *Equipment) QueryReservation() *ReservationQuery {
 // QueryEquipmentLog queries the "equipment_log" edge of the Equipment entity.
 func (e *Equipment) QueryEquipmentLog() *EquipmentLogQuery {
 	return (&EquipmentClient{config: e.config}).QueryEquipmentLog(e)
+}
+
+// QuerySmartChargingEffect queries the "smart_charging_effect" edge of the Equipment entity.
+func (e *Equipment) QuerySmartChargingEffect() *SmartChargingEffectQuery {
+	return (&EquipmentClient{config: e.config}).QuerySmartChargingEffect(e)
 }
 
 // Update returns a builder for updating this Equipment.

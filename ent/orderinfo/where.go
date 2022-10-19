@@ -166,10 +166,10 @@ func ChargeStartElectricity(v float64) predicate.OrderInfo {
 	})
 }
 
-// ChargeStopElectricity applies equality check predicate on the "charge_stop_electricity" field. It's identical to ChargeStopElectricityEQ.
-func ChargeStopElectricity(v float64) predicate.OrderInfo {
+// ChargeFinalElectricity applies equality check predicate on the "charge_final_electricity" field. It's identical to ChargeFinalElectricityEQ.
+func ChargeFinalElectricity(v float64) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldChargeStopElectricity), v))
+		s.Where(sql.EQ(s.C(FieldChargeFinalElectricity), v))
 	})
 }
 
@@ -1277,81 +1277,81 @@ func ChargeStartElectricityNotNil() predicate.OrderInfo {
 	})
 }
 
-// ChargeStopElectricityEQ applies the EQ predicate on the "charge_stop_electricity" field.
-func ChargeStopElectricityEQ(v float64) predicate.OrderInfo {
+// ChargeFinalElectricityEQ applies the EQ predicate on the "charge_final_electricity" field.
+func ChargeFinalElectricityEQ(v float64) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldChargeStopElectricity), v))
+		s.Where(sql.EQ(s.C(FieldChargeFinalElectricity), v))
 	})
 }
 
-// ChargeStopElectricityNEQ applies the NEQ predicate on the "charge_stop_electricity" field.
-func ChargeStopElectricityNEQ(v float64) predicate.OrderInfo {
+// ChargeFinalElectricityNEQ applies the NEQ predicate on the "charge_final_electricity" field.
+func ChargeFinalElectricityNEQ(v float64) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldChargeStopElectricity), v))
+		s.Where(sql.NEQ(s.C(FieldChargeFinalElectricity), v))
 	})
 }
 
-// ChargeStopElectricityIn applies the In predicate on the "charge_stop_electricity" field.
-func ChargeStopElectricityIn(vs ...float64) predicate.OrderInfo {
+// ChargeFinalElectricityIn applies the In predicate on the "charge_final_electricity" field.
+func ChargeFinalElectricityIn(vs ...float64) predicate.OrderInfo {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.OrderInfo(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldChargeStopElectricity), v...))
+		s.Where(sql.In(s.C(FieldChargeFinalElectricity), v...))
 	})
 }
 
-// ChargeStopElectricityNotIn applies the NotIn predicate on the "charge_stop_electricity" field.
-func ChargeStopElectricityNotIn(vs ...float64) predicate.OrderInfo {
+// ChargeFinalElectricityNotIn applies the NotIn predicate on the "charge_final_electricity" field.
+func ChargeFinalElectricityNotIn(vs ...float64) predicate.OrderInfo {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.OrderInfo(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldChargeStopElectricity), v...))
+		s.Where(sql.NotIn(s.C(FieldChargeFinalElectricity), v...))
 	})
 }
 
-// ChargeStopElectricityGT applies the GT predicate on the "charge_stop_electricity" field.
-func ChargeStopElectricityGT(v float64) predicate.OrderInfo {
+// ChargeFinalElectricityGT applies the GT predicate on the "charge_final_electricity" field.
+func ChargeFinalElectricityGT(v float64) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldChargeStopElectricity), v))
+		s.Where(sql.GT(s.C(FieldChargeFinalElectricity), v))
 	})
 }
 
-// ChargeStopElectricityGTE applies the GTE predicate on the "charge_stop_electricity" field.
-func ChargeStopElectricityGTE(v float64) predicate.OrderInfo {
+// ChargeFinalElectricityGTE applies the GTE predicate on the "charge_final_electricity" field.
+func ChargeFinalElectricityGTE(v float64) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldChargeStopElectricity), v))
+		s.Where(sql.GTE(s.C(FieldChargeFinalElectricity), v))
 	})
 }
 
-// ChargeStopElectricityLT applies the LT predicate on the "charge_stop_electricity" field.
-func ChargeStopElectricityLT(v float64) predicate.OrderInfo {
+// ChargeFinalElectricityLT applies the LT predicate on the "charge_final_electricity" field.
+func ChargeFinalElectricityLT(v float64) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldChargeStopElectricity), v))
+		s.Where(sql.LT(s.C(FieldChargeFinalElectricity), v))
 	})
 }
 
-// ChargeStopElectricityLTE applies the LTE predicate on the "charge_stop_electricity" field.
-func ChargeStopElectricityLTE(v float64) predicate.OrderInfo {
+// ChargeFinalElectricityLTE applies the LTE predicate on the "charge_final_electricity" field.
+func ChargeFinalElectricityLTE(v float64) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldChargeStopElectricity), v))
+		s.Where(sql.LTE(s.C(FieldChargeFinalElectricity), v))
 	})
 }
 
-// ChargeStopElectricityIsNil applies the IsNil predicate on the "charge_stop_electricity" field.
-func ChargeStopElectricityIsNil() predicate.OrderInfo {
+// ChargeFinalElectricityIsNil applies the IsNil predicate on the "charge_final_electricity" field.
+func ChargeFinalElectricityIsNil() predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldChargeStopElectricity)))
+		s.Where(sql.IsNull(s.C(FieldChargeFinalElectricity)))
 	})
 }
 
-// ChargeStopElectricityNotNil applies the NotNil predicate on the "charge_stop_electricity" field.
-func ChargeStopElectricityNotNil() predicate.OrderInfo {
+// ChargeFinalElectricityNotNil applies the NotNil predicate on the "charge_final_electricity" field.
+func ChargeFinalElectricityNotNil() predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldChargeStopElectricity)))
+		s.Where(sql.NotNull(s.C(FieldChargeFinalElectricity)))
 	})
 }
 
@@ -2456,6 +2456,34 @@ func HasOrderEventWith(preds ...predicate.OrderEvent) predicate.OrderInfo {
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(OrderEventInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, OrderEventTable, OrderEventColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasSmartChargingEffect applies the HasEdge predicate on the "smart_charging_effect" edge.
+func HasSmartChargingEffect() predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(SmartChargingEffectTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, SmartChargingEffectTable, SmartChargingEffectColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasSmartChargingEffectWith applies the HasEdge predicate on the "smart_charging_effect" edge with a given conditions (other predicates).
+func HasSmartChargingEffectWith(preds ...predicate.SmartChargingEffect) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(SmartChargingEffectInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, SmartChargingEffectTable, SmartChargingEffectColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

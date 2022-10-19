@@ -11,18 +11,6 @@ const (
 	Label = "order_event"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldVersion holds the string denoting the version field in the database.
-	FieldVersion = "version"
-	// FieldCreatedBy holds the string denoting the created_by field in the database.
-	FieldCreatedBy = "created_by"
-	// FieldCreatedAt holds the string denoting the created_at field in the database.
-	FieldCreatedAt = "created_at"
-	// FieldUpdatedBy holds the string denoting the updated_by field in the database.
-	FieldUpdatedBy = "updated_by"
-	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
-	FieldUpdatedAt = "updated_at"
-	// FieldOrderID holds the string denoting the order_id field in the database.
-	FieldOrderID = "order_id"
 	// FieldContent holds the string denoting the content field in the database.
 	FieldContent = "content"
 	// FieldOccurrence holds the string denoting the occurrence field in the database.
@@ -37,18 +25,12 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "orderinfo" package.
 	OrderInfoInverseTable = "order_info"
 	// OrderInfoColumn is the table column denoting the order_info relation/edge.
-	OrderInfoColumn = "order_info_order_event"
+	OrderInfoColumn = "order_id"
 )
 
 // Columns holds all SQL columns for orderevent fields.
 var Columns = []string{
 	FieldID,
-	FieldVersion,
-	FieldCreatedBy,
-	FieldCreatedAt,
-	FieldUpdatedBy,
-	FieldUpdatedAt,
-	FieldOrderID,
 	FieldContent,
 	FieldOccurrence,
 }
@@ -56,7 +38,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "order_event"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"order_info_order_event",
+	"order_id",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -75,16 +57,6 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultVersion holds the default value on creation for the "version" field.
-	DefaultVersion int64
-	// DefaultCreatedBy holds the default value on creation for the "created_by" field.
-	DefaultCreatedBy datasource.UUID
-	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
-	DefaultCreatedAt int64
-	// DefaultUpdatedBy holds the default value on creation for the "updated_by" field.
-	DefaultUpdatedBy datasource.UUID
-	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
-	DefaultUpdatedAt int64
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID datasource.UUID
 )

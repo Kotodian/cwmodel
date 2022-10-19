@@ -29,82 +29,6 @@ func (oeu *OrderEventUpdate) Where(ps ...predicate.OrderEvent) *OrderEventUpdate
 	return oeu
 }
 
-// SetVersion sets the "version" field.
-func (oeu *OrderEventUpdate) SetVersion(i int64) *OrderEventUpdate {
-	oeu.mutation.ResetVersion()
-	oeu.mutation.SetVersion(i)
-	return oeu
-}
-
-// SetNillableVersion sets the "version" field if the given value is not nil.
-func (oeu *OrderEventUpdate) SetNillableVersion(i *int64) *OrderEventUpdate {
-	if i != nil {
-		oeu.SetVersion(*i)
-	}
-	return oeu
-}
-
-// AddVersion adds i to the "version" field.
-func (oeu *OrderEventUpdate) AddVersion(i int64) *OrderEventUpdate {
-	oeu.mutation.AddVersion(i)
-	return oeu
-}
-
-// SetUpdatedBy sets the "updated_by" field.
-func (oeu *OrderEventUpdate) SetUpdatedBy(d datasource.UUID) *OrderEventUpdate {
-	oeu.mutation.ResetUpdatedBy()
-	oeu.mutation.SetUpdatedBy(d)
-	return oeu
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (oeu *OrderEventUpdate) SetNillableUpdatedBy(d *datasource.UUID) *OrderEventUpdate {
-	if d != nil {
-		oeu.SetUpdatedBy(*d)
-	}
-	return oeu
-}
-
-// AddUpdatedBy adds d to the "updated_by" field.
-func (oeu *OrderEventUpdate) AddUpdatedBy(d datasource.UUID) *OrderEventUpdate {
-	oeu.mutation.AddUpdatedBy(d)
-	return oeu
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (oeu *OrderEventUpdate) SetUpdatedAt(i int64) *OrderEventUpdate {
-	oeu.mutation.ResetUpdatedAt()
-	oeu.mutation.SetUpdatedAt(i)
-	return oeu
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (oeu *OrderEventUpdate) SetNillableUpdatedAt(i *int64) *OrderEventUpdate {
-	if i != nil {
-		oeu.SetUpdatedAt(*i)
-	}
-	return oeu
-}
-
-// AddUpdatedAt adds i to the "updated_at" field.
-func (oeu *OrderEventUpdate) AddUpdatedAt(i int64) *OrderEventUpdate {
-	oeu.mutation.AddUpdatedAt(i)
-	return oeu
-}
-
-// SetOrderID sets the "order_id" field.
-func (oeu *OrderEventUpdate) SetOrderID(d datasource.UUID) *OrderEventUpdate {
-	oeu.mutation.ResetOrderID()
-	oeu.mutation.SetOrderID(d)
-	return oeu
-}
-
-// AddOrderID adds d to the "order_id" field.
-func (oeu *OrderEventUpdate) AddOrderID(d datasource.UUID) *OrderEventUpdate {
-	oeu.mutation.AddOrderID(d)
-	return oeu
-}
-
 // SetContent sets the "content" field.
 func (oeu *OrderEventUpdate) SetContent(s string) *OrderEventUpdate {
 	oeu.mutation.SetContent(s)
@@ -226,30 +150,6 @@ func (oeu *OrderEventUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := oeu.mutation.Version(); ok {
-		_spec.SetField(orderevent.FieldVersion, field.TypeInt64, value)
-	}
-	if value, ok := oeu.mutation.AddedVersion(); ok {
-		_spec.AddField(orderevent.FieldVersion, field.TypeInt64, value)
-	}
-	if value, ok := oeu.mutation.UpdatedBy(); ok {
-		_spec.SetField(orderevent.FieldUpdatedBy, field.TypeUint64, value)
-	}
-	if value, ok := oeu.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(orderevent.FieldUpdatedBy, field.TypeUint64, value)
-	}
-	if value, ok := oeu.mutation.UpdatedAt(); ok {
-		_spec.SetField(orderevent.FieldUpdatedAt, field.TypeInt64, value)
-	}
-	if value, ok := oeu.mutation.AddedUpdatedAt(); ok {
-		_spec.AddField(orderevent.FieldUpdatedAt, field.TypeInt64, value)
-	}
-	if value, ok := oeu.mutation.OrderID(); ok {
-		_spec.SetField(orderevent.FieldOrderID, field.TypeUint64, value)
-	}
-	if value, ok := oeu.mutation.AddedOrderID(); ok {
-		_spec.AddField(orderevent.FieldOrderID, field.TypeUint64, value)
-	}
 	if value, ok := oeu.mutation.Content(); ok {
 		_spec.SetField(orderevent.FieldContent, field.TypeString, value)
 	}
@@ -311,82 +211,6 @@ type OrderEventUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *OrderEventMutation
-}
-
-// SetVersion sets the "version" field.
-func (oeuo *OrderEventUpdateOne) SetVersion(i int64) *OrderEventUpdateOne {
-	oeuo.mutation.ResetVersion()
-	oeuo.mutation.SetVersion(i)
-	return oeuo
-}
-
-// SetNillableVersion sets the "version" field if the given value is not nil.
-func (oeuo *OrderEventUpdateOne) SetNillableVersion(i *int64) *OrderEventUpdateOne {
-	if i != nil {
-		oeuo.SetVersion(*i)
-	}
-	return oeuo
-}
-
-// AddVersion adds i to the "version" field.
-func (oeuo *OrderEventUpdateOne) AddVersion(i int64) *OrderEventUpdateOne {
-	oeuo.mutation.AddVersion(i)
-	return oeuo
-}
-
-// SetUpdatedBy sets the "updated_by" field.
-func (oeuo *OrderEventUpdateOne) SetUpdatedBy(d datasource.UUID) *OrderEventUpdateOne {
-	oeuo.mutation.ResetUpdatedBy()
-	oeuo.mutation.SetUpdatedBy(d)
-	return oeuo
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (oeuo *OrderEventUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *OrderEventUpdateOne {
-	if d != nil {
-		oeuo.SetUpdatedBy(*d)
-	}
-	return oeuo
-}
-
-// AddUpdatedBy adds d to the "updated_by" field.
-func (oeuo *OrderEventUpdateOne) AddUpdatedBy(d datasource.UUID) *OrderEventUpdateOne {
-	oeuo.mutation.AddUpdatedBy(d)
-	return oeuo
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (oeuo *OrderEventUpdateOne) SetUpdatedAt(i int64) *OrderEventUpdateOne {
-	oeuo.mutation.ResetUpdatedAt()
-	oeuo.mutation.SetUpdatedAt(i)
-	return oeuo
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (oeuo *OrderEventUpdateOne) SetNillableUpdatedAt(i *int64) *OrderEventUpdateOne {
-	if i != nil {
-		oeuo.SetUpdatedAt(*i)
-	}
-	return oeuo
-}
-
-// AddUpdatedAt adds i to the "updated_at" field.
-func (oeuo *OrderEventUpdateOne) AddUpdatedAt(i int64) *OrderEventUpdateOne {
-	oeuo.mutation.AddUpdatedAt(i)
-	return oeuo
-}
-
-// SetOrderID sets the "order_id" field.
-func (oeuo *OrderEventUpdateOne) SetOrderID(d datasource.UUID) *OrderEventUpdateOne {
-	oeuo.mutation.ResetOrderID()
-	oeuo.mutation.SetOrderID(d)
-	return oeuo
-}
-
-// AddOrderID adds d to the "order_id" field.
-func (oeuo *OrderEventUpdateOne) AddOrderID(d datasource.UUID) *OrderEventUpdateOne {
-	oeuo.mutation.AddOrderID(d)
-	return oeuo
 }
 
 // SetContent sets the "content" field.
@@ -539,30 +363,6 @@ func (oeuo *OrderEventUpdateOne) sqlSave(ctx context.Context) (_node *OrderEvent
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := oeuo.mutation.Version(); ok {
-		_spec.SetField(orderevent.FieldVersion, field.TypeInt64, value)
-	}
-	if value, ok := oeuo.mutation.AddedVersion(); ok {
-		_spec.AddField(orderevent.FieldVersion, field.TypeInt64, value)
-	}
-	if value, ok := oeuo.mutation.UpdatedBy(); ok {
-		_spec.SetField(orderevent.FieldUpdatedBy, field.TypeUint64, value)
-	}
-	if value, ok := oeuo.mutation.AddedUpdatedBy(); ok {
-		_spec.AddField(orderevent.FieldUpdatedBy, field.TypeUint64, value)
-	}
-	if value, ok := oeuo.mutation.UpdatedAt(); ok {
-		_spec.SetField(orderevent.FieldUpdatedAt, field.TypeInt64, value)
-	}
-	if value, ok := oeuo.mutation.AddedUpdatedAt(); ok {
-		_spec.AddField(orderevent.FieldUpdatedAt, field.TypeInt64, value)
-	}
-	if value, ok := oeuo.mutation.OrderID(); ok {
-		_spec.SetField(orderevent.FieldOrderID, field.TypeUint64, value)
-	}
-	if value, ok := oeuo.mutation.AddedOrderID(); ok {
-		_spec.AddField(orderevent.FieldOrderID, field.TypeUint64, value)
 	}
 	if value, ok := oeuo.mutation.Content(); ok {
 		_spec.SetField(orderevent.FieldContent, field.TypeString, value)

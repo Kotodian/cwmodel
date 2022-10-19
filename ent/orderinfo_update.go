@@ -15,6 +15,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderevent"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -241,30 +242,30 @@ func (oiu *OrderInfoUpdate) ClearChargeStartElectricity() *OrderInfoUpdate {
 	return oiu
 }
 
-// SetChargeStopElectricity sets the "charge_stop_electricity" field.
-func (oiu *OrderInfoUpdate) SetChargeStopElectricity(f float64) *OrderInfoUpdate {
-	oiu.mutation.ResetChargeStopElectricity()
-	oiu.mutation.SetChargeStopElectricity(f)
+// SetChargeFinalElectricity sets the "charge_final_electricity" field.
+func (oiu *OrderInfoUpdate) SetChargeFinalElectricity(f float64) *OrderInfoUpdate {
+	oiu.mutation.ResetChargeFinalElectricity()
+	oiu.mutation.SetChargeFinalElectricity(f)
 	return oiu
 }
 
-// SetNillableChargeStopElectricity sets the "charge_stop_electricity" field if the given value is not nil.
-func (oiu *OrderInfoUpdate) SetNillableChargeStopElectricity(f *float64) *OrderInfoUpdate {
+// SetNillableChargeFinalElectricity sets the "charge_final_electricity" field if the given value is not nil.
+func (oiu *OrderInfoUpdate) SetNillableChargeFinalElectricity(f *float64) *OrderInfoUpdate {
 	if f != nil {
-		oiu.SetChargeStopElectricity(*f)
+		oiu.SetChargeFinalElectricity(*f)
 	}
 	return oiu
 }
 
-// AddChargeStopElectricity adds f to the "charge_stop_electricity" field.
-func (oiu *OrderInfoUpdate) AddChargeStopElectricity(f float64) *OrderInfoUpdate {
-	oiu.mutation.AddChargeStopElectricity(f)
+// AddChargeFinalElectricity adds f to the "charge_final_electricity" field.
+func (oiu *OrderInfoUpdate) AddChargeFinalElectricity(f float64) *OrderInfoUpdate {
+	oiu.mutation.AddChargeFinalElectricity(f)
 	return oiu
 }
 
-// ClearChargeStopElectricity clears the value of the "charge_stop_electricity" field.
-func (oiu *OrderInfoUpdate) ClearChargeStopElectricity() *OrderInfoUpdate {
-	oiu.mutation.ClearChargeStopElectricity()
+// ClearChargeFinalElectricity clears the value of the "charge_final_electricity" field.
+func (oiu *OrderInfoUpdate) ClearChargeFinalElectricity() *OrderInfoUpdate {
+	oiu.mutation.ClearChargeFinalElectricity()
 	return oiu
 }
 
@@ -664,6 +665,25 @@ func (oiu *OrderInfoUpdate) AddOrderEvent(o ...*OrderEvent) *OrderInfoUpdate {
 	return oiu.AddOrderEventIDs(ids...)
 }
 
+// SetSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by ID.
+func (oiu *OrderInfoUpdate) SetSmartChargingEffectID(id datasource.UUID) *OrderInfoUpdate {
+	oiu.mutation.SetSmartChargingEffectID(id)
+	return oiu
+}
+
+// SetNillableSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by ID if the given value is not nil.
+func (oiu *OrderInfoUpdate) SetNillableSmartChargingEffectID(id *datasource.UUID) *OrderInfoUpdate {
+	if id != nil {
+		oiu = oiu.SetSmartChargingEffectID(*id)
+	}
+	return oiu
+}
+
+// SetSmartChargingEffect sets the "smart_charging_effect" edge to the SmartChargingEffect entity.
+func (oiu *OrderInfoUpdate) SetSmartChargingEffect(s *SmartChargingEffect) *OrderInfoUpdate {
+	return oiu.SetSmartChargingEffectID(s.ID)
+}
+
 // Mutation returns the OrderInfoMutation object of the builder.
 func (oiu *OrderInfoUpdate) Mutation() *OrderInfoMutation {
 	return oiu.mutation
@@ -700,6 +720,12 @@ func (oiu *OrderInfoUpdate) RemoveOrderEvent(o ...*OrderEvent) *OrderInfoUpdate 
 		ids[i] = o[i].ID
 	}
 	return oiu.RemoveOrderEventIDs(ids...)
+}
+
+// ClearSmartChargingEffect clears the "smart_charging_effect" edge to the SmartChargingEffect entity.
+func (oiu *OrderInfoUpdate) ClearSmartChargingEffect() *OrderInfoUpdate {
+	oiu.mutation.ClearSmartChargingEffect()
+	return oiu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -840,14 +866,14 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if oiu.mutation.ChargeStartElectricityCleared() {
 		_spec.ClearField(orderinfo.FieldChargeStartElectricity, field.TypeFloat64)
 	}
-	if value, ok := oiu.mutation.ChargeStopElectricity(); ok {
-		_spec.SetField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64, value)
+	if value, ok := oiu.mutation.ChargeFinalElectricity(); ok {
+		_spec.SetField(orderinfo.FieldChargeFinalElectricity, field.TypeFloat64, value)
 	}
-	if value, ok := oiu.mutation.AddedChargeStopElectricity(); ok {
-		_spec.AddField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64, value)
+	if value, ok := oiu.mutation.AddedChargeFinalElectricity(); ok {
+		_spec.AddField(orderinfo.FieldChargeFinalElectricity, field.TypeFloat64, value)
 	}
-	if oiu.mutation.ChargeStopElectricityCleared() {
-		_spec.ClearField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64)
+	if oiu.mutation.ChargeFinalElectricityCleared() {
+		_spec.ClearField(orderinfo.FieldChargeFinalElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiu.mutation.SharpElectricity(); ok {
 		_spec.SetField(orderinfo.FieldSharpElectricity, field.TypeFloat64, value)
@@ -1090,6 +1116,41 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if oiu.mutation.SmartChargingEffectCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   orderinfo.SmartChargingEffectTable,
+			Columns: []string{orderinfo.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := oiu.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   orderinfo.SmartChargingEffectTable,
+			Columns: []string{orderinfo.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, oiu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{orderinfo.Label}
@@ -1319,30 +1380,30 @@ func (oiuo *OrderInfoUpdateOne) ClearChargeStartElectricity() *OrderInfoUpdateOn
 	return oiuo
 }
 
-// SetChargeStopElectricity sets the "charge_stop_electricity" field.
-func (oiuo *OrderInfoUpdateOne) SetChargeStopElectricity(f float64) *OrderInfoUpdateOne {
-	oiuo.mutation.ResetChargeStopElectricity()
-	oiuo.mutation.SetChargeStopElectricity(f)
+// SetChargeFinalElectricity sets the "charge_final_electricity" field.
+func (oiuo *OrderInfoUpdateOne) SetChargeFinalElectricity(f float64) *OrderInfoUpdateOne {
+	oiuo.mutation.ResetChargeFinalElectricity()
+	oiuo.mutation.SetChargeFinalElectricity(f)
 	return oiuo
 }
 
-// SetNillableChargeStopElectricity sets the "charge_stop_electricity" field if the given value is not nil.
-func (oiuo *OrderInfoUpdateOne) SetNillableChargeStopElectricity(f *float64) *OrderInfoUpdateOne {
+// SetNillableChargeFinalElectricity sets the "charge_final_electricity" field if the given value is not nil.
+func (oiuo *OrderInfoUpdateOne) SetNillableChargeFinalElectricity(f *float64) *OrderInfoUpdateOne {
 	if f != nil {
-		oiuo.SetChargeStopElectricity(*f)
+		oiuo.SetChargeFinalElectricity(*f)
 	}
 	return oiuo
 }
 
-// AddChargeStopElectricity adds f to the "charge_stop_electricity" field.
-func (oiuo *OrderInfoUpdateOne) AddChargeStopElectricity(f float64) *OrderInfoUpdateOne {
-	oiuo.mutation.AddChargeStopElectricity(f)
+// AddChargeFinalElectricity adds f to the "charge_final_electricity" field.
+func (oiuo *OrderInfoUpdateOne) AddChargeFinalElectricity(f float64) *OrderInfoUpdateOne {
+	oiuo.mutation.AddChargeFinalElectricity(f)
 	return oiuo
 }
 
-// ClearChargeStopElectricity clears the value of the "charge_stop_electricity" field.
-func (oiuo *OrderInfoUpdateOne) ClearChargeStopElectricity() *OrderInfoUpdateOne {
-	oiuo.mutation.ClearChargeStopElectricity()
+// ClearChargeFinalElectricity clears the value of the "charge_final_electricity" field.
+func (oiuo *OrderInfoUpdateOne) ClearChargeFinalElectricity() *OrderInfoUpdateOne {
+	oiuo.mutation.ClearChargeFinalElectricity()
 	return oiuo
 }
 
@@ -1742,6 +1803,25 @@ func (oiuo *OrderInfoUpdateOne) AddOrderEvent(o ...*OrderEvent) *OrderInfoUpdate
 	return oiuo.AddOrderEventIDs(ids...)
 }
 
+// SetSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by ID.
+func (oiuo *OrderInfoUpdateOne) SetSmartChargingEffectID(id datasource.UUID) *OrderInfoUpdateOne {
+	oiuo.mutation.SetSmartChargingEffectID(id)
+	return oiuo
+}
+
+// SetNillableSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by ID if the given value is not nil.
+func (oiuo *OrderInfoUpdateOne) SetNillableSmartChargingEffectID(id *datasource.UUID) *OrderInfoUpdateOne {
+	if id != nil {
+		oiuo = oiuo.SetSmartChargingEffectID(*id)
+	}
+	return oiuo
+}
+
+// SetSmartChargingEffect sets the "smart_charging_effect" edge to the SmartChargingEffect entity.
+func (oiuo *OrderInfoUpdateOne) SetSmartChargingEffect(s *SmartChargingEffect) *OrderInfoUpdateOne {
+	return oiuo.SetSmartChargingEffectID(s.ID)
+}
+
 // Mutation returns the OrderInfoMutation object of the builder.
 func (oiuo *OrderInfoUpdateOne) Mutation() *OrderInfoMutation {
 	return oiuo.mutation
@@ -1778,6 +1858,12 @@ func (oiuo *OrderInfoUpdateOne) RemoveOrderEvent(o ...*OrderEvent) *OrderInfoUpd
 		ids[i] = o[i].ID
 	}
 	return oiuo.RemoveOrderEventIDs(ids...)
+}
+
+// ClearSmartChargingEffect clears the "smart_charging_effect" edge to the SmartChargingEffect entity.
+func (oiuo *OrderInfoUpdateOne) ClearSmartChargingEffect() *OrderInfoUpdateOne {
+	oiuo.mutation.ClearSmartChargingEffect()
+	return oiuo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -1948,14 +2034,14 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 	if oiuo.mutation.ChargeStartElectricityCleared() {
 		_spec.ClearField(orderinfo.FieldChargeStartElectricity, field.TypeFloat64)
 	}
-	if value, ok := oiuo.mutation.ChargeStopElectricity(); ok {
-		_spec.SetField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64, value)
+	if value, ok := oiuo.mutation.ChargeFinalElectricity(); ok {
+		_spec.SetField(orderinfo.FieldChargeFinalElectricity, field.TypeFloat64, value)
 	}
-	if value, ok := oiuo.mutation.AddedChargeStopElectricity(); ok {
-		_spec.AddField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64, value)
+	if value, ok := oiuo.mutation.AddedChargeFinalElectricity(); ok {
+		_spec.AddField(orderinfo.FieldChargeFinalElectricity, field.TypeFloat64, value)
 	}
-	if oiuo.mutation.ChargeStopElectricityCleared() {
-		_spec.ClearField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64)
+	if oiuo.mutation.ChargeFinalElectricityCleared() {
+		_spec.ClearField(orderinfo.FieldChargeFinalElectricity, field.TypeFloat64)
 	}
 	if value, ok := oiuo.mutation.SharpElectricity(); ok {
 		_spec.SetField(orderinfo.FieldSharpElectricity, field.TypeFloat64, value)
@@ -2190,6 +2276,41 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: orderevent.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if oiuo.mutation.SmartChargingEffectCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   orderinfo.SmartChargingEffectTable,
+			Columns: []string{orderinfo.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := oiuo.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   orderinfo.SmartChargingEffectTable,
+			Columns: []string{orderinfo.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
 				},
 			},
 		}

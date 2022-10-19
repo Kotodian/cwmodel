@@ -10,24 +10,24 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/ent-practice/ent/predicate"
-	"github.com/Kotodian/ent-practice/ent/smartchargingevent"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 )
 
-// SmartChargingEventDelete is the builder for deleting a SmartChargingEvent entity.
-type SmartChargingEventDelete struct {
+// SmartChargingEffectDelete is the builder for deleting a SmartChargingEffect entity.
+type SmartChargingEffectDelete struct {
 	config
 	hooks    []Hook
-	mutation *SmartChargingEventMutation
+	mutation *SmartChargingEffectMutation
 }
 
-// Where appends a list predicates to the SmartChargingEventDelete builder.
-func (sced *SmartChargingEventDelete) Where(ps ...predicate.SmartChargingEvent) *SmartChargingEventDelete {
+// Where appends a list predicates to the SmartChargingEffectDelete builder.
+func (sced *SmartChargingEffectDelete) Where(ps ...predicate.SmartChargingEffect) *SmartChargingEffectDelete {
 	sced.mutation.Where(ps...)
 	return sced
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (sced *SmartChargingEventDelete) Exec(ctx context.Context) (int, error) {
+func (sced *SmartChargingEffectDelete) Exec(ctx context.Context) (int, error) {
 	var (
 		err      error
 		affected int
@@ -36,7 +36,7 @@ func (sced *SmartChargingEventDelete) Exec(ctx context.Context) (int, error) {
 		affected, err = sced.sqlExec(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*SmartChargingEventMutation)
+			mutation, ok := m.(*SmartChargingEffectMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
 			}
@@ -59,7 +59,7 @@ func (sced *SmartChargingEventDelete) Exec(ctx context.Context) (int, error) {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sced *SmartChargingEventDelete) ExecX(ctx context.Context) int {
+func (sced *SmartChargingEffectDelete) ExecX(ctx context.Context) int {
 	n, err := sced.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -67,13 +67,13 @@ func (sced *SmartChargingEventDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (sced *SmartChargingEventDelete) sqlExec(ctx context.Context) (int, error) {
+func (sced *SmartChargingEffectDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := &sqlgraph.DeleteSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table: smartchargingevent.Table,
+			Table: smartchargingeffect.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeUint64,
-				Column: smartchargingevent.FieldID,
+				Column: smartchargingeffect.FieldID,
 			},
 		},
 	}
@@ -91,25 +91,25 @@ func (sced *SmartChargingEventDelete) sqlExec(ctx context.Context) (int, error) 
 	return affected, err
 }
 
-// SmartChargingEventDeleteOne is the builder for deleting a single SmartChargingEvent entity.
-type SmartChargingEventDeleteOne struct {
-	sced *SmartChargingEventDelete
+// SmartChargingEffectDeleteOne is the builder for deleting a single SmartChargingEffect entity.
+type SmartChargingEffectDeleteOne struct {
+	sced *SmartChargingEffectDelete
 }
 
 // Exec executes the deletion query.
-func (scedo *SmartChargingEventDeleteOne) Exec(ctx context.Context) error {
+func (scedo *SmartChargingEffectDeleteOne) Exec(ctx context.Context) error {
 	n, err := scedo.sced.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{smartchargingevent.Label}
+		return &NotFoundError{smartchargingeffect.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (scedo *SmartChargingEventDeleteOne) ExecX(ctx context.Context) {
+func (scedo *SmartChargingEffectDeleteOne) ExecX(ctx context.Context) {
 	scedo.sced.ExecX(ctx)
 }

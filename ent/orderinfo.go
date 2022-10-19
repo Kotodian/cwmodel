@@ -10,6 +10,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/connector"
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -44,7 +45,7 @@ type OrderInfo struct {
 	// 起始电量
 	ChargeStartElectricity *float64 `json:"charge_start_electricity,omitempty"`
 	// 结束电量
-	ChargeStopElectricity *float64 `json:"charge_stop_electricity,omitempty"`
+	ChargeFinalElectricity *float64 `json:"charge_final_electricity,omitempty"`
 	// 尖电量
 	SharpElectricity *float64 `json:"sharp_electricity,omitempty"`
 	// 峰电量
@@ -88,9 +89,11 @@ type OrderInfoEdges struct {
 	Equipment *Equipment `json:"equipment,omitempty"`
 	// OrderEvent holds the value of the order_event edge.
 	OrderEvent []*OrderEvent `json:"order_event,omitempty"`
+	// SmartChargingEffect holds the value of the smart_charging_effect edge.
+	SmartChargingEffect *SmartChargingEffect `json:"smart_charging_effect,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 }
 
 // ConnectorOrErr returns the Connector value or an error if the edge
@@ -128,6 +131,19 @@ func (e OrderInfoEdges) OrderEventOrErr() ([]*OrderEvent, error) {
 	return nil, &NotLoadedError{edge: "order_event"}
 }
 
+// SmartChargingEffectOrErr returns the SmartChargingEffect value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e OrderInfoEdges) SmartChargingEffectOrErr() (*SmartChargingEffect, error) {
+	if e.loadedTypes[3] {
+		if e.SmartChargingEffect == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: smartchargingeffect.Label}
+		}
+		return e.SmartChargingEffect, nil
+	}
+	return nil, &NotLoadedError{edge: "smart_charging_effect"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*OrderInfo) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -135,7 +151,7 @@ func (*OrderInfo) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case orderinfo.FieldOffline:
 			values[i] = new(sql.NullBool)
-		case orderinfo.FieldTotalElectricity, orderinfo.FieldChargeStartElectricity, orderinfo.FieldChargeStopElectricity, orderinfo.FieldSharpElectricity, orderinfo.FieldPeakElectricity, orderinfo.FieldFlatElectricity, orderinfo.FieldValleyElectricity:
+		case orderinfo.FieldTotalElectricity, orderinfo.FieldChargeStartElectricity, orderinfo.FieldChargeFinalElectricity, orderinfo.FieldSharpElectricity, orderinfo.FieldPeakElectricity, orderinfo.FieldFlatElectricity, orderinfo.FieldValleyElectricity:
 			values[i] = new(sql.NullFloat64)
 		case orderinfo.FieldID, orderinfo.FieldVersion, orderinfo.FieldCreatedBy, orderinfo.FieldCreatedAt, orderinfo.FieldUpdatedBy, orderinfo.FieldUpdatedAt, orderinfo.FieldRemoteStartID, orderinfo.FieldStopReasonCode, orderinfo.FieldPriceSchemeReleaseID, orderinfo.FieldOrderStartTime, orderinfo.FieldOrderFinalTime, orderinfo.FieldChargeStartTime, orderinfo.FieldChargeFinalTime, orderinfo.FieldIntellectID, orderinfo.FieldStationID, orderinfo.FieldOperatorID:
 			values[i] = new(sql.NullInt64)
@@ -244,12 +260,12 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 				oi.ChargeStartElectricity = new(float64)
 				*oi.ChargeStartElectricity = value.Float64
 			}
-		case orderinfo.FieldChargeStopElectricity:
+		case orderinfo.FieldChargeFinalElectricity:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
-				return fmt.Errorf("unexpected type %T for field charge_stop_electricity", values[i])
+				return fmt.Errorf("unexpected type %T for field charge_final_electricity", values[i])
 			} else if value.Valid {
-				oi.ChargeStopElectricity = new(float64)
-				*oi.ChargeStopElectricity = value.Float64
+				oi.ChargeFinalElectricity = new(float64)
+				*oi.ChargeFinalElectricity = value.Float64
 			}
 		case orderinfo.FieldSharpElectricity:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
@@ -381,6 +397,11 @@ func (oi *OrderInfo) QueryOrderEvent() *OrderEventQuery {
 	return (&OrderInfoClient{config: oi.config}).QueryOrderEvent(oi)
 }
 
+// QuerySmartChargingEffect queries the "smart_charging_effect" edge of the OrderInfo entity.
+func (oi *OrderInfo) QuerySmartChargingEffect() *SmartChargingEffectQuery {
+	return (&OrderInfoClient{config: oi.config}).QuerySmartChargingEffect(oi)
+}
+
 // Update returns a builder for updating this OrderInfo.
 // Note that you need to call OrderInfo.Unwrap() before calling this method if this OrderInfo
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -452,8 +473,8 @@ func (oi *OrderInfo) String() string {
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
-	if v := oi.ChargeStopElectricity; v != nil {
-		builder.WriteString("charge_stop_electricity=")
+	if v := oi.ChargeFinalElectricity; v != nil {
+		builder.WriteString("charge_final_electricity=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")

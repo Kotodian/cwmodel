@@ -45,6 +45,8 @@ const (
 	EdgeReservation = "reservation"
 	// EdgeEquipmentLog holds the string denoting the equipment_log edge name in mutations.
 	EdgeEquipmentLog = "equipment_log"
+	// EdgeSmartChargingEffect holds the string denoting the smart_charging_effect edge name in mutations.
+	EdgeSmartChargingEffect = "smart_charging_effect"
 	// Table holds the table name of the equipment in the database.
 	Table = "base_equipment"
 	// EquipmentInfoTable is the table that holds the equipment_info relation/edge.
@@ -110,6 +112,13 @@ const (
 	EquipmentLogInverseTable = "equip_logs"
 	// EquipmentLogColumn is the table column denoting the equipment_log relation/edge.
 	EquipmentLogColumn = "equipment_id"
+	// SmartChargingEffectTable is the table that holds the smart_charging_effect relation/edge.
+	SmartChargingEffectTable = "smart_charging_effect"
+	// SmartChargingEffectInverseTable is the table name for the SmartChargingEffect entity.
+	// It exists in this package in order to avoid circular dependency with the "smartchargingeffect" package.
+	SmartChargingEffectInverseTable = "smart_charging_effect"
+	// SmartChargingEffectColumn is the table column denoting the smart_charging_effect relation/edge.
+	SmartChargingEffectColumn = "equipment_id"
 )
 
 // Columns holds all SQL columns for equipment fields.

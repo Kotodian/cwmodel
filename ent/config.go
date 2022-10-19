@@ -39,7 +39,7 @@ type hooks struct {
 	OrderEvent              []ent.Hook
 	OrderInfo               []ent.Hook
 	Reservation             []ent.Hook
-	SmartChargingEvent      []ent.Hook
+	SmartChargingEffect     []ent.Hook
 }
 
 // Options applies the options on the config object.

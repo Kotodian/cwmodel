@@ -16,22 +16,24 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderevent"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
 // OrderInfoQuery is the builder for querying OrderInfo entities.
 type OrderInfoQuery struct {
 	config
-	limit          *int
-	offset         *int
-	unique         *bool
-	order          []OrderFunc
-	fields         []string
-	predicates     []predicate.OrderInfo
-	withConnector  *ConnectorQuery
-	withEquipment  *EquipmentQuery
-	withOrderEvent *OrderEventQuery
-	withFKs        bool
+	limit                   *int
+	offset                  *int
+	unique                  *bool
+	order                   []OrderFunc
+	fields                  []string
+	predicates              []predicate.OrderInfo
+	withConnector           *ConnectorQuery
+	withEquipment           *EquipmentQuery
+	withOrderEvent          *OrderEventQuery
+	withSmartChargingEffect *SmartChargingEffectQuery
+	withFKs                 bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -127,6 +129,28 @@ func (oiq *OrderInfoQuery) QueryOrderEvent() *OrderEventQuery {
 			sqlgraph.From(orderinfo.Table, orderinfo.FieldID, selector),
 			sqlgraph.To(orderevent.Table, orderevent.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, orderinfo.OrderEventTable, orderinfo.OrderEventColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(oiq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QuerySmartChargingEffect chains the current query on the "smart_charging_effect" edge.
+func (oiq *OrderInfoQuery) QuerySmartChargingEffect() *SmartChargingEffectQuery {
+	query := &SmartChargingEffectQuery{config: oiq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := oiq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := oiq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orderinfo.Table, orderinfo.FieldID, selector),
+			sqlgraph.To(smartchargingeffect.Table, smartchargingeffect.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, orderinfo.SmartChargingEffectTable, orderinfo.SmartChargingEffectColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(oiq.driver.Dialect(), step)
 		return fromU, nil
@@ -310,14 +334,15 @@ func (oiq *OrderInfoQuery) Clone() *OrderInfoQuery {
 		return nil
 	}
 	return &OrderInfoQuery{
-		config:         oiq.config,
-		limit:          oiq.limit,
-		offset:         oiq.offset,
-		order:          append([]OrderFunc{}, oiq.order...),
-		predicates:     append([]predicate.OrderInfo{}, oiq.predicates...),
-		withConnector:  oiq.withConnector.Clone(),
-		withEquipment:  oiq.withEquipment.Clone(),
-		withOrderEvent: oiq.withOrderEvent.Clone(),
+		config:                  oiq.config,
+		limit:                   oiq.limit,
+		offset:                  oiq.offset,
+		order:                   append([]OrderFunc{}, oiq.order...),
+		predicates:              append([]predicate.OrderInfo{}, oiq.predicates...),
+		withConnector:           oiq.withConnector.Clone(),
+		withEquipment:           oiq.withEquipment.Clone(),
+		withOrderEvent:          oiq.withOrderEvent.Clone(),
+		withSmartChargingEffect: oiq.withSmartChargingEffect.Clone(),
 		// clone intermediate query.
 		sql:    oiq.sql.Clone(),
 		path:   oiq.path,
@@ -355,6 +380,17 @@ func (oiq *OrderInfoQuery) WithOrderEvent(opts ...func(*OrderEventQuery)) *Order
 		opt(query)
 	}
 	oiq.withOrderEvent = query
+	return oiq
+}
+
+// WithSmartChargingEffect tells the query-builder to eager-load the nodes that are connected to
+// the "smart_charging_effect" edge. The optional arguments are used to configure the query builder of the edge.
+func (oiq *OrderInfoQuery) WithSmartChargingEffect(opts ...func(*SmartChargingEffectQuery)) *OrderInfoQuery {
+	query := &SmartChargingEffectQuery{config: oiq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	oiq.withSmartChargingEffect = query
 	return oiq
 }
 
@@ -427,10 +463,11 @@ func (oiq *OrderInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*O
 		nodes       = []*OrderInfo{}
 		withFKs     = oiq.withFKs
 		_spec       = oiq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
 			oiq.withConnector != nil,
 			oiq.withEquipment != nil,
 			oiq.withOrderEvent != nil,
+			oiq.withSmartChargingEffect != nil,
 		}
 	)
 	if oiq.withConnector != nil || oiq.withEquipment != nil {
@@ -473,6 +510,12 @@ func (oiq *OrderInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*O
 		if err := oiq.loadOrderEvent(ctx, query, nodes,
 			func(n *OrderInfo) { n.Edges.OrderEvent = []*OrderEvent{} },
 			func(n *OrderInfo, e *OrderEvent) { n.Edges.OrderEvent = append(n.Edges.OrderEvent, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := oiq.withSmartChargingEffect; query != nil {
+		if err := oiq.loadSmartChargingEffect(ctx, query, nodes, nil,
+			func(n *OrderInfo, e *SmartChargingEffect) { n.Edges.SmartChargingEffect = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -556,13 +599,41 @@ func (oiq *OrderInfoQuery) loadOrderEvent(ctx context.Context, query *OrderEvent
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.order_info_order_event
+		fk := n.order_id
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "order_info_order_event" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "order_id" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "order_info_order_event" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "order_id" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (oiq *OrderInfoQuery) loadSmartChargingEffect(ctx context.Context, query *SmartChargingEffectQuery, nodes []*OrderInfo, init func(*OrderInfo), assign func(*OrderInfo, *SmartChargingEffect)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[datasource.UUID]*OrderInfo)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	query.withFKs = true
+	query.Where(predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.InValues(orderinfo.SmartChargingEffectColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.order_id
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "order_id" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "order_id" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

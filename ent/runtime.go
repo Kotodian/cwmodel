@@ -18,7 +18,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/reservation"
 	"github.com/Kotodian/ent-practice/ent/schema"
-	"github.com/Kotodian/ent-practice/ent/smartchargingevent"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -357,33 +357,10 @@ func init() {
 	modelDescID := modelMixinFields0[0].Descriptor()
 	// model.DefaultID holds the default value on creation for the id field.
 	model.DefaultID = datasource.UUID(modelDescID.Default.(uint64))
-	ordereventMixin := schema.OrderEvent{}.Mixin()
-	ordereventMixinFields0 := ordereventMixin[0].Fields()
-	_ = ordereventMixinFields0
 	ordereventFields := schema.OrderEvent{}.Fields()
 	_ = ordereventFields
-	// ordereventDescVersion is the schema descriptor for version field.
-	ordereventDescVersion := ordereventMixinFields0[1].Descriptor()
-	// orderevent.DefaultVersion holds the default value on creation for the version field.
-	orderevent.DefaultVersion = ordereventDescVersion.Default.(int64)
-	// ordereventDescCreatedBy is the schema descriptor for created_by field.
-	ordereventDescCreatedBy := ordereventMixinFields0[2].Descriptor()
-	// orderevent.DefaultCreatedBy holds the default value on creation for the created_by field.
-	orderevent.DefaultCreatedBy = datasource.UUID(ordereventDescCreatedBy.Default.(uint64))
-	// ordereventDescCreatedAt is the schema descriptor for created_at field.
-	ordereventDescCreatedAt := ordereventMixinFields0[3].Descriptor()
-	// orderevent.DefaultCreatedAt holds the default value on creation for the created_at field.
-	orderevent.DefaultCreatedAt = ordereventDescCreatedAt.Default.(int64)
-	// ordereventDescUpdatedBy is the schema descriptor for updated_by field.
-	ordereventDescUpdatedBy := ordereventMixinFields0[4].Descriptor()
-	// orderevent.DefaultUpdatedBy holds the default value on creation for the updated_by field.
-	orderevent.DefaultUpdatedBy = datasource.UUID(ordereventDescUpdatedBy.Default.(uint64))
-	// ordereventDescUpdatedAt is the schema descriptor for updated_at field.
-	ordereventDescUpdatedAt := ordereventMixinFields0[5].Descriptor()
-	// orderevent.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	orderevent.DefaultUpdatedAt = ordereventDescUpdatedAt.Default.(int64)
 	// ordereventDescID is the schema descriptor for id field.
-	ordereventDescID := ordereventMixinFields0[0].Descriptor()
+	ordereventDescID := ordereventFields[0].Descriptor()
 	// orderevent.DefaultID holds the default value on creation for the id field.
 	orderevent.DefaultID = datasource.UUID(ordereventDescID.Default.(uint64))
 	orderinfoMixin := schema.OrderInfo{}.Mixin()
@@ -444,33 +421,33 @@ func init() {
 	reservationDescID := reservationMixinFields0[0].Descriptor()
 	// reservation.DefaultID holds the default value on creation for the id field.
 	reservation.DefaultID = datasource.UUID(reservationDescID.Default.(uint64))
-	smartchargingeventMixin := schema.SmartChargingEvent{}.Mixin()
-	smartchargingeventMixinFields0 := smartchargingeventMixin[0].Fields()
-	_ = smartchargingeventMixinFields0
-	smartchargingeventFields := schema.SmartChargingEvent{}.Fields()
-	_ = smartchargingeventFields
-	// smartchargingeventDescVersion is the schema descriptor for version field.
-	smartchargingeventDescVersion := smartchargingeventMixinFields0[1].Descriptor()
-	// smartchargingevent.DefaultVersion holds the default value on creation for the version field.
-	smartchargingevent.DefaultVersion = smartchargingeventDescVersion.Default.(int64)
-	// smartchargingeventDescCreatedBy is the schema descriptor for created_by field.
-	smartchargingeventDescCreatedBy := smartchargingeventMixinFields0[2].Descriptor()
-	// smartchargingevent.DefaultCreatedBy holds the default value on creation for the created_by field.
-	smartchargingevent.DefaultCreatedBy = datasource.UUID(smartchargingeventDescCreatedBy.Default.(uint64))
-	// smartchargingeventDescCreatedAt is the schema descriptor for created_at field.
-	smartchargingeventDescCreatedAt := smartchargingeventMixinFields0[3].Descriptor()
-	// smartchargingevent.DefaultCreatedAt holds the default value on creation for the created_at field.
-	smartchargingevent.DefaultCreatedAt = smartchargingeventDescCreatedAt.Default.(int64)
-	// smartchargingeventDescUpdatedBy is the schema descriptor for updated_by field.
-	smartchargingeventDescUpdatedBy := smartchargingeventMixinFields0[4].Descriptor()
-	// smartchargingevent.DefaultUpdatedBy holds the default value on creation for the updated_by field.
-	smartchargingevent.DefaultUpdatedBy = datasource.UUID(smartchargingeventDescUpdatedBy.Default.(uint64))
-	// smartchargingeventDescUpdatedAt is the schema descriptor for updated_at field.
-	smartchargingeventDescUpdatedAt := smartchargingeventMixinFields0[5].Descriptor()
-	// smartchargingevent.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	smartchargingevent.DefaultUpdatedAt = smartchargingeventDescUpdatedAt.Default.(int64)
-	// smartchargingeventDescID is the schema descriptor for id field.
-	smartchargingeventDescID := smartchargingeventMixinFields0[0].Descriptor()
-	// smartchargingevent.DefaultID holds the default value on creation for the id field.
-	smartchargingevent.DefaultID = datasource.UUID(smartchargingeventDescID.Default.(uint64))
+	smartchargingeffectMixin := schema.SmartChargingEffect{}.Mixin()
+	smartchargingeffectMixinFields0 := smartchargingeffectMixin[0].Fields()
+	_ = smartchargingeffectMixinFields0
+	smartchargingeffectFields := schema.SmartChargingEffect{}.Fields()
+	_ = smartchargingeffectFields
+	// smartchargingeffectDescVersion is the schema descriptor for version field.
+	smartchargingeffectDescVersion := smartchargingeffectMixinFields0[1].Descriptor()
+	// smartchargingeffect.DefaultVersion holds the default value on creation for the version field.
+	smartchargingeffect.DefaultVersion = smartchargingeffectDescVersion.Default.(int64)
+	// smartchargingeffectDescCreatedBy is the schema descriptor for created_by field.
+	smartchargingeffectDescCreatedBy := smartchargingeffectMixinFields0[2].Descriptor()
+	// smartchargingeffect.DefaultCreatedBy holds the default value on creation for the created_by field.
+	smartchargingeffect.DefaultCreatedBy = datasource.UUID(smartchargingeffectDescCreatedBy.Default.(uint64))
+	// smartchargingeffectDescCreatedAt is the schema descriptor for created_at field.
+	smartchargingeffectDescCreatedAt := smartchargingeffectMixinFields0[3].Descriptor()
+	// smartchargingeffect.DefaultCreatedAt holds the default value on creation for the created_at field.
+	smartchargingeffect.DefaultCreatedAt = smartchargingeffectDescCreatedAt.Default.(int64)
+	// smartchargingeffectDescUpdatedBy is the schema descriptor for updated_by field.
+	smartchargingeffectDescUpdatedBy := smartchargingeffectMixinFields0[4].Descriptor()
+	// smartchargingeffect.DefaultUpdatedBy holds the default value on creation for the updated_by field.
+	smartchargingeffect.DefaultUpdatedBy = datasource.UUID(smartchargingeffectDescUpdatedBy.Default.(uint64))
+	// smartchargingeffectDescUpdatedAt is the schema descriptor for updated_at field.
+	smartchargingeffectDescUpdatedAt := smartchargingeffectMixinFields0[5].Descriptor()
+	// smartchargingeffect.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	smartchargingeffect.DefaultUpdatedAt = smartchargingeffectDescUpdatedAt.Default.(int64)
+	// smartchargingeffectDescID is the schema descriptor for id field.
+	smartchargingeffectDescID := smartchargingeffectMixinFields0[0].Descriptor()
+	// smartchargingeffect.DefaultID holds the default value on creation for the id field.
+	smartchargingeffect.DefaultID = datasource.UUID(smartchargingeffectDescID.Default.(uint64))
 }

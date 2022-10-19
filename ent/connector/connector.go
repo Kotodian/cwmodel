@@ -45,6 +45,8 @@ const (
 	EdgeOrderInfo = "order_info"
 	// EdgeReservation holds the string denoting the reservation edge name in mutations.
 	EdgeReservation = "reservation"
+	// EdgeSmartChargingEffect holds the string denoting the smart_charging_effect edge name in mutations.
+	EdgeSmartChargingEffect = "smart_charging_effect"
 	// Table holds the table name of the connector in the database.
 	Table = "base_connector"
 	// EvseTable is the table that holds the evse relation/edge.
@@ -75,6 +77,13 @@ const (
 	ReservationInverseTable = "reservation_charging_release"
 	// ReservationColumn is the table column denoting the reservation relation/edge.
 	ReservationColumn = "connector_id"
+	// SmartChargingEffectTable is the table that holds the smart_charging_effect relation/edge.
+	SmartChargingEffectTable = "smart_charging_effect"
+	// SmartChargingEffectInverseTable is the table name for the SmartChargingEffect entity.
+	// It exists in this package in order to avoid circular dependency with the "smartchargingeffect" package.
+	SmartChargingEffectInverseTable = "smart_charging_effect"
+	// SmartChargingEffectColumn is the table column denoting the smart_charging_effect relation/edge.
+	SmartChargingEffectColumn = "connector_id"
 )
 
 // Columns holds all SQL columns for connector fields.

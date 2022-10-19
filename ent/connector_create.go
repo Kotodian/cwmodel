@@ -14,6 +14,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -230,6 +231,21 @@ func (cc *ConnectorCreate) AddReservation(r ...*Reservation) *ConnectorCreate {
 		ids[i] = r[i].ID
 	}
 	return cc.AddReservationIDs(ids...)
+}
+
+// AddSmartChargingEffectIDs adds the "smart_charging_effect" edge to the SmartChargingEffect entity by IDs.
+func (cc *ConnectorCreate) AddSmartChargingEffectIDs(ids ...datasource.UUID) *ConnectorCreate {
+	cc.mutation.AddSmartChargingEffectIDs(ids...)
+	return cc
+}
+
+// AddSmartChargingEffect adds the "smart_charging_effect" edges to the SmartChargingEffect entity.
+func (cc *ConnectorCreate) AddSmartChargingEffect(s ...*SmartChargingEffect) *ConnectorCreate {
+	ids := make([]datasource.UUID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return cc.AddSmartChargingEffectIDs(ids...)
 }
 
 // Mutation returns the ConnectorMutation object of the builder.
@@ -535,6 +551,25 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: reservation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.SmartChargingEffectTable,
+			Columns: []string{connector.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
 				},
 			},
 		}

@@ -42,8 +42,8 @@ type Tx struct {
 	OrderInfo *OrderInfoClient
 	// Reservation is the client for interacting with the Reservation builders.
 	Reservation *ReservationClient
-	// SmartChargingEvent is the client for interacting with the SmartChargingEvent builders.
-	SmartChargingEvent *SmartChargingEventClient
+	// SmartChargingEffect is the client for interacting with the SmartChargingEffect builders.
+	SmartChargingEffect *SmartChargingEffectClient
 
 	// lazily loaded.
 	client     *Client
@@ -190,7 +190,7 @@ func (tx *Tx) init() {
 	tx.OrderEvent = NewOrderEventClient(tx.config)
 	tx.OrderInfo = NewOrderInfoClient(tx.config)
 	tx.Reservation = NewReservationClient(tx.config)
-	tx.SmartChargingEvent = NewSmartChargingEventClient(tx.config)
+	tx.SmartChargingEffect = NewSmartChargingEffectClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

@@ -19,6 +19,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/evse"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -272,6 +273,21 @@ func (ec *EquipmentCreate) AddEquipmentLog(e ...*EquipmentLog) *EquipmentCreate 
 		ids[i] = e[i].ID
 	}
 	return ec.AddEquipmentLogIDs(ids...)
+}
+
+// AddSmartChargingEffectIDs adds the "smart_charging_effect" edge to the SmartChargingEffect entity by IDs.
+func (ec *EquipmentCreate) AddSmartChargingEffectIDs(ids ...datasource.UUID) *EquipmentCreate {
+	ec.mutation.AddSmartChargingEffectIDs(ids...)
+	return ec
+}
+
+// AddSmartChargingEffect adds the "smart_charging_effect" edges to the SmartChargingEffect entity.
+func (ec *EquipmentCreate) AddSmartChargingEffect(s ...*SmartChargingEffect) *EquipmentCreate {
+	ids := make([]datasource.UUID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return ec.AddSmartChargingEffectIDs(ids...)
 }
 
 // Mutation returns the EquipmentMutation object of the builder.
@@ -636,6 +652,25 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: equipmentlog.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ec.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   equipment.SmartChargingEffectTable,
+			Columns: []string{equipment.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
 				},
 			},
 		}

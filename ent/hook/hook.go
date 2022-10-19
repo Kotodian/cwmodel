@@ -204,15 +204,15 @@ func (f ReservationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value,
 	return f(ctx, mv)
 }
 
-// The SmartChargingEventFunc type is an adapter to allow the use of ordinary
-// function as SmartChargingEvent mutator.
-type SmartChargingEventFunc func(context.Context, *ent.SmartChargingEventMutation) (ent.Value, error)
+// The SmartChargingEffectFunc type is an adapter to allow the use of ordinary
+// function as SmartChargingEffect mutator.
+type SmartChargingEffectFunc func(context.Context, *ent.SmartChargingEffectMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f SmartChargingEventFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.SmartChargingEventMutation)
+func (f SmartChargingEffectFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.SmartChargingEffectMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SmartChargingEventMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SmartChargingEffectMutation", m)
 	}
 	return f(ctx, mv)
 }

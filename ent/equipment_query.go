@@ -22,6 +22,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
 	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -43,6 +44,7 @@ type EquipmentQuery struct {
 	withOrderInfo               *OrderInfoQuery
 	withReservation             *ReservationQuery
 	withEquipmentLog            *EquipmentLogQuery
+	withSmartChargingEffect     *SmartChargingEffectQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -277,6 +279,28 @@ func (eq *EquipmentQuery) QueryEquipmentLog() *EquipmentLogQuery {
 	return query
 }
 
+// QuerySmartChargingEffect chains the current query on the "smart_charging_effect" edge.
+func (eq *EquipmentQuery) QuerySmartChargingEffect() *SmartChargingEffectQuery {
+	query := &SmartChargingEffectQuery{config: eq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := eq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := eq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipment.Table, equipment.FieldID, selector),
+			sqlgraph.To(smartchargingeffect.Table, smartchargingeffect.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, equipment.SmartChargingEffectTable, equipment.SmartChargingEffectColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(eq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // First returns the first Equipment entity from the query.
 // Returns a *NotFoundError when no Equipment was found.
 func (eq *EquipmentQuery) First(ctx context.Context) (*Equipment, error) {
@@ -467,6 +491,7 @@ func (eq *EquipmentQuery) Clone() *EquipmentQuery {
 		withOrderInfo:               eq.withOrderInfo.Clone(),
 		withReservation:             eq.withReservation.Clone(),
 		withEquipmentLog:            eq.withEquipmentLog.Clone(),
+		withSmartChargingEffect:     eq.withSmartChargingEffect.Clone(),
 		// clone intermediate query.
 		sql:    eq.sql.Clone(),
 		path:   eq.path,
@@ -573,6 +598,17 @@ func (eq *EquipmentQuery) WithEquipmentLog(opts ...func(*EquipmentLogQuery)) *Eq
 	return eq
 }
 
+// WithSmartChargingEffect tells the query-builder to eager-load the nodes that are connected to
+// the "smart_charging_effect" edge. The optional arguments are used to configure the query builder of the edge.
+func (eq *EquipmentQuery) WithSmartChargingEffect(opts ...func(*SmartChargingEffectQuery)) *EquipmentQuery {
+	query := &SmartChargingEffectQuery{config: eq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	eq.withSmartChargingEffect = query
+	return eq
+}
+
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -641,7 +677,7 @@ func (eq *EquipmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Eq
 	var (
 		nodes       = []*Equipment{}
 		_spec       = eq.querySpec()
-		loadedTypes = [9]bool{
+		loadedTypes = [10]bool{
 			eq.withEquipmentInfo != nil,
 			eq.withEvse != nil,
 			eq.withConnector != nil,
@@ -651,6 +687,7 @@ func (eq *EquipmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Eq
 			eq.withOrderInfo != nil,
 			eq.withReservation != nil,
 			eq.withEquipmentLog != nil,
+			eq.withSmartChargingEffect != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -731,6 +768,15 @@ func (eq *EquipmentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Eq
 		if err := eq.loadEquipmentLog(ctx, query, nodes,
 			func(n *Equipment) { n.Edges.EquipmentLog = []*EquipmentLog{} },
 			func(n *Equipment, e *EquipmentLog) { n.Edges.EquipmentLog = append(n.Edges.EquipmentLog, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := eq.withSmartChargingEffect; query != nil {
+		if err := eq.loadSmartChargingEffect(ctx, query, nodes,
+			func(n *Equipment) { n.Edges.SmartChargingEffect = []*SmartChargingEffect{} },
+			func(n *Equipment, e *SmartChargingEffect) {
+				n.Edges.SmartChargingEffect = append(n.Edges.SmartChargingEffect, e)
+			}); err != nil {
 			return nil, err
 		}
 	}
@@ -992,6 +1038,37 @@ func (eq *EquipmentQuery) loadEquipmentLog(ctx context.Context, query *Equipment
 	query.withFKs = true
 	query.Where(predicate.EquipmentLog(func(s *sql.Selector) {
 		s.Where(sql.InValues(equipment.EquipmentLogColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.equipment_id
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "equipment_id" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "equipment_id" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (eq *EquipmentQuery) loadSmartChargingEffect(ctx context.Context, query *SmartChargingEffectQuery, nodes []*Equipment, init func(*Equipment), assign func(*Equipment, *SmartChargingEffect)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[datasource.UUID]*Equipment)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.InValues(equipment.SmartChargingEffectColumn, fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

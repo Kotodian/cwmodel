@@ -13,6 +13,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/equipment"
 	"github.com/Kotodian/ent-practice/ent/orderevent"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -183,16 +184,16 @@ func (oic *OrderInfoCreate) SetNillableChargeStartElectricity(f *float64) *Order
 	return oic
 }
 
-// SetChargeStopElectricity sets the "charge_stop_electricity" field.
-func (oic *OrderInfoCreate) SetChargeStopElectricity(f float64) *OrderInfoCreate {
-	oic.mutation.SetChargeStopElectricity(f)
+// SetChargeFinalElectricity sets the "charge_final_electricity" field.
+func (oic *OrderInfoCreate) SetChargeFinalElectricity(f float64) *OrderInfoCreate {
+	oic.mutation.SetChargeFinalElectricity(f)
 	return oic
 }
 
-// SetNillableChargeStopElectricity sets the "charge_stop_electricity" field if the given value is not nil.
-func (oic *OrderInfoCreate) SetNillableChargeStopElectricity(f *float64) *OrderInfoCreate {
+// SetNillableChargeFinalElectricity sets the "charge_final_electricity" field if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillableChargeFinalElectricity(f *float64) *OrderInfoCreate {
 	if f != nil {
-		oic.SetChargeStopElectricity(*f)
+		oic.SetChargeFinalElectricity(*f)
 	}
 	return oic
 }
@@ -444,6 +445,25 @@ func (oic *OrderInfoCreate) AddOrderEvent(o ...*OrderEvent) *OrderInfoCreate {
 	return oic.AddOrderEventIDs(ids...)
 }
 
+// SetSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by ID.
+func (oic *OrderInfoCreate) SetSmartChargingEffectID(id datasource.UUID) *OrderInfoCreate {
+	oic.mutation.SetSmartChargingEffectID(id)
+	return oic
+}
+
+// SetNillableSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by ID if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillableSmartChargingEffectID(id *datasource.UUID) *OrderInfoCreate {
+	if id != nil {
+		oic = oic.SetSmartChargingEffectID(*id)
+	}
+	return oic
+}
+
+// SetSmartChargingEffect sets the "smart_charging_effect" edge to the SmartChargingEffect entity.
+func (oic *OrderInfoCreate) SetSmartChargingEffect(s *SmartChargingEffect) *OrderInfoCreate {
+	return oic.SetSmartChargingEffectID(s.ID)
+}
+
 // Mutation returns the OrderInfoMutation object of the builder.
 func (oic *OrderInfoCreate) Mutation() *OrderInfoMutation {
 	return oic.mutation
@@ -654,9 +674,9 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 		_spec.SetField(orderinfo.FieldChargeStartElectricity, field.TypeFloat64, value)
 		_node.ChargeStartElectricity = &value
 	}
-	if value, ok := oic.mutation.ChargeStopElectricity(); ok {
-		_spec.SetField(orderinfo.FieldChargeStopElectricity, field.TypeFloat64, value)
-		_node.ChargeStopElectricity = &value
+	if value, ok := oic.mutation.ChargeFinalElectricity(); ok {
+		_spec.SetField(orderinfo.FieldChargeFinalElectricity, field.TypeFloat64, value)
+		_node.ChargeFinalElectricity = &value
 	}
 	if value, ok := oic.mutation.SharpElectricity(); ok {
 		_spec.SetField(orderinfo.FieldSharpElectricity, field.TypeFloat64, value)
@@ -765,6 +785,25 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: orderevent.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := oic.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   orderinfo.SmartChargingEffectTable,
+			Columns: []string{orderinfo.SmartChargingEffectColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: smartchargingeffect.FieldID,
 				},
 			},
 		}

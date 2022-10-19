@@ -23,6 +23,3 @@ func TestCreateAlarm(t *testing.T) {
 		Exec(ctx)
 	assert.Nil(t, err)
 }
-
-
-

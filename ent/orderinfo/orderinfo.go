@@ -35,8 +35,8 @@ const (
 	FieldTotalElectricity = "total_electricity"
 	// FieldChargeStartElectricity holds the string denoting the charge_start_electricity field in the database.
 	FieldChargeStartElectricity = "charge_start_electricity"
-	// FieldChargeStopElectricity holds the string denoting the charge_stop_electricity field in the database.
-	FieldChargeStopElectricity = "charge_stop_electricity"
+	// FieldChargeFinalElectricity holds the string denoting the charge_final_electricity field in the database.
+	FieldChargeFinalElectricity = "charge_final_electricity"
 	// FieldSharpElectricity holds the string denoting the sharp_electricity field in the database.
 	FieldSharpElectricity = "sharp_electricity"
 	// FieldPeakElectricity holds the string denoting the peak_electricity field in the database.
@@ -71,6 +71,8 @@ const (
 	EdgeEquipment = "equipment"
 	// EdgeOrderEvent holds the string denoting the order_event edge name in mutations.
 	EdgeOrderEvent = "order_event"
+	// EdgeSmartChargingEffect holds the string denoting the smart_charging_effect edge name in mutations.
+	EdgeSmartChargingEffect = "smart_charging_effect"
 	// Table holds the table name of the orderinfo in the database.
 	Table = "order_info"
 	// ConnectorTable is the table that holds the connector relation/edge.
@@ -93,7 +95,14 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "orderevent" package.
 	OrderEventInverseTable = "order_event"
 	// OrderEventColumn is the table column denoting the order_event relation/edge.
-	OrderEventColumn = "order_info_order_event"
+	OrderEventColumn = "order_id"
+	// SmartChargingEffectTable is the table that holds the smart_charging_effect relation/edge.
+	SmartChargingEffectTable = "smart_charging_effect"
+	// SmartChargingEffectInverseTable is the table name for the SmartChargingEffect entity.
+	// It exists in this package in order to avoid circular dependency with the "smartchargingeffect" package.
+	SmartChargingEffectInverseTable = "smart_charging_effect"
+	// SmartChargingEffectColumn is the table column denoting the smart_charging_effect relation/edge.
+	SmartChargingEffectColumn = "order_id"
 )
 
 // Columns holds all SQL columns for orderinfo fields.
@@ -111,7 +120,7 @@ var Columns = []string{
 	FieldCallerOrderID,
 	FieldTotalElectricity,
 	FieldChargeStartElectricity,
-	FieldChargeStopElectricity,
+	FieldChargeFinalElectricity,
 	FieldSharpElectricity,
 	FieldPeakElectricity,
 	FieldFlatElectricity,

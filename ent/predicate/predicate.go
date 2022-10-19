@@ -51,5 +51,5 @@ type OrderInfo func(*sql.Selector)
 // Reservation is the predicate function for reservation builders.
 type Reservation func(*sql.Selector)
 
-// SmartChargingEvent is the predicate function for smartchargingevent builders.
-type SmartChargingEvent func(*sql.Selector)
+// SmartChargingEffect is the predicate function for smartchargingeffect builders.
+type SmartChargingEffect func(*sql.Selector)

@@ -24,7 +24,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
 	"github.com/Kotodian/ent-practice/ent/reservation"
-	"github.com/Kotodian/ent-practice/ent/smartchargingevent"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 	"github.com/Kotodian/ent-practice/ent/types"
 	"github.com/Kotodian/gokit/datasource"
 
@@ -55,7 +55,7 @@ const (
 	TypeOrderEvent              = "OrderEvent"
 	TypeOrderInfo               = "OrderInfo"
 	TypeReservation             = "Reservation"
-	TypeSmartChargingEvent      = "SmartChargingEvent"
+	TypeSmartChargingEffect     = "SmartChargingEffect"
 )
 
 // AppModuleInfoMutation represents an operation that mutates the AppModuleInfo nodes in the graph.
@@ -426,45 +426,48 @@ func (m *AppModuleInfoMutation) ResetEdge(name string) error {
 // ConnectorMutation represents an operation that mutates the Connector nodes in the graph.
 type ConnectorMutation struct {
 	config
-	op                 Op
-	typ                string
-	id                 *datasource.UUID
-	version            *int64
-	addversion         *int64
-	created_by         *datasource.UUID
-	addcreated_by      *datasource.UUID
-	created_at         *int64
-	addcreated_at      *int64
-	updated_by         *datasource.UUID
-	addupdated_by      *datasource.UUID
-	updated_at         *int64
-	addupdated_at      *int64
-	equipment_sn       *string
-	evse_serial        *string
-	serial             *string
-	current_state      *int
-	addcurrent_state   *int
-	before_state       *int
-	addbefore_state    *int
-	charging_state     *int
-	addcharging_state  *int
-	reservation_id     *datasource.UUID
-	addreservation_id  *datasource.UUID
-	park_no            *string
-	clearedFields      map[string]struct{}
-	evse               *datasource.UUID
-	clearedevse        bool
-	equipment          *datasource.UUID
-	clearedequipment   bool
-	order_info         map[datasource.UUID]struct{}
-	removedorder_info  map[datasource.UUID]struct{}
-	clearedorder_info  bool
-	reservation        map[datasource.UUID]struct{}
-	removedreservation map[datasource.UUID]struct{}
-	clearedreservation bool
-	done               bool
-	oldValue           func(context.Context) (*Connector, error)
-	predicates         []predicate.Connector
+	op                           Op
+	typ                          string
+	id                           *datasource.UUID
+	version                      *int64
+	addversion                   *int64
+	created_by                   *datasource.UUID
+	addcreated_by                *datasource.UUID
+	created_at                   *int64
+	addcreated_at                *int64
+	updated_by                   *datasource.UUID
+	addupdated_by                *datasource.UUID
+	updated_at                   *int64
+	addupdated_at                *int64
+	equipment_sn                 *string
+	evse_serial                  *string
+	serial                       *string
+	current_state                *int
+	addcurrent_state             *int
+	before_state                 *int
+	addbefore_state              *int
+	charging_state               *int
+	addcharging_state            *int
+	reservation_id               *datasource.UUID
+	addreservation_id            *datasource.UUID
+	park_no                      *string
+	clearedFields                map[string]struct{}
+	evse                         *datasource.UUID
+	clearedevse                  bool
+	equipment                    *datasource.UUID
+	clearedequipment             bool
+	order_info                   map[datasource.UUID]struct{}
+	removedorder_info            map[datasource.UUID]struct{}
+	clearedorder_info            bool
+	reservation                  map[datasource.UUID]struct{}
+	removedreservation           map[datasource.UUID]struct{}
+	clearedreservation           bool
+	smart_charging_effect        map[datasource.UUID]struct{}
+	removedsmart_charging_effect map[datasource.UUID]struct{}
+	clearedsmart_charging_effect bool
+	done                         bool
+	oldValue                     func(context.Context) (*Connector, error)
+	predicates                   []predicate.Connector
 }
 
 var _ ent.Mutation = (*ConnectorMutation)(nil)
@@ -1433,6 +1436,60 @@ func (m *ConnectorMutation) ResetReservation() {
 	m.removedreservation = nil
 }
 
+// AddSmartChargingEffectIDs adds the "smart_charging_effect" edge to the SmartChargingEffect entity by ids.
+func (m *ConnectorMutation) AddSmartChargingEffectIDs(ids ...datasource.UUID) {
+	if m.smart_charging_effect == nil {
+		m.smart_charging_effect = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		m.smart_charging_effect[ids[i]] = struct{}{}
+	}
+}
+
+// ClearSmartChargingEffect clears the "smart_charging_effect" edge to the SmartChargingEffect entity.
+func (m *ConnectorMutation) ClearSmartChargingEffect() {
+	m.clearedsmart_charging_effect = true
+}
+
+// SmartChargingEffectCleared reports if the "smart_charging_effect" edge to the SmartChargingEffect entity was cleared.
+func (m *ConnectorMutation) SmartChargingEffectCleared() bool {
+	return m.clearedsmart_charging_effect
+}
+
+// RemoveSmartChargingEffectIDs removes the "smart_charging_effect" edge to the SmartChargingEffect entity by IDs.
+func (m *ConnectorMutation) RemoveSmartChargingEffectIDs(ids ...datasource.UUID) {
+	if m.removedsmart_charging_effect == nil {
+		m.removedsmart_charging_effect = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.smart_charging_effect, ids[i])
+		m.removedsmart_charging_effect[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedSmartChargingEffect returns the removed IDs of the "smart_charging_effect" edge to the SmartChargingEffect entity.
+func (m *ConnectorMutation) RemovedSmartChargingEffectIDs() (ids []datasource.UUID) {
+	for id := range m.removedsmart_charging_effect {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// SmartChargingEffectIDs returns the "smart_charging_effect" edge IDs in the mutation.
+func (m *ConnectorMutation) SmartChargingEffectIDs() (ids []datasource.UUID) {
+	for id := range m.smart_charging_effect {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetSmartChargingEffect resets all changes to the "smart_charging_effect" edge.
+func (m *ConnectorMutation) ResetSmartChargingEffect() {
+	m.smart_charging_effect = nil
+	m.clearedsmart_charging_effect = false
+	m.removedsmart_charging_effect = nil
+}
+
 // Where appends a list predicates to the ConnectorMutation builder.
 func (m *ConnectorMutation) Where(ps ...predicate.Connector) {
 	m.predicates = append(m.predicates, ps...)
@@ -1881,7 +1938,7 @@ func (m *ConnectorMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ConnectorMutation) AddedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.evse != nil {
 		edges = append(edges, connector.EdgeEvse)
 	}
@@ -1893,6 +1950,9 @@ func (m *ConnectorMutation) AddedEdges() []string {
 	}
 	if m.reservation != nil {
 		edges = append(edges, connector.EdgeReservation)
+	}
+	if m.smart_charging_effect != nil {
+		edges = append(edges, connector.EdgeSmartChargingEffect)
 	}
 	return edges
 }
@@ -1921,18 +1981,27 @@ func (m *ConnectorMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case connector.EdgeSmartChargingEffect:
+		ids := make([]ent.Value, 0, len(m.smart_charging_effect))
+		for id := range m.smart_charging_effect {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ConnectorMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.removedorder_info != nil {
 		edges = append(edges, connector.EdgeOrderInfo)
 	}
 	if m.removedreservation != nil {
 		edges = append(edges, connector.EdgeReservation)
+	}
+	if m.removedsmart_charging_effect != nil {
+		edges = append(edges, connector.EdgeSmartChargingEffect)
 	}
 	return edges
 }
@@ -1953,13 +2022,19 @@ func (m *ConnectorMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case connector.EdgeSmartChargingEffect:
+		ids := make([]ent.Value, 0, len(m.removedsmart_charging_effect))
+		for id := range m.removedsmart_charging_effect {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ConnectorMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 5)
 	if m.clearedevse {
 		edges = append(edges, connector.EdgeEvse)
 	}
@@ -1971,6 +2046,9 @@ func (m *ConnectorMutation) ClearedEdges() []string {
 	}
 	if m.clearedreservation {
 		edges = append(edges, connector.EdgeReservation)
+	}
+	if m.clearedsmart_charging_effect {
+		edges = append(edges, connector.EdgeSmartChargingEffect)
 	}
 	return edges
 }
@@ -1987,6 +2065,8 @@ func (m *ConnectorMutation) EdgeCleared(name string) bool {
 		return m.clearedorder_info
 	case connector.EdgeReservation:
 		return m.clearedreservation
+	case connector.EdgeSmartChargingEffect:
+		return m.clearedsmart_charging_effect
 	}
 	return false
 }
@@ -2020,6 +2100,9 @@ func (m *ConnectorMutation) ResetEdge(name string) error {
 		return nil
 	case connector.EdgeReservation:
 		m.ResetReservation()
+		return nil
+	case connector.EdgeSmartChargingEffect:
+		m.ResetSmartChargingEffect()
 		return nil
 	}
 	return fmt.Errorf("unknown Connector edge %s", name)
@@ -2072,6 +2155,9 @@ type EquipmentMutation struct {
 	equipment_log                    map[datasource.UUID]struct{}
 	removedequipment_log             map[datasource.UUID]struct{}
 	clearedequipment_log             bool
+	smart_charging_effect            map[datasource.UUID]struct{}
+	removedsmart_charging_effect     map[datasource.UUID]struct{}
+	clearedsmart_charging_effect     bool
 	done                             bool
 	oldValue                         func(context.Context) (*Equipment, error)
 	predicates                       []predicate.Equipment
@@ -3065,6 +3151,60 @@ func (m *EquipmentMutation) ResetEquipmentLog() {
 	m.removedequipment_log = nil
 }
 
+// AddSmartChargingEffectIDs adds the "smart_charging_effect" edge to the SmartChargingEffect entity by ids.
+func (m *EquipmentMutation) AddSmartChargingEffectIDs(ids ...datasource.UUID) {
+	if m.smart_charging_effect == nil {
+		m.smart_charging_effect = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		m.smart_charging_effect[ids[i]] = struct{}{}
+	}
+}
+
+// ClearSmartChargingEffect clears the "smart_charging_effect" edge to the SmartChargingEffect entity.
+func (m *EquipmentMutation) ClearSmartChargingEffect() {
+	m.clearedsmart_charging_effect = true
+}
+
+// SmartChargingEffectCleared reports if the "smart_charging_effect" edge to the SmartChargingEffect entity was cleared.
+func (m *EquipmentMutation) SmartChargingEffectCleared() bool {
+	return m.clearedsmart_charging_effect
+}
+
+// RemoveSmartChargingEffectIDs removes the "smart_charging_effect" edge to the SmartChargingEffect entity by IDs.
+func (m *EquipmentMutation) RemoveSmartChargingEffectIDs(ids ...datasource.UUID) {
+	if m.removedsmart_charging_effect == nil {
+		m.removedsmart_charging_effect = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.smart_charging_effect, ids[i])
+		m.removedsmart_charging_effect[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedSmartChargingEffect returns the removed IDs of the "smart_charging_effect" edge to the SmartChargingEffect entity.
+func (m *EquipmentMutation) RemovedSmartChargingEffectIDs() (ids []datasource.UUID) {
+	for id := range m.removedsmart_charging_effect {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// SmartChargingEffectIDs returns the "smart_charging_effect" edge IDs in the mutation.
+func (m *EquipmentMutation) SmartChargingEffectIDs() (ids []datasource.UUID) {
+	for id := range m.smart_charging_effect {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetSmartChargingEffect resets all changes to the "smart_charging_effect" edge.
+func (m *EquipmentMutation) ResetSmartChargingEffect() {
+	m.smart_charging_effect = nil
+	m.clearedsmart_charging_effect = false
+	m.removedsmart_charging_effect = nil
+}
+
 // Where appends a list predicates to the EquipmentMutation builder.
 func (m *EquipmentMutation) Where(ps ...predicate.Equipment) {
 	m.predicates = append(m.predicates, ps...)
@@ -3389,7 +3529,7 @@ func (m *EquipmentMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *EquipmentMutation) AddedEdges() []string {
-	edges := make([]string, 0, 9)
+	edges := make([]string, 0, 10)
 	if m.equipment_info != nil {
 		edges = append(edges, equipment.EdgeEquipmentInfo)
 	}
@@ -3416,6 +3556,9 @@ func (m *EquipmentMutation) AddedEdges() []string {
 	}
 	if m.equipment_log != nil {
 		edges = append(edges, equipment.EdgeEquipmentLog)
+	}
+	if m.smart_charging_effect != nil {
+		edges = append(edges, equipment.EdgeSmartChargingEffect)
 	}
 	return edges
 }
@@ -3474,13 +3617,19 @@ func (m *EquipmentMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case equipment.EdgeSmartChargingEffect:
+		ids := make([]ent.Value, 0, len(m.smart_charging_effect))
+		for id := range m.smart_charging_effect {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *EquipmentMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 9)
+	edges := make([]string, 0, 10)
 	if m.removedevse != nil {
 		edges = append(edges, equipment.EdgeEvse)
 	}
@@ -3501,6 +3650,9 @@ func (m *EquipmentMutation) RemovedEdges() []string {
 	}
 	if m.removedequipment_log != nil {
 		edges = append(edges, equipment.EdgeEquipmentLog)
+	}
+	if m.removedsmart_charging_effect != nil {
+		edges = append(edges, equipment.EdgeSmartChargingEffect)
 	}
 	return edges
 }
@@ -3551,13 +3703,19 @@ func (m *EquipmentMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case equipment.EdgeSmartChargingEffect:
+		ids := make([]ent.Value, 0, len(m.removedsmart_charging_effect))
+		for id := range m.removedsmart_charging_effect {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *EquipmentMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 9)
+	edges := make([]string, 0, 10)
 	if m.clearedequipment_info {
 		edges = append(edges, equipment.EdgeEquipmentInfo)
 	}
@@ -3585,6 +3743,9 @@ func (m *EquipmentMutation) ClearedEdges() []string {
 	if m.clearedequipment_log {
 		edges = append(edges, equipment.EdgeEquipmentLog)
 	}
+	if m.clearedsmart_charging_effect {
+		edges = append(edges, equipment.EdgeSmartChargingEffect)
+	}
 	return edges
 }
 
@@ -3610,6 +3771,8 @@ func (m *EquipmentMutation) EdgeCleared(name string) bool {
 		return m.clearedreservation
 	case equipment.EdgeEquipmentLog:
 		return m.clearedequipment_log
+	case equipment.EdgeSmartChargingEffect:
+		return m.clearedsmart_charging_effect
 	}
 	return false
 }
@@ -3658,6 +3821,9 @@ func (m *EquipmentMutation) ResetEdge(name string) error {
 		return nil
 	case equipment.EdgeEquipmentLog:
 		m.ResetEquipmentLog()
+		return nil
+	case equipment.EdgeSmartChargingEffect:
+		m.ResetSmartChargingEffect()
 		return nil
 	}
 	return fmt.Errorf("unknown Equipment edge %s", name)
@@ -12998,18 +13164,6 @@ type OrderEventMutation struct {
 	op                Op
 	typ               string
 	id                *datasource.UUID
-	version           *int64
-	addversion        *int64
-	created_by        *datasource.UUID
-	addcreated_by     *datasource.UUID
-	created_at        *int64
-	addcreated_at     *int64
-	updated_by        *datasource.UUID
-	addupdated_by     *datasource.UUID
-	updated_at        *int64
-	addupdated_at     *int64
-	order_id          *datasource.UUID
-	addorder_id       *datasource.UUID
 	content           *string
 	occurrence        *int64
 	addoccurrence     *int64
@@ -13123,342 +13277,6 @@ func (m *OrderEventMutation) IDs(ctx context.Context) ([]datasource.UUID, error)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetVersion sets the "version" field.
-func (m *OrderEventMutation) SetVersion(i int64) {
-	m.version = &i
-	m.addversion = nil
-}
-
-// Version returns the value of the "version" field in the mutation.
-func (m *OrderEventMutation) Version() (r int64, exists bool) {
-	v := m.version
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldVersion returns the old "version" field's value of the OrderEvent entity.
-// If the OrderEvent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderEventMutation) OldVersion(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldVersion is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldVersion requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldVersion: %w", err)
-	}
-	return oldValue.Version, nil
-}
-
-// AddVersion adds i to the "version" field.
-func (m *OrderEventMutation) AddVersion(i int64) {
-	if m.addversion != nil {
-		*m.addversion += i
-	} else {
-		m.addversion = &i
-	}
-}
-
-// AddedVersion returns the value that was added to the "version" field in this mutation.
-func (m *OrderEventMutation) AddedVersion() (r int64, exists bool) {
-	v := m.addversion
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetVersion resets all changes to the "version" field.
-func (m *OrderEventMutation) ResetVersion() {
-	m.version = nil
-	m.addversion = nil
-}
-
-// SetCreatedBy sets the "created_by" field.
-func (m *OrderEventMutation) SetCreatedBy(d datasource.UUID) {
-	m.created_by = &d
-	m.addcreated_by = nil
-}
-
-// CreatedBy returns the value of the "created_by" field in the mutation.
-func (m *OrderEventMutation) CreatedBy() (r datasource.UUID, exists bool) {
-	v := m.created_by
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedBy returns the old "created_by" field's value of the OrderEvent entity.
-// If the OrderEvent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderEventMutation) OldCreatedBy(ctx context.Context) (v datasource.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedBy is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedBy requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedBy: %w", err)
-	}
-	return oldValue.CreatedBy, nil
-}
-
-// AddCreatedBy adds d to the "created_by" field.
-func (m *OrderEventMutation) AddCreatedBy(d datasource.UUID) {
-	if m.addcreated_by != nil {
-		*m.addcreated_by += d
-	} else {
-		m.addcreated_by = &d
-	}
-}
-
-// AddedCreatedBy returns the value that was added to the "created_by" field in this mutation.
-func (m *OrderEventMutation) AddedCreatedBy() (r datasource.UUID, exists bool) {
-	v := m.addcreated_by
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetCreatedBy resets all changes to the "created_by" field.
-func (m *OrderEventMutation) ResetCreatedBy() {
-	m.created_by = nil
-	m.addcreated_by = nil
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (m *OrderEventMutation) SetCreatedAt(i int64) {
-	m.created_at = &i
-	m.addcreated_at = nil
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *OrderEventMutation) CreatedAt() (r int64, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the OrderEvent entity.
-// If the OrderEvent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderEventMutation) OldCreatedAt(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// AddCreatedAt adds i to the "created_at" field.
-func (m *OrderEventMutation) AddCreatedAt(i int64) {
-	if m.addcreated_at != nil {
-		*m.addcreated_at += i
-	} else {
-		m.addcreated_at = &i
-	}
-}
-
-// AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
-func (m *OrderEventMutation) AddedCreatedAt() (r int64, exists bool) {
-	v := m.addcreated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *OrderEventMutation) ResetCreatedAt() {
-	m.created_at = nil
-	m.addcreated_at = nil
-}
-
-// SetUpdatedBy sets the "updated_by" field.
-func (m *OrderEventMutation) SetUpdatedBy(d datasource.UUID) {
-	m.updated_by = &d
-	m.addupdated_by = nil
-}
-
-// UpdatedBy returns the value of the "updated_by" field in the mutation.
-func (m *OrderEventMutation) UpdatedBy() (r datasource.UUID, exists bool) {
-	v := m.updated_by
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedBy returns the old "updated_by" field's value of the OrderEvent entity.
-// If the OrderEvent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderEventMutation) OldUpdatedBy(ctx context.Context) (v datasource.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedBy is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedBy requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedBy: %w", err)
-	}
-	return oldValue.UpdatedBy, nil
-}
-
-// AddUpdatedBy adds d to the "updated_by" field.
-func (m *OrderEventMutation) AddUpdatedBy(d datasource.UUID) {
-	if m.addupdated_by != nil {
-		*m.addupdated_by += d
-	} else {
-		m.addupdated_by = &d
-	}
-}
-
-// AddedUpdatedBy returns the value that was added to the "updated_by" field in this mutation.
-func (m *OrderEventMutation) AddedUpdatedBy() (r datasource.UUID, exists bool) {
-	v := m.addupdated_by
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetUpdatedBy resets all changes to the "updated_by" field.
-func (m *OrderEventMutation) ResetUpdatedBy() {
-	m.updated_by = nil
-	m.addupdated_by = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *OrderEventMutation) SetUpdatedAt(i int64) {
-	m.updated_at = &i
-	m.addupdated_at = nil
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *OrderEventMutation) UpdatedAt() (r int64, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the OrderEvent entity.
-// If the OrderEvent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderEventMutation) OldUpdatedAt(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// AddUpdatedAt adds i to the "updated_at" field.
-func (m *OrderEventMutation) AddUpdatedAt(i int64) {
-	if m.addupdated_at != nil {
-		*m.addupdated_at += i
-	} else {
-		m.addupdated_at = &i
-	}
-}
-
-// AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
-func (m *OrderEventMutation) AddedUpdatedAt() (r int64, exists bool) {
-	v := m.addupdated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *OrderEventMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-	m.addupdated_at = nil
-}
-
-// SetOrderID sets the "order_id" field.
-func (m *OrderEventMutation) SetOrderID(d datasource.UUID) {
-	m.order_id = &d
-	m.addorder_id = nil
-}
-
-// OrderID returns the value of the "order_id" field in the mutation.
-func (m *OrderEventMutation) OrderID() (r datasource.UUID, exists bool) {
-	v := m.order_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldOrderID returns the old "order_id" field's value of the OrderEvent entity.
-// If the OrderEvent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderEventMutation) OldOrderID(ctx context.Context) (v datasource.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOrderID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOrderID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOrderID: %w", err)
-	}
-	return oldValue.OrderID, nil
-}
-
-// AddOrderID adds d to the "order_id" field.
-func (m *OrderEventMutation) AddOrderID(d datasource.UUID) {
-	if m.addorder_id != nil {
-		*m.addorder_id += d
-	} else {
-		m.addorder_id = &d
-	}
-}
-
-// AddedOrderID returns the value that was added to the "order_id" field in this mutation.
-func (m *OrderEventMutation) AddedOrderID() (r datasource.UUID, exists bool) {
-	v := m.addorder_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetOrderID resets all changes to the "order_id" field.
-func (m *OrderEventMutation) ResetOrderID() {
-	m.order_id = nil
-	m.addorder_id = nil
 }
 
 // SetContent sets the "content" field.
@@ -13611,25 +13429,7 @@ func (m *OrderEventMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrderEventMutation) Fields() []string {
-	fields := make([]string, 0, 8)
-	if m.version != nil {
-		fields = append(fields, orderevent.FieldVersion)
-	}
-	if m.created_by != nil {
-		fields = append(fields, orderevent.FieldCreatedBy)
-	}
-	if m.created_at != nil {
-		fields = append(fields, orderevent.FieldCreatedAt)
-	}
-	if m.updated_by != nil {
-		fields = append(fields, orderevent.FieldUpdatedBy)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, orderevent.FieldUpdatedAt)
-	}
-	if m.order_id != nil {
-		fields = append(fields, orderevent.FieldOrderID)
-	}
+	fields := make([]string, 0, 2)
 	if m.content != nil {
 		fields = append(fields, orderevent.FieldContent)
 	}
@@ -13644,18 +13444,6 @@ func (m *OrderEventMutation) Fields() []string {
 // schema.
 func (m *OrderEventMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case orderevent.FieldVersion:
-		return m.Version()
-	case orderevent.FieldCreatedBy:
-		return m.CreatedBy()
-	case orderevent.FieldCreatedAt:
-		return m.CreatedAt()
-	case orderevent.FieldUpdatedBy:
-		return m.UpdatedBy()
-	case orderevent.FieldUpdatedAt:
-		return m.UpdatedAt()
-	case orderevent.FieldOrderID:
-		return m.OrderID()
 	case orderevent.FieldContent:
 		return m.Content()
 	case orderevent.FieldOccurrence:
@@ -13669,18 +13457,6 @@ func (m *OrderEventMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *OrderEventMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case orderevent.FieldVersion:
-		return m.OldVersion(ctx)
-	case orderevent.FieldCreatedBy:
-		return m.OldCreatedBy(ctx)
-	case orderevent.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case orderevent.FieldUpdatedBy:
-		return m.OldUpdatedBy(ctx)
-	case orderevent.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
-	case orderevent.FieldOrderID:
-		return m.OldOrderID(ctx)
 	case orderevent.FieldContent:
 		return m.OldContent(ctx)
 	case orderevent.FieldOccurrence:
@@ -13694,48 +13470,6 @@ func (m *OrderEventMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *OrderEventMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case orderevent.FieldVersion:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetVersion(v)
-		return nil
-	case orderevent.FieldCreatedBy:
-		v, ok := value.(datasource.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedBy(v)
-		return nil
-	case orderevent.FieldCreatedAt:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case orderevent.FieldUpdatedBy:
-		v, ok := value.(datasource.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedBy(v)
-		return nil
-	case orderevent.FieldUpdatedAt:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
-		return nil
-	case orderevent.FieldOrderID:
-		v, ok := value.(datasource.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetOrderID(v)
-		return nil
 	case orderevent.FieldContent:
 		v, ok := value.(string)
 		if !ok {
@@ -13758,24 +13492,6 @@ func (m *OrderEventMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *OrderEventMutation) AddedFields() []string {
 	var fields []string
-	if m.addversion != nil {
-		fields = append(fields, orderevent.FieldVersion)
-	}
-	if m.addcreated_by != nil {
-		fields = append(fields, orderevent.FieldCreatedBy)
-	}
-	if m.addcreated_at != nil {
-		fields = append(fields, orderevent.FieldCreatedAt)
-	}
-	if m.addupdated_by != nil {
-		fields = append(fields, orderevent.FieldUpdatedBy)
-	}
-	if m.addupdated_at != nil {
-		fields = append(fields, orderevent.FieldUpdatedAt)
-	}
-	if m.addorder_id != nil {
-		fields = append(fields, orderevent.FieldOrderID)
-	}
 	if m.addoccurrence != nil {
 		fields = append(fields, orderevent.FieldOccurrence)
 	}
@@ -13787,18 +13503,6 @@ func (m *OrderEventMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *OrderEventMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case orderevent.FieldVersion:
-		return m.AddedVersion()
-	case orderevent.FieldCreatedBy:
-		return m.AddedCreatedBy()
-	case orderevent.FieldCreatedAt:
-		return m.AddedCreatedAt()
-	case orderevent.FieldUpdatedBy:
-		return m.AddedUpdatedBy()
-	case orderevent.FieldUpdatedAt:
-		return m.AddedUpdatedAt()
-	case orderevent.FieldOrderID:
-		return m.AddedOrderID()
 	case orderevent.FieldOccurrence:
 		return m.AddedOccurrence()
 	}
@@ -13810,48 +13514,6 @@ func (m *OrderEventMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *OrderEventMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case orderevent.FieldVersion:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddVersion(v)
-		return nil
-	case orderevent.FieldCreatedBy:
-		v, ok := value.(datasource.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddCreatedBy(v)
-		return nil
-	case orderevent.FieldCreatedAt:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddCreatedAt(v)
-		return nil
-	case orderevent.FieldUpdatedBy:
-		v, ok := value.(datasource.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddUpdatedBy(v)
-		return nil
-	case orderevent.FieldUpdatedAt:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddUpdatedAt(v)
-		return nil
-	case orderevent.FieldOrderID:
-		v, ok := value.(datasource.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddOrderID(v)
-		return nil
 	case orderevent.FieldOccurrence:
 		v, ok := value.(int64)
 		if !ok {
@@ -13886,24 +13548,6 @@ func (m *OrderEventMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *OrderEventMutation) ResetField(name string) error {
 	switch name {
-	case orderevent.FieldVersion:
-		m.ResetVersion()
-		return nil
-	case orderevent.FieldCreatedBy:
-		m.ResetCreatedBy()
-		return nil
-	case orderevent.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case orderevent.FieldUpdatedBy:
-		m.ResetUpdatedBy()
-		return nil
-	case orderevent.FieldUpdatedAt:
-		m.ResetUpdatedAt()
-		return nil
-	case orderevent.FieldOrderID:
-		m.ResetOrderID()
-		return nil
 	case orderevent.FieldContent:
 		m.ResetContent()
 		return nil
@@ -13991,69 +13635,71 @@ func (m *OrderEventMutation) ResetEdge(name string) error {
 // OrderInfoMutation represents an operation that mutates the OrderInfo nodes in the graph.
 type OrderInfoMutation struct {
 	config
-	op                          Op
-	typ                         string
-	id                          *datasource.UUID
-	version                     *int64
-	addversion                  *int64
-	created_by                  *datasource.UUID
-	addcreated_by               *datasource.UUID
-	created_at                  *int64
-	addcreated_at               *int64
-	updated_by                  *datasource.UUID
-	addupdated_by               *datasource.UUID
-	updated_at                  *int64
-	addupdated_at               *int64
-	remote_start_id             *int64
-	addremote_start_id          *int64
-	transaction_id              *string
-	authorization_id            *string
-	customer_id                 *string
-	caller_order_id             *string
-	total_electricity           *float64
-	addtotal_electricity        *float64
-	charge_start_electricity    *float64
-	addcharge_start_electricity *float64
-	charge_stop_electricity     *float64
-	addcharge_stop_electricity  *float64
-	sharp_electricity           *float64
-	addsharp_electricity        *float64
-	peak_electricity            *float64
-	addpeak_electricity         *float64
-	flat_electricity            *float64
-	addflat_electricity         *float64
-	valley_electricity          *float64
-	addvalley_electricity       *float64
-	stop_reason_code            *int32
-	addstop_reason_code         *int32
-	offline                     *bool
-	price_scheme_release_id     *int64
-	addprice_scheme_release_id  *int64
-	order_start_time            *int64
-	addorder_start_time         *int64
-	order_final_time            *int64
-	addorder_final_time         *int64
-	charge_start_time           *int64
-	addcharge_start_time        *int64
-	charge_final_time           *int64
-	addcharge_final_time        *int64
-	intellect_id                *int64
-	addintellect_id             *int64
-	station_id                  *datasource.UUID
-	addstation_id               *datasource.UUID
-	operator_id                 *datasource.UUID
-	addoperator_id              *datasource.UUID
-	clearedFields               map[string]struct{}
-	connector                   *datasource.UUID
-	clearedconnector            bool
-	equipment                   *datasource.UUID
-	clearedequipment            bool
-	order_event                 map[datasource.UUID]struct{}
-	removedorder_event          map[datasource.UUID]struct{}
-	clearedorder_event          bool
-	done                        bool
-	oldValue                    func(context.Context) (*OrderInfo, error)
-	predicates                  []predicate.OrderInfo
+	op                           Op
+	typ                          string
+	id                           *datasource.UUID
+	version                      *int64
+	addversion                   *int64
+	created_by                   *datasource.UUID
+	addcreated_by                *datasource.UUID
+	created_at                   *int64
+	addcreated_at                *int64
+	updated_by                   *datasource.UUID
+	addupdated_by                *datasource.UUID
+	updated_at                   *int64
+	addupdated_at                *int64
+	remote_start_id              *int64
+	addremote_start_id           *int64
+	transaction_id               *string
+	authorization_id             *string
+	customer_id                  *string
+	caller_order_id              *string
+	total_electricity            *float64
+	addtotal_electricity         *float64
+	charge_start_electricity     *float64
+	addcharge_start_electricity  *float64
+	charge_final_electricity     *float64
+	addcharge_final_electricity  *float64
+	sharp_electricity            *float64
+	addsharp_electricity         *float64
+	peak_electricity             *float64
+	addpeak_electricity          *float64
+	flat_electricity             *float64
+	addflat_electricity          *float64
+	valley_electricity           *float64
+	addvalley_electricity        *float64
+	stop_reason_code             *int32
+	addstop_reason_code          *int32
+	offline                      *bool
+	price_scheme_release_id      *int64
+	addprice_scheme_release_id   *int64
+	order_start_time             *int64
+	addorder_start_time          *int64
+	order_final_time             *int64
+	addorder_final_time          *int64
+	charge_start_time            *int64
+	addcharge_start_time         *int64
+	charge_final_time            *int64
+	addcharge_final_time         *int64
+	intellect_id                 *int64
+	addintellect_id              *int64
+	station_id                   *datasource.UUID
+	addstation_id                *datasource.UUID
+	operator_id                  *datasource.UUID
+	addoperator_id               *datasource.UUID
+	clearedFields                map[string]struct{}
+	connector                    *datasource.UUID
+	clearedconnector             bool
+	equipment                    *datasource.UUID
+	clearedequipment             bool
+	order_event                  map[datasource.UUID]struct{}
+	removedorder_event           map[datasource.UUID]struct{}
+	clearedorder_event           bool
+	smart_charging_effect        *datasource.UUID
+	clearedsmart_charging_effect bool
+	done                         bool
+	oldValue                     func(context.Context) (*OrderInfo, error)
+	predicates                   []predicate.OrderInfo
 }
 
 var _ ent.Mutation = (*OrderInfoMutation)(nil)
@@ -14833,74 +14479,74 @@ func (m *OrderInfoMutation) ResetChargeStartElectricity() {
 	delete(m.clearedFields, orderinfo.FieldChargeStartElectricity)
 }
 
-// SetChargeStopElectricity sets the "charge_stop_electricity" field.
-func (m *OrderInfoMutation) SetChargeStopElectricity(f float64) {
-	m.charge_stop_electricity = &f
-	m.addcharge_stop_electricity = nil
+// SetChargeFinalElectricity sets the "charge_final_electricity" field.
+func (m *OrderInfoMutation) SetChargeFinalElectricity(f float64) {
+	m.charge_final_electricity = &f
+	m.addcharge_final_electricity = nil
 }
 
-// ChargeStopElectricity returns the value of the "charge_stop_electricity" field in the mutation.
-func (m *OrderInfoMutation) ChargeStopElectricity() (r float64, exists bool) {
-	v := m.charge_stop_electricity
+// ChargeFinalElectricity returns the value of the "charge_final_electricity" field in the mutation.
+func (m *OrderInfoMutation) ChargeFinalElectricity() (r float64, exists bool) {
+	v := m.charge_final_electricity
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldChargeStopElectricity returns the old "charge_stop_electricity" field's value of the OrderInfo entity.
+// OldChargeFinalElectricity returns the old "charge_final_electricity" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldChargeStopElectricity(ctx context.Context) (v *float64, err error) {
+func (m *OrderInfoMutation) OldChargeFinalElectricity(ctx context.Context) (v *float64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldChargeStopElectricity is only allowed on UpdateOne operations")
+		return v, errors.New("OldChargeFinalElectricity is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldChargeStopElectricity requires an ID field in the mutation")
+		return v, errors.New("OldChargeFinalElectricity requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldChargeStopElectricity: %w", err)
+		return v, fmt.Errorf("querying old value for OldChargeFinalElectricity: %w", err)
 	}
-	return oldValue.ChargeStopElectricity, nil
+	return oldValue.ChargeFinalElectricity, nil
 }
 
-// AddChargeStopElectricity adds f to the "charge_stop_electricity" field.
-func (m *OrderInfoMutation) AddChargeStopElectricity(f float64) {
-	if m.addcharge_stop_electricity != nil {
-		*m.addcharge_stop_electricity += f
+// AddChargeFinalElectricity adds f to the "charge_final_electricity" field.
+func (m *OrderInfoMutation) AddChargeFinalElectricity(f float64) {
+	if m.addcharge_final_electricity != nil {
+		*m.addcharge_final_electricity += f
 	} else {
-		m.addcharge_stop_electricity = &f
+		m.addcharge_final_electricity = &f
 	}
 }
 
-// AddedChargeStopElectricity returns the value that was added to the "charge_stop_electricity" field in this mutation.
-func (m *OrderInfoMutation) AddedChargeStopElectricity() (r float64, exists bool) {
-	v := m.addcharge_stop_electricity
+// AddedChargeFinalElectricity returns the value that was added to the "charge_final_electricity" field in this mutation.
+func (m *OrderInfoMutation) AddedChargeFinalElectricity() (r float64, exists bool) {
+	v := m.addcharge_final_electricity
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearChargeStopElectricity clears the value of the "charge_stop_electricity" field.
-func (m *OrderInfoMutation) ClearChargeStopElectricity() {
-	m.charge_stop_electricity = nil
-	m.addcharge_stop_electricity = nil
-	m.clearedFields[orderinfo.FieldChargeStopElectricity] = struct{}{}
+// ClearChargeFinalElectricity clears the value of the "charge_final_electricity" field.
+func (m *OrderInfoMutation) ClearChargeFinalElectricity() {
+	m.charge_final_electricity = nil
+	m.addcharge_final_electricity = nil
+	m.clearedFields[orderinfo.FieldChargeFinalElectricity] = struct{}{}
 }
 
-// ChargeStopElectricityCleared returns if the "charge_stop_electricity" field was cleared in this mutation.
-func (m *OrderInfoMutation) ChargeStopElectricityCleared() bool {
-	_, ok := m.clearedFields[orderinfo.FieldChargeStopElectricity]
+// ChargeFinalElectricityCleared returns if the "charge_final_electricity" field was cleared in this mutation.
+func (m *OrderInfoMutation) ChargeFinalElectricityCleared() bool {
+	_, ok := m.clearedFields[orderinfo.FieldChargeFinalElectricity]
 	return ok
 }
 
-// ResetChargeStopElectricity resets all changes to the "charge_stop_electricity" field.
-func (m *OrderInfoMutation) ResetChargeStopElectricity() {
-	m.charge_stop_electricity = nil
-	m.addcharge_stop_electricity = nil
-	delete(m.clearedFields, orderinfo.FieldChargeStopElectricity)
+// ResetChargeFinalElectricity resets all changes to the "charge_final_electricity" field.
+func (m *OrderInfoMutation) ResetChargeFinalElectricity() {
+	m.charge_final_electricity = nil
+	m.addcharge_final_electricity = nil
+	delete(m.clearedFields, orderinfo.FieldChargeFinalElectricity)
 }
 
 // SetSharpElectricity sets the "sharp_electricity" field.
@@ -15967,6 +15613,45 @@ func (m *OrderInfoMutation) ResetOrderEvent() {
 	m.removedorder_event = nil
 }
 
+// SetSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by id.
+func (m *OrderInfoMutation) SetSmartChargingEffectID(id datasource.UUID) {
+	m.smart_charging_effect = &id
+}
+
+// ClearSmartChargingEffect clears the "smart_charging_effect" edge to the SmartChargingEffect entity.
+func (m *OrderInfoMutation) ClearSmartChargingEffect() {
+	m.clearedsmart_charging_effect = true
+}
+
+// SmartChargingEffectCleared reports if the "smart_charging_effect" edge to the SmartChargingEffect entity was cleared.
+func (m *OrderInfoMutation) SmartChargingEffectCleared() bool {
+	return m.clearedsmart_charging_effect
+}
+
+// SmartChargingEffectID returns the "smart_charging_effect" edge ID in the mutation.
+func (m *OrderInfoMutation) SmartChargingEffectID() (id datasource.UUID, exists bool) {
+	if m.smart_charging_effect != nil {
+		return *m.smart_charging_effect, true
+	}
+	return
+}
+
+// SmartChargingEffectIDs returns the "smart_charging_effect" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// SmartChargingEffectID instead. It exists only for internal usage by the builders.
+func (m *OrderInfoMutation) SmartChargingEffectIDs() (ids []datasource.UUID) {
+	if id := m.smart_charging_effect; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetSmartChargingEffect resets all changes to the "smart_charging_effect" edge.
+func (m *OrderInfoMutation) ResetSmartChargingEffect() {
+	m.smart_charging_effect = nil
+	m.clearedsmart_charging_effect = false
+}
+
 // Where appends a list predicates to the OrderInfoMutation builder.
 func (m *OrderInfoMutation) Where(ps ...predicate.OrderInfo) {
 	m.predicates = append(m.predicates, ps...)
@@ -16023,8 +15708,8 @@ func (m *OrderInfoMutation) Fields() []string {
 	if m.charge_start_electricity != nil {
 		fields = append(fields, orderinfo.FieldChargeStartElectricity)
 	}
-	if m.charge_stop_electricity != nil {
-		fields = append(fields, orderinfo.FieldChargeStopElectricity)
+	if m.charge_final_electricity != nil {
+		fields = append(fields, orderinfo.FieldChargeFinalElectricity)
 	}
 	if m.sharp_electricity != nil {
 		fields = append(fields, orderinfo.FieldSharpElectricity)
@@ -16100,8 +15785,8 @@ func (m *OrderInfoMutation) Field(name string) (ent.Value, bool) {
 		return m.TotalElectricity()
 	case orderinfo.FieldChargeStartElectricity:
 		return m.ChargeStartElectricity()
-	case orderinfo.FieldChargeStopElectricity:
-		return m.ChargeStopElectricity()
+	case orderinfo.FieldChargeFinalElectricity:
+		return m.ChargeFinalElectricity()
 	case orderinfo.FieldSharpElectricity:
 		return m.SharpElectricity()
 	case orderinfo.FieldPeakElectricity:
@@ -16163,8 +15848,8 @@ func (m *OrderInfoMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldTotalElectricity(ctx)
 	case orderinfo.FieldChargeStartElectricity:
 		return m.OldChargeStartElectricity(ctx)
-	case orderinfo.FieldChargeStopElectricity:
-		return m.OldChargeStopElectricity(ctx)
+	case orderinfo.FieldChargeFinalElectricity:
+		return m.OldChargeFinalElectricity(ctx)
 	case orderinfo.FieldSharpElectricity:
 		return m.OldSharpElectricity(ctx)
 	case orderinfo.FieldPeakElectricity:
@@ -16286,12 +15971,12 @@ func (m *OrderInfoMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetChargeStartElectricity(v)
 		return nil
-	case orderinfo.FieldChargeStopElectricity:
+	case orderinfo.FieldChargeFinalElectricity:
 		v, ok := value.(float64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetChargeStopElectricity(v)
+		m.SetChargeFinalElectricity(v)
 		return nil
 	case orderinfo.FieldSharpElectricity:
 		v, ok := value.(float64)
@@ -16423,8 +16108,8 @@ func (m *OrderInfoMutation) AddedFields() []string {
 	if m.addcharge_start_electricity != nil {
 		fields = append(fields, orderinfo.FieldChargeStartElectricity)
 	}
-	if m.addcharge_stop_electricity != nil {
-		fields = append(fields, orderinfo.FieldChargeStopElectricity)
+	if m.addcharge_final_electricity != nil {
+		fields = append(fields, orderinfo.FieldChargeFinalElectricity)
 	}
 	if m.addsharp_electricity != nil {
 		fields = append(fields, orderinfo.FieldSharpElectricity)
@@ -16489,8 +16174,8 @@ func (m *OrderInfoMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedTotalElectricity()
 	case orderinfo.FieldChargeStartElectricity:
 		return m.AddedChargeStartElectricity()
-	case orderinfo.FieldChargeStopElectricity:
-		return m.AddedChargeStopElectricity()
+	case orderinfo.FieldChargeFinalElectricity:
+		return m.AddedChargeFinalElectricity()
 	case orderinfo.FieldSharpElectricity:
 		return m.AddedSharpElectricity()
 	case orderinfo.FieldPeakElectricity:
@@ -16582,12 +16267,12 @@ func (m *OrderInfoMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddChargeStartElectricity(v)
 		return nil
-	case orderinfo.FieldChargeStopElectricity:
+	case orderinfo.FieldChargeFinalElectricity:
 		v, ok := value.(float64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddChargeStopElectricity(v)
+		m.AddChargeFinalElectricity(v)
 		return nil
 	case orderinfo.FieldSharpElectricity:
 		v, ok := value.(float64)
@@ -16706,8 +16391,8 @@ func (m *OrderInfoMutation) ClearedFields() []string {
 	if m.FieldCleared(orderinfo.FieldChargeStartElectricity) {
 		fields = append(fields, orderinfo.FieldChargeStartElectricity)
 	}
-	if m.FieldCleared(orderinfo.FieldChargeStopElectricity) {
-		fields = append(fields, orderinfo.FieldChargeStopElectricity)
+	if m.FieldCleared(orderinfo.FieldChargeFinalElectricity) {
+		fields = append(fields, orderinfo.FieldChargeFinalElectricity)
 	}
 	if m.FieldCleared(orderinfo.FieldSharpElectricity) {
 		fields = append(fields, orderinfo.FieldSharpElectricity)
@@ -16777,8 +16462,8 @@ func (m *OrderInfoMutation) ClearField(name string) error {
 	case orderinfo.FieldChargeStartElectricity:
 		m.ClearChargeStartElectricity()
 		return nil
-	case orderinfo.FieldChargeStopElectricity:
-		m.ClearChargeStopElectricity()
+	case orderinfo.FieldChargeFinalElectricity:
+		m.ClearChargeFinalElectricity()
 		return nil
 	case orderinfo.FieldSharpElectricity:
 		m.ClearSharpElectricity()
@@ -16860,8 +16545,8 @@ func (m *OrderInfoMutation) ResetField(name string) error {
 	case orderinfo.FieldChargeStartElectricity:
 		m.ResetChargeStartElectricity()
 		return nil
-	case orderinfo.FieldChargeStopElectricity:
-		m.ResetChargeStopElectricity()
+	case orderinfo.FieldChargeFinalElectricity:
+		m.ResetChargeFinalElectricity()
 		return nil
 	case orderinfo.FieldSharpElectricity:
 		m.ResetSharpElectricity()
@@ -16911,7 +16596,7 @@ func (m *OrderInfoMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *OrderInfoMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.connector != nil {
 		edges = append(edges, orderinfo.EdgeConnector)
 	}
@@ -16920,6 +16605,9 @@ func (m *OrderInfoMutation) AddedEdges() []string {
 	}
 	if m.order_event != nil {
 		edges = append(edges, orderinfo.EdgeOrderEvent)
+	}
+	if m.smart_charging_effect != nil {
+		edges = append(edges, orderinfo.EdgeSmartChargingEffect)
 	}
 	return edges
 }
@@ -16942,13 +16630,17 @@ func (m *OrderInfoMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case orderinfo.EdgeSmartChargingEffect:
+		if id := m.smart_charging_effect; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *OrderInfoMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removedorder_event != nil {
 		edges = append(edges, orderinfo.EdgeOrderEvent)
 	}
@@ -16971,7 +16663,7 @@ func (m *OrderInfoMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *OrderInfoMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedconnector {
 		edges = append(edges, orderinfo.EdgeConnector)
 	}
@@ -16980,6 +16672,9 @@ func (m *OrderInfoMutation) ClearedEdges() []string {
 	}
 	if m.clearedorder_event {
 		edges = append(edges, orderinfo.EdgeOrderEvent)
+	}
+	if m.clearedsmart_charging_effect {
+		edges = append(edges, orderinfo.EdgeSmartChargingEffect)
 	}
 	return edges
 }
@@ -16994,6 +16689,8 @@ func (m *OrderInfoMutation) EdgeCleared(name string) bool {
 		return m.clearedequipment
 	case orderinfo.EdgeOrderEvent:
 		return m.clearedorder_event
+	case orderinfo.EdgeSmartChargingEffect:
+		return m.clearedsmart_charging_effect
 	}
 	return false
 }
@@ -17007,6 +16704,9 @@ func (m *OrderInfoMutation) ClearEdge(name string) error {
 		return nil
 	case orderinfo.EdgeEquipment:
 		m.ClearEquipment()
+		return nil
+	case orderinfo.EdgeSmartChargingEffect:
+		m.ClearSmartChargingEffect()
 		return nil
 	}
 	return fmt.Errorf("unknown OrderInfo unique edge %s", name)
@@ -17024,6 +16724,9 @@ func (m *OrderInfoMutation) ResetEdge(name string) error {
 		return nil
 	case orderinfo.EdgeOrderEvent:
 		m.ResetOrderEvent()
+		return nil
+	case orderinfo.EdgeSmartChargingEffect:
+		m.ResetSmartChargingEffect()
 		return nil
 	}
 	return fmt.Errorf("unknown OrderInfo edge %s", name)
@@ -18407,54 +18110,57 @@ func (m *ReservationMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Reservation edge %s", name)
 }
 
-// SmartChargingEventMutation represents an operation that mutates the SmartChargingEvent nodes in the graph.
-type SmartChargingEventMutation struct {
+// SmartChargingEffectMutation represents an operation that mutates the SmartChargingEffect nodes in the graph.
+type SmartChargingEffectMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *datasource.UUID
-	version         *int64
-	addversion      *int64
-	created_by      *datasource.UUID
-	addcreated_by   *datasource.UUID
-	created_at      *int64
-	addcreated_at   *int64
-	updated_by      *datasource.UUID
-	addupdated_by   *datasource.UUID
-	updated_at      *int64
-	addupdated_at   *int64
-	smart_id        *datasource.UUID
-	addsmart_id     *datasource.UUID
-	equipment_id    *datasource.UUID
-	addequipment_id *datasource.UUID
-	connector_id    *datasource.UUID
-	addconnector_id *datasource.UUID
-	order_id        *datasource.UUID
-	addorder_id     *datasource.UUID
-	unit            *string
-	valid_from      *int64
-	addvalid_from   *int64
-	valid_to        *int64
-	addvalid_to     *int64
-	spec            *[]types.ChargingSchedulePeriod
-	appendspec      []types.ChargingSchedulePeriod
-	clearedFields   map[string]struct{}
-	done            bool
-	oldValue        func(context.Context) (*SmartChargingEvent, error)
-	predicates      []predicate.SmartChargingEvent
+	op                Op
+	typ               string
+	id                *datasource.UUID
+	version           *int64
+	addversion        *int64
+	created_by        *datasource.UUID
+	addcreated_by     *datasource.UUID
+	created_at        *int64
+	addcreated_at     *int64
+	updated_by        *datasource.UUID
+	addupdated_by     *datasource.UUID
+	updated_at        *int64
+	addupdated_at     *int64
+	smart_id          *int64
+	addsmart_id       *int64
+	pid               *datasource.UUID
+	addpid            *datasource.UUID
+	unit              *string
+	equipment_sn      *string
+	valid_from        *int64
+	addvalid_from     *int64
+	valid_to          *int64
+	addvalid_to       *int64
+	spec              *[]types.ChargingSchedulePeriod
+	appendspec        []types.ChargingSchedulePeriod
+	clearedFields     map[string]struct{}
+	equipment         *datasource.UUID
+	clearedequipment  bool
+	connector         *datasource.UUID
+	clearedconnector  bool
+	order_info        *datasource.UUID
+	clearedorder_info bool
+	done              bool
+	oldValue          func(context.Context) (*SmartChargingEffect, error)
+	predicates        []predicate.SmartChargingEffect
 }
 
-var _ ent.Mutation = (*SmartChargingEventMutation)(nil)
+var _ ent.Mutation = (*SmartChargingEffectMutation)(nil)
 
-// smartchargingeventOption allows management of the mutation configuration using functional options.
-type smartchargingeventOption func(*SmartChargingEventMutation)
+// smartchargingeffectOption allows management of the mutation configuration using functional options.
+type smartchargingeffectOption func(*SmartChargingEffectMutation)
 
-// newSmartChargingEventMutation creates new mutation for the SmartChargingEvent entity.
-func newSmartChargingEventMutation(c config, op Op, opts ...smartchargingeventOption) *SmartChargingEventMutation {
-	m := &SmartChargingEventMutation{
+// newSmartChargingEffectMutation creates new mutation for the SmartChargingEffect entity.
+func newSmartChargingEffectMutation(c config, op Op, opts ...smartchargingeffectOption) *SmartChargingEffectMutation {
+	m := &SmartChargingEffectMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeSmartChargingEvent,
+		typ:           TypeSmartChargingEffect,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -18463,20 +18169,20 @@ func newSmartChargingEventMutation(c config, op Op, opts ...smartchargingeventOp
 	return m
 }
 
-// withSmartChargingEventID sets the ID field of the mutation.
-func withSmartChargingEventID(id datasource.UUID) smartchargingeventOption {
-	return func(m *SmartChargingEventMutation) {
+// withSmartChargingEffectID sets the ID field of the mutation.
+func withSmartChargingEffectID(id datasource.UUID) smartchargingeffectOption {
+	return func(m *SmartChargingEffectMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *SmartChargingEvent
+			value *SmartChargingEffect
 		)
-		m.oldValue = func(ctx context.Context) (*SmartChargingEvent, error) {
+		m.oldValue = func(ctx context.Context) (*SmartChargingEffect, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().SmartChargingEvent.Get(ctx, id)
+					value, err = m.Client().SmartChargingEffect.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -18485,10 +18191,10 @@ func withSmartChargingEventID(id datasource.UUID) smartchargingeventOption {
 	}
 }
 
-// withSmartChargingEvent sets the old SmartChargingEvent of the mutation.
-func withSmartChargingEvent(node *SmartChargingEvent) smartchargingeventOption {
-	return func(m *SmartChargingEventMutation) {
-		m.oldValue = func(context.Context) (*SmartChargingEvent, error) {
+// withSmartChargingEffect sets the old SmartChargingEffect of the mutation.
+func withSmartChargingEffect(node *SmartChargingEffect) smartchargingeffectOption {
+	return func(m *SmartChargingEffectMutation) {
+		m.oldValue = func(context.Context) (*SmartChargingEffect, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -18497,7 +18203,7 @@ func withSmartChargingEvent(node *SmartChargingEvent) smartchargingeventOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m SmartChargingEventMutation) Client() *Client {
+func (m SmartChargingEffectMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -18505,7 +18211,7 @@ func (m SmartChargingEventMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m SmartChargingEventMutation) Tx() (*Tx, error) {
+func (m SmartChargingEffectMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -18515,14 +18221,14 @@ func (m SmartChargingEventMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of SmartChargingEvent entities.
-func (m *SmartChargingEventMutation) SetID(id datasource.UUID) {
+// operation is only accepted on creation of SmartChargingEffect entities.
+func (m *SmartChargingEffectMutation) SetID(id datasource.UUID) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *SmartChargingEventMutation) ID() (id datasource.UUID, exists bool) {
+func (m *SmartChargingEffectMutation) ID() (id datasource.UUID, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -18533,7 +18239,7 @@ func (m *SmartChargingEventMutation) ID() (id datasource.UUID, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *SmartChargingEventMutation) IDs(ctx context.Context) ([]datasource.UUID, error) {
+func (m *SmartChargingEffectMutation) IDs(ctx context.Context) ([]datasource.UUID, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -18542,20 +18248,20 @@ func (m *SmartChargingEventMutation) IDs(ctx context.Context) ([]datasource.UUID
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().SmartChargingEvent.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().SmartChargingEffect.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetVersion sets the "version" field.
-func (m *SmartChargingEventMutation) SetVersion(i int64) {
+func (m *SmartChargingEffectMutation) SetVersion(i int64) {
 	m.version = &i
 	m.addversion = nil
 }
 
 // Version returns the value of the "version" field in the mutation.
-func (m *SmartChargingEventMutation) Version() (r int64, exists bool) {
+func (m *SmartChargingEffectMutation) Version() (r int64, exists bool) {
 	v := m.version
 	if v == nil {
 		return
@@ -18563,10 +18269,10 @@ func (m *SmartChargingEventMutation) Version() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldVersion returns the old "version" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
+// OldVersion returns the old "version" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldVersion(ctx context.Context) (v int64, err error) {
+func (m *SmartChargingEffectMutation) OldVersion(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldVersion is only allowed on UpdateOne operations")
 	}
@@ -18581,7 +18287,7 @@ func (m *SmartChargingEventMutation) OldVersion(ctx context.Context) (v int64, e
 }
 
 // AddVersion adds i to the "version" field.
-func (m *SmartChargingEventMutation) AddVersion(i int64) {
+func (m *SmartChargingEffectMutation) AddVersion(i int64) {
 	if m.addversion != nil {
 		*m.addversion += i
 	} else {
@@ -18590,7 +18296,7 @@ func (m *SmartChargingEventMutation) AddVersion(i int64) {
 }
 
 // AddedVersion returns the value that was added to the "version" field in this mutation.
-func (m *SmartChargingEventMutation) AddedVersion() (r int64, exists bool) {
+func (m *SmartChargingEffectMutation) AddedVersion() (r int64, exists bool) {
 	v := m.addversion
 	if v == nil {
 		return
@@ -18599,19 +18305,19 @@ func (m *SmartChargingEventMutation) AddedVersion() (r int64, exists bool) {
 }
 
 // ResetVersion resets all changes to the "version" field.
-func (m *SmartChargingEventMutation) ResetVersion() {
+func (m *SmartChargingEffectMutation) ResetVersion() {
 	m.version = nil
 	m.addversion = nil
 }
 
 // SetCreatedBy sets the "created_by" field.
-func (m *SmartChargingEventMutation) SetCreatedBy(d datasource.UUID) {
+func (m *SmartChargingEffectMutation) SetCreatedBy(d datasource.UUID) {
 	m.created_by = &d
 	m.addcreated_by = nil
 }
 
 // CreatedBy returns the value of the "created_by" field in the mutation.
-func (m *SmartChargingEventMutation) CreatedBy() (r datasource.UUID, exists bool) {
+func (m *SmartChargingEffectMutation) CreatedBy() (r datasource.UUID, exists bool) {
 	v := m.created_by
 	if v == nil {
 		return
@@ -18619,10 +18325,10 @@ func (m *SmartChargingEventMutation) CreatedBy() (r datasource.UUID, exists bool
 	return *v, true
 }
 
-// OldCreatedBy returns the old "created_by" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedBy returns the old "created_by" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldCreatedBy(ctx context.Context) (v datasource.UUID, err error) {
+func (m *SmartChargingEffectMutation) OldCreatedBy(ctx context.Context) (v datasource.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedBy is only allowed on UpdateOne operations")
 	}
@@ -18637,7 +18343,7 @@ func (m *SmartChargingEventMutation) OldCreatedBy(ctx context.Context) (v dataso
 }
 
 // AddCreatedBy adds d to the "created_by" field.
-func (m *SmartChargingEventMutation) AddCreatedBy(d datasource.UUID) {
+func (m *SmartChargingEffectMutation) AddCreatedBy(d datasource.UUID) {
 	if m.addcreated_by != nil {
 		*m.addcreated_by += d
 	} else {
@@ -18646,7 +18352,7 @@ func (m *SmartChargingEventMutation) AddCreatedBy(d datasource.UUID) {
 }
 
 // AddedCreatedBy returns the value that was added to the "created_by" field in this mutation.
-func (m *SmartChargingEventMutation) AddedCreatedBy() (r datasource.UUID, exists bool) {
+func (m *SmartChargingEffectMutation) AddedCreatedBy() (r datasource.UUID, exists bool) {
 	v := m.addcreated_by
 	if v == nil {
 		return
@@ -18655,19 +18361,19 @@ func (m *SmartChargingEventMutation) AddedCreatedBy() (r datasource.UUID, exists
 }
 
 // ResetCreatedBy resets all changes to the "created_by" field.
-func (m *SmartChargingEventMutation) ResetCreatedBy() {
+func (m *SmartChargingEffectMutation) ResetCreatedBy() {
 	m.created_by = nil
 	m.addcreated_by = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *SmartChargingEventMutation) SetCreatedAt(i int64) {
+func (m *SmartChargingEffectMutation) SetCreatedAt(i int64) {
 	m.created_at = &i
 	m.addcreated_at = nil
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *SmartChargingEventMutation) CreatedAt() (r int64, exists bool) {
+func (m *SmartChargingEffectMutation) CreatedAt() (r int64, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -18675,10 +18381,10 @@ func (m *SmartChargingEventMutation) CreatedAt() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldCreatedAt(ctx context.Context) (v int64, err error) {
+func (m *SmartChargingEffectMutation) OldCreatedAt(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -18693,7 +18399,7 @@ func (m *SmartChargingEventMutation) OldCreatedAt(ctx context.Context) (v int64,
 }
 
 // AddCreatedAt adds i to the "created_at" field.
-func (m *SmartChargingEventMutation) AddCreatedAt(i int64) {
+func (m *SmartChargingEffectMutation) AddCreatedAt(i int64) {
 	if m.addcreated_at != nil {
 		*m.addcreated_at += i
 	} else {
@@ -18702,7 +18408,7 @@ func (m *SmartChargingEventMutation) AddCreatedAt(i int64) {
 }
 
 // AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
-func (m *SmartChargingEventMutation) AddedCreatedAt() (r int64, exists bool) {
+func (m *SmartChargingEffectMutation) AddedCreatedAt() (r int64, exists bool) {
 	v := m.addcreated_at
 	if v == nil {
 		return
@@ -18711,19 +18417,19 @@ func (m *SmartChargingEventMutation) AddedCreatedAt() (r int64, exists bool) {
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *SmartChargingEventMutation) ResetCreatedAt() {
+func (m *SmartChargingEffectMutation) ResetCreatedAt() {
 	m.created_at = nil
 	m.addcreated_at = nil
 }
 
 // SetUpdatedBy sets the "updated_by" field.
-func (m *SmartChargingEventMutation) SetUpdatedBy(d datasource.UUID) {
+func (m *SmartChargingEffectMutation) SetUpdatedBy(d datasource.UUID) {
 	m.updated_by = &d
 	m.addupdated_by = nil
 }
 
 // UpdatedBy returns the value of the "updated_by" field in the mutation.
-func (m *SmartChargingEventMutation) UpdatedBy() (r datasource.UUID, exists bool) {
+func (m *SmartChargingEffectMutation) UpdatedBy() (r datasource.UUID, exists bool) {
 	v := m.updated_by
 	if v == nil {
 		return
@@ -18731,10 +18437,10 @@ func (m *SmartChargingEventMutation) UpdatedBy() (r datasource.UUID, exists bool
 	return *v, true
 }
 
-// OldUpdatedBy returns the old "updated_by" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedBy returns the old "updated_by" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldUpdatedBy(ctx context.Context) (v datasource.UUID, err error) {
+func (m *SmartChargingEffectMutation) OldUpdatedBy(ctx context.Context) (v datasource.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedBy is only allowed on UpdateOne operations")
 	}
@@ -18749,7 +18455,7 @@ func (m *SmartChargingEventMutation) OldUpdatedBy(ctx context.Context) (v dataso
 }
 
 // AddUpdatedBy adds d to the "updated_by" field.
-func (m *SmartChargingEventMutation) AddUpdatedBy(d datasource.UUID) {
+func (m *SmartChargingEffectMutation) AddUpdatedBy(d datasource.UUID) {
 	if m.addupdated_by != nil {
 		*m.addupdated_by += d
 	} else {
@@ -18758,7 +18464,7 @@ func (m *SmartChargingEventMutation) AddUpdatedBy(d datasource.UUID) {
 }
 
 // AddedUpdatedBy returns the value that was added to the "updated_by" field in this mutation.
-func (m *SmartChargingEventMutation) AddedUpdatedBy() (r datasource.UUID, exists bool) {
+func (m *SmartChargingEffectMutation) AddedUpdatedBy() (r datasource.UUID, exists bool) {
 	v := m.addupdated_by
 	if v == nil {
 		return
@@ -18767,19 +18473,19 @@ func (m *SmartChargingEventMutation) AddedUpdatedBy() (r datasource.UUID, exists
 }
 
 // ResetUpdatedBy resets all changes to the "updated_by" field.
-func (m *SmartChargingEventMutation) ResetUpdatedBy() {
+func (m *SmartChargingEffectMutation) ResetUpdatedBy() {
 	m.updated_by = nil
 	m.addupdated_by = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *SmartChargingEventMutation) SetUpdatedAt(i int64) {
+func (m *SmartChargingEffectMutation) SetUpdatedAt(i int64) {
 	m.updated_at = &i
 	m.addupdated_at = nil
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *SmartChargingEventMutation) UpdatedAt() (r int64, exists bool) {
+func (m *SmartChargingEffectMutation) UpdatedAt() (r int64, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -18787,10 +18493,10 @@ func (m *SmartChargingEventMutation) UpdatedAt() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldUpdatedAt(ctx context.Context) (v int64, err error) {
+func (m *SmartChargingEffectMutation) OldUpdatedAt(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -18805,7 +18511,7 @@ func (m *SmartChargingEventMutation) OldUpdatedAt(ctx context.Context) (v int64,
 }
 
 // AddUpdatedAt adds i to the "updated_at" field.
-func (m *SmartChargingEventMutation) AddUpdatedAt(i int64) {
+func (m *SmartChargingEffectMutation) AddUpdatedAt(i int64) {
 	if m.addupdated_at != nil {
 		*m.addupdated_at += i
 	} else {
@@ -18814,7 +18520,7 @@ func (m *SmartChargingEventMutation) AddUpdatedAt(i int64) {
 }
 
 // AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
-func (m *SmartChargingEventMutation) AddedUpdatedAt() (r int64, exists bool) {
+func (m *SmartChargingEffectMutation) AddedUpdatedAt() (r int64, exists bool) {
 	v := m.addupdated_at
 	if v == nil {
 		return
@@ -18823,19 +18529,19 @@ func (m *SmartChargingEventMutation) AddedUpdatedAt() (r int64, exists bool) {
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *SmartChargingEventMutation) ResetUpdatedAt() {
+func (m *SmartChargingEffectMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 	m.addupdated_at = nil
 }
 
 // SetSmartID sets the "smart_id" field.
-func (m *SmartChargingEventMutation) SetSmartID(d datasource.UUID) {
-	m.smart_id = &d
+func (m *SmartChargingEffectMutation) SetSmartID(i int64) {
+	m.smart_id = &i
 	m.addsmart_id = nil
 }
 
 // SmartID returns the value of the "smart_id" field in the mutation.
-func (m *SmartChargingEventMutation) SmartID() (r datasource.UUID, exists bool) {
+func (m *SmartChargingEffectMutation) SmartID() (r int64, exists bool) {
 	v := m.smart_id
 	if v == nil {
 		return
@@ -18843,10 +18549,10 @@ func (m *SmartChargingEventMutation) SmartID() (r datasource.UUID, exists bool) 
 	return *v, true
 }
 
-// OldSmartID returns the old "smart_id" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
+// OldSmartID returns the old "smart_id" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldSmartID(ctx context.Context) (v datasource.UUID, err error) {
+func (m *SmartChargingEffectMutation) OldSmartID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSmartID is only allowed on UpdateOne operations")
 	}
@@ -18860,17 +18566,17 @@ func (m *SmartChargingEventMutation) OldSmartID(ctx context.Context) (v datasour
 	return oldValue.SmartID, nil
 }
 
-// AddSmartID adds d to the "smart_id" field.
-func (m *SmartChargingEventMutation) AddSmartID(d datasource.UUID) {
+// AddSmartID adds i to the "smart_id" field.
+func (m *SmartChargingEffectMutation) AddSmartID(i int64) {
 	if m.addsmart_id != nil {
-		*m.addsmart_id += d
+		*m.addsmart_id += i
 	} else {
-		m.addsmart_id = &d
+		m.addsmart_id = &i
 	}
 }
 
 // AddedSmartID returns the value that was added to the "smart_id" field in this mutation.
-func (m *SmartChargingEventMutation) AddedSmartID() (r datasource.UUID, exists bool) {
+func (m *SmartChargingEffectMutation) AddedSmartID() (r int64, exists bool) {
 	v := m.addsmart_id
 	if v == nil {
 		return
@@ -18879,200 +18585,74 @@ func (m *SmartChargingEventMutation) AddedSmartID() (r datasource.UUID, exists b
 }
 
 // ResetSmartID resets all changes to the "smart_id" field.
-func (m *SmartChargingEventMutation) ResetSmartID() {
+func (m *SmartChargingEffectMutation) ResetSmartID() {
 	m.smart_id = nil
 	m.addsmart_id = nil
 }
 
-// SetEquipmentID sets the "equipment_id" field.
-func (m *SmartChargingEventMutation) SetEquipmentID(d datasource.UUID) {
-	m.equipment_id = &d
-	m.addequipment_id = nil
+// SetPid sets the "pid" field.
+func (m *SmartChargingEffectMutation) SetPid(d datasource.UUID) {
+	m.pid = &d
+	m.addpid = nil
 }
 
-// EquipmentID returns the value of the "equipment_id" field in the mutation.
-func (m *SmartChargingEventMutation) EquipmentID() (r datasource.UUID, exists bool) {
-	v := m.equipment_id
+// Pid returns the value of the "pid" field in the mutation.
+func (m *SmartChargingEffectMutation) Pid() (r datasource.UUID, exists bool) {
+	v := m.pid
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldEquipmentID returns the old "equipment_id" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
+// OldPid returns the old "pid" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldEquipmentID(ctx context.Context) (v datasource.UUID, err error) {
+func (m *SmartChargingEffectMutation) OldPid(ctx context.Context) (v datasource.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEquipmentID is only allowed on UpdateOne operations")
+		return v, errors.New("OldPid is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEquipmentID requires an ID field in the mutation")
+		return v, errors.New("OldPid requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEquipmentID: %w", err)
+		return v, fmt.Errorf("querying old value for OldPid: %w", err)
 	}
-	return oldValue.EquipmentID, nil
+	return oldValue.Pid, nil
 }
 
-// AddEquipmentID adds d to the "equipment_id" field.
-func (m *SmartChargingEventMutation) AddEquipmentID(d datasource.UUID) {
-	if m.addequipment_id != nil {
-		*m.addequipment_id += d
+// AddPid adds d to the "pid" field.
+func (m *SmartChargingEffectMutation) AddPid(d datasource.UUID) {
+	if m.addpid != nil {
+		*m.addpid += d
 	} else {
-		m.addequipment_id = &d
+		m.addpid = &d
 	}
 }
 
-// AddedEquipmentID returns the value that was added to the "equipment_id" field in this mutation.
-func (m *SmartChargingEventMutation) AddedEquipmentID() (r datasource.UUID, exists bool) {
-	v := m.addequipment_id
+// AddedPid returns the value that was added to the "pid" field in this mutation.
+func (m *SmartChargingEffectMutation) AddedPid() (r datasource.UUID, exists bool) {
+	v := m.addpid
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetEquipmentID resets all changes to the "equipment_id" field.
-func (m *SmartChargingEventMutation) ResetEquipmentID() {
-	m.equipment_id = nil
-	m.addequipment_id = nil
-}
-
-// SetConnectorID sets the "connector_id" field.
-func (m *SmartChargingEventMutation) SetConnectorID(d datasource.UUID) {
-	m.connector_id = &d
-	m.addconnector_id = nil
-}
-
-// ConnectorID returns the value of the "connector_id" field in the mutation.
-func (m *SmartChargingEventMutation) ConnectorID() (r datasource.UUID, exists bool) {
-	v := m.connector_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldConnectorID returns the old "connector_id" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldConnectorID(ctx context.Context) (v datasource.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldConnectorID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldConnectorID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldConnectorID: %w", err)
-	}
-	return oldValue.ConnectorID, nil
-}
-
-// AddConnectorID adds d to the "connector_id" field.
-func (m *SmartChargingEventMutation) AddConnectorID(d datasource.UUID) {
-	if m.addconnector_id != nil {
-		*m.addconnector_id += d
-	} else {
-		m.addconnector_id = &d
-	}
-}
-
-// AddedConnectorID returns the value that was added to the "connector_id" field in this mutation.
-func (m *SmartChargingEventMutation) AddedConnectorID() (r datasource.UUID, exists bool) {
-	v := m.addconnector_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetConnectorID resets all changes to the "connector_id" field.
-func (m *SmartChargingEventMutation) ResetConnectorID() {
-	m.connector_id = nil
-	m.addconnector_id = nil
-}
-
-// SetOrderID sets the "order_id" field.
-func (m *SmartChargingEventMutation) SetOrderID(d datasource.UUID) {
-	m.order_id = &d
-	m.addorder_id = nil
-}
-
-// OrderID returns the value of the "order_id" field in the mutation.
-func (m *SmartChargingEventMutation) OrderID() (r datasource.UUID, exists bool) {
-	v := m.order_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldOrderID returns the old "order_id" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldOrderID(ctx context.Context) (v datasource.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOrderID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOrderID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOrderID: %w", err)
-	}
-	return oldValue.OrderID, nil
-}
-
-// AddOrderID adds d to the "order_id" field.
-func (m *SmartChargingEventMutation) AddOrderID(d datasource.UUID) {
-	if m.addorder_id != nil {
-		*m.addorder_id += d
-	} else {
-		m.addorder_id = &d
-	}
-}
-
-// AddedOrderID returns the value that was added to the "order_id" field in this mutation.
-func (m *SmartChargingEventMutation) AddedOrderID() (r datasource.UUID, exists bool) {
-	v := m.addorder_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearOrderID clears the value of the "order_id" field.
-func (m *SmartChargingEventMutation) ClearOrderID() {
-	m.order_id = nil
-	m.addorder_id = nil
-	m.clearedFields[smartchargingevent.FieldOrderID] = struct{}{}
-}
-
-// OrderIDCleared returns if the "order_id" field was cleared in this mutation.
-func (m *SmartChargingEventMutation) OrderIDCleared() bool {
-	_, ok := m.clearedFields[smartchargingevent.FieldOrderID]
-	return ok
-}
-
-// ResetOrderID resets all changes to the "order_id" field.
-func (m *SmartChargingEventMutation) ResetOrderID() {
-	m.order_id = nil
-	m.addorder_id = nil
-	delete(m.clearedFields, smartchargingevent.FieldOrderID)
+// ResetPid resets all changes to the "pid" field.
+func (m *SmartChargingEffectMutation) ResetPid() {
+	m.pid = nil
+	m.addpid = nil
 }
 
 // SetUnit sets the "unit" field.
-func (m *SmartChargingEventMutation) SetUnit(s string) {
+func (m *SmartChargingEffectMutation) SetUnit(s string) {
 	m.unit = &s
 }
 
 // Unit returns the value of the "unit" field in the mutation.
-func (m *SmartChargingEventMutation) Unit() (r string, exists bool) {
+func (m *SmartChargingEffectMutation) Unit() (r string, exists bool) {
 	v := m.unit
 	if v == nil {
 		return
@@ -19080,10 +18660,10 @@ func (m *SmartChargingEventMutation) Unit() (r string, exists bool) {
 	return *v, true
 }
 
-// OldUnit returns the old "unit" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
+// OldUnit returns the old "unit" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldUnit(ctx context.Context) (v string, err error) {
+func (m *SmartChargingEffectMutation) OldUnit(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUnit is only allowed on UpdateOne operations")
 	}
@@ -19098,18 +18678,54 @@ func (m *SmartChargingEventMutation) OldUnit(ctx context.Context) (v string, err
 }
 
 // ResetUnit resets all changes to the "unit" field.
-func (m *SmartChargingEventMutation) ResetUnit() {
+func (m *SmartChargingEffectMutation) ResetUnit() {
 	m.unit = nil
 }
 
+// SetEquipmentSn sets the "equipment_sn" field.
+func (m *SmartChargingEffectMutation) SetEquipmentSn(s string) {
+	m.equipment_sn = &s
+}
+
+// EquipmentSn returns the value of the "equipment_sn" field in the mutation.
+func (m *SmartChargingEffectMutation) EquipmentSn() (r string, exists bool) {
+	v := m.equipment_sn
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEquipmentSn returns the old "equipment_sn" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SmartChargingEffectMutation) OldEquipmentSn(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEquipmentSn is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEquipmentSn requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEquipmentSn: %w", err)
+	}
+	return oldValue.EquipmentSn, nil
+}
+
+// ResetEquipmentSn resets all changes to the "equipment_sn" field.
+func (m *SmartChargingEffectMutation) ResetEquipmentSn() {
+	m.equipment_sn = nil
+}
+
 // SetValidFrom sets the "valid_from" field.
-func (m *SmartChargingEventMutation) SetValidFrom(i int64) {
+func (m *SmartChargingEffectMutation) SetValidFrom(i int64) {
 	m.valid_from = &i
 	m.addvalid_from = nil
 }
 
 // ValidFrom returns the value of the "valid_from" field in the mutation.
-func (m *SmartChargingEventMutation) ValidFrom() (r int64, exists bool) {
+func (m *SmartChargingEffectMutation) ValidFrom() (r int64, exists bool) {
 	v := m.valid_from
 	if v == nil {
 		return
@@ -19117,10 +18733,10 @@ func (m *SmartChargingEventMutation) ValidFrom() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldValidFrom returns the old "valid_from" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
+// OldValidFrom returns the old "valid_from" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldValidFrom(ctx context.Context) (v int64, err error) {
+func (m *SmartChargingEffectMutation) OldValidFrom(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldValidFrom is only allowed on UpdateOne operations")
 	}
@@ -19135,7 +18751,7 @@ func (m *SmartChargingEventMutation) OldValidFrom(ctx context.Context) (v int64,
 }
 
 // AddValidFrom adds i to the "valid_from" field.
-func (m *SmartChargingEventMutation) AddValidFrom(i int64) {
+func (m *SmartChargingEffectMutation) AddValidFrom(i int64) {
 	if m.addvalid_from != nil {
 		*m.addvalid_from += i
 	} else {
@@ -19144,7 +18760,7 @@ func (m *SmartChargingEventMutation) AddValidFrom(i int64) {
 }
 
 // AddedValidFrom returns the value that was added to the "valid_from" field in this mutation.
-func (m *SmartChargingEventMutation) AddedValidFrom() (r int64, exists bool) {
+func (m *SmartChargingEffectMutation) AddedValidFrom() (r int64, exists bool) {
 	v := m.addvalid_from
 	if v == nil {
 		return
@@ -19153,33 +18769,33 @@ func (m *SmartChargingEventMutation) AddedValidFrom() (r int64, exists bool) {
 }
 
 // ClearValidFrom clears the value of the "valid_from" field.
-func (m *SmartChargingEventMutation) ClearValidFrom() {
+func (m *SmartChargingEffectMutation) ClearValidFrom() {
 	m.valid_from = nil
 	m.addvalid_from = nil
-	m.clearedFields[smartchargingevent.FieldValidFrom] = struct{}{}
+	m.clearedFields[smartchargingeffect.FieldValidFrom] = struct{}{}
 }
 
 // ValidFromCleared returns if the "valid_from" field was cleared in this mutation.
-func (m *SmartChargingEventMutation) ValidFromCleared() bool {
-	_, ok := m.clearedFields[smartchargingevent.FieldValidFrom]
+func (m *SmartChargingEffectMutation) ValidFromCleared() bool {
+	_, ok := m.clearedFields[smartchargingeffect.FieldValidFrom]
 	return ok
 }
 
 // ResetValidFrom resets all changes to the "valid_from" field.
-func (m *SmartChargingEventMutation) ResetValidFrom() {
+func (m *SmartChargingEffectMutation) ResetValidFrom() {
 	m.valid_from = nil
 	m.addvalid_from = nil
-	delete(m.clearedFields, smartchargingevent.FieldValidFrom)
+	delete(m.clearedFields, smartchargingeffect.FieldValidFrom)
 }
 
 // SetValidTo sets the "valid_to" field.
-func (m *SmartChargingEventMutation) SetValidTo(i int64) {
+func (m *SmartChargingEffectMutation) SetValidTo(i int64) {
 	m.valid_to = &i
 	m.addvalid_to = nil
 }
 
 // ValidTo returns the value of the "valid_to" field in the mutation.
-func (m *SmartChargingEventMutation) ValidTo() (r int64, exists bool) {
+func (m *SmartChargingEffectMutation) ValidTo() (r int64, exists bool) {
 	v := m.valid_to
 	if v == nil {
 		return
@@ -19187,10 +18803,10 @@ func (m *SmartChargingEventMutation) ValidTo() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldValidTo returns the old "valid_to" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
+// OldValidTo returns the old "valid_to" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldValidTo(ctx context.Context) (v int64, err error) {
+func (m *SmartChargingEffectMutation) OldValidTo(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldValidTo is only allowed on UpdateOne operations")
 	}
@@ -19205,7 +18821,7 @@ func (m *SmartChargingEventMutation) OldValidTo(ctx context.Context) (v int64, e
 }
 
 // AddValidTo adds i to the "valid_to" field.
-func (m *SmartChargingEventMutation) AddValidTo(i int64) {
+func (m *SmartChargingEffectMutation) AddValidTo(i int64) {
 	if m.addvalid_to != nil {
 		*m.addvalid_to += i
 	} else {
@@ -19214,7 +18830,7 @@ func (m *SmartChargingEventMutation) AddValidTo(i int64) {
 }
 
 // AddedValidTo returns the value that was added to the "valid_to" field in this mutation.
-func (m *SmartChargingEventMutation) AddedValidTo() (r int64, exists bool) {
+func (m *SmartChargingEffectMutation) AddedValidTo() (r int64, exists bool) {
 	v := m.addvalid_to
 	if v == nil {
 		return
@@ -19223,33 +18839,33 @@ func (m *SmartChargingEventMutation) AddedValidTo() (r int64, exists bool) {
 }
 
 // ClearValidTo clears the value of the "valid_to" field.
-func (m *SmartChargingEventMutation) ClearValidTo() {
+func (m *SmartChargingEffectMutation) ClearValidTo() {
 	m.valid_to = nil
 	m.addvalid_to = nil
-	m.clearedFields[smartchargingevent.FieldValidTo] = struct{}{}
+	m.clearedFields[smartchargingeffect.FieldValidTo] = struct{}{}
 }
 
 // ValidToCleared returns if the "valid_to" field was cleared in this mutation.
-func (m *SmartChargingEventMutation) ValidToCleared() bool {
-	_, ok := m.clearedFields[smartchargingevent.FieldValidTo]
+func (m *SmartChargingEffectMutation) ValidToCleared() bool {
+	_, ok := m.clearedFields[smartchargingeffect.FieldValidTo]
 	return ok
 }
 
 // ResetValidTo resets all changes to the "valid_to" field.
-func (m *SmartChargingEventMutation) ResetValidTo() {
+func (m *SmartChargingEffectMutation) ResetValidTo() {
 	m.valid_to = nil
 	m.addvalid_to = nil
-	delete(m.clearedFields, smartchargingevent.FieldValidTo)
+	delete(m.clearedFields, smartchargingeffect.FieldValidTo)
 }
 
 // SetSpec sets the "spec" field.
-func (m *SmartChargingEventMutation) SetSpec(tsp []types.ChargingSchedulePeriod) {
+func (m *SmartChargingEffectMutation) SetSpec(tsp []types.ChargingSchedulePeriod) {
 	m.spec = &tsp
 	m.appendspec = nil
 }
 
 // Spec returns the value of the "spec" field in the mutation.
-func (m *SmartChargingEventMutation) Spec() (r []types.ChargingSchedulePeriod, exists bool) {
+func (m *SmartChargingEffectMutation) Spec() (r []types.ChargingSchedulePeriod, exists bool) {
 	v := m.spec
 	if v == nil {
 		return
@@ -19257,10 +18873,10 @@ func (m *SmartChargingEventMutation) Spec() (r []types.ChargingSchedulePeriod, e
 	return *v, true
 }
 
-// OldSpec returns the old "spec" field's value of the SmartChargingEvent entity.
-// If the SmartChargingEvent object wasn't provided to the builder, the object is fetched from the database.
+// OldSpec returns the old "spec" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SmartChargingEventMutation) OldSpec(ctx context.Context) (v []types.ChargingSchedulePeriod, err error) {
+func (m *SmartChargingEffectMutation) OldSpec(ctx context.Context) (v []types.ChargingSchedulePeriod, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSpec is only allowed on UpdateOne operations")
 	}
@@ -19275,12 +18891,12 @@ func (m *SmartChargingEventMutation) OldSpec(ctx context.Context) (v []types.Cha
 }
 
 // AppendSpec adds tsp to the "spec" field.
-func (m *SmartChargingEventMutation) AppendSpec(tsp []types.ChargingSchedulePeriod) {
+func (m *SmartChargingEffectMutation) AppendSpec(tsp []types.ChargingSchedulePeriod) {
 	m.appendspec = append(m.appendspec, tsp...)
 }
 
 // AppendedSpec returns the list of values that were appended to the "spec" field in this mutation.
-func (m *SmartChargingEventMutation) AppendedSpec() ([]types.ChargingSchedulePeriod, bool) {
+func (m *SmartChargingEffectMutation) AppendedSpec() ([]types.ChargingSchedulePeriod, bool) {
 	if len(m.appendspec) == 0 {
 		return nil, false
 	}
@@ -19288,69 +18904,183 @@ func (m *SmartChargingEventMutation) AppendedSpec() ([]types.ChargingSchedulePer
 }
 
 // ResetSpec resets all changes to the "spec" field.
-func (m *SmartChargingEventMutation) ResetSpec() {
+func (m *SmartChargingEffectMutation) ResetSpec() {
 	m.spec = nil
 	m.appendspec = nil
 }
 
-// Where appends a list predicates to the SmartChargingEventMutation builder.
-func (m *SmartChargingEventMutation) Where(ps ...predicate.SmartChargingEvent) {
+// SetEquipmentID sets the "equipment" edge to the Equipment entity by id.
+func (m *SmartChargingEffectMutation) SetEquipmentID(id datasource.UUID) {
+	m.equipment = &id
+}
+
+// ClearEquipment clears the "equipment" edge to the Equipment entity.
+func (m *SmartChargingEffectMutation) ClearEquipment() {
+	m.clearedequipment = true
+}
+
+// EquipmentCleared reports if the "equipment" edge to the Equipment entity was cleared.
+func (m *SmartChargingEffectMutation) EquipmentCleared() bool {
+	return m.clearedequipment
+}
+
+// EquipmentID returns the "equipment" edge ID in the mutation.
+func (m *SmartChargingEffectMutation) EquipmentID() (id datasource.UUID, exists bool) {
+	if m.equipment != nil {
+		return *m.equipment, true
+	}
+	return
+}
+
+// EquipmentIDs returns the "equipment" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// EquipmentID instead. It exists only for internal usage by the builders.
+func (m *SmartChargingEffectMutation) EquipmentIDs() (ids []datasource.UUID) {
+	if id := m.equipment; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetEquipment resets all changes to the "equipment" edge.
+func (m *SmartChargingEffectMutation) ResetEquipment() {
+	m.equipment = nil
+	m.clearedequipment = false
+}
+
+// SetConnectorID sets the "connector" edge to the Connector entity by id.
+func (m *SmartChargingEffectMutation) SetConnectorID(id datasource.UUID) {
+	m.connector = &id
+}
+
+// ClearConnector clears the "connector" edge to the Connector entity.
+func (m *SmartChargingEffectMutation) ClearConnector() {
+	m.clearedconnector = true
+}
+
+// ConnectorCleared reports if the "connector" edge to the Connector entity was cleared.
+func (m *SmartChargingEffectMutation) ConnectorCleared() bool {
+	return m.clearedconnector
+}
+
+// ConnectorID returns the "connector" edge ID in the mutation.
+func (m *SmartChargingEffectMutation) ConnectorID() (id datasource.UUID, exists bool) {
+	if m.connector != nil {
+		return *m.connector, true
+	}
+	return
+}
+
+// ConnectorIDs returns the "connector" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ConnectorID instead. It exists only for internal usage by the builders.
+func (m *SmartChargingEffectMutation) ConnectorIDs() (ids []datasource.UUID) {
+	if id := m.connector; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetConnector resets all changes to the "connector" edge.
+func (m *SmartChargingEffectMutation) ResetConnector() {
+	m.connector = nil
+	m.clearedconnector = false
+}
+
+// SetOrderInfoID sets the "order_info" edge to the OrderInfo entity by id.
+func (m *SmartChargingEffectMutation) SetOrderInfoID(id datasource.UUID) {
+	m.order_info = &id
+}
+
+// ClearOrderInfo clears the "order_info" edge to the OrderInfo entity.
+func (m *SmartChargingEffectMutation) ClearOrderInfo() {
+	m.clearedorder_info = true
+}
+
+// OrderInfoCleared reports if the "order_info" edge to the OrderInfo entity was cleared.
+func (m *SmartChargingEffectMutation) OrderInfoCleared() bool {
+	return m.clearedorder_info
+}
+
+// OrderInfoID returns the "order_info" edge ID in the mutation.
+func (m *SmartChargingEffectMutation) OrderInfoID() (id datasource.UUID, exists bool) {
+	if m.order_info != nil {
+		return *m.order_info, true
+	}
+	return
+}
+
+// OrderInfoIDs returns the "order_info" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OrderInfoID instead. It exists only for internal usage by the builders.
+func (m *SmartChargingEffectMutation) OrderInfoIDs() (ids []datasource.UUID) {
+	if id := m.order_info; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOrderInfo resets all changes to the "order_info" edge.
+func (m *SmartChargingEffectMutation) ResetOrderInfo() {
+	m.order_info = nil
+	m.clearedorder_info = false
+}
+
+// Where appends a list predicates to the SmartChargingEffectMutation builder.
+func (m *SmartChargingEffectMutation) Where(ps ...predicate.SmartChargingEffect) {
 	m.predicates = append(m.predicates, ps...)
 }
 
 // Op returns the operation name.
-func (m *SmartChargingEventMutation) Op() Op {
+func (m *SmartChargingEffectMutation) Op() Op {
 	return m.op
 }
 
-// Type returns the node type of this mutation (SmartChargingEvent).
-func (m *SmartChargingEventMutation) Type() string {
+// Type returns the node type of this mutation (SmartChargingEffect).
+func (m *SmartChargingEffectMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *SmartChargingEventMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+func (m *SmartChargingEffectMutation) Fields() []string {
+	fields := make([]string, 0, 12)
 	if m.version != nil {
-		fields = append(fields, smartchargingevent.FieldVersion)
+		fields = append(fields, smartchargingeffect.FieldVersion)
 	}
 	if m.created_by != nil {
-		fields = append(fields, smartchargingevent.FieldCreatedBy)
+		fields = append(fields, smartchargingeffect.FieldCreatedBy)
 	}
 	if m.created_at != nil {
-		fields = append(fields, smartchargingevent.FieldCreatedAt)
+		fields = append(fields, smartchargingeffect.FieldCreatedAt)
 	}
 	if m.updated_by != nil {
-		fields = append(fields, smartchargingevent.FieldUpdatedBy)
+		fields = append(fields, smartchargingeffect.FieldUpdatedBy)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, smartchargingevent.FieldUpdatedAt)
+		fields = append(fields, smartchargingeffect.FieldUpdatedAt)
 	}
 	if m.smart_id != nil {
-		fields = append(fields, smartchargingevent.FieldSmartID)
+		fields = append(fields, smartchargingeffect.FieldSmartID)
 	}
-	if m.equipment_id != nil {
-		fields = append(fields, smartchargingevent.FieldEquipmentID)
-	}
-	if m.connector_id != nil {
-		fields = append(fields, smartchargingevent.FieldConnectorID)
-	}
-	if m.order_id != nil {
-		fields = append(fields, smartchargingevent.FieldOrderID)
+	if m.pid != nil {
+		fields = append(fields, smartchargingeffect.FieldPid)
 	}
 	if m.unit != nil {
-		fields = append(fields, smartchargingevent.FieldUnit)
+		fields = append(fields, smartchargingeffect.FieldUnit)
+	}
+	if m.equipment_sn != nil {
+		fields = append(fields, smartchargingeffect.FieldEquipmentSn)
 	}
 	if m.valid_from != nil {
-		fields = append(fields, smartchargingevent.FieldValidFrom)
+		fields = append(fields, smartchargingeffect.FieldValidFrom)
 	}
 	if m.valid_to != nil {
-		fields = append(fields, smartchargingevent.FieldValidTo)
+		fields = append(fields, smartchargingeffect.FieldValidTo)
 	}
 	if m.spec != nil {
-		fields = append(fields, smartchargingevent.FieldSpec)
+		fields = append(fields, smartchargingeffect.FieldSpec)
 	}
 	return fields
 }
@@ -19358,33 +19088,31 @@ func (m *SmartChargingEventMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *SmartChargingEventMutation) Field(name string) (ent.Value, bool) {
+func (m *SmartChargingEffectMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case smartchargingevent.FieldVersion:
+	case smartchargingeffect.FieldVersion:
 		return m.Version()
-	case smartchargingevent.FieldCreatedBy:
+	case smartchargingeffect.FieldCreatedBy:
 		return m.CreatedBy()
-	case smartchargingevent.FieldCreatedAt:
+	case smartchargingeffect.FieldCreatedAt:
 		return m.CreatedAt()
-	case smartchargingevent.FieldUpdatedBy:
+	case smartchargingeffect.FieldUpdatedBy:
 		return m.UpdatedBy()
-	case smartchargingevent.FieldUpdatedAt:
+	case smartchargingeffect.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case smartchargingevent.FieldSmartID:
+	case smartchargingeffect.FieldSmartID:
 		return m.SmartID()
-	case smartchargingevent.FieldEquipmentID:
-		return m.EquipmentID()
-	case smartchargingevent.FieldConnectorID:
-		return m.ConnectorID()
-	case smartchargingevent.FieldOrderID:
-		return m.OrderID()
-	case smartchargingevent.FieldUnit:
+	case smartchargingeffect.FieldPid:
+		return m.Pid()
+	case smartchargingeffect.FieldUnit:
 		return m.Unit()
-	case smartchargingevent.FieldValidFrom:
+	case smartchargingeffect.FieldEquipmentSn:
+		return m.EquipmentSn()
+	case smartchargingeffect.FieldValidFrom:
 		return m.ValidFrom()
-	case smartchargingevent.FieldValidTo:
+	case smartchargingeffect.FieldValidTo:
 		return m.ValidTo()
-	case smartchargingevent.FieldSpec:
+	case smartchargingeffect.FieldSpec:
 		return m.Spec()
 	}
 	return nil, false
@@ -19393,128 +19121,119 @@ func (m *SmartChargingEventMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *SmartChargingEventMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *SmartChargingEffectMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case smartchargingevent.FieldVersion:
+	case smartchargingeffect.FieldVersion:
 		return m.OldVersion(ctx)
-	case smartchargingevent.FieldCreatedBy:
+	case smartchargingeffect.FieldCreatedBy:
 		return m.OldCreatedBy(ctx)
-	case smartchargingevent.FieldCreatedAt:
+	case smartchargingeffect.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case smartchargingevent.FieldUpdatedBy:
+	case smartchargingeffect.FieldUpdatedBy:
 		return m.OldUpdatedBy(ctx)
-	case smartchargingevent.FieldUpdatedAt:
+	case smartchargingeffect.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case smartchargingevent.FieldSmartID:
+	case smartchargingeffect.FieldSmartID:
 		return m.OldSmartID(ctx)
-	case smartchargingevent.FieldEquipmentID:
-		return m.OldEquipmentID(ctx)
-	case smartchargingevent.FieldConnectorID:
-		return m.OldConnectorID(ctx)
-	case smartchargingevent.FieldOrderID:
-		return m.OldOrderID(ctx)
-	case smartchargingevent.FieldUnit:
+	case smartchargingeffect.FieldPid:
+		return m.OldPid(ctx)
+	case smartchargingeffect.FieldUnit:
 		return m.OldUnit(ctx)
-	case smartchargingevent.FieldValidFrom:
+	case smartchargingeffect.FieldEquipmentSn:
+		return m.OldEquipmentSn(ctx)
+	case smartchargingeffect.FieldValidFrom:
 		return m.OldValidFrom(ctx)
-	case smartchargingevent.FieldValidTo:
+	case smartchargingeffect.FieldValidTo:
 		return m.OldValidTo(ctx)
-	case smartchargingevent.FieldSpec:
+	case smartchargingeffect.FieldSpec:
 		return m.OldSpec(ctx)
 	}
-	return nil, fmt.Errorf("unknown SmartChargingEvent field %s", name)
+	return nil, fmt.Errorf("unknown SmartChargingEffect field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *SmartChargingEventMutation) SetField(name string, value ent.Value) error {
+func (m *SmartChargingEffectMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case smartchargingevent.FieldVersion:
+	case smartchargingeffect.FieldVersion:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetVersion(v)
 		return nil
-	case smartchargingevent.FieldCreatedBy:
+	case smartchargingeffect.FieldCreatedBy:
 		v, ok := value.(datasource.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedBy(v)
 		return nil
-	case smartchargingevent.FieldCreatedAt:
+	case smartchargingeffect.FieldCreatedAt:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case smartchargingevent.FieldUpdatedBy:
+	case smartchargingeffect.FieldUpdatedBy:
 		v, ok := value.(datasource.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedBy(v)
 		return nil
-	case smartchargingevent.FieldUpdatedAt:
+	case smartchargingeffect.FieldUpdatedAt:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case smartchargingevent.FieldSmartID:
-		v, ok := value.(datasource.UUID)
+	case smartchargingeffect.FieldSmartID:
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSmartID(v)
 		return nil
-	case smartchargingevent.FieldEquipmentID:
+	case smartchargingeffect.FieldPid:
 		v, ok := value.(datasource.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetEquipmentID(v)
+		m.SetPid(v)
 		return nil
-	case smartchargingevent.FieldConnectorID:
-		v, ok := value.(datasource.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetConnectorID(v)
-		return nil
-	case smartchargingevent.FieldOrderID:
-		v, ok := value.(datasource.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetOrderID(v)
-		return nil
-	case smartchargingevent.FieldUnit:
+	case smartchargingeffect.FieldUnit:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUnit(v)
 		return nil
-	case smartchargingevent.FieldValidFrom:
+	case smartchargingeffect.FieldEquipmentSn:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEquipmentSn(v)
+		return nil
+	case smartchargingeffect.FieldValidFrom:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetValidFrom(v)
 		return nil
-	case smartchargingevent.FieldValidTo:
+	case smartchargingeffect.FieldValidTo:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetValidTo(v)
 		return nil
-	case smartchargingevent.FieldSpec:
+	case smartchargingeffect.FieldSpec:
 		v, ok := value.([]types.ChargingSchedulePeriod)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -19522,45 +19241,39 @@ func (m *SmartChargingEventMutation) SetField(name string, value ent.Value) erro
 		m.SetSpec(v)
 		return nil
 	}
-	return fmt.Errorf("unknown SmartChargingEvent field %s", name)
+	return fmt.Errorf("unknown SmartChargingEffect field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *SmartChargingEventMutation) AddedFields() []string {
+func (m *SmartChargingEffectMutation) AddedFields() []string {
 	var fields []string
 	if m.addversion != nil {
-		fields = append(fields, smartchargingevent.FieldVersion)
+		fields = append(fields, smartchargingeffect.FieldVersion)
 	}
 	if m.addcreated_by != nil {
-		fields = append(fields, smartchargingevent.FieldCreatedBy)
+		fields = append(fields, smartchargingeffect.FieldCreatedBy)
 	}
 	if m.addcreated_at != nil {
-		fields = append(fields, smartchargingevent.FieldCreatedAt)
+		fields = append(fields, smartchargingeffect.FieldCreatedAt)
 	}
 	if m.addupdated_by != nil {
-		fields = append(fields, smartchargingevent.FieldUpdatedBy)
+		fields = append(fields, smartchargingeffect.FieldUpdatedBy)
 	}
 	if m.addupdated_at != nil {
-		fields = append(fields, smartchargingevent.FieldUpdatedAt)
+		fields = append(fields, smartchargingeffect.FieldUpdatedAt)
 	}
 	if m.addsmart_id != nil {
-		fields = append(fields, smartchargingevent.FieldSmartID)
+		fields = append(fields, smartchargingeffect.FieldSmartID)
 	}
-	if m.addequipment_id != nil {
-		fields = append(fields, smartchargingevent.FieldEquipmentID)
-	}
-	if m.addconnector_id != nil {
-		fields = append(fields, smartchargingevent.FieldConnectorID)
-	}
-	if m.addorder_id != nil {
-		fields = append(fields, smartchargingevent.FieldOrderID)
+	if m.addpid != nil {
+		fields = append(fields, smartchargingeffect.FieldPid)
 	}
 	if m.addvalid_from != nil {
-		fields = append(fields, smartchargingevent.FieldValidFrom)
+		fields = append(fields, smartchargingeffect.FieldValidFrom)
 	}
 	if m.addvalid_to != nil {
-		fields = append(fields, smartchargingevent.FieldValidTo)
+		fields = append(fields, smartchargingeffect.FieldValidTo)
 	}
 	return fields
 }
@@ -19568,29 +19281,25 @@ func (m *SmartChargingEventMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *SmartChargingEventMutation) AddedField(name string) (ent.Value, bool) {
+func (m *SmartChargingEffectMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case smartchargingevent.FieldVersion:
+	case smartchargingeffect.FieldVersion:
 		return m.AddedVersion()
-	case smartchargingevent.FieldCreatedBy:
+	case smartchargingeffect.FieldCreatedBy:
 		return m.AddedCreatedBy()
-	case smartchargingevent.FieldCreatedAt:
+	case smartchargingeffect.FieldCreatedAt:
 		return m.AddedCreatedAt()
-	case smartchargingevent.FieldUpdatedBy:
+	case smartchargingeffect.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
-	case smartchargingevent.FieldUpdatedAt:
+	case smartchargingeffect.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
-	case smartchargingevent.FieldSmartID:
+	case smartchargingeffect.FieldSmartID:
 		return m.AddedSmartID()
-	case smartchargingevent.FieldEquipmentID:
-		return m.AddedEquipmentID()
-	case smartchargingevent.FieldConnectorID:
-		return m.AddedConnectorID()
-	case smartchargingevent.FieldOrderID:
-		return m.AddedOrderID()
-	case smartchargingevent.FieldValidFrom:
+	case smartchargingeffect.FieldPid:
+		return m.AddedPid()
+	case smartchargingeffect.FieldValidFrom:
 		return m.AddedValidFrom()
-	case smartchargingevent.FieldValidTo:
+	case smartchargingeffect.FieldValidTo:
 		return m.AddedValidTo()
 	}
 	return nil, false
@@ -19599,79 +19308,65 @@ func (m *SmartChargingEventMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *SmartChargingEventMutation) AddField(name string, value ent.Value) error {
+func (m *SmartChargingEffectMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case smartchargingevent.FieldVersion:
+	case smartchargingeffect.FieldVersion:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddVersion(v)
 		return nil
-	case smartchargingevent.FieldCreatedBy:
+	case smartchargingeffect.FieldCreatedBy:
 		v, ok := value.(datasource.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddCreatedBy(v)
 		return nil
-	case smartchargingevent.FieldCreatedAt:
+	case smartchargingeffect.FieldCreatedAt:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddCreatedAt(v)
 		return nil
-	case smartchargingevent.FieldUpdatedBy:
+	case smartchargingeffect.FieldUpdatedBy:
 		v, ok := value.(datasource.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedBy(v)
 		return nil
-	case smartchargingevent.FieldUpdatedAt:
+	case smartchargingeffect.FieldUpdatedAt:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedAt(v)
 		return nil
-	case smartchargingevent.FieldSmartID:
-		v, ok := value.(datasource.UUID)
+	case smartchargingeffect.FieldSmartID:
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddSmartID(v)
 		return nil
-	case smartchargingevent.FieldEquipmentID:
+	case smartchargingeffect.FieldPid:
 		v, ok := value.(datasource.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddEquipmentID(v)
+		m.AddPid(v)
 		return nil
-	case smartchargingevent.FieldConnectorID:
-		v, ok := value.(datasource.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddConnectorID(v)
-		return nil
-	case smartchargingevent.FieldOrderID:
-		v, ok := value.(datasource.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddOrderID(v)
-		return nil
-	case smartchargingevent.FieldValidFrom:
+	case smartchargingeffect.FieldValidFrom:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddValidFrom(v)
 		return nil
-	case smartchargingevent.FieldValidTo:
+	case smartchargingeffect.FieldValidTo:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -19679,140 +19374,193 @@ func (m *SmartChargingEventMutation) AddField(name string, value ent.Value) erro
 		m.AddValidTo(v)
 		return nil
 	}
-	return fmt.Errorf("unknown SmartChargingEvent numeric field %s", name)
+	return fmt.Errorf("unknown SmartChargingEffect numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *SmartChargingEventMutation) ClearedFields() []string {
+func (m *SmartChargingEffectMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(smartchargingevent.FieldOrderID) {
-		fields = append(fields, smartchargingevent.FieldOrderID)
+	if m.FieldCleared(smartchargingeffect.FieldValidFrom) {
+		fields = append(fields, smartchargingeffect.FieldValidFrom)
 	}
-	if m.FieldCleared(smartchargingevent.FieldValidFrom) {
-		fields = append(fields, smartchargingevent.FieldValidFrom)
-	}
-	if m.FieldCleared(smartchargingevent.FieldValidTo) {
-		fields = append(fields, smartchargingevent.FieldValidTo)
+	if m.FieldCleared(smartchargingeffect.FieldValidTo) {
+		fields = append(fields, smartchargingeffect.FieldValidTo)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *SmartChargingEventMutation) FieldCleared(name string) bool {
+func (m *SmartChargingEffectMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *SmartChargingEventMutation) ClearField(name string) error {
+func (m *SmartChargingEffectMutation) ClearField(name string) error {
 	switch name {
-	case smartchargingevent.FieldOrderID:
-		m.ClearOrderID()
-		return nil
-	case smartchargingevent.FieldValidFrom:
+	case smartchargingeffect.FieldValidFrom:
 		m.ClearValidFrom()
 		return nil
-	case smartchargingevent.FieldValidTo:
+	case smartchargingeffect.FieldValidTo:
 		m.ClearValidTo()
 		return nil
 	}
-	return fmt.Errorf("unknown SmartChargingEvent nullable field %s", name)
+	return fmt.Errorf("unknown SmartChargingEffect nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *SmartChargingEventMutation) ResetField(name string) error {
+func (m *SmartChargingEffectMutation) ResetField(name string) error {
 	switch name {
-	case smartchargingevent.FieldVersion:
+	case smartchargingeffect.FieldVersion:
 		m.ResetVersion()
 		return nil
-	case smartchargingevent.FieldCreatedBy:
+	case smartchargingeffect.FieldCreatedBy:
 		m.ResetCreatedBy()
 		return nil
-	case smartchargingevent.FieldCreatedAt:
+	case smartchargingeffect.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
-	case smartchargingevent.FieldUpdatedBy:
+	case smartchargingeffect.FieldUpdatedBy:
 		m.ResetUpdatedBy()
 		return nil
-	case smartchargingevent.FieldUpdatedAt:
+	case smartchargingeffect.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case smartchargingevent.FieldSmartID:
+	case smartchargingeffect.FieldSmartID:
 		m.ResetSmartID()
 		return nil
-	case smartchargingevent.FieldEquipmentID:
-		m.ResetEquipmentID()
+	case smartchargingeffect.FieldPid:
+		m.ResetPid()
 		return nil
-	case smartchargingevent.FieldConnectorID:
-		m.ResetConnectorID()
-		return nil
-	case smartchargingevent.FieldOrderID:
-		m.ResetOrderID()
-		return nil
-	case smartchargingevent.FieldUnit:
+	case smartchargingeffect.FieldUnit:
 		m.ResetUnit()
 		return nil
-	case smartchargingevent.FieldValidFrom:
+	case smartchargingeffect.FieldEquipmentSn:
+		m.ResetEquipmentSn()
+		return nil
+	case smartchargingeffect.FieldValidFrom:
 		m.ResetValidFrom()
 		return nil
-	case smartchargingevent.FieldValidTo:
+	case smartchargingeffect.FieldValidTo:
 		m.ResetValidTo()
 		return nil
-	case smartchargingevent.FieldSpec:
+	case smartchargingeffect.FieldSpec:
 		m.ResetSpec()
 		return nil
 	}
-	return fmt.Errorf("unknown SmartChargingEvent field %s", name)
+	return fmt.Errorf("unknown SmartChargingEffect field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *SmartChargingEventMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+func (m *SmartChargingEffectMutation) AddedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.equipment != nil {
+		edges = append(edges, smartchargingeffect.EdgeEquipment)
+	}
+	if m.connector != nil {
+		edges = append(edges, smartchargingeffect.EdgeConnector)
+	}
+	if m.order_info != nil {
+		edges = append(edges, smartchargingeffect.EdgeOrderInfo)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *SmartChargingEventMutation) AddedIDs(name string) []ent.Value {
+func (m *SmartChargingEffectMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case smartchargingeffect.EdgeEquipment:
+		if id := m.equipment; id != nil {
+			return []ent.Value{*id}
+		}
+	case smartchargingeffect.EdgeConnector:
+		if id := m.connector; id != nil {
+			return []ent.Value{*id}
+		}
+	case smartchargingeffect.EdgeOrderInfo:
+		if id := m.order_info; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *SmartChargingEventMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+func (m *SmartChargingEffectMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 3)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *SmartChargingEventMutation) RemovedIDs(name string) []ent.Value {
+func (m *SmartChargingEffectMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *SmartChargingEventMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+func (m *SmartChargingEffectMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.clearedequipment {
+		edges = append(edges, smartchargingeffect.EdgeEquipment)
+	}
+	if m.clearedconnector {
+		edges = append(edges, smartchargingeffect.EdgeConnector)
+	}
+	if m.clearedorder_info {
+		edges = append(edges, smartchargingeffect.EdgeOrderInfo)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *SmartChargingEventMutation) EdgeCleared(name string) bool {
+func (m *SmartChargingEffectMutation) EdgeCleared(name string) bool {
+	switch name {
+	case smartchargingeffect.EdgeEquipment:
+		return m.clearedequipment
+	case smartchargingeffect.EdgeConnector:
+		return m.clearedconnector
+	case smartchargingeffect.EdgeOrderInfo:
+		return m.clearedorder_info
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *SmartChargingEventMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown SmartChargingEvent unique edge %s", name)
+func (m *SmartChargingEffectMutation) ClearEdge(name string) error {
+	switch name {
+	case smartchargingeffect.EdgeEquipment:
+		m.ClearEquipment()
+		return nil
+	case smartchargingeffect.EdgeConnector:
+		m.ClearConnector()
+		return nil
+	case smartchargingeffect.EdgeOrderInfo:
+		m.ClearOrderInfo()
+		return nil
+	}
+	return fmt.Errorf("unknown SmartChargingEffect unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *SmartChargingEventMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown SmartChargingEvent edge %s", name)
+func (m *SmartChargingEffectMutation) ResetEdge(name string) error {
+	switch name {
+	case smartchargingeffect.EdgeEquipment:
+		m.ResetEquipment()
+		return nil
+	case smartchargingeffect.EdgeConnector:
+		m.ResetConnector()
+		return nil
+	case smartchargingeffect.EdgeOrderInfo:
+		m.ResetOrderInfo()
+		return nil
+	}
+	return fmt.Errorf("unknown SmartChargingEffect edge %s", name)
 }

@@ -963,6 +963,34 @@ func HasEquipmentLogWith(preds ...predicate.EquipmentLog) predicate.Equipment {
 	})
 }
 
+// HasSmartChargingEffect applies the HasEdge predicate on the "smart_charging_effect" edge.
+func HasSmartChargingEffect() predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(SmartChargingEffectTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, SmartChargingEffectTable, SmartChargingEffectColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasSmartChargingEffectWith applies the HasEdge predicate on the "smart_charging_effect" edge with a given conditions (other predicates).
+func HasSmartChargingEffectWith(preds ...predicate.SmartChargingEffect) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(SmartChargingEffectInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, SmartChargingEffectTable, SmartChargingEffectColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Equipment) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {

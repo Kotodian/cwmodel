@@ -291,12 +291,12 @@ func (oeq *OrderEventQuery) WithOrderInfo(opts ...func(*OrderInfoQuery)) *OrderE
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Content string `json:"content,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.OrderEvent.Query().
-//		GroupBy(orderevent.FieldVersion).
+//		GroupBy(orderevent.FieldContent).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (oeq *OrderEventQuery) GroupBy(field string, fields ...string) *OrderEventGroupBy {
@@ -319,11 +319,11 @@ func (oeq *OrderEventQuery) GroupBy(field string, fields ...string) *OrderEventG
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Content string `json:"content,omitempty"`
 //	}
 //
 //	client.OrderEvent.Query().
-//		Select(orderevent.FieldVersion).
+//		Select(orderevent.FieldContent).
 //		Scan(ctx, &v)
 func (oeq *OrderEventQuery) Select(fields ...string) *OrderEventSelect {
 	oeq.fields = append(oeq.fields, fields...)
@@ -395,10 +395,10 @@ func (oeq *OrderEventQuery) loadOrderInfo(ctx context.Context, query *OrderInfoQ
 	ids := make([]datasource.UUID, 0, len(nodes))
 	nodeids := make(map[datasource.UUID][]*OrderEvent)
 	for i := range nodes {
-		if nodes[i].order_info_order_event == nil {
+		if nodes[i].order_id == nil {
 			continue
 		}
-		fk := *nodes[i].order_info_order_event
+		fk := *nodes[i].order_id
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -412,7 +412,7 @@ func (oeq *OrderEventQuery) loadOrderInfo(ctx context.Context, query *OrderInfoQ
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "order_info_order_event" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "order_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

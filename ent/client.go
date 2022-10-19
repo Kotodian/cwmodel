@@ -26,7 +26,7 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderevent"
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/reservation"
-	"github.com/Kotodian/ent-practice/ent/smartchargingevent"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -68,8 +68,8 @@ type Client struct {
 	OrderInfo *OrderInfoClient
 	// Reservation is the client for interacting with the Reservation builders.
 	Reservation *ReservationClient
-	// SmartChargingEvent is the client for interacting with the SmartChargingEvent builders.
-	SmartChargingEvent *SmartChargingEventClient
+	// SmartChargingEffect is the client for interacting with the SmartChargingEffect builders.
+	SmartChargingEffect *SmartChargingEffectClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -98,7 +98,7 @@ func (c *Client) init() {
 	c.OrderEvent = NewOrderEventClient(c.config)
 	c.OrderInfo = NewOrderInfoClient(c.config)
 	c.Reservation = NewReservationClient(c.config)
-	c.SmartChargingEvent = NewSmartChargingEventClient(c.config)
+	c.SmartChargingEffect = NewSmartChargingEffectClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -147,7 +147,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		OrderEvent:              NewOrderEventClient(cfg),
 		OrderInfo:               NewOrderInfoClient(cfg),
 		Reservation:             NewReservationClient(cfg),
-		SmartChargingEvent:      NewSmartChargingEventClient(cfg),
+		SmartChargingEffect:     NewSmartChargingEffectClient(cfg),
 	}, nil
 }
 
@@ -182,7 +182,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		OrderEvent:              NewOrderEventClient(cfg),
 		OrderInfo:               NewOrderInfoClient(cfg),
 		Reservation:             NewReservationClient(cfg),
-		SmartChargingEvent:      NewSmartChargingEventClient(cfg),
+		SmartChargingEffect:     NewSmartChargingEffectClient(cfg),
 	}, nil
 }
 
@@ -226,7 +226,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.OrderEvent.Use(hooks...)
 	c.OrderInfo.Use(hooks...)
 	c.Reservation.Use(hooks...)
-	c.SmartChargingEvent.Use(hooks...)
+	c.SmartChargingEffect.Use(hooks...)
 }
 
 // AppModuleInfoClient is a client for the AppModuleInfo schema.
@@ -468,6 +468,22 @@ func (c *ConnectorClient) QueryReservation(co *Connector) *ReservationQuery {
 	return query
 }
 
+// QuerySmartChargingEffect queries the smart_charging_effect edge of a Connector.
+func (c *ConnectorClient) QuerySmartChargingEffect(co *Connector) *SmartChargingEffectQuery {
+	query := &SmartChargingEffectQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(connector.Table, connector.FieldID, id),
+			sqlgraph.To(smartchargingeffect.Table, smartchargingeffect.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, connector.SmartChargingEffectTable, connector.SmartChargingEffectColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ConnectorClient) Hooks() []Hook {
 	return c.hooks.Connector
@@ -695,6 +711,22 @@ func (c *EquipmentClient) QueryEquipmentLog(e *Equipment) *EquipmentLogQuery {
 			sqlgraph.From(equipment.Table, equipment.FieldID, id),
 			sqlgraph.To(equipmentlog.Table, equipmentlog.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, equipment.EquipmentLogTable, equipment.EquipmentLogColumn),
+		)
+		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QuerySmartChargingEffect queries the smart_charging_effect edge of a Equipment.
+func (c *EquipmentClient) QuerySmartChargingEffect(e *Equipment) *SmartChargingEffectQuery {
+	query := &SmartChargingEffectQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := e.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(equipment.Table, equipment.FieldID, id),
+			sqlgraph.To(smartchargingeffect.Table, smartchargingeffect.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, equipment.SmartChargingEffectTable, equipment.SmartChargingEffectColumn),
 		)
 		fromV = sqlgraph.Neighbors(e.driver.Dialect(), step)
 		return fromV, nil
@@ -1900,6 +1932,22 @@ func (c *OrderInfoClient) QueryOrderEvent(oi *OrderInfo) *OrderEventQuery {
 	return query
 }
 
+// QuerySmartChargingEffect queries the smart_charging_effect edge of a OrderInfo.
+func (c *OrderInfoClient) QuerySmartChargingEffect(oi *OrderInfo) *SmartChargingEffectQuery {
+	query := &SmartChargingEffectQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orderinfo.Table, orderinfo.FieldID, id),
+			sqlgraph.To(smartchargingeffect.Table, smartchargingeffect.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, orderinfo.SmartChargingEffectTable, orderinfo.SmartChargingEffectColumn),
+		)
+		fromV = sqlgraph.Neighbors(oi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *OrderInfoClient) Hooks() []Hook {
 	return c.hooks.OrderInfo
@@ -2027,84 +2075,84 @@ func (c *ReservationClient) Hooks() []Hook {
 	return c.hooks.Reservation
 }
 
-// SmartChargingEventClient is a client for the SmartChargingEvent schema.
-type SmartChargingEventClient struct {
+// SmartChargingEffectClient is a client for the SmartChargingEffect schema.
+type SmartChargingEffectClient struct {
 	config
 }
 
-// NewSmartChargingEventClient returns a client for the SmartChargingEvent from the given config.
-func NewSmartChargingEventClient(c config) *SmartChargingEventClient {
-	return &SmartChargingEventClient{config: c}
+// NewSmartChargingEffectClient returns a client for the SmartChargingEffect from the given config.
+func NewSmartChargingEffectClient(c config) *SmartChargingEffectClient {
+	return &SmartChargingEffectClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `smartchargingevent.Hooks(f(g(h())))`.
-func (c *SmartChargingEventClient) Use(hooks ...Hook) {
-	c.hooks.SmartChargingEvent = append(c.hooks.SmartChargingEvent, hooks...)
+// A call to `Use(f, g, h)` equals to `smartchargingeffect.Hooks(f(g(h())))`.
+func (c *SmartChargingEffectClient) Use(hooks ...Hook) {
+	c.hooks.SmartChargingEffect = append(c.hooks.SmartChargingEffect, hooks...)
 }
 
-// Create returns a builder for creating a SmartChargingEvent entity.
-func (c *SmartChargingEventClient) Create() *SmartChargingEventCreate {
-	mutation := newSmartChargingEventMutation(c.config, OpCreate)
-	return &SmartChargingEventCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a SmartChargingEffect entity.
+func (c *SmartChargingEffectClient) Create() *SmartChargingEffectCreate {
+	mutation := newSmartChargingEffectMutation(c.config, OpCreate)
+	return &SmartChargingEffectCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of SmartChargingEvent entities.
-func (c *SmartChargingEventClient) CreateBulk(builders ...*SmartChargingEventCreate) *SmartChargingEventCreateBulk {
-	return &SmartChargingEventCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of SmartChargingEffect entities.
+func (c *SmartChargingEffectClient) CreateBulk(builders ...*SmartChargingEffectCreate) *SmartChargingEffectCreateBulk {
+	return &SmartChargingEffectCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for SmartChargingEvent.
-func (c *SmartChargingEventClient) Update() *SmartChargingEventUpdate {
-	mutation := newSmartChargingEventMutation(c.config, OpUpdate)
-	return &SmartChargingEventUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for SmartChargingEffect.
+func (c *SmartChargingEffectClient) Update() *SmartChargingEffectUpdate {
+	mutation := newSmartChargingEffectMutation(c.config, OpUpdate)
+	return &SmartChargingEffectUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *SmartChargingEventClient) UpdateOne(sce *SmartChargingEvent) *SmartChargingEventUpdateOne {
-	mutation := newSmartChargingEventMutation(c.config, OpUpdateOne, withSmartChargingEvent(sce))
-	return &SmartChargingEventUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *SmartChargingEffectClient) UpdateOne(sce *SmartChargingEffect) *SmartChargingEffectUpdateOne {
+	mutation := newSmartChargingEffectMutation(c.config, OpUpdateOne, withSmartChargingEffect(sce))
+	return &SmartChargingEffectUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *SmartChargingEventClient) UpdateOneID(id datasource.UUID) *SmartChargingEventUpdateOne {
-	mutation := newSmartChargingEventMutation(c.config, OpUpdateOne, withSmartChargingEventID(id))
-	return &SmartChargingEventUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *SmartChargingEffectClient) UpdateOneID(id datasource.UUID) *SmartChargingEffectUpdateOne {
+	mutation := newSmartChargingEffectMutation(c.config, OpUpdateOne, withSmartChargingEffectID(id))
+	return &SmartChargingEffectUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for SmartChargingEvent.
-func (c *SmartChargingEventClient) Delete() *SmartChargingEventDelete {
-	mutation := newSmartChargingEventMutation(c.config, OpDelete)
-	return &SmartChargingEventDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for SmartChargingEffect.
+func (c *SmartChargingEffectClient) Delete() *SmartChargingEffectDelete {
+	mutation := newSmartChargingEffectMutation(c.config, OpDelete)
+	return &SmartChargingEffectDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *SmartChargingEventClient) DeleteOne(sce *SmartChargingEvent) *SmartChargingEventDeleteOne {
+func (c *SmartChargingEffectClient) DeleteOne(sce *SmartChargingEffect) *SmartChargingEffectDeleteOne {
 	return c.DeleteOneID(sce.ID)
 }
 
 // DeleteOne returns a builder for deleting the given entity by its id.
-func (c *SmartChargingEventClient) DeleteOneID(id datasource.UUID) *SmartChargingEventDeleteOne {
-	builder := c.Delete().Where(smartchargingevent.ID(id))
+func (c *SmartChargingEffectClient) DeleteOneID(id datasource.UUID) *SmartChargingEffectDeleteOne {
+	builder := c.Delete().Where(smartchargingeffect.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &SmartChargingEventDeleteOne{builder}
+	return &SmartChargingEffectDeleteOne{builder}
 }
 
-// Query returns a query builder for SmartChargingEvent.
-func (c *SmartChargingEventClient) Query() *SmartChargingEventQuery {
-	return &SmartChargingEventQuery{
+// Query returns a query builder for SmartChargingEffect.
+func (c *SmartChargingEffectClient) Query() *SmartChargingEffectQuery {
+	return &SmartChargingEffectQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a SmartChargingEvent entity by its id.
-func (c *SmartChargingEventClient) Get(ctx context.Context, id datasource.UUID) (*SmartChargingEvent, error) {
-	return c.Query().Unique(false).Where(smartchargingevent.ID(id)).Only(ctx)
+// Get returns a SmartChargingEffect entity by its id.
+func (c *SmartChargingEffectClient) Get(ctx context.Context, id datasource.UUID) (*SmartChargingEffect, error) {
+	return c.Query().Unique(false).Where(smartchargingeffect.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *SmartChargingEventClient) GetX(ctx context.Context, id datasource.UUID) *SmartChargingEvent {
+func (c *SmartChargingEffectClient) GetX(ctx context.Context, id datasource.UUID) *SmartChargingEffect {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -2112,7 +2160,55 @@ func (c *SmartChargingEventClient) GetX(ctx context.Context, id datasource.UUID)
 	return obj
 }
 
+// QueryEquipment queries the equipment edge of a SmartChargingEffect.
+func (c *SmartChargingEffectClient) QueryEquipment(sce *SmartChargingEffect) *EquipmentQuery {
+	query := &EquipmentQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sce.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(smartchargingeffect.Table, smartchargingeffect.FieldID, id),
+			sqlgraph.To(equipment.Table, equipment.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, smartchargingeffect.EquipmentTable, smartchargingeffect.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(sce.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryConnector queries the connector edge of a SmartChargingEffect.
+func (c *SmartChargingEffectClient) QueryConnector(sce *SmartChargingEffect) *ConnectorQuery {
+	query := &ConnectorQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sce.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(smartchargingeffect.Table, smartchargingeffect.FieldID, id),
+			sqlgraph.To(connector.Table, connector.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, smartchargingeffect.ConnectorTable, smartchargingeffect.ConnectorColumn),
+		)
+		fromV = sqlgraph.Neighbors(sce.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrderInfo queries the order_info edge of a SmartChargingEffect.
+func (c *SmartChargingEffectClient) QueryOrderInfo(sce *SmartChargingEffect) *OrderInfoQuery {
+	query := &OrderInfoQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sce.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(smartchargingeffect.Table, smartchargingeffect.FieldID, id),
+			sqlgraph.To(orderinfo.Table, orderinfo.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, smartchargingeffect.OrderInfoTable, smartchargingeffect.OrderInfoColumn),
+		)
+		fromV = sqlgraph.Neighbors(sce.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
-func (c *SmartChargingEventClient) Hooks() []Hook {
-	return c.hooks.SmartChargingEvent
+func (c *SmartChargingEffectClient) Hooks() []Hook {
+	return c.hooks.SmartChargingEffect
 }

@@ -17,23 +17,25 @@ import (
 	"github.com/Kotodian/ent-practice/ent/orderinfo"
 	"github.com/Kotodian/ent-practice/ent/predicate"
 	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
 // ConnectorQuery is the builder for querying Connector entities.
 type ConnectorQuery struct {
 	config
-	limit           *int
-	offset          *int
-	unique          *bool
-	order           []OrderFunc
-	fields          []string
-	predicates      []predicate.Connector
-	withEvse        *EvseQuery
-	withEquipment   *EquipmentQuery
-	withOrderInfo   *OrderInfoQuery
-	withReservation *ReservationQuery
-	withFKs         bool
+	limit                   *int
+	offset                  *int
+	unique                  *bool
+	order                   []OrderFunc
+	fields                  []string
+	predicates              []predicate.Connector
+	withEvse                *EvseQuery
+	withEquipment           *EquipmentQuery
+	withOrderInfo           *OrderInfoQuery
+	withReservation         *ReservationQuery
+	withSmartChargingEffect *SmartChargingEffectQuery
+	withFKs                 bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -151,6 +153,28 @@ func (cq *ConnectorQuery) QueryReservation() *ReservationQuery {
 			sqlgraph.From(connector.Table, connector.FieldID, selector),
 			sqlgraph.To(reservation.Table, reservation.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, connector.ReservationTable, connector.ReservationColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QuerySmartChargingEffect chains the current query on the "smart_charging_effect" edge.
+func (cq *ConnectorQuery) QuerySmartChargingEffect() *SmartChargingEffectQuery {
+	query := &SmartChargingEffectQuery{config: cq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := cq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(connector.Table, connector.FieldID, selector),
+			sqlgraph.To(smartchargingeffect.Table, smartchargingeffect.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, connector.SmartChargingEffectTable, connector.SmartChargingEffectColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
 		return fromU, nil
@@ -334,15 +358,16 @@ func (cq *ConnectorQuery) Clone() *ConnectorQuery {
 		return nil
 	}
 	return &ConnectorQuery{
-		config:          cq.config,
-		limit:           cq.limit,
-		offset:          cq.offset,
-		order:           append([]OrderFunc{}, cq.order...),
-		predicates:      append([]predicate.Connector{}, cq.predicates...),
-		withEvse:        cq.withEvse.Clone(),
-		withEquipment:   cq.withEquipment.Clone(),
-		withOrderInfo:   cq.withOrderInfo.Clone(),
-		withReservation: cq.withReservation.Clone(),
+		config:                  cq.config,
+		limit:                   cq.limit,
+		offset:                  cq.offset,
+		order:                   append([]OrderFunc{}, cq.order...),
+		predicates:              append([]predicate.Connector{}, cq.predicates...),
+		withEvse:                cq.withEvse.Clone(),
+		withEquipment:           cq.withEquipment.Clone(),
+		withOrderInfo:           cq.withOrderInfo.Clone(),
+		withReservation:         cq.withReservation.Clone(),
+		withSmartChargingEffect: cq.withSmartChargingEffect.Clone(),
 		// clone intermediate query.
 		sql:    cq.sql.Clone(),
 		path:   cq.path,
@@ -391,6 +416,17 @@ func (cq *ConnectorQuery) WithReservation(opts ...func(*ReservationQuery)) *Conn
 		opt(query)
 	}
 	cq.withReservation = query
+	return cq
+}
+
+// WithSmartChargingEffect tells the query-builder to eager-load the nodes that are connected to
+// the "smart_charging_effect" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *ConnectorQuery) WithSmartChargingEffect(opts ...func(*SmartChargingEffectQuery)) *ConnectorQuery {
+	query := &SmartChargingEffectQuery{config: cq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withSmartChargingEffect = query
 	return cq
 }
 
@@ -463,11 +499,12 @@ func (cq *ConnectorQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Co
 		nodes       = []*Connector{}
 		withFKs     = cq.withFKs
 		_spec       = cq.querySpec()
-		loadedTypes = [4]bool{
+		loadedTypes = [5]bool{
 			cq.withEvse != nil,
 			cq.withEquipment != nil,
 			cq.withOrderInfo != nil,
 			cq.withReservation != nil,
+			cq.withSmartChargingEffect != nil,
 		}
 	)
 	if cq.withEvse != nil || cq.withEquipment != nil {
@@ -517,6 +554,15 @@ func (cq *ConnectorQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Co
 		if err := cq.loadReservation(ctx, query, nodes,
 			func(n *Connector) { n.Edges.Reservation = []*Reservation{} },
 			func(n *Connector, e *Reservation) { n.Edges.Reservation = append(n.Edges.Reservation, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := cq.withSmartChargingEffect; query != nil {
+		if err := cq.loadSmartChargingEffect(ctx, query, nodes,
+			func(n *Connector) { n.Edges.SmartChargingEffect = []*SmartChargingEffect{} },
+			func(n *Connector, e *SmartChargingEffect) {
+				n.Edges.SmartChargingEffect = append(n.Edges.SmartChargingEffect, e)
+			}); err != nil {
 			return nil, err
 		}
 	}
@@ -625,6 +671,37 @@ func (cq *ConnectorQuery) loadReservation(ctx context.Context, query *Reservatio
 	query.withFKs = true
 	query.Where(predicate.Reservation(func(s *sql.Selector) {
 		s.Where(sql.InValues(connector.ReservationColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.connector_id
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "connector_id" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "connector_id" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (cq *ConnectorQuery) loadSmartChargingEffect(ctx context.Context, query *SmartChargingEffectQuery, nodes []*Connector, init func(*Connector), assign func(*Connector, *SmartChargingEffect)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[datasource.UUID]*Connector)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.InValues(connector.SmartChargingEffectColumn, fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
