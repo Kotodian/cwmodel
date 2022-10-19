@@ -10,6 +10,7 @@ import (
 
 func TestQueryEquipmentInfo(t *testing.T) {
 	cli := Open(t, "mysql", "root:jqcsms@uat123@tcp(192.168.0.4:3306)/jx-csms?parseTime=True")
+	cli = cli.Debug()
 	defer cli.Close()
 	ctx := context.TODO()
 	equip, err := cli.Equipment.Get(ctx, 244667116421190)
@@ -22,6 +23,7 @@ func TestQueryEquipmentInfo(t *testing.T) {
 
 func TestCreateEquipmentInfo(t *testing.T) {
 	cli := Open(t, "mysql", "root:jqcsms@uat123@tcp(192.168.0.4:3306)/jx-csms?parseTime=True")
+	cli = cli.Debug()
 	defer cli.Close()
 	ctx := context.TODO()
 	equip, err := cli.Equipment.Get(ctx, 336379858853894)

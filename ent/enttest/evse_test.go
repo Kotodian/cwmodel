@@ -10,13 +10,14 @@ import (
 
 func TestCreateEvse(t *testing.T) {
 	cli := Open(t, "mysql", "root:jqcsms@uat123@tcp(192.168.0.4:3306)/jx-csms?parseTime=True")
+	cli = cli.Debug()
 	defer cli.Close()
 	ctx := context.TODO()
-	equip, err := cli.Debug().Equipment.Get(ctx, 336379858853894)
+	equip, err := cli.Equipment.Get(ctx, 336379858853894)
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
 
-	err = cli.Debug().Evse.Create().
+	err = cli.Evse.Create().
 		SetEquipment(equip).
 		SetSerial("1").
 		SetConnectorNumber(1).
