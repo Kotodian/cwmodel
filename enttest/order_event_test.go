@@ -11,6 +11,7 @@ import (
 func TestCreateOrderEvent(t *testing.T) {
 	cli := Open(t, "mysql", dsn)
 	cli = cli.Debug()
+
 	ctx := context.TODO()
 	defer cli.Close()
 
@@ -25,14 +26,15 @@ func TestCreateOrderEvent(t *testing.T) {
 func TestQueryOrderEvent(t *testing.T) {
 	cli := Open(t, "mysql", dsn)
 	cli = cli.Debug()
+
 	ctx := context.TODO()
 	defer cli.Close()
 
 	orderInfo, err := cli.OrderInfo.Get(ctx, 302002886349637)
 	assert.Nil(t, err)
-	assert.NotNil(t, orderInfo)	
+	assert.NotNil(t, orderInfo)
 
 	events, err := orderInfo.QueryOrderEvent().All(ctx)
 	assert.Nil(t, err)
-	assert.NotNil(t, events)	
+	assert.NotNil(t, events)
 }

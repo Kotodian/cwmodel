@@ -26,6 +26,6 @@ func (ModelMixin) Fields() []ent.Field {
 		field.Uint64("created_by").Default(1).GoType(datasource.UUID(0)).Immutable().Comment("创建者"),
 		field.Int64("created_at").Default(time.Now().Unix()).Immutable().Comment("创建时间"),
 		field.Uint64("updated_by").Default(1).GoType(datasource.UUID(0)).Comment("修改者"),
-		field.Int64("updated_at").UpdateDefault(time.Now().Unix()).Default(time.Now().Unix()).Comment("修改时间"),
+		field.Int64("updated_at").UpdateDefault(time.Now().Unix).Default(time.Now().Unix()).Comment("修改时间"),
 	}
 }
