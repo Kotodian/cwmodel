@@ -184,7 +184,7 @@ func RegisterDatetime(v int64) predicate.EquipmentInfo {
 }
 
 // RemoteAddress applies equality check predicate on the "remote_address" field. It's identical to RemoteAddressEQ.
-func RemoteAddress(v int64) predicate.EquipmentInfo {
+func RemoteAddress(v string) predicate.EquipmentInfo {
 	return predicate.EquipmentInfo(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldRemoteAddress), v))
 	})
@@ -1137,21 +1137,21 @@ func RegisterDatetimeLTE(v int64) predicate.EquipmentInfo {
 }
 
 // RemoteAddressEQ applies the EQ predicate on the "remote_address" field.
-func RemoteAddressEQ(v int64) predicate.EquipmentInfo {
+func RemoteAddressEQ(v string) predicate.EquipmentInfo {
 	return predicate.EquipmentInfo(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldRemoteAddress), v))
 	})
 }
 
 // RemoteAddressNEQ applies the NEQ predicate on the "remote_address" field.
-func RemoteAddressNEQ(v int64) predicate.EquipmentInfo {
+func RemoteAddressNEQ(v string) predicate.EquipmentInfo {
 	return predicate.EquipmentInfo(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldRemoteAddress), v))
 	})
 }
 
 // RemoteAddressIn applies the In predicate on the "remote_address" field.
-func RemoteAddressIn(vs ...int64) predicate.EquipmentInfo {
+func RemoteAddressIn(vs ...string) predicate.EquipmentInfo {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -1162,7 +1162,7 @@ func RemoteAddressIn(vs ...int64) predicate.EquipmentInfo {
 }
 
 // RemoteAddressNotIn applies the NotIn predicate on the "remote_address" field.
-func RemoteAddressNotIn(vs ...int64) predicate.EquipmentInfo {
+func RemoteAddressNotIn(vs ...string) predicate.EquipmentInfo {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -1173,30 +1173,65 @@ func RemoteAddressNotIn(vs ...int64) predicate.EquipmentInfo {
 }
 
 // RemoteAddressGT applies the GT predicate on the "remote_address" field.
-func RemoteAddressGT(v int64) predicate.EquipmentInfo {
+func RemoteAddressGT(v string) predicate.EquipmentInfo {
 	return predicate.EquipmentInfo(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldRemoteAddress), v))
 	})
 }
 
 // RemoteAddressGTE applies the GTE predicate on the "remote_address" field.
-func RemoteAddressGTE(v int64) predicate.EquipmentInfo {
+func RemoteAddressGTE(v string) predicate.EquipmentInfo {
 	return predicate.EquipmentInfo(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldRemoteAddress), v))
 	})
 }
 
 // RemoteAddressLT applies the LT predicate on the "remote_address" field.
-func RemoteAddressLT(v int64) predicate.EquipmentInfo {
+func RemoteAddressLT(v string) predicate.EquipmentInfo {
 	return predicate.EquipmentInfo(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldRemoteAddress), v))
 	})
 }
 
 // RemoteAddressLTE applies the LTE predicate on the "remote_address" field.
-func RemoteAddressLTE(v int64) predicate.EquipmentInfo {
+func RemoteAddressLTE(v string) predicate.EquipmentInfo {
 	return predicate.EquipmentInfo(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldRemoteAddress), v))
+	})
+}
+
+// RemoteAddressContains applies the Contains predicate on the "remote_address" field.
+func RemoteAddressContains(v string) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldRemoteAddress), v))
+	})
+}
+
+// RemoteAddressHasPrefix applies the HasPrefix predicate on the "remote_address" field.
+func RemoteAddressHasPrefix(v string) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldRemoteAddress), v))
+	})
+}
+
+// RemoteAddressHasSuffix applies the HasSuffix predicate on the "remote_address" field.
+func RemoteAddressHasSuffix(v string) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldRemoteAddress), v))
+	})
+}
+
+// RemoteAddressEqualFold applies the EqualFold predicate on the "remote_address" field.
+func RemoteAddressEqualFold(v string) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldRemoteAddress), v))
+	})
+}
+
+// RemoteAddressContainsFold applies the ContainsFold predicate on the "remote_address" field.
+func RemoteAddressContainsFold(v string) predicate.EquipmentInfo {
+	return predicate.EquipmentInfo(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldRemoteAddress), v))
 	})
 }
 

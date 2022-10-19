@@ -5908,8 +5908,7 @@ type EquipmentInfoMutation struct {
 	addalarm_number      *int
 	register_datetime    *int64
 	addregister_datetime *int64
-	remote_address       *int64
-	addremote_address    *int64
+	remote_address       *string
 	clearedFields        map[string]struct{}
 	equipment            *datasource.UUID
 	clearedequipment     bool
@@ -6747,13 +6746,12 @@ func (m *EquipmentInfoMutation) ResetRegisterDatetime() {
 }
 
 // SetRemoteAddress sets the "remote_address" field.
-func (m *EquipmentInfoMutation) SetRemoteAddress(i int64) {
-	m.remote_address = &i
-	m.addremote_address = nil
+func (m *EquipmentInfoMutation) SetRemoteAddress(s string) {
+	m.remote_address = &s
 }
 
 // RemoteAddress returns the value of the "remote_address" field in the mutation.
-func (m *EquipmentInfoMutation) RemoteAddress() (r int64, exists bool) {
+func (m *EquipmentInfoMutation) RemoteAddress() (r string, exists bool) {
 	v := m.remote_address
 	if v == nil {
 		return
@@ -6764,7 +6762,7 @@ func (m *EquipmentInfoMutation) RemoteAddress() (r int64, exists bool) {
 // OldRemoteAddress returns the old "remote_address" field's value of the EquipmentInfo entity.
 // If the EquipmentInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EquipmentInfoMutation) OldRemoteAddress(ctx context.Context) (v int64, err error) {
+func (m *EquipmentInfoMutation) OldRemoteAddress(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRemoteAddress is only allowed on UpdateOne operations")
 	}
@@ -6778,28 +6776,9 @@ func (m *EquipmentInfoMutation) OldRemoteAddress(ctx context.Context) (v int64, 
 	return oldValue.RemoteAddress, nil
 }
 
-// AddRemoteAddress adds i to the "remote_address" field.
-func (m *EquipmentInfoMutation) AddRemoteAddress(i int64) {
-	if m.addremote_address != nil {
-		*m.addremote_address += i
-	} else {
-		m.addremote_address = &i
-	}
-}
-
-// AddedRemoteAddress returns the value that was added to the "remote_address" field in this mutation.
-func (m *EquipmentInfoMutation) AddedRemoteAddress() (r int64, exists bool) {
-	v := m.addremote_address
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetRemoteAddress resets all changes to the "remote_address" field.
 func (m *EquipmentInfoMutation) ResetRemoteAddress() {
 	m.remote_address = nil
-	m.addremote_address = nil
 }
 
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by id.
@@ -7091,7 +7070,7 @@ func (m *EquipmentInfoMutation) SetField(name string, value ent.Value) error {
 		m.SetRegisterDatetime(v)
 		return nil
 	case equipmentinfo.FieldRemoteAddress:
-		v, ok := value.(int64)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -7138,9 +7117,6 @@ func (m *EquipmentInfoMutation) AddedFields() []string {
 	if m.addregister_datetime != nil {
 		fields = append(fields, equipmentinfo.FieldRegisterDatetime)
 	}
-	if m.addremote_address != nil {
-		fields = append(fields, equipmentinfo.FieldRemoteAddress)
-	}
 	return fields
 }
 
@@ -7171,8 +7147,6 @@ func (m *EquipmentInfoMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedAlarmNumber()
 	case equipmentinfo.FieldRegisterDatetime:
 		return m.AddedRegisterDatetime()
-	case equipmentinfo.FieldRemoteAddress:
-		return m.AddedRemoteAddress()
 	}
 	return nil, false
 }
@@ -7258,13 +7232,6 @@ func (m *EquipmentInfoMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddRegisterDatetime(v)
-		return nil
-	case equipmentinfo.FieldRemoteAddress:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddRemoteAddress(v)
 		return nil
 	}
 	return fmt.Errorf("unknown EquipmentInfo numeric field %s", name)

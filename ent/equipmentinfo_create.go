@@ -146,8 +146,8 @@ func (eic *EquipmentInfoCreate) SetRegisterDatetime(i int64) *EquipmentInfoCreat
 }
 
 // SetRemoteAddress sets the "remote_address" field.
-func (eic *EquipmentInfoCreate) SetRemoteAddress(i int64) *EquipmentInfoCreate {
-	eic.mutation.SetRemoteAddress(i)
+func (eic *EquipmentInfoCreate) SetRemoteAddress(s string) *EquipmentInfoCreate {
+	eic.mutation.SetRemoteAddress(s)
 	return eic
 }
 
@@ -419,7 +419,7 @@ func (eic *EquipmentInfoCreate) createSpec() (*EquipmentInfo, *sqlgraph.CreateSp
 		_node.RegisterDatetime = value
 	}
 	if value, ok := eic.mutation.RemoteAddress(); ok {
-		_spec.SetField(equipmentinfo.FieldRemoteAddress, field.TypeInt64, value)
+		_spec.SetField(equipmentinfo.FieldRemoteAddress, field.TypeString, value)
 		_node.RemoteAddress = value
 	}
 	if nodes := eic.mutation.EquipmentIDs(); len(nodes) > 0 {

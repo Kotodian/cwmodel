@@ -39,7 +39,7 @@ func (EquipmentInfo) Fields() []ent.Field {
 		field.Uint("evse_number").Comment("evse数量").StructTag(`json:"evseNumber"`),
 		field.Uint("alarm_number").Comment("告警数量").StructTag(`json:"alarmNums"`),
 		field.Int64("register_datetime").Comment("注册时间").StructTag(`json:"registerDatetime"`),
-		field.Int64("remote_address").Comment("远程ip地址").StructTag(`json:"remoteAddress"`),
+		field.String("remote_address").Comment("远程ip地址").StructTag(`json:"remoteAddress"`),
 	}
 }
 

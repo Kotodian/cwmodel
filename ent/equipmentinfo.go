@@ -47,7 +47,7 @@ type EquipmentInfo struct {
 	// 注册时间
 	RegisterDatetime int64 `json:"registerDatetime"`
 	// 远程ip地址
-	RemoteAddress int64 `json:"remoteAddress"`
+	RemoteAddress string `json:"remoteAddress"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentInfoQuery when eager-loading is set.
 	Edges        EquipmentInfoEdges `json:"-"`
@@ -83,9 +83,9 @@ func (*EquipmentInfo) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case equipmentinfo.FieldState:
 			values[i] = new(sql.NullBool)
-		case equipmentinfo.FieldID, equipmentinfo.FieldVersion, equipmentinfo.FieldCreatedBy, equipmentinfo.FieldCreatedAt, equipmentinfo.FieldUpdatedBy, equipmentinfo.FieldUpdatedAt, equipmentinfo.FieldModelID, equipmentinfo.FieldManufacturerID, equipmentinfo.FieldFirmwareID, equipmentinfo.FieldEvseNumber, equipmentinfo.FieldAlarmNumber, equipmentinfo.FieldRegisterDatetime, equipmentinfo.FieldRemoteAddress:
+		case equipmentinfo.FieldID, equipmentinfo.FieldVersion, equipmentinfo.FieldCreatedBy, equipmentinfo.FieldCreatedAt, equipmentinfo.FieldUpdatedBy, equipmentinfo.FieldUpdatedAt, equipmentinfo.FieldModelID, equipmentinfo.FieldManufacturerID, equipmentinfo.FieldFirmwareID, equipmentinfo.FieldEvseNumber, equipmentinfo.FieldAlarmNumber, equipmentinfo.FieldRegisterDatetime:
 			values[i] = new(sql.NullInt64)
-		case equipmentinfo.FieldEquipmentSn, equipmentinfo.FieldAccessPod:
+		case equipmentinfo.FieldEquipmentSn, equipmentinfo.FieldAccessPod, equipmentinfo.FieldRemoteAddress:
 			values[i] = new(sql.NullString)
 		case equipmentinfo.ForeignKeys[0]: // equipment_id
 			values[i] = new(sql.NullInt64)
@@ -195,10 +195,10 @@ func (ei *EquipmentInfo) assignValues(columns []string, values []any) error {
 				ei.RegisterDatetime = value.Int64
 			}
 		case equipmentinfo.FieldRemoteAddress:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field remote_address", values[i])
 			} else if value.Valid {
-				ei.RemoteAddress = value.Int64
+				ei.RemoteAddress = value.String
 			}
 		case equipmentinfo.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -283,7 +283,7 @@ func (ei *EquipmentInfo) String() string {
 	builder.WriteString(fmt.Sprintf("%v", ei.RegisterDatetime))
 	builder.WriteString(", ")
 	builder.WriteString("remote_address=")
-	builder.WriteString(fmt.Sprintf("%v", ei.RemoteAddress))
+	builder.WriteString(ei.RemoteAddress)
 	builder.WriteByte(')')
 	return builder.String()
 }

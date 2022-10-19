@@ -189,15 +189,8 @@ func (eiu *EquipmentInfoUpdate) AddRegisterDatetime(i int64) *EquipmentInfoUpdat
 }
 
 // SetRemoteAddress sets the "remote_address" field.
-func (eiu *EquipmentInfoUpdate) SetRemoteAddress(i int64) *EquipmentInfoUpdate {
-	eiu.mutation.ResetRemoteAddress()
-	eiu.mutation.SetRemoteAddress(i)
-	return eiu
-}
-
-// AddRemoteAddress adds i to the "remote_address" field.
-func (eiu *EquipmentInfoUpdate) AddRemoteAddress(i int64) *EquipmentInfoUpdate {
-	eiu.mutation.AddRemoteAddress(i)
+func (eiu *EquipmentInfoUpdate) SetRemoteAddress(s string) *EquipmentInfoUpdate {
+	eiu.mutation.SetRemoteAddress(s)
 	return eiu
 }
 
@@ -373,10 +366,7 @@ func (eiu *EquipmentInfoUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		_spec.AddField(equipmentinfo.FieldRegisterDatetime, field.TypeInt64, value)
 	}
 	if value, ok := eiu.mutation.RemoteAddress(); ok {
-		_spec.SetField(equipmentinfo.FieldRemoteAddress, field.TypeInt64, value)
-	}
-	if value, ok := eiu.mutation.AddedRemoteAddress(); ok {
-		_spec.AddField(equipmentinfo.FieldRemoteAddress, field.TypeInt64, value)
+		_spec.SetField(equipmentinfo.FieldRemoteAddress, field.TypeString, value)
 	}
 	if eiu.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -592,15 +582,8 @@ func (eiuo *EquipmentInfoUpdateOne) AddRegisterDatetime(i int64) *EquipmentInfoU
 }
 
 // SetRemoteAddress sets the "remote_address" field.
-func (eiuo *EquipmentInfoUpdateOne) SetRemoteAddress(i int64) *EquipmentInfoUpdateOne {
-	eiuo.mutation.ResetRemoteAddress()
-	eiuo.mutation.SetRemoteAddress(i)
-	return eiuo
-}
-
-// AddRemoteAddress adds i to the "remote_address" field.
-func (eiuo *EquipmentInfoUpdateOne) AddRemoteAddress(i int64) *EquipmentInfoUpdateOne {
-	eiuo.mutation.AddRemoteAddress(i)
+func (eiuo *EquipmentInfoUpdateOne) SetRemoteAddress(s string) *EquipmentInfoUpdateOne {
+	eiuo.mutation.SetRemoteAddress(s)
 	return eiuo
 }
 
@@ -806,10 +789,7 @@ func (eiuo *EquipmentInfoUpdateOne) sqlSave(ctx context.Context) (_node *Equipme
 		_spec.AddField(equipmentinfo.FieldRegisterDatetime, field.TypeInt64, value)
 	}
 	if value, ok := eiuo.mutation.RemoteAddress(); ok {
-		_spec.SetField(equipmentinfo.FieldRemoteAddress, field.TypeInt64, value)
-	}
-	if value, ok := eiuo.mutation.AddedRemoteAddress(); ok {
-		_spec.AddField(equipmentinfo.FieldRemoteAddress, field.TypeInt64, value)
+		_spec.SetField(equipmentinfo.FieldRemoteAddress, field.TypeString, value)
 	}
 	if eiuo.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
