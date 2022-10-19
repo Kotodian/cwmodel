@@ -11,12 +11,12 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/ent-practice/ent/connector"
-	"github.com/Kotodian/ent-practice/ent/equipment"
-	"github.com/Kotodian/ent-practice/ent/orderinfo"
-	"github.com/Kotodian/ent-practice/ent/predicate"
-	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
-	"github.com/Kotodian/ent-practice/ent/types"
+	"github.com/Kotodian/cwmodel/ent/connector"
+	"github.com/Kotodian/cwmodel/ent/equipment"
+	"github.com/Kotodian/cwmodel/ent/orderinfo"
+	"github.com/Kotodian/cwmodel/ent/predicate"
+	"github.com/Kotodian/cwmodel/ent/smartchargingeffect"
+	"github.com/Kotodian/cwmodel/ent/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 

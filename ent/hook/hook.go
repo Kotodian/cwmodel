@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Kotodian/ent-practice/ent"
+	"github.com/Kotodian/cwmodel/ent"
 )
 
 // The AppModuleInfoFunc type is an adapter to allow the use of ordinary

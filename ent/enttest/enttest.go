@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/Kotodian/ent-practice/ent"
+	"github.com/Kotodian/cwmodel/ent"
 	// required by schema hooks.
-	_ "github.com/Kotodian/ent-practice/ent/runtime"
+	_ "github.com/Kotodian/cwmodel/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/Kotodian/ent-practice/ent/migrate"
+	"github.com/Kotodian/cwmodel/ent/migrate"
 )
 
 type (

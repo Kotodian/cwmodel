@@ -1,4 +1,4 @@
-module github.com/Kotodian/ent-practice
+module github.com/Kotodian/cwmodel
 
 go 1.18
 

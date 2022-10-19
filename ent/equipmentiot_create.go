@@ -9,8 +9,8 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/ent-practice/ent/equipment"
-	"github.com/Kotodian/ent-practice/ent/equipmentiot"
+	"github.com/Kotodian/cwmodel/ent/equipment"
+	"github.com/Kotodian/cwmodel/ent/equipmentiot"
 	"github.com/Kotodian/gokit/datasource"
 )
 

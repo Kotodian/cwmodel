@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Kotodian/ent-practice/ent/connector"
+	"github.com/Kotodian/cwmodel/ent/connector"
 	"github.com/Kotodian/gokit/id"
 	"github.com/stretchr/testify/assert"
 )

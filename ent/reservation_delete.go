@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/ent-practice/ent/predicate"
-	"github.com/Kotodian/ent-practice/ent/reservation"
+	"github.com/Kotodian/cwmodel/ent/predicate"
+	"github.com/Kotodian/cwmodel/ent/reservation"
 )
 
 // ReservationDelete is the builder for deleting a Reservation entity.

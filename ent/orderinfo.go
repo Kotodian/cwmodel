@@ -7,10 +7,10 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/Kotodian/ent-practice/ent/connector"
-	"github.com/Kotodian/ent-practice/ent/equipment"
-	"github.com/Kotodian/ent-practice/ent/orderinfo"
-	"github.com/Kotodian/ent-practice/ent/smartchargingeffect"
+	"github.com/Kotodian/cwmodel/ent/connector"
+	"github.com/Kotodian/cwmodel/ent/equipment"
+	"github.com/Kotodian/cwmodel/ent/orderinfo"
+	"github.com/Kotodian/cwmodel/ent/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 

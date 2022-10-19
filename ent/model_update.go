@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/ent-practice/ent/model"
-	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/cwmodel/ent/model"
+	"github.com/Kotodian/cwmodel/ent/predicate"
 	"github.com/Kotodian/gokit/datasource"
 )
 

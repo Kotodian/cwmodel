@@ -6,7 +6,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/ent-practice/ent/types"
+	"github.com/Kotodian/cwmodel/ent/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 

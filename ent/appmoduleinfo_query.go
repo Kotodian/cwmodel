@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/ent-practice/ent/appmoduleinfo"
-	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/cwmodel/ent/appmoduleinfo"
+	"github.com/Kotodian/cwmodel/ent/predicate"
 )
 
 // AppModuleInfoQuery is the builder for querying AppModuleInfo entities.

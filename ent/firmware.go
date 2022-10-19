@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/Kotodian/ent-practice/ent/firmware"
+	"github.com/Kotodian/cwmodel/ent/firmware"
 	"github.com/Kotodian/gokit/datasource"
 )
 

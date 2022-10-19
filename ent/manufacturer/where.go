@@ -4,7 +4,7 @@ package manufacturer
 
 import (
 	"entgo.io/ent/dialect/sql"
-	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/cwmodel/ent/predicate"
 	"github.com/Kotodian/gokit/datasource"
 )
 

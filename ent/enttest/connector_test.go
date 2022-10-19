@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/Kotodian/ent-practice/ent/evse"
+	"github.com/Kotodian/cwmodel/ent/evse"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"
 )

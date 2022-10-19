@@ -5,7 +5,7 @@ package equipmentfirmwareeffect
 import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/cwmodel/ent/predicate"
 	"github.com/Kotodian/gokit/datasource"
 )
 

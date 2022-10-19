@@ -4,7 +4,7 @@ package appmoduleinfo
 
 import (
 	"entgo.io/ent/dialect/sql"
-	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/cwmodel/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

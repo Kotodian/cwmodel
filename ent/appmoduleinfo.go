@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/Kotodian/ent-practice/ent/appmoduleinfo"
+	"github.com/Kotodian/cwmodel/ent/appmoduleinfo"
 )
 
 // AppModuleInfo is the model entity for the AppModuleInfo schema.

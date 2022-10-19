@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/ent-practice/ent/manufacturer"
+	"github.com/Kotodian/cwmodel/ent/manufacturer"
 	"github.com/Kotodian/gokit/datasource"
 )
 

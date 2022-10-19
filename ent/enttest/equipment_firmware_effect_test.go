@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/Kotodian/ent-practice/ent/equipmentfirmwareeffect"
+	"github.com/Kotodian/cwmodel/ent/equipmentfirmwareeffect"
 	"github.com/stretchr/testify/assert"
 )
 

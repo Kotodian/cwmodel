@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/Kotodian/ent-practice/ent/appmoduleinfo"
+	"github.com/Kotodian/cwmodel/ent/appmoduleinfo"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/ent-practice/ent/manufacturer"
-	"github.com/Kotodian/ent-practice/ent/predicate"
+	"github.com/Kotodian/cwmodel/ent/manufacturer"
+	"github.com/Kotodian/cwmodel/ent/predicate"
 )
 
 // ManufacturerDelete is the builder for deleting a Manufacturer entity.

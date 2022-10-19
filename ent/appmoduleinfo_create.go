@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/ent-practice/ent/appmoduleinfo"
+	"github.com/Kotodian/cwmodel/ent/appmoduleinfo"
 )
 
 // AppModuleInfoCreate is the builder for creating a AppModuleInfo entity.

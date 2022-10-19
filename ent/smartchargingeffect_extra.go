@@ -3,7 +3,7 @@ package ent
 import (
 	"time"
 
-	"github.com/Kotodian/ent-practice/ent/types"
+	"github.com/Kotodian/cwmodel/ent/types"
 	"github.com/Kotodian/protocol/golang/hardware/charger"
 )
 
