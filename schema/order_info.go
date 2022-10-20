@@ -41,6 +41,7 @@ func (OrderInfo) Fields() []ent.Field {
 		field.Float("flat_electricity").Optional().Nillable().Comment("平电量"),
 		field.Float("valley_electricity").Optional().Nillable().Comment("谷电量"),
 		field.Int32("stop_reason_code").Optional().Nillable().Comment("停止原因代码"),
+		field.Int32("state").Optional().Comment("订单状态"),
 		field.Bool("offline").Comment("是否为离线订单"),
 		field.Int64("price_scheme_release_id").Comment("计费模板id"),
 		field.Int64("order_start_time").Optional().Nillable().Comment("订单开始时间"),
