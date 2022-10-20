@@ -55,7 +55,7 @@ type Connector struct {
 
 	PushInterval int             `json:"push_interval"`
 	LastPushTime int64           `json:"last_push_time"`
-	OrderState   int             `json:"order_state"`
+	OrderState   *int            `json:"order_state"`
 	StationID    datasource.UUID `json:"station_id"`
 }
 
