@@ -117,10 +117,10 @@ func UpdatedAt(v int64) predicate.EquipmentLog {
 	})
 }
 
-// RequestId applies equality check predicate on the "requestId" field. It's identical to RequestIdEQ.
-func RequestId(v int64) predicate.EquipmentLog {
+// RequestID applies equality check predicate on the "request_id" field. It's identical to RequestIDEQ.
+func RequestID(v int64) predicate.EquipmentLog {
 	return predicate.EquipmentLog(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRequestId), v))
+		s.Where(sql.EQ(s.C(FieldRequestID), v))
 	})
 }
 
@@ -471,67 +471,67 @@ func UpdatedAtLTE(v int64) predicate.EquipmentLog {
 	})
 }
 
-// RequestIdEQ applies the EQ predicate on the "requestId" field.
-func RequestIdEQ(v int64) predicate.EquipmentLog {
+// RequestIDEQ applies the EQ predicate on the "request_id" field.
+func RequestIDEQ(v int64) predicate.EquipmentLog {
 	return predicate.EquipmentLog(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRequestId), v))
+		s.Where(sql.EQ(s.C(FieldRequestID), v))
 	})
 }
 
-// RequestIdNEQ applies the NEQ predicate on the "requestId" field.
-func RequestIdNEQ(v int64) predicate.EquipmentLog {
+// RequestIDNEQ applies the NEQ predicate on the "request_id" field.
+func RequestIDNEQ(v int64) predicate.EquipmentLog {
 	return predicate.EquipmentLog(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldRequestId), v))
+		s.Where(sql.NEQ(s.C(FieldRequestID), v))
 	})
 }
 
-// RequestIdIn applies the In predicate on the "requestId" field.
-func RequestIdIn(vs ...int64) predicate.EquipmentLog {
+// RequestIDIn applies the In predicate on the "request_id" field.
+func RequestIDIn(vs ...int64) predicate.EquipmentLog {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.EquipmentLog(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldRequestId), v...))
+		s.Where(sql.In(s.C(FieldRequestID), v...))
 	})
 }
 
-// RequestIdNotIn applies the NotIn predicate on the "requestId" field.
-func RequestIdNotIn(vs ...int64) predicate.EquipmentLog {
+// RequestIDNotIn applies the NotIn predicate on the "request_id" field.
+func RequestIDNotIn(vs ...int64) predicate.EquipmentLog {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.EquipmentLog(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldRequestId), v...))
+		s.Where(sql.NotIn(s.C(FieldRequestID), v...))
 	})
 }
 
-// RequestIdGT applies the GT predicate on the "requestId" field.
-func RequestIdGT(v int64) predicate.EquipmentLog {
+// RequestIDGT applies the GT predicate on the "request_id" field.
+func RequestIDGT(v int64) predicate.EquipmentLog {
 	return predicate.EquipmentLog(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldRequestId), v))
+		s.Where(sql.GT(s.C(FieldRequestID), v))
 	})
 }
 
-// RequestIdGTE applies the GTE predicate on the "requestId" field.
-func RequestIdGTE(v int64) predicate.EquipmentLog {
+// RequestIDGTE applies the GTE predicate on the "request_id" field.
+func RequestIDGTE(v int64) predicate.EquipmentLog {
 	return predicate.EquipmentLog(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldRequestId), v))
+		s.Where(sql.GTE(s.C(FieldRequestID), v))
 	})
 }
 
-// RequestIdLT applies the LT predicate on the "requestId" field.
-func RequestIdLT(v int64) predicate.EquipmentLog {
+// RequestIDLT applies the LT predicate on the "request_id" field.
+func RequestIDLT(v int64) predicate.EquipmentLog {
 	return predicate.EquipmentLog(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldRequestId), v))
+		s.Where(sql.LT(s.C(FieldRequestID), v))
 	})
 }
 
-// RequestIdLTE applies the LTE predicate on the "requestId" field.
-func RequestIdLTE(v int64) predicate.EquipmentLog {
+// RequestIDLTE applies the LTE predicate on the "request_id" field.
+func RequestIDLTE(v int64) predicate.EquipmentLog {
 	return predicate.EquipmentLog(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldRequestId), v))
+		s.Where(sql.LTE(s.C(FieldRequestID), v))
 	})
 }
 

@@ -84,16 +84,16 @@ func (elu *EquipmentLogUpdate) AddUpdatedAt(i int64) *EquipmentLogUpdate {
 	return elu
 }
 
-// SetRequestId sets the "requestId" field.
-func (elu *EquipmentLogUpdate) SetRequestId(i int64) *EquipmentLogUpdate {
-	elu.mutation.ResetRequestId()
-	elu.mutation.SetRequestId(i)
+// SetRequestID sets the "request_id" field.
+func (elu *EquipmentLogUpdate) SetRequestID(i int64) *EquipmentLogUpdate {
+	elu.mutation.ResetRequestID()
+	elu.mutation.SetRequestID(i)
 	return elu
 }
 
-// AddRequestId adds i to the "requestId" field.
-func (elu *EquipmentLogUpdate) AddRequestId(i int64) *EquipmentLogUpdate {
-	elu.mutation.AddRequestId(i)
+// AddRequestID adds i to the "request_id" field.
+func (elu *EquipmentLogUpdate) AddRequestID(i int64) *EquipmentLogUpdate {
+	elu.mutation.AddRequestID(i)
 	return elu
 }
 
@@ -252,11 +252,11 @@ func (elu *EquipmentLogUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := elu.mutation.AddedUpdatedAt(); ok {
 		_spec.AddField(equipmentlog.FieldUpdatedAt, field.TypeInt64, value)
 	}
-	if value, ok := elu.mutation.RequestId(); ok {
-		_spec.SetField(equipmentlog.FieldRequestId, field.TypeInt64, value)
+	if value, ok := elu.mutation.RequestID(); ok {
+		_spec.SetField(equipmentlog.FieldRequestID, field.TypeInt64, value)
 	}
-	if value, ok := elu.mutation.AddedRequestId(); ok {
-		_spec.AddField(equipmentlog.FieldRequestId, field.TypeInt64, value)
+	if value, ok := elu.mutation.AddedRequestID(); ok {
+		_spec.AddField(equipmentlog.FieldRequestID, field.TypeInt64, value)
 	}
 	if value, ok := elu.mutation.State(); ok {
 		_spec.SetField(equipmentlog.FieldState, field.TypeInt, value)
@@ -379,16 +379,16 @@ func (eluo *EquipmentLogUpdateOne) AddUpdatedAt(i int64) *EquipmentLogUpdateOne 
 	return eluo
 }
 
-// SetRequestId sets the "requestId" field.
-func (eluo *EquipmentLogUpdateOne) SetRequestId(i int64) *EquipmentLogUpdateOne {
-	eluo.mutation.ResetRequestId()
-	eluo.mutation.SetRequestId(i)
+// SetRequestID sets the "request_id" field.
+func (eluo *EquipmentLogUpdateOne) SetRequestID(i int64) *EquipmentLogUpdateOne {
+	eluo.mutation.ResetRequestID()
+	eluo.mutation.SetRequestID(i)
 	return eluo
 }
 
-// AddRequestId adds i to the "requestId" field.
-func (eluo *EquipmentLogUpdateOne) AddRequestId(i int64) *EquipmentLogUpdateOne {
-	eluo.mutation.AddRequestId(i)
+// AddRequestID adds i to the "request_id" field.
+func (eluo *EquipmentLogUpdateOne) AddRequestID(i int64) *EquipmentLogUpdateOne {
+	eluo.mutation.AddRequestID(i)
 	return eluo
 }
 
@@ -577,11 +577,11 @@ func (eluo *EquipmentLogUpdateOne) sqlSave(ctx context.Context) (_node *Equipmen
 	if value, ok := eluo.mutation.AddedUpdatedAt(); ok {
 		_spec.AddField(equipmentlog.FieldUpdatedAt, field.TypeInt64, value)
 	}
-	if value, ok := eluo.mutation.RequestId(); ok {
-		_spec.SetField(equipmentlog.FieldRequestId, field.TypeInt64, value)
+	if value, ok := eluo.mutation.RequestID(); ok {
+		_spec.SetField(equipmentlog.FieldRequestID, field.TypeInt64, value)
 	}
-	if value, ok := eluo.mutation.AddedRequestId(); ok {
-		_spec.AddField(equipmentlog.FieldRequestId, field.TypeInt64, value)
+	if value, ok := eluo.mutation.AddedRequestID(); ok {
+		_spec.AddField(equipmentlog.FieldRequestID, field.TypeInt64, value)
 	}
 	if value, ok := eluo.mutation.State(); ok {
 		_spec.SetField(equipmentlog.FieldState, field.TypeInt, value)

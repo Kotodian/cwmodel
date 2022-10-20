@@ -50,7 +50,7 @@ func (Equipment) Edges() []ent.Edge {
 		edge.To("equipment_firmware_effect", EquipmentFirmwareEffect.Type).StorageKey(edge.Column("equipment_id")),
 		edge.To("order_info", OrderInfo.Type).StorageKey(edge.Column("equipment_id")),
 		edge.To("reservation", Reservation.Type).StorageKey(edge.Column("equipment_id")),
-		edge.To("equipment_log", EquipmentLog.Type).StorageKey(edge.Column("equipment_id")),
+		edge.To("equipment_log", EquipmentLog.Type).StorageKey(edge.Column("equipment_id")).StructTag(`json:"equipmentId"`),
 		edge.To("smart_charging_effect", SmartChargingEffect.Type).StorageKey(edge.Column("equipment_id")),
 	}
 }

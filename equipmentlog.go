@@ -29,11 +29,11 @@ type EquipmentLog struct {
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 请求id
-	RequestId int64 `json:"requestId,omitempty"`
+	RequestID int64 `json:"requestId"`
 	// 状态
-	State int `json:"state,omitempty"`
+	State int `json:"state"`
 	// data link
-	DataLink datasource.UUID `json:"data_link,omitempty"`
+	DataLink datasource.UUID `json:"dataLink"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentLogQuery when eager-loading is set.
 	Edges        EquipmentLogEdges `json:"-"`
@@ -67,7 +67,7 @@ func (*EquipmentLog) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case equipmentlog.FieldID, equipmentlog.FieldVersion, equipmentlog.FieldCreatedBy, equipmentlog.FieldCreatedAt, equipmentlog.FieldUpdatedBy, equipmentlog.FieldUpdatedAt, equipmentlog.FieldRequestId, equipmentlog.FieldState, equipmentlog.FieldDataLink:
+		case equipmentlog.FieldID, equipmentlog.FieldVersion, equipmentlog.FieldCreatedBy, equipmentlog.FieldCreatedAt, equipmentlog.FieldUpdatedBy, equipmentlog.FieldUpdatedAt, equipmentlog.FieldRequestID, equipmentlog.FieldState, equipmentlog.FieldDataLink:
 			values[i] = new(sql.NullInt64)
 		case equipmentlog.ForeignKeys[0]: // equipment_id
 			values[i] = new(sql.NullInt64)
@@ -122,11 +122,11 @@ func (el *EquipmentLog) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				el.UpdatedAt = value.Int64
 			}
-		case equipmentlog.FieldRequestId:
+		case equipmentlog.FieldRequestID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field requestId", values[i])
+				return fmt.Errorf("unexpected type %T for field request_id", values[i])
 			} else if value.Valid {
-				el.RequestId = value.Int64
+				el.RequestID = value.Int64
 			}
 		case equipmentlog.FieldState:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -195,8 +195,8 @@ func (el *EquipmentLog) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", el.UpdatedAt))
 	builder.WriteString(", ")
-	builder.WriteString("requestId=")
-	builder.WriteString(fmt.Sprintf("%v", el.RequestId))
+	builder.WriteString("request_id=")
+	builder.WriteString(fmt.Sprintf("%v", el.RequestID))
 	builder.WriteString(", ")
 	builder.WriteString("state=")
 	builder.WriteString(fmt.Sprintf("%v", el.State))

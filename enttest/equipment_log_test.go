@@ -43,7 +43,7 @@ func TestCreateEquipmentLog(t *testing.T) {
 
 	err = cli.EquipmentLog.Create().
 		SetEquipment(equip).
-		SetRequestId(time.Now().Unix()).
+		SetRequestID(time.Now().Unix()).
 		SetDataLink(id.Next()).
 		SetState(0).
 		Exec(ctx)

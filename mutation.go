@@ -8668,8 +8668,8 @@ type EquipmentLogMutation struct {
 	addupdated_by    *datasource.UUID
 	updated_at       *int64
 	addupdated_at    *int64
-	requestId        *int64
-	addrequestId     *int64
+	request_id       *int64
+	addrequest_id    *int64
 	state            *int
 	addstate         *int
 	data_link        *datasource.UUID
@@ -9066,60 +9066,60 @@ func (m *EquipmentLogMutation) ResetUpdatedAt() {
 	m.addupdated_at = nil
 }
 
-// SetRequestId sets the "requestId" field.
-func (m *EquipmentLogMutation) SetRequestId(i int64) {
-	m.requestId = &i
-	m.addrequestId = nil
+// SetRequestID sets the "request_id" field.
+func (m *EquipmentLogMutation) SetRequestID(i int64) {
+	m.request_id = &i
+	m.addrequest_id = nil
 }
 
-// RequestId returns the value of the "requestId" field in the mutation.
-func (m *EquipmentLogMutation) RequestId() (r int64, exists bool) {
-	v := m.requestId
+// RequestID returns the value of the "request_id" field in the mutation.
+func (m *EquipmentLogMutation) RequestID() (r int64, exists bool) {
+	v := m.request_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRequestId returns the old "requestId" field's value of the EquipmentLog entity.
+// OldRequestID returns the old "request_id" field's value of the EquipmentLog entity.
 // If the EquipmentLog object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EquipmentLogMutation) OldRequestId(ctx context.Context) (v int64, err error) {
+func (m *EquipmentLogMutation) OldRequestID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRequestId is only allowed on UpdateOne operations")
+		return v, errors.New("OldRequestID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRequestId requires an ID field in the mutation")
+		return v, errors.New("OldRequestID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRequestId: %w", err)
+		return v, fmt.Errorf("querying old value for OldRequestID: %w", err)
 	}
-	return oldValue.RequestId, nil
+	return oldValue.RequestID, nil
 }
 
-// AddRequestId adds i to the "requestId" field.
-func (m *EquipmentLogMutation) AddRequestId(i int64) {
-	if m.addrequestId != nil {
-		*m.addrequestId += i
+// AddRequestID adds i to the "request_id" field.
+func (m *EquipmentLogMutation) AddRequestID(i int64) {
+	if m.addrequest_id != nil {
+		*m.addrequest_id += i
 	} else {
-		m.addrequestId = &i
+		m.addrequest_id = &i
 	}
 }
 
-// AddedRequestId returns the value that was added to the "requestId" field in this mutation.
-func (m *EquipmentLogMutation) AddedRequestId() (r int64, exists bool) {
-	v := m.addrequestId
+// AddedRequestID returns the value that was added to the "request_id" field in this mutation.
+func (m *EquipmentLogMutation) AddedRequestID() (r int64, exists bool) {
+	v := m.addrequest_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetRequestId resets all changes to the "requestId" field.
-func (m *EquipmentLogMutation) ResetRequestId() {
-	m.requestId = nil
-	m.addrequestId = nil
+// ResetRequestID resets all changes to the "request_id" field.
+func (m *EquipmentLogMutation) ResetRequestID() {
+	m.request_id = nil
+	m.addrequest_id = nil
 }
 
 // SetState sets the "state" field.
@@ -9308,8 +9308,8 @@ func (m *EquipmentLogMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, equipmentlog.FieldUpdatedAt)
 	}
-	if m.requestId != nil {
-		fields = append(fields, equipmentlog.FieldRequestId)
+	if m.request_id != nil {
+		fields = append(fields, equipmentlog.FieldRequestID)
 	}
 	if m.state != nil {
 		fields = append(fields, equipmentlog.FieldState)
@@ -9335,8 +9335,8 @@ func (m *EquipmentLogMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedBy()
 	case equipmentlog.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case equipmentlog.FieldRequestId:
-		return m.RequestId()
+	case equipmentlog.FieldRequestID:
+		return m.RequestID()
 	case equipmentlog.FieldState:
 		return m.State()
 	case equipmentlog.FieldDataLink:
@@ -9360,8 +9360,8 @@ func (m *EquipmentLogMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldUpdatedBy(ctx)
 	case equipmentlog.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case equipmentlog.FieldRequestId:
-		return m.OldRequestId(ctx)
+	case equipmentlog.FieldRequestID:
+		return m.OldRequestID(ctx)
 	case equipmentlog.FieldState:
 		return m.OldState(ctx)
 	case equipmentlog.FieldDataLink:
@@ -9410,12 +9410,12 @@ func (m *EquipmentLogMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case equipmentlog.FieldRequestId:
+	case equipmentlog.FieldRequestID:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRequestId(v)
+		m.SetRequestID(v)
 		return nil
 	case equipmentlog.FieldState:
 		v, ok := value.(int)
@@ -9454,8 +9454,8 @@ func (m *EquipmentLogMutation) AddedFields() []string {
 	if m.addupdated_at != nil {
 		fields = append(fields, equipmentlog.FieldUpdatedAt)
 	}
-	if m.addrequestId != nil {
-		fields = append(fields, equipmentlog.FieldRequestId)
+	if m.addrequest_id != nil {
+		fields = append(fields, equipmentlog.FieldRequestID)
 	}
 	if m.addstate != nil {
 		fields = append(fields, equipmentlog.FieldState)
@@ -9481,8 +9481,8 @@ func (m *EquipmentLogMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedBy()
 	case equipmentlog.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
-	case equipmentlog.FieldRequestId:
-		return m.AddedRequestId()
+	case equipmentlog.FieldRequestID:
+		return m.AddedRequestID()
 	case equipmentlog.FieldState:
 		return m.AddedState()
 	case equipmentlog.FieldDataLink:
@@ -9531,12 +9531,12 @@ func (m *EquipmentLogMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddUpdatedAt(v)
 		return nil
-	case equipmentlog.FieldRequestId:
+	case equipmentlog.FieldRequestID:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddRequestId(v)
+		m.AddRequestID(v)
 		return nil
 	case equipmentlog.FieldState:
 		v, ok := value.(int)
@@ -9594,8 +9594,8 @@ func (m *EquipmentLogMutation) ResetField(name string) error {
 	case equipmentlog.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case equipmentlog.FieldRequestId:
-		m.ResetRequestId()
+	case equipmentlog.FieldRequestID:
+		m.ResetRequestID()
 		return nil
 	case equipmentlog.FieldState:
 		m.ResetState()

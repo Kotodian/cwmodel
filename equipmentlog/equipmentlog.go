@@ -21,8 +21,8 @@ const (
 	FieldUpdatedBy = "updated_by"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldRequestId holds the string denoting the requestid field in the database.
-	FieldRequestId = "request_id"
+	// FieldRequestID holds the string denoting the request_id field in the database.
+	FieldRequestID = "request_id"
 	// FieldState holds the string denoting the state field in the database.
 	FieldState = "state"
 	// FieldDataLink holds the string denoting the data_link field in the database.
@@ -48,7 +48,7 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedBy,
 	FieldUpdatedAt,
-	FieldRequestId,
+	FieldRequestID,
 	FieldState,
 	FieldDataLink,
 }

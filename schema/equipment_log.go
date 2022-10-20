@@ -28,9 +28,9 @@ func (EquipmentLog) Annotations() []schema.Annotation {
 
 func (EquipmentLog) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int64("requestId").Comment("请求id"),
-		field.Int("state").Comment("状态"),
-		field.Uint64("data_link").GoType(datasource.UUID(0)).Comment("data link"),
+		field.Int64("request_id").Comment("请求id").StructTag(`json:"requestId"`),
+		field.Int("state").Comment("状态").StructTag(`json:"state"`),
+		field.Uint64("data_link").GoType(datasource.UUID(0)).Comment("data link").StructTag(`json:"dataLink"`),
 	}
 }
 

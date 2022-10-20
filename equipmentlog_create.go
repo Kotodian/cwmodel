@@ -91,9 +91,9 @@ func (elc *EquipmentLogCreate) SetNillableUpdatedAt(i *int64) *EquipmentLogCreat
 	return elc
 }
 
-// SetRequestId sets the "requestId" field.
-func (elc *EquipmentLogCreate) SetRequestId(i int64) *EquipmentLogCreate {
-	elc.mutation.SetRequestId(i)
+// SetRequestID sets the "request_id" field.
+func (elc *EquipmentLogCreate) SetRequestID(i int64) *EquipmentLogCreate {
+	elc.mutation.SetRequestID(i)
 	return elc
 }
 
@@ -262,8 +262,8 @@ func (elc *EquipmentLogCreate) check() error {
 	if _, ok := elc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`cwmodel: missing required field "EquipmentLog.updated_at"`)}
 	}
-	if _, ok := elc.mutation.RequestId(); !ok {
-		return &ValidationError{Name: "requestId", err: errors.New(`cwmodel: missing required field "EquipmentLog.requestId"`)}
+	if _, ok := elc.mutation.RequestID(); !ok {
+		return &ValidationError{Name: "request_id", err: errors.New(`cwmodel: missing required field "EquipmentLog.request_id"`)}
 	}
 	if _, ok := elc.mutation.State(); !ok {
 		return &ValidationError{Name: "state", err: errors.New(`cwmodel: missing required field "EquipmentLog.state"`)}
@@ -324,9 +324,9 @@ func (elc *EquipmentLogCreate) createSpec() (*EquipmentLog, *sqlgraph.CreateSpec
 		_spec.SetField(equipmentlog.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := elc.mutation.RequestId(); ok {
-		_spec.SetField(equipmentlog.FieldRequestId, field.TypeInt64, value)
-		_node.RequestId = value
+	if value, ok := elc.mutation.RequestID(); ok {
+		_spec.SetField(equipmentlog.FieldRequestID, field.TypeInt64, value)
+		_node.RequestID = value
 	}
 	if value, ok := elc.mutation.State(); ok {
 		_spec.SetField(equipmentlog.FieldState, field.TypeInt, value)
