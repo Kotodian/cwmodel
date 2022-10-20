@@ -153,6 +153,20 @@ func (cc *ConnectorCreate) SetNillableReservationID(d *datasource.UUID) *Connect
 	return cc
 }
 
+// SetOrderID sets the "order_id" field.
+func (cc *ConnectorCreate) SetOrderID(d datasource.UUID) *ConnectorCreate {
+	cc.mutation.SetOrderID(d)
+	return cc
+}
+
+// SetNillableOrderID sets the "order_id" field if the given value is not nil.
+func (cc *ConnectorCreate) SetNillableOrderID(d *datasource.UUID) *ConnectorCreate {
+	if d != nil {
+		cc.SetOrderID(*d)
+	}
+	return cc
+}
+
 // SetParkNo sets the "park_no" field.
 func (cc *ConnectorCreate) SetParkNo(s string) *ConnectorCreate {
 	cc.mutation.SetParkNo(s)
@@ -476,6 +490,10 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.ReservationID(); ok {
 		_spec.SetField(connector.FieldReservationID, field.TypeUint64, value)
 		_node.ReservationID = &value
+	}
+	if value, ok := cc.mutation.OrderID(); ok {
+		_spec.SetField(connector.FieldOrderID, field.TypeUint64, value)
+		_node.OrderID = &value
 	}
 	if value, ok := cc.mutation.ParkNo(); ok {
 		_spec.SetField(connector.FieldParkNo, field.TypeString, value)

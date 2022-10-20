@@ -167,6 +167,14 @@ func ReservationID(v datasource.UUID) predicate.Connector {
 	})
 }
 
+// OrderID applies equality check predicate on the "order_id" field. It's identical to OrderIDEQ.
+func OrderID(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldOrderID), vc))
+	})
+}
+
 // ParkNo applies equality check predicate on the "park_no" field. It's identical to ParkNoEQ.
 func ParkNo(v string) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
@@ -1090,6 +1098,90 @@ func ReservationIDIsNil() predicate.Connector {
 func ReservationIDNotNil() predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldReservationID)))
+	})
+}
+
+// OrderIDEQ applies the EQ predicate on the "order_id" field.
+func OrderIDEQ(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDNEQ applies the NEQ predicate on the "order_id" field.
+func OrderIDNEQ(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDIn applies the In predicate on the "order_id" field.
+func OrderIDIn(vs ...datasource.UUID) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldOrderID), v...))
+	})
+}
+
+// OrderIDNotIn applies the NotIn predicate on the "order_id" field.
+func OrderIDNotIn(vs ...datasource.UUID) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldOrderID), v...))
+	})
+}
+
+// OrderIDGT applies the GT predicate on the "order_id" field.
+func OrderIDGT(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDGTE applies the GTE predicate on the "order_id" field.
+func OrderIDGTE(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDLT applies the LT predicate on the "order_id" field.
+func OrderIDLT(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDLTE applies the LTE predicate on the "order_id" field.
+func OrderIDLTE(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDIsNil applies the IsNil predicate on the "order_id" field.
+func OrderIDIsNil() predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldOrderID)))
+	})
+}
+
+// OrderIDNotNil applies the NotNil predicate on the "order_id" field.
+func OrderIDNotNil() predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldOrderID)))
 	})
 }
 

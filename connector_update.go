@@ -186,6 +186,33 @@ func (cu *ConnectorUpdate) ClearReservationID() *ConnectorUpdate {
 	return cu
 }
 
+// SetOrderID sets the "order_id" field.
+func (cu *ConnectorUpdate) SetOrderID(d datasource.UUID) *ConnectorUpdate {
+	cu.mutation.ResetOrderID()
+	cu.mutation.SetOrderID(d)
+	return cu
+}
+
+// SetNillableOrderID sets the "order_id" field if the given value is not nil.
+func (cu *ConnectorUpdate) SetNillableOrderID(d *datasource.UUID) *ConnectorUpdate {
+	if d != nil {
+		cu.SetOrderID(*d)
+	}
+	return cu
+}
+
+// AddOrderID adds d to the "order_id" field.
+func (cu *ConnectorUpdate) AddOrderID(d datasource.UUID) *ConnectorUpdate {
+	cu.mutation.AddOrderID(d)
+	return cu
+}
+
+// ClearOrderID clears the value of the "order_id" field.
+func (cu *ConnectorUpdate) ClearOrderID() *ConnectorUpdate {
+	cu.mutation.ClearOrderID()
+	return cu
+}
+
 // SetParkNo sets the "park_no" field.
 func (cu *ConnectorUpdate) SetParkNo(s string) *ConnectorUpdate {
 	cu.mutation.SetParkNo(s)
@@ -501,6 +528,15 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if cu.mutation.ReservationIDCleared() {
 		_spec.ClearField(connector.FieldReservationID, field.TypeUint64)
+	}
+	if value, ok := cu.mutation.OrderID(); ok {
+		_spec.SetField(connector.FieldOrderID, field.TypeUint64, value)
+	}
+	if value, ok := cu.mutation.AddedOrderID(); ok {
+		_spec.AddField(connector.FieldOrderID, field.TypeUint64, value)
+	}
+	if cu.mutation.OrderIDCleared() {
+		_spec.ClearField(connector.FieldOrderID, field.TypeUint64)
 	}
 	if value, ok := cu.mutation.ParkNo(); ok {
 		_spec.SetField(connector.FieldParkNo, field.TypeString, value)
@@ -909,6 +945,33 @@ func (cuo *ConnectorUpdateOne) ClearReservationID() *ConnectorUpdateOne {
 	return cuo
 }
 
+// SetOrderID sets the "order_id" field.
+func (cuo *ConnectorUpdateOne) SetOrderID(d datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.ResetOrderID()
+	cuo.mutation.SetOrderID(d)
+	return cuo
+}
+
+// SetNillableOrderID sets the "order_id" field if the given value is not nil.
+func (cuo *ConnectorUpdateOne) SetNillableOrderID(d *datasource.UUID) *ConnectorUpdateOne {
+	if d != nil {
+		cuo.SetOrderID(*d)
+	}
+	return cuo
+}
+
+// AddOrderID adds d to the "order_id" field.
+func (cuo *ConnectorUpdateOne) AddOrderID(d datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.AddOrderID(d)
+	return cuo
+}
+
+// ClearOrderID clears the value of the "order_id" field.
+func (cuo *ConnectorUpdateOne) ClearOrderID() *ConnectorUpdateOne {
+	cuo.mutation.ClearOrderID()
+	return cuo
+}
+
 // SetParkNo sets the "park_no" field.
 func (cuo *ConnectorUpdateOne) SetParkNo(s string) *ConnectorUpdateOne {
 	cuo.mutation.SetParkNo(s)
@@ -1254,6 +1317,15 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 	}
 	if cuo.mutation.ReservationIDCleared() {
 		_spec.ClearField(connector.FieldReservationID, field.TypeUint64)
+	}
+	if value, ok := cuo.mutation.OrderID(); ok {
+		_spec.SetField(connector.FieldOrderID, field.TypeUint64, value)
+	}
+	if value, ok := cuo.mutation.AddedOrderID(); ok {
+		_spec.AddField(connector.FieldOrderID, field.TypeUint64, value)
+	}
+	if cuo.mutation.OrderIDCleared() {
+		_spec.ClearField(connector.FieldOrderID, field.TypeUint64)
 	}
 	if value, ok := cuo.mutation.ParkNo(); ok {
 		_spec.SetField(connector.FieldParkNo, field.TypeString, value)

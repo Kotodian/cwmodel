@@ -37,6 +37,7 @@ func (Connector) Fields() []ent.Field {
 		field.Int("before_state").Comment("之前状态"),
 		field.Int("charging_state").Optional().Comment("充电状态"),
 		field.Uint64("reservation_id").Optional().Nillable().GoType(datasource.UUID(0)).Comment("预约id"),
+		field.Uint64("order_id").Optional().Nillable().GoType(datasource.UUID(0)).Comment("订单id"),
 		field.String("park_no").Default("0001").Comment("停车编号"),
 	}
 }

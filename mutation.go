@@ -456,6 +456,8 @@ type ConnectorMutation struct {
 	addcharging_state            *int
 	reservation_id               *datasource.UUID
 	addreservation_id            *datasource.UUID
+	order_id                     *datasource.UUID
+	addorder_id                  *datasource.UUID
 	park_no                      *string
 	clearedFields                map[string]struct{}
 	evse                         *datasource.UUID
@@ -1220,6 +1222,76 @@ func (m *ConnectorMutation) ResetReservationID() {
 	delete(m.clearedFields, connector.FieldReservationID)
 }
 
+// SetOrderID sets the "order_id" field.
+func (m *ConnectorMutation) SetOrderID(d datasource.UUID) {
+	m.order_id = &d
+	m.addorder_id = nil
+}
+
+// OrderID returns the value of the "order_id" field in the mutation.
+func (m *ConnectorMutation) OrderID() (r datasource.UUID, exists bool) {
+	v := m.order_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrderID returns the old "order_id" field's value of the Connector entity.
+// If the Connector object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ConnectorMutation) OldOrderID(ctx context.Context) (v *datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrderID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrderID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrderID: %w", err)
+	}
+	return oldValue.OrderID, nil
+}
+
+// AddOrderID adds d to the "order_id" field.
+func (m *ConnectorMutation) AddOrderID(d datasource.UUID) {
+	if m.addorder_id != nil {
+		*m.addorder_id += d
+	} else {
+		m.addorder_id = &d
+	}
+}
+
+// AddedOrderID returns the value that was added to the "order_id" field in this mutation.
+func (m *ConnectorMutation) AddedOrderID() (r datasource.UUID, exists bool) {
+	v := m.addorder_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearOrderID clears the value of the "order_id" field.
+func (m *ConnectorMutation) ClearOrderID() {
+	m.order_id = nil
+	m.addorder_id = nil
+	m.clearedFields[connector.FieldOrderID] = struct{}{}
+}
+
+// OrderIDCleared returns if the "order_id" field was cleared in this mutation.
+func (m *ConnectorMutation) OrderIDCleared() bool {
+	_, ok := m.clearedFields[connector.FieldOrderID]
+	return ok
+}
+
+// ResetOrderID resets all changes to the "order_id" field.
+func (m *ConnectorMutation) ResetOrderID() {
+	m.order_id = nil
+	m.addorder_id = nil
+	delete(m.clearedFields, connector.FieldOrderID)
+}
+
 // SetParkNo sets the "park_no" field.
 func (m *ConnectorMutation) SetParkNo(s string) {
 	m.park_no = &s
@@ -1515,7 +1587,7 @@ func (m *ConnectorMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ConnectorMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 14)
 	if m.version != nil {
 		fields = append(fields, connector.FieldVersion)
 	}
@@ -1552,6 +1624,9 @@ func (m *ConnectorMutation) Fields() []string {
 	if m.reservation_id != nil {
 		fields = append(fields, connector.FieldReservationID)
 	}
+	if m.order_id != nil {
+		fields = append(fields, connector.FieldOrderID)
+	}
 	if m.park_no != nil {
 		fields = append(fields, connector.FieldParkNo)
 	}
@@ -1587,6 +1662,8 @@ func (m *ConnectorMutation) Field(name string) (ent.Value, bool) {
 		return m.ChargingState()
 	case connector.FieldReservationID:
 		return m.ReservationID()
+	case connector.FieldOrderID:
+		return m.OrderID()
 	case connector.FieldParkNo:
 		return m.ParkNo()
 	}
@@ -1622,6 +1699,8 @@ func (m *ConnectorMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldChargingState(ctx)
 	case connector.FieldReservationID:
 		return m.OldReservationID(ctx)
+	case connector.FieldOrderID:
+		return m.OldOrderID(ctx)
 	case connector.FieldParkNo:
 		return m.OldParkNo(ctx)
 	}
@@ -1717,6 +1796,13 @@ func (m *ConnectorMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetReservationID(v)
 		return nil
+	case connector.FieldOrderID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrderID(v)
+		return nil
 	case connector.FieldParkNo:
 		v, ok := value.(string)
 		if !ok {
@@ -1759,6 +1845,9 @@ func (m *ConnectorMutation) AddedFields() []string {
 	if m.addreservation_id != nil {
 		fields = append(fields, connector.FieldReservationID)
 	}
+	if m.addorder_id != nil {
+		fields = append(fields, connector.FieldOrderID)
+	}
 	return fields
 }
 
@@ -1785,6 +1874,8 @@ func (m *ConnectorMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedChargingState()
 	case connector.FieldReservationID:
 		return m.AddedReservationID()
+	case connector.FieldOrderID:
+		return m.AddedOrderID()
 	}
 	return nil, false
 }
@@ -1857,6 +1948,13 @@ func (m *ConnectorMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddReservationID(v)
 		return nil
+	case connector.FieldOrderID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOrderID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Connector numeric field %s", name)
 }
@@ -1870,6 +1968,9 @@ func (m *ConnectorMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(connector.FieldReservationID) {
 		fields = append(fields, connector.FieldReservationID)
+	}
+	if m.FieldCleared(connector.FieldOrderID) {
+		fields = append(fields, connector.FieldOrderID)
 	}
 	return fields
 }
@@ -1890,6 +1991,9 @@ func (m *ConnectorMutation) ClearField(name string) error {
 		return nil
 	case connector.FieldReservationID:
 		m.ClearReservationID()
+		return nil
+	case connector.FieldOrderID:
+		m.ClearOrderID()
 		return nil
 	}
 	return fmt.Errorf("unknown Connector nullable field %s", name)
@@ -1934,6 +2038,9 @@ func (m *ConnectorMutation) ResetField(name string) error {
 		return nil
 	case connector.FieldReservationID:
 		m.ResetReservationID()
+		return nil
+	case connector.FieldOrderID:
+		m.ResetOrderID()
 		return nil
 	case connector.FieldParkNo:
 		m.ResetParkNo()

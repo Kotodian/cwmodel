@@ -35,6 +35,8 @@ const (
 	FieldChargingState = "charging_state"
 	// FieldReservationID holds the string denoting the reservation_id field in the database.
 	FieldReservationID = "reservation_id"
+	// FieldOrderID holds the string denoting the order_id field in the database.
+	FieldOrderID = "order_id"
 	// FieldParkNo holds the string denoting the park_no field in the database.
 	FieldParkNo = "park_no"
 	// EdgeEvse holds the string denoting the evse edge name in mutations.
@@ -101,6 +103,7 @@ var Columns = []string{
 	FieldBeforeState,
 	FieldChargingState,
 	FieldReservationID,
+	FieldOrderID,
 	FieldParkNo,
 }
 

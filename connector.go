@@ -43,6 +43,8 @@ type Connector struct {
 	ChargingState int `json:"charging_state,omitempty"`
 	// 预约id
 	ReservationID *datasource.UUID `json:"reservation_id,omitempty"`
+	// 订单id
+	OrderID *datasource.UUID `json:"order_id,omitempty"`
 	// 停车编号
 	ParkNo string `json:"park_no,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -132,7 +134,7 @@ func (*Connector) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case connector.FieldID, connector.FieldVersion, connector.FieldCreatedBy, connector.FieldCreatedAt, connector.FieldUpdatedBy, connector.FieldUpdatedAt, connector.FieldCurrentState, connector.FieldBeforeState, connector.FieldChargingState, connector.FieldReservationID:
+		case connector.FieldID, connector.FieldVersion, connector.FieldCreatedBy, connector.FieldCreatedAt, connector.FieldUpdatedBy, connector.FieldUpdatedAt, connector.FieldCurrentState, connector.FieldBeforeState, connector.FieldChargingState, connector.FieldReservationID, connector.FieldOrderID:
 			values[i] = new(sql.NullInt64)
 		case connector.FieldEquipmentSn, connector.FieldEvseSerial, connector.FieldSerial, connector.FieldParkNo:
 			values[i] = new(sql.NullString)
@@ -233,6 +235,13 @@ func (c *Connector) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				c.ReservationID = new(datasource.UUID)
 				*c.ReservationID = datasource.UUID(value.Int64)
+			}
+		case connector.FieldOrderID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field order_id", values[i])
+			} else if value.Valid {
+				c.OrderID = new(datasource.UUID)
+				*c.OrderID = datasource.UUID(value.Int64)
 			}
 		case connector.FieldParkNo:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -342,6 +351,11 @@ func (c *Connector) String() string {
 	builder.WriteString(", ")
 	if v := c.ReservationID; v != nil {
 		builder.WriteString("reservation_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := c.OrderID; v != nil {
+		builder.WriteString("order_id=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
