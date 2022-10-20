@@ -396,6 +396,33 @@ func (oiu *OrderInfoUpdate) ClearStopReasonCode() *OrderInfoUpdate {
 	return oiu
 }
 
+// SetState sets the "state" field.
+func (oiu *OrderInfoUpdate) SetState(i int32) *OrderInfoUpdate {
+	oiu.mutation.ResetState()
+	oiu.mutation.SetState(i)
+	return oiu
+}
+
+// SetNillableState sets the "state" field if the given value is not nil.
+func (oiu *OrderInfoUpdate) SetNillableState(i *int32) *OrderInfoUpdate {
+	if i != nil {
+		oiu.SetState(*i)
+	}
+	return oiu
+}
+
+// AddState adds i to the "state" field.
+func (oiu *OrderInfoUpdate) AddState(i int32) *OrderInfoUpdate {
+	oiu.mutation.AddState(i)
+	return oiu
+}
+
+// ClearState clears the value of the "state" field.
+func (oiu *OrderInfoUpdate) ClearState() *OrderInfoUpdate {
+	oiu.mutation.ClearState()
+	return oiu
+}
+
 // SetOffline sets the "offline" field.
 func (oiu *OrderInfoUpdate) SetOffline(b bool) *OrderInfoUpdate {
 	oiu.mutation.SetOffline(b)
@@ -920,6 +947,15 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if oiu.mutation.StopReasonCodeCleared() {
 		_spec.ClearField(orderinfo.FieldStopReasonCode, field.TypeInt32)
+	}
+	if value, ok := oiu.mutation.State(); ok {
+		_spec.SetField(orderinfo.FieldState, field.TypeInt32, value)
+	}
+	if value, ok := oiu.mutation.AddedState(); ok {
+		_spec.AddField(orderinfo.FieldState, field.TypeInt32, value)
+	}
+	if oiu.mutation.StateCleared() {
+		_spec.ClearField(orderinfo.FieldState, field.TypeInt32)
 	}
 	if value, ok := oiu.mutation.Offline(); ok {
 		_spec.SetField(orderinfo.FieldOffline, field.TypeBool, value)
@@ -1535,6 +1571,33 @@ func (oiuo *OrderInfoUpdateOne) ClearStopReasonCode() *OrderInfoUpdateOne {
 	return oiuo
 }
 
+// SetState sets the "state" field.
+func (oiuo *OrderInfoUpdateOne) SetState(i int32) *OrderInfoUpdateOne {
+	oiuo.mutation.ResetState()
+	oiuo.mutation.SetState(i)
+	return oiuo
+}
+
+// SetNillableState sets the "state" field if the given value is not nil.
+func (oiuo *OrderInfoUpdateOne) SetNillableState(i *int32) *OrderInfoUpdateOne {
+	if i != nil {
+		oiuo.SetState(*i)
+	}
+	return oiuo
+}
+
+// AddState adds i to the "state" field.
+func (oiuo *OrderInfoUpdateOne) AddState(i int32) *OrderInfoUpdateOne {
+	oiuo.mutation.AddState(i)
+	return oiuo
+}
+
+// ClearState clears the value of the "state" field.
+func (oiuo *OrderInfoUpdateOne) ClearState() *OrderInfoUpdateOne {
+	oiuo.mutation.ClearState()
+	return oiuo
+}
+
 // SetOffline sets the "offline" field.
 func (oiuo *OrderInfoUpdateOne) SetOffline(b bool) *OrderInfoUpdateOne {
 	oiuo.mutation.SetOffline(b)
@@ -2089,6 +2152,15 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 	}
 	if oiuo.mutation.StopReasonCodeCleared() {
 		_spec.ClearField(orderinfo.FieldStopReasonCode, field.TypeInt32)
+	}
+	if value, ok := oiuo.mutation.State(); ok {
+		_spec.SetField(orderinfo.FieldState, field.TypeInt32, value)
+	}
+	if value, ok := oiuo.mutation.AddedState(); ok {
+		_spec.AddField(orderinfo.FieldState, field.TypeInt32, value)
+	}
+	if oiuo.mutation.StateCleared() {
+		_spec.ClearField(orderinfo.FieldState, field.TypeInt32)
 	}
 	if value, ok := oiuo.mutation.Offline(); ok {
 		_spec.SetField(orderinfo.FieldOffline, field.TypeBool, value)

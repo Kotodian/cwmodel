@@ -47,6 +47,8 @@ const (
 	FieldValleyElectricity = "valley_electricity"
 	// FieldStopReasonCode holds the string denoting the stop_reason_code field in the database.
 	FieldStopReasonCode = "stop_reason_code"
+	// FieldState holds the string denoting the state field in the database.
+	FieldState = "state"
 	// FieldOffline holds the string denoting the offline field in the database.
 	FieldOffline = "offline"
 	// FieldPriceSchemeReleaseID holds the string denoting the price_scheme_release_id field in the database.
@@ -126,6 +128,7 @@ var Columns = []string{
 	FieldFlatElectricity,
 	FieldValleyElectricity,
 	FieldStopReasonCode,
+	FieldState,
 	FieldOffline,
 	FieldPriceSchemeReleaseID,
 	FieldOrderStartTime,

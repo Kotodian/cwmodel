@@ -56,6 +56,8 @@ type OrderInfo struct {
 	ValleyElectricity *float64 `json:"valley_electricity,omitempty"`
 	// 停止原因代码
 	StopReasonCode *int32 `json:"stop_reason_code,omitempty"`
+	// 订单状态
+	State int32 `json:"state,omitempty"`
 	// 是否为离线订单
 	Offline bool `json:"offline,omitempty"`
 	// 计费模板id
@@ -153,7 +155,7 @@ func (*OrderInfo) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case orderinfo.FieldTotalElectricity, orderinfo.FieldChargeStartElectricity, orderinfo.FieldChargeFinalElectricity, orderinfo.FieldSharpElectricity, orderinfo.FieldPeakElectricity, orderinfo.FieldFlatElectricity, orderinfo.FieldValleyElectricity:
 			values[i] = new(sql.NullFloat64)
-		case orderinfo.FieldID, orderinfo.FieldVersion, orderinfo.FieldCreatedBy, orderinfo.FieldCreatedAt, orderinfo.FieldUpdatedBy, orderinfo.FieldUpdatedAt, orderinfo.FieldRemoteStartID, orderinfo.FieldStopReasonCode, orderinfo.FieldPriceSchemeReleaseID, orderinfo.FieldOrderStartTime, orderinfo.FieldOrderFinalTime, orderinfo.FieldChargeStartTime, orderinfo.FieldChargeFinalTime, orderinfo.FieldIntellectID, orderinfo.FieldStationID, orderinfo.FieldOperatorID:
+		case orderinfo.FieldID, orderinfo.FieldVersion, orderinfo.FieldCreatedBy, orderinfo.FieldCreatedAt, orderinfo.FieldUpdatedBy, orderinfo.FieldUpdatedAt, orderinfo.FieldRemoteStartID, orderinfo.FieldStopReasonCode, orderinfo.FieldState, orderinfo.FieldPriceSchemeReleaseID, orderinfo.FieldOrderStartTime, orderinfo.FieldOrderFinalTime, orderinfo.FieldChargeStartTime, orderinfo.FieldChargeFinalTime, orderinfo.FieldIntellectID, orderinfo.FieldStationID, orderinfo.FieldOperatorID:
 			values[i] = new(sql.NullInt64)
 		case orderinfo.FieldTransactionID, orderinfo.FieldAuthorizationID, orderinfo.FieldCustomerID, orderinfo.FieldCallerOrderID:
 			values[i] = new(sql.NullString)
@@ -301,6 +303,12 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				oi.StopReasonCode = new(int32)
 				*oi.StopReasonCode = int32(value.Int64)
+			}
+		case orderinfo.FieldState:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field state", values[i])
+			} else if value.Valid {
+				oi.State = int32(value.Int64)
 			}
 		case orderinfo.FieldOffline:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -502,6 +510,9 @@ func (oi *OrderInfo) String() string {
 		builder.WriteString("stop_reason_code=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
+	builder.WriteString(", ")
+	builder.WriteString("state=")
+	builder.WriteString(fmt.Sprintf("%v", oi.State))
 	builder.WriteString(", ")
 	builder.WriteString("offline=")
 	builder.WriteString(fmt.Sprintf("%v", oi.Offline))

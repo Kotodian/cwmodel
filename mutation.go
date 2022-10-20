@@ -14087,6 +14087,8 @@ type OrderInfoMutation struct {
 	addvalley_electricity        *float64
 	stop_reason_code             *int32
 	addstop_reason_code          *int32
+	state                        *int32
+	addstate                     *int32
 	offline                      *bool
 	price_scheme_release_id      *int64
 	addprice_scheme_release_id   *int64
@@ -15316,6 +15318,76 @@ func (m *OrderInfoMutation) ResetStopReasonCode() {
 	delete(m.clearedFields, orderinfo.FieldStopReasonCode)
 }
 
+// SetState sets the "state" field.
+func (m *OrderInfoMutation) SetState(i int32) {
+	m.state = &i
+	m.addstate = nil
+}
+
+// State returns the value of the "state" field in the mutation.
+func (m *OrderInfoMutation) State() (r int32, exists bool) {
+	v := m.state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldState returns the old "state" field's value of the OrderInfo entity.
+// If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrderInfoMutation) OldState(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldState: %w", err)
+	}
+	return oldValue.State, nil
+}
+
+// AddState adds i to the "state" field.
+func (m *OrderInfoMutation) AddState(i int32) {
+	if m.addstate != nil {
+		*m.addstate += i
+	} else {
+		m.addstate = &i
+	}
+}
+
+// AddedState returns the value that was added to the "state" field in this mutation.
+func (m *OrderInfoMutation) AddedState() (r int32, exists bool) {
+	v := m.addstate
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearState clears the value of the "state" field.
+func (m *OrderInfoMutation) ClearState() {
+	m.state = nil
+	m.addstate = nil
+	m.clearedFields[orderinfo.FieldState] = struct{}{}
+}
+
+// StateCleared returns if the "state" field was cleared in this mutation.
+func (m *OrderInfoMutation) StateCleared() bool {
+	_, ok := m.clearedFields[orderinfo.FieldState]
+	return ok
+}
+
+// ResetState resets all changes to the "state" field.
+func (m *OrderInfoMutation) ResetState() {
+	m.state = nil
+	m.addstate = nil
+	delete(m.clearedFields, orderinfo.FieldState)
+}
+
 // SetOffline sets the "offline" field.
 func (m *OrderInfoMutation) SetOffline(b bool) {
 	m.offline = &b
@@ -16088,7 +16160,7 @@ func (m *OrderInfoMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrderInfoMutation) Fields() []string {
-	fields := make([]string, 0, 27)
+	fields := make([]string, 0, 28)
 	if m.version != nil {
 		fields = append(fields, orderinfo.FieldVersion)
 	}
@@ -16142,6 +16214,9 @@ func (m *OrderInfoMutation) Fields() []string {
 	}
 	if m.stop_reason_code != nil {
 		fields = append(fields, orderinfo.FieldStopReasonCode)
+	}
+	if m.state != nil {
+		fields = append(fields, orderinfo.FieldState)
 	}
 	if m.offline != nil {
 		fields = append(fields, orderinfo.FieldOffline)
@@ -16214,6 +16289,8 @@ func (m *OrderInfoMutation) Field(name string) (ent.Value, bool) {
 		return m.ValleyElectricity()
 	case orderinfo.FieldStopReasonCode:
 		return m.StopReasonCode()
+	case orderinfo.FieldState:
+		return m.State()
 	case orderinfo.FieldOffline:
 		return m.Offline()
 	case orderinfo.FieldPriceSchemeReleaseID:
@@ -16277,6 +16354,8 @@ func (m *OrderInfoMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldValleyElectricity(ctx)
 	case orderinfo.FieldStopReasonCode:
 		return m.OldStopReasonCode(ctx)
+	case orderinfo.FieldState:
+		return m.OldState(ctx)
 	case orderinfo.FieldOffline:
 		return m.OldOffline(ctx)
 	case orderinfo.FieldPriceSchemeReleaseID:
@@ -16430,6 +16509,13 @@ func (m *OrderInfoMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetStopReasonCode(v)
 		return nil
+	case orderinfo.FieldState:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetState(v)
+		return nil
 	case orderinfo.FieldOffline:
 		v, ok := value.(bool)
 		if !ok {
@@ -16543,6 +16629,9 @@ func (m *OrderInfoMutation) AddedFields() []string {
 	if m.addstop_reason_code != nil {
 		fields = append(fields, orderinfo.FieldStopReasonCode)
 	}
+	if m.addstate != nil {
+		fields = append(fields, orderinfo.FieldState)
+	}
 	if m.addprice_scheme_release_id != nil {
 		fields = append(fields, orderinfo.FieldPriceSchemeReleaseID)
 	}
@@ -16603,6 +16692,8 @@ func (m *OrderInfoMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedValleyElectricity()
 	case orderinfo.FieldStopReasonCode:
 		return m.AddedStopReasonCode()
+	case orderinfo.FieldState:
+		return m.AddedState()
 	case orderinfo.FieldPriceSchemeReleaseID:
 		return m.AddedPriceSchemeReleaseID()
 	case orderinfo.FieldOrderStartTime:
@@ -16726,6 +16817,13 @@ func (m *OrderInfoMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddStopReasonCode(v)
 		return nil
+	case orderinfo.FieldState:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddState(v)
+		return nil
 	case orderinfo.FieldPriceSchemeReleaseID:
 		v, ok := value.(int64)
 		if !ok {
@@ -16826,6 +16924,9 @@ func (m *OrderInfoMutation) ClearedFields() []string {
 	if m.FieldCleared(orderinfo.FieldStopReasonCode) {
 		fields = append(fields, orderinfo.FieldStopReasonCode)
 	}
+	if m.FieldCleared(orderinfo.FieldState) {
+		fields = append(fields, orderinfo.FieldState)
+	}
 	if m.FieldCleared(orderinfo.FieldOrderStartTime) {
 		fields = append(fields, orderinfo.FieldOrderStartTime)
 	}
@@ -16896,6 +16997,9 @@ func (m *OrderInfoMutation) ClearField(name string) error {
 		return nil
 	case orderinfo.FieldStopReasonCode:
 		m.ClearStopReasonCode()
+		return nil
+	case orderinfo.FieldState:
+		m.ClearState()
 		return nil
 	case orderinfo.FieldOrderStartTime:
 		m.ClearOrderStartTime()
@@ -16979,6 +17083,9 @@ func (m *OrderInfoMutation) ResetField(name string) error {
 		return nil
 	case orderinfo.FieldStopReasonCode:
 		m.ResetStopReasonCode()
+		return nil
+	case orderinfo.FieldState:
+		m.ResetState()
 		return nil
 	case orderinfo.FieldOffline:
 		m.ResetOffline()

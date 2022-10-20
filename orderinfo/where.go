@@ -208,6 +208,13 @@ func StopReasonCode(v int32) predicate.OrderInfo {
 	})
 }
 
+// State applies equality check predicate on the "state" field. It's identical to StateEQ.
+func State(v int32) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldState), v))
+	})
+}
+
 // Offline applies equality check predicate on the "offline" field. It's identical to OfflineEQ.
 func Offline(v bool) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
@@ -1742,6 +1749,84 @@ func StopReasonCodeIsNil() predicate.OrderInfo {
 func StopReasonCodeNotNil() predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldStopReasonCode)))
+	})
+}
+
+// StateEQ applies the EQ predicate on the "state" field.
+func StateEQ(v int32) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldState), v))
+	})
+}
+
+// StateNEQ applies the NEQ predicate on the "state" field.
+func StateNEQ(v int32) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldState), v))
+	})
+}
+
+// StateIn applies the In predicate on the "state" field.
+func StateIn(vs ...int32) predicate.OrderInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldState), v...))
+	})
+}
+
+// StateNotIn applies the NotIn predicate on the "state" field.
+func StateNotIn(vs ...int32) predicate.OrderInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldState), v...))
+	})
+}
+
+// StateGT applies the GT predicate on the "state" field.
+func StateGT(v int32) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldState), v))
+	})
+}
+
+// StateGTE applies the GTE predicate on the "state" field.
+func StateGTE(v int32) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldState), v))
+	})
+}
+
+// StateLT applies the LT predicate on the "state" field.
+func StateLT(v int32) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldState), v))
+	})
+}
+
+// StateLTE applies the LTE predicate on the "state" field.
+func StateLTE(v int32) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldState), v))
+	})
+}
+
+// StateIsNil applies the IsNil predicate on the "state" field.
+func StateIsNil() predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldState)))
+	})
+}
+
+// StateNotNil applies the NotNil predicate on the "state" field.
+func StateNotNil() predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldState)))
 	})
 }
 

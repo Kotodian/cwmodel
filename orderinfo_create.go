@@ -268,6 +268,20 @@ func (oic *OrderInfoCreate) SetNillableStopReasonCode(i *int32) *OrderInfoCreate
 	return oic
 }
 
+// SetState sets the "state" field.
+func (oic *OrderInfoCreate) SetState(i int32) *OrderInfoCreate {
+	oic.mutation.SetState(i)
+	return oic
+}
+
+// SetNillableState sets the "state" field if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillableState(i *int32) *OrderInfoCreate {
+	if i != nil {
+		oic.SetState(*i)
+	}
+	return oic
+}
+
 // SetOffline sets the "offline" field.
 func (oic *OrderInfoCreate) SetOffline(b bool) *OrderInfoCreate {
 	oic.mutation.SetOffline(b)
@@ -697,6 +711,10 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 	if value, ok := oic.mutation.StopReasonCode(); ok {
 		_spec.SetField(orderinfo.FieldStopReasonCode, field.TypeInt32, value)
 		_node.StopReasonCode = &value
+	}
+	if value, ok := oic.mutation.State(); ok {
+		_spec.SetField(orderinfo.FieldState, field.TypeInt32, value)
+		_node.State = value
 	}
 	if value, ok := oic.mutation.Offline(); ok {
 		_spec.SetField(orderinfo.FieldOffline, field.TypeBool, value)
