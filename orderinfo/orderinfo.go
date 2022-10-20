@@ -27,6 +27,8 @@ const (
 	FieldTransactionID = "transaction_id"
 	// FieldAuthorizationID holds the string denoting the authorization_id field in the database.
 	FieldAuthorizationID = "authorization_id"
+	// FieldAuthorizationMode holds the string denoting the authorization_mode field in the database.
+	FieldAuthorizationMode = "authorization_mode"
 	// FieldCustomerID holds the string denoting the customer_id field in the database.
 	FieldCustomerID = "customer_id"
 	// FieldCallerOrderID holds the string denoting the caller_order_id field in the database.
@@ -118,6 +120,7 @@ var Columns = []string{
 	FieldRemoteStartID,
 	FieldTransactionID,
 	FieldAuthorizationID,
+	FieldAuthorizationMode,
 	FieldCustomerID,
 	FieldCallerOrderID,
 	FieldTotalElectricity,

@@ -31,6 +31,7 @@ func (OrderInfo) Fields() []ent.Field {
 		field.Int64("remote_start_id").Optional().Nillable().Comment("远程启动id"),
 		field.String("transaction_id").Comment("桩端订单id"),
 		field.String("authorization_id").Optional().Nillable().Comment("授权id"),
+		field.Int("authorization_mode").Optional().Nillable().Comment("授权模式"),
 		field.String("customer_id").Optional().Nillable().Comment("客户id"),
 		field.String("caller_order_id").Optional().Nillable().Comment("第三方订单id"),
 		field.Float("total_electricity").Optional().Nillable().Comment("总充电电量"),

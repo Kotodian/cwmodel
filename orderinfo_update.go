@@ -140,6 +140,33 @@ func (oiu *OrderInfoUpdate) ClearAuthorizationID() *OrderInfoUpdate {
 	return oiu
 }
 
+// SetAuthorizationMode sets the "authorization_mode" field.
+func (oiu *OrderInfoUpdate) SetAuthorizationMode(i int) *OrderInfoUpdate {
+	oiu.mutation.ResetAuthorizationMode()
+	oiu.mutation.SetAuthorizationMode(i)
+	return oiu
+}
+
+// SetNillableAuthorizationMode sets the "authorization_mode" field if the given value is not nil.
+func (oiu *OrderInfoUpdate) SetNillableAuthorizationMode(i *int) *OrderInfoUpdate {
+	if i != nil {
+		oiu.SetAuthorizationMode(*i)
+	}
+	return oiu
+}
+
+// AddAuthorizationMode adds i to the "authorization_mode" field.
+func (oiu *OrderInfoUpdate) AddAuthorizationMode(i int) *OrderInfoUpdate {
+	oiu.mutation.AddAuthorizationMode(i)
+	return oiu
+}
+
+// ClearAuthorizationMode clears the value of the "authorization_mode" field.
+func (oiu *OrderInfoUpdate) ClearAuthorizationMode() *OrderInfoUpdate {
+	oiu.mutation.ClearAuthorizationMode()
+	return oiu
+}
+
 // SetCustomerID sets the "customer_id" field.
 func (oiu *OrderInfoUpdate) SetCustomerID(s string) *OrderInfoUpdate {
 	oiu.mutation.SetCustomerID(s)
@@ -864,6 +891,15 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if oiu.mutation.AuthorizationIDCleared() {
 		_spec.ClearField(orderinfo.FieldAuthorizationID, field.TypeString)
 	}
+	if value, ok := oiu.mutation.AuthorizationMode(); ok {
+		_spec.SetField(orderinfo.FieldAuthorizationMode, field.TypeInt, value)
+	}
+	if value, ok := oiu.mutation.AddedAuthorizationMode(); ok {
+		_spec.AddField(orderinfo.FieldAuthorizationMode, field.TypeInt, value)
+	}
+	if oiu.mutation.AuthorizationModeCleared() {
+		_spec.ClearField(orderinfo.FieldAuthorizationMode, field.TypeInt)
+	}
 	if value, ok := oiu.mutation.CustomerID(); ok {
 		_spec.SetField(orderinfo.FieldCustomerID, field.TypeString, value)
 	}
@@ -1312,6 +1348,33 @@ func (oiuo *OrderInfoUpdateOne) SetNillableAuthorizationID(s *string) *OrderInfo
 // ClearAuthorizationID clears the value of the "authorization_id" field.
 func (oiuo *OrderInfoUpdateOne) ClearAuthorizationID() *OrderInfoUpdateOne {
 	oiuo.mutation.ClearAuthorizationID()
+	return oiuo
+}
+
+// SetAuthorizationMode sets the "authorization_mode" field.
+func (oiuo *OrderInfoUpdateOne) SetAuthorizationMode(i int) *OrderInfoUpdateOne {
+	oiuo.mutation.ResetAuthorizationMode()
+	oiuo.mutation.SetAuthorizationMode(i)
+	return oiuo
+}
+
+// SetNillableAuthorizationMode sets the "authorization_mode" field if the given value is not nil.
+func (oiuo *OrderInfoUpdateOne) SetNillableAuthorizationMode(i *int) *OrderInfoUpdateOne {
+	if i != nil {
+		oiuo.SetAuthorizationMode(*i)
+	}
+	return oiuo
+}
+
+// AddAuthorizationMode adds i to the "authorization_mode" field.
+func (oiuo *OrderInfoUpdateOne) AddAuthorizationMode(i int) *OrderInfoUpdateOne {
+	oiuo.mutation.AddAuthorizationMode(i)
+	return oiuo
+}
+
+// ClearAuthorizationMode clears the value of the "authorization_mode" field.
+func (oiuo *OrderInfoUpdateOne) ClearAuthorizationMode() *OrderInfoUpdateOne {
+	oiuo.mutation.ClearAuthorizationMode()
 	return oiuo
 }
 
@@ -2068,6 +2131,15 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 	}
 	if oiuo.mutation.AuthorizationIDCleared() {
 		_spec.ClearField(orderinfo.FieldAuthorizationID, field.TypeString)
+	}
+	if value, ok := oiuo.mutation.AuthorizationMode(); ok {
+		_spec.SetField(orderinfo.FieldAuthorizationMode, field.TypeInt, value)
+	}
+	if value, ok := oiuo.mutation.AddedAuthorizationMode(); ok {
+		_spec.AddField(orderinfo.FieldAuthorizationMode, field.TypeInt, value)
+	}
+	if oiuo.mutation.AuthorizationModeCleared() {
+		_spec.ClearField(orderinfo.FieldAuthorizationMode, field.TypeInt)
 	}
 	if value, ok := oiuo.mutation.CustomerID(); ok {
 		_spec.SetField(orderinfo.FieldCustomerID, field.TypeString, value)

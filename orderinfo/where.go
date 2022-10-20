@@ -138,6 +138,13 @@ func AuthorizationID(v string) predicate.OrderInfo {
 	})
 }
 
+// AuthorizationMode applies equality check predicate on the "authorization_mode" field. It's identical to AuthorizationModeEQ.
+func AuthorizationMode(v int) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAuthorizationMode), v))
+	})
+}
+
 // CustomerID applies equality check predicate on the "customer_id" field. It's identical to CustomerIDEQ.
 func CustomerID(v string) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
@@ -899,6 +906,84 @@ func AuthorizationIDEqualFold(v string) predicate.OrderInfo {
 func AuthorizationIDContainsFold(v string) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldAuthorizationID), v))
+	})
+}
+
+// AuthorizationModeEQ applies the EQ predicate on the "authorization_mode" field.
+func AuthorizationModeEQ(v int) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAuthorizationMode), v))
+	})
+}
+
+// AuthorizationModeNEQ applies the NEQ predicate on the "authorization_mode" field.
+func AuthorizationModeNEQ(v int) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldAuthorizationMode), v))
+	})
+}
+
+// AuthorizationModeIn applies the In predicate on the "authorization_mode" field.
+func AuthorizationModeIn(vs ...int) predicate.OrderInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldAuthorizationMode), v...))
+	})
+}
+
+// AuthorizationModeNotIn applies the NotIn predicate on the "authorization_mode" field.
+func AuthorizationModeNotIn(vs ...int) predicate.OrderInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldAuthorizationMode), v...))
+	})
+}
+
+// AuthorizationModeGT applies the GT predicate on the "authorization_mode" field.
+func AuthorizationModeGT(v int) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldAuthorizationMode), v))
+	})
+}
+
+// AuthorizationModeGTE applies the GTE predicate on the "authorization_mode" field.
+func AuthorizationModeGTE(v int) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldAuthorizationMode), v))
+	})
+}
+
+// AuthorizationModeLT applies the LT predicate on the "authorization_mode" field.
+func AuthorizationModeLT(v int) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldAuthorizationMode), v))
+	})
+}
+
+// AuthorizationModeLTE applies the LTE predicate on the "authorization_mode" field.
+func AuthorizationModeLTE(v int) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldAuthorizationMode), v))
+	})
+}
+
+// AuthorizationModeIsNil applies the IsNil predicate on the "authorization_mode" field.
+func AuthorizationModeIsNil() predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldAuthorizationMode)))
+	})
+}
+
+// AuthorizationModeNotNil applies the NotNil predicate on the "authorization_mode" field.
+func AuthorizationModeNotNil() predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldAuthorizationMode)))
 	})
 }
 

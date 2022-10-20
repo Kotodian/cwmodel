@@ -14069,6 +14069,8 @@ type OrderInfoMutation struct {
 	addremote_start_id           *int64
 	transaction_id               *string
 	authorization_id             *string
+	authorization_mode           *int
+	addauthorization_mode        *int
 	customer_id                  *string
 	caller_order_id              *string
 	total_electricity            *float64
@@ -14658,6 +14660,76 @@ func (m *OrderInfoMutation) AuthorizationIDCleared() bool {
 func (m *OrderInfoMutation) ResetAuthorizationID() {
 	m.authorization_id = nil
 	delete(m.clearedFields, orderinfo.FieldAuthorizationID)
+}
+
+// SetAuthorizationMode sets the "authorization_mode" field.
+func (m *OrderInfoMutation) SetAuthorizationMode(i int) {
+	m.authorization_mode = &i
+	m.addauthorization_mode = nil
+}
+
+// AuthorizationMode returns the value of the "authorization_mode" field in the mutation.
+func (m *OrderInfoMutation) AuthorizationMode() (r int, exists bool) {
+	v := m.authorization_mode
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAuthorizationMode returns the old "authorization_mode" field's value of the OrderInfo entity.
+// If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrderInfoMutation) OldAuthorizationMode(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAuthorizationMode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAuthorizationMode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAuthorizationMode: %w", err)
+	}
+	return oldValue.AuthorizationMode, nil
+}
+
+// AddAuthorizationMode adds i to the "authorization_mode" field.
+func (m *OrderInfoMutation) AddAuthorizationMode(i int) {
+	if m.addauthorization_mode != nil {
+		*m.addauthorization_mode += i
+	} else {
+		m.addauthorization_mode = &i
+	}
+}
+
+// AddedAuthorizationMode returns the value that was added to the "authorization_mode" field in this mutation.
+func (m *OrderInfoMutation) AddedAuthorizationMode() (r int, exists bool) {
+	v := m.addauthorization_mode
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearAuthorizationMode clears the value of the "authorization_mode" field.
+func (m *OrderInfoMutation) ClearAuthorizationMode() {
+	m.authorization_mode = nil
+	m.addauthorization_mode = nil
+	m.clearedFields[orderinfo.FieldAuthorizationMode] = struct{}{}
+}
+
+// AuthorizationModeCleared returns if the "authorization_mode" field was cleared in this mutation.
+func (m *OrderInfoMutation) AuthorizationModeCleared() bool {
+	_, ok := m.clearedFields[orderinfo.FieldAuthorizationMode]
+	return ok
+}
+
+// ResetAuthorizationMode resets all changes to the "authorization_mode" field.
+func (m *OrderInfoMutation) ResetAuthorizationMode() {
+	m.authorization_mode = nil
+	m.addauthorization_mode = nil
+	delete(m.clearedFields, orderinfo.FieldAuthorizationMode)
 }
 
 // SetCustomerID sets the "customer_id" field.
@@ -16160,7 +16232,7 @@ func (m *OrderInfoMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrderInfoMutation) Fields() []string {
-	fields := make([]string, 0, 28)
+	fields := make([]string, 0, 29)
 	if m.version != nil {
 		fields = append(fields, orderinfo.FieldVersion)
 	}
@@ -16184,6 +16256,9 @@ func (m *OrderInfoMutation) Fields() []string {
 	}
 	if m.authorization_id != nil {
 		fields = append(fields, orderinfo.FieldAuthorizationID)
+	}
+	if m.authorization_mode != nil {
+		fields = append(fields, orderinfo.FieldAuthorizationMode)
 	}
 	if m.customer_id != nil {
 		fields = append(fields, orderinfo.FieldCustomerID)
@@ -16269,6 +16344,8 @@ func (m *OrderInfoMutation) Field(name string) (ent.Value, bool) {
 		return m.TransactionID()
 	case orderinfo.FieldAuthorizationID:
 		return m.AuthorizationID()
+	case orderinfo.FieldAuthorizationMode:
+		return m.AuthorizationMode()
 	case orderinfo.FieldCustomerID:
 		return m.CustomerID()
 	case orderinfo.FieldCallerOrderID:
@@ -16334,6 +16411,8 @@ func (m *OrderInfoMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldTransactionID(ctx)
 	case orderinfo.FieldAuthorizationID:
 		return m.OldAuthorizationID(ctx)
+	case orderinfo.FieldAuthorizationMode:
+		return m.OldAuthorizationMode(ctx)
 	case orderinfo.FieldCustomerID:
 		return m.OldCustomerID(ctx)
 	case orderinfo.FieldCallerOrderID:
@@ -16438,6 +16517,13 @@ func (m *OrderInfoMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAuthorizationID(v)
+		return nil
+	case orderinfo.FieldAuthorizationMode:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAuthorizationMode(v)
 		return nil
 	case orderinfo.FieldCustomerID:
 		v, ok := value.(string)
@@ -16605,6 +16691,9 @@ func (m *OrderInfoMutation) AddedFields() []string {
 	if m.addremote_start_id != nil {
 		fields = append(fields, orderinfo.FieldRemoteStartID)
 	}
+	if m.addauthorization_mode != nil {
+		fields = append(fields, orderinfo.FieldAuthorizationMode)
+	}
 	if m.addtotal_electricity != nil {
 		fields = append(fields, orderinfo.FieldTotalElectricity)
 	}
@@ -16676,6 +16765,8 @@ func (m *OrderInfoMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedAt()
 	case orderinfo.FieldRemoteStartID:
 		return m.AddedRemoteStartID()
+	case orderinfo.FieldAuthorizationMode:
+		return m.AddedAuthorizationMode()
 	case orderinfo.FieldTotalElectricity:
 		return m.AddedTotalElectricity()
 	case orderinfo.FieldChargeStartElectricity:
@@ -16760,6 +16851,13 @@ func (m *OrderInfoMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddRemoteStartID(v)
+		return nil
+	case orderinfo.FieldAuthorizationMode:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAuthorizationMode(v)
 		return nil
 	case orderinfo.FieldTotalElectricity:
 		v, ok := value.(float64)
@@ -16894,6 +16992,9 @@ func (m *OrderInfoMutation) ClearedFields() []string {
 	if m.FieldCleared(orderinfo.FieldAuthorizationID) {
 		fields = append(fields, orderinfo.FieldAuthorizationID)
 	}
+	if m.FieldCleared(orderinfo.FieldAuthorizationMode) {
+		fields = append(fields, orderinfo.FieldAuthorizationMode)
+	}
 	if m.FieldCleared(orderinfo.FieldCustomerID) {
 		fields = append(fields, orderinfo.FieldCustomerID)
 	}
@@ -16967,6 +17068,9 @@ func (m *OrderInfoMutation) ClearField(name string) error {
 		return nil
 	case orderinfo.FieldAuthorizationID:
 		m.ClearAuthorizationID()
+		return nil
+	case orderinfo.FieldAuthorizationMode:
+		m.ClearAuthorizationMode()
 		return nil
 	case orderinfo.FieldCustomerID:
 		m.ClearCustomerID()
@@ -17053,6 +17157,9 @@ func (m *OrderInfoMutation) ResetField(name string) error {
 		return nil
 	case orderinfo.FieldAuthorizationID:
 		m.ResetAuthorizationID()
+		return nil
+	case orderinfo.FieldAuthorizationMode:
+		m.ResetAuthorizationMode()
 		return nil
 	case orderinfo.FieldCustomerID:
 		m.ResetCustomerID()

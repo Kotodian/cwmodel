@@ -128,6 +128,20 @@ func (oic *OrderInfoCreate) SetNillableAuthorizationID(s *string) *OrderInfoCrea
 	return oic
 }
 
+// SetAuthorizationMode sets the "authorization_mode" field.
+func (oic *OrderInfoCreate) SetAuthorizationMode(i int) *OrderInfoCreate {
+	oic.mutation.SetAuthorizationMode(i)
+	return oic
+}
+
+// SetNillableAuthorizationMode sets the "authorization_mode" field if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillableAuthorizationMode(i *int) *OrderInfoCreate {
+	if i != nil {
+		oic.SetAuthorizationMode(*i)
+	}
+	return oic
+}
+
 // SetCustomerID sets the "customer_id" field.
 func (oic *OrderInfoCreate) SetCustomerID(s string) *OrderInfoCreate {
 	oic.mutation.SetCustomerID(s)
@@ -671,6 +685,10 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 	if value, ok := oic.mutation.AuthorizationID(); ok {
 		_spec.SetField(orderinfo.FieldAuthorizationID, field.TypeString, value)
 		_node.AuthorizationID = &value
+	}
+	if value, ok := oic.mutation.AuthorizationMode(); ok {
+		_spec.SetField(orderinfo.FieldAuthorizationMode, field.TypeInt, value)
+		_node.AuthorizationMode = &value
 	}
 	if value, ok := oic.mutation.CustomerID(); ok {
 		_spec.SetField(orderinfo.FieldCustomerID, field.TypeString, value)

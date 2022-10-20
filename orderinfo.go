@@ -36,6 +36,8 @@ type OrderInfo struct {
 	TransactionID string `json:"transaction_id,omitempty"`
 	// 授权id
 	AuthorizationID *string `json:"authorization_id,omitempty"`
+	// 授权模式
+	AuthorizationMode *int `json:"authorization_mode,omitempty"`
 	// 客户id
 	CustomerID *string `json:"customer_id,omitempty"`
 	// 第三方订单id
@@ -155,7 +157,7 @@ func (*OrderInfo) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case orderinfo.FieldTotalElectricity, orderinfo.FieldChargeStartElectricity, orderinfo.FieldChargeFinalElectricity, orderinfo.FieldSharpElectricity, orderinfo.FieldPeakElectricity, orderinfo.FieldFlatElectricity, orderinfo.FieldValleyElectricity:
 			values[i] = new(sql.NullFloat64)
-		case orderinfo.FieldID, orderinfo.FieldVersion, orderinfo.FieldCreatedBy, orderinfo.FieldCreatedAt, orderinfo.FieldUpdatedBy, orderinfo.FieldUpdatedAt, orderinfo.FieldRemoteStartID, orderinfo.FieldStopReasonCode, orderinfo.FieldState, orderinfo.FieldPriceSchemeReleaseID, orderinfo.FieldOrderStartTime, orderinfo.FieldOrderFinalTime, orderinfo.FieldChargeStartTime, orderinfo.FieldChargeFinalTime, orderinfo.FieldIntellectID, orderinfo.FieldStationID, orderinfo.FieldOperatorID:
+		case orderinfo.FieldID, orderinfo.FieldVersion, orderinfo.FieldCreatedBy, orderinfo.FieldCreatedAt, orderinfo.FieldUpdatedBy, orderinfo.FieldUpdatedAt, orderinfo.FieldRemoteStartID, orderinfo.FieldAuthorizationMode, orderinfo.FieldStopReasonCode, orderinfo.FieldState, orderinfo.FieldPriceSchemeReleaseID, orderinfo.FieldOrderStartTime, orderinfo.FieldOrderFinalTime, orderinfo.FieldChargeStartTime, orderinfo.FieldChargeFinalTime, orderinfo.FieldIntellectID, orderinfo.FieldStationID, orderinfo.FieldOperatorID:
 			values[i] = new(sql.NullInt64)
 		case orderinfo.FieldTransactionID, orderinfo.FieldAuthorizationID, orderinfo.FieldCustomerID, orderinfo.FieldCallerOrderID:
 			values[i] = new(sql.NullString)
@@ -233,6 +235,13 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				oi.AuthorizationID = new(string)
 				*oi.AuthorizationID = value.String
+			}
+		case orderinfo.FieldAuthorizationMode:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field authorization_mode", values[i])
+			} else if value.Valid {
+				oi.AuthorizationMode = new(int)
+				*oi.AuthorizationMode = int(value.Int64)
 			}
 		case orderinfo.FieldCustomerID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -459,6 +468,11 @@ func (oi *OrderInfo) String() string {
 	if v := oi.AuthorizationID; v != nil {
 		builder.WriteString("authorization_id=")
 		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := oi.AuthorizationMode; v != nil {
+		builder.WriteString("authorization_mode=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
 	if v := oi.CustomerID; v != nil {
