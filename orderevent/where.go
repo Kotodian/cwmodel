@@ -80,6 +80,14 @@ func IDLTE(id datasource.UUID) predicate.OrderEvent {
 	})
 }
 
+// OrderID applies equality check predicate on the "order_id" field. It's identical to OrderIDEQ.
+func OrderID(v datasource.UUID) predicate.OrderEvent {
+	vc := uint64(v)
+	return predicate.OrderEvent(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldOrderID), vc))
+	})
+}
+
 // Content applies equality check predicate on the "content" field. It's identical to ContentEQ.
 func Content(v string) predicate.OrderEvent {
 	return predicate.OrderEvent(func(s *sql.Selector) {
@@ -91,6 +99,44 @@ func Content(v string) predicate.OrderEvent {
 func Occurrence(v int64) predicate.OrderEvent {
 	return predicate.OrderEvent(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldOccurrence), v))
+	})
+}
+
+// OrderIDEQ applies the EQ predicate on the "order_id" field.
+func OrderIDEQ(v datasource.UUID) predicate.OrderEvent {
+	vc := uint64(v)
+	return predicate.OrderEvent(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDNEQ applies the NEQ predicate on the "order_id" field.
+func OrderIDNEQ(v datasource.UUID) predicate.OrderEvent {
+	vc := uint64(v)
+	return predicate.OrderEvent(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDIn applies the In predicate on the "order_id" field.
+func OrderIDIn(vs ...datasource.UUID) predicate.OrderEvent {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.OrderEvent(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldOrderID), v...))
+	})
+}
+
+// OrderIDNotIn applies the NotIn predicate on the "order_id" field.
+func OrderIDNotIn(vs ...datasource.UUID) predicate.OrderEvent {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.OrderEvent(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldOrderID), v...))
 	})
 }
 

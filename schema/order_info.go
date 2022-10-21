@@ -61,7 +61,6 @@ func (OrderInfo) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("connector", Connector.Type).Field("connector_id").Ref("order_info").Unique().Required(),
 		edge.From("equipment", Equipment.Type).Field("equipment_id").Ref("order_info").Unique().Required(),
-		edge.To("order_event", OrderEvent.Type).StorageKey(edge.Column("order_id")),
-		// edge.To("smart_charging_effect", SmartChargingEffect.Type).StorageKey(edge.Column("order_id")).Unique(),
+		edge.To("order_event", OrderEvent.Type),
 	}
 }

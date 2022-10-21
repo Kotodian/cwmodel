@@ -11,6 +11,8 @@ const (
 	Label = "order_event"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldOrderID holds the string denoting the order_id field in the database.
+	FieldOrderID = "order_id"
 	// FieldContent holds the string denoting the content field in the database.
 	FieldContent = "content"
 	// FieldOccurrence holds the string denoting the occurrence field in the database.
@@ -31,25 +33,15 @@ const (
 // Columns holds all SQL columns for orderevent fields.
 var Columns = []string{
 	FieldID,
+	FieldOrderID,
 	FieldContent,
 	FieldOccurrence,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "order_event"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"order_id",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}

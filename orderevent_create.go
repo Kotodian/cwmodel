@@ -21,6 +21,12 @@ type OrderEventCreate struct {
 	hooks    []Hook
 }
 
+// SetOrderID sets the "order_id" field.
+func (oec *OrderEventCreate) SetOrderID(d datasource.UUID) *OrderEventCreate {
+	oec.mutation.SetOrderID(d)
+	return oec
+}
+
 // SetContent sets the "content" field.
 func (oec *OrderEventCreate) SetContent(s string) *OrderEventCreate {
 	oec.mutation.SetContent(s)
@@ -50,14 +56,6 @@ func (oec *OrderEventCreate) SetNillableID(d *datasource.UUID) *OrderEventCreate
 // SetOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID.
 func (oec *OrderEventCreate) SetOrderInfoID(id datasource.UUID) *OrderEventCreate {
 	oec.mutation.SetOrderInfoID(id)
-	return oec
-}
-
-// SetNillableOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID if the given value is not nil.
-func (oec *OrderEventCreate) SetNillableOrderInfoID(id *datasource.UUID) *OrderEventCreate {
-	if id != nil {
-		oec = oec.SetOrderInfoID(*id)
-	}
 	return oec
 }
 
@@ -151,11 +149,17 @@ func (oec *OrderEventCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (oec *OrderEventCreate) check() error {
+	if _, ok := oec.mutation.OrderID(); !ok {
+		return &ValidationError{Name: "order_id", err: errors.New(`cwmodel: missing required field "OrderEvent.order_id"`)}
+	}
 	if _, ok := oec.mutation.Content(); !ok {
 		return &ValidationError{Name: "content", err: errors.New(`cwmodel: missing required field "OrderEvent.content"`)}
 	}
 	if _, ok := oec.mutation.Occurrence(); !ok {
 		return &ValidationError{Name: "occurrence", err: errors.New(`cwmodel: missing required field "OrderEvent.occurrence"`)}
+	}
+	if _, ok := oec.mutation.OrderInfoID(); !ok {
+		return &ValidationError{Name: "order_info", err: errors.New(`cwmodel: missing required edge "OrderEvent.order_info"`)}
 	}
 	return nil
 }
@@ -215,7 +219,7 @@ func (oec *OrderEventCreate) createSpec() (*OrderEvent, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.order_id = &nodes[0]
+		_node.OrderID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

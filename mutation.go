@@ -13930,6 +13930,42 @@ func (m *OrderEventMutation) IDs(ctx context.Context) ([]datasource.UUID, error)
 	}
 }
 
+// SetOrderID sets the "order_id" field.
+func (m *OrderEventMutation) SetOrderID(d datasource.UUID) {
+	m.order_info = &d
+}
+
+// OrderID returns the value of the "order_id" field in the mutation.
+func (m *OrderEventMutation) OrderID() (r datasource.UUID, exists bool) {
+	v := m.order_info
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrderID returns the old "order_id" field's value of the OrderEvent entity.
+// If the OrderEvent object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrderEventMutation) OldOrderID(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrderID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrderID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrderID: %w", err)
+	}
+	return oldValue.OrderID, nil
+}
+
+// ResetOrderID resets all changes to the "order_id" field.
+func (m *OrderEventMutation) ResetOrderID() {
+	m.order_info = nil
+}
+
 // SetContent sets the "content" field.
 func (m *OrderEventMutation) SetContent(s string) {
 	m.content = &s
@@ -14080,7 +14116,10 @@ func (m *OrderEventMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrderEventMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 3)
+	if m.order_info != nil {
+		fields = append(fields, orderevent.FieldOrderID)
+	}
 	if m.content != nil {
 		fields = append(fields, orderevent.FieldContent)
 	}
@@ -14095,6 +14134,8 @@ func (m *OrderEventMutation) Fields() []string {
 // schema.
 func (m *OrderEventMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case orderevent.FieldOrderID:
+		return m.OrderID()
 	case orderevent.FieldContent:
 		return m.Content()
 	case orderevent.FieldOccurrence:
@@ -14108,6 +14149,8 @@ func (m *OrderEventMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *OrderEventMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case orderevent.FieldOrderID:
+		return m.OldOrderID(ctx)
 	case orderevent.FieldContent:
 		return m.OldContent(ctx)
 	case orderevent.FieldOccurrence:
@@ -14121,6 +14164,13 @@ func (m *OrderEventMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *OrderEventMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case orderevent.FieldOrderID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrderID(v)
+		return nil
 	case orderevent.FieldContent:
 		v, ok := value.(string)
 		if !ok {
@@ -14199,6 +14249,9 @@ func (m *OrderEventMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *OrderEventMutation) ResetField(name string) error {
 	switch name {
+	case orderevent.FieldOrderID:
+		m.ResetOrderID()
+		return nil
 	case orderevent.FieldContent:
 		m.ResetContent()
 		return nil

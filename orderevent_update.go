@@ -29,6 +29,12 @@ func (oeu *OrderEventUpdate) Where(ps ...predicate.OrderEvent) *OrderEventUpdate
 	return oeu
 }
 
+// SetOrderID sets the "order_id" field.
+func (oeu *OrderEventUpdate) SetOrderID(d datasource.UUID) *OrderEventUpdate {
+	oeu.mutation.SetOrderID(d)
+	return oeu
+}
+
 // SetContent sets the "content" field.
 func (oeu *OrderEventUpdate) SetContent(s string) *OrderEventUpdate {
 	oeu.mutation.SetContent(s)
@@ -51,14 +57,6 @@ func (oeu *OrderEventUpdate) AddOccurrence(i int64) *OrderEventUpdate {
 // SetOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID.
 func (oeu *OrderEventUpdate) SetOrderInfoID(id datasource.UUID) *OrderEventUpdate {
 	oeu.mutation.SetOrderInfoID(id)
-	return oeu
-}
-
-// SetNillableOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID if the given value is not nil.
-func (oeu *OrderEventUpdate) SetNillableOrderInfoID(id *datasource.UUID) *OrderEventUpdate {
-	if id != nil {
-		oeu = oeu.SetOrderInfoID(*id)
-	}
 	return oeu
 }
 
@@ -85,12 +83,18 @@ func (oeu *OrderEventUpdate) Save(ctx context.Context) (int, error) {
 		affected int
 	)
 	if len(oeu.hooks) == 0 {
+		if err = oeu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = oeu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*OrderEventMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = oeu.check(); err != nil {
+				return 0, err
 			}
 			oeu.mutation = mutation
 			affected, err = oeu.sqlSave(ctx)
@@ -130,6 +134,14 @@ func (oeu *OrderEventUpdate) ExecX(ctx context.Context) {
 	if err := oeu.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (oeu *OrderEventUpdate) check() error {
+	if _, ok := oeu.mutation.OrderInfoID(); oeu.mutation.OrderInfoCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "OrderEvent.order_info"`)
+	}
+	return nil
 }
 
 func (oeu *OrderEventUpdate) sqlSave(ctx context.Context) (n int, err error) {
@@ -213,6 +225,12 @@ type OrderEventUpdateOne struct {
 	mutation *OrderEventMutation
 }
 
+// SetOrderID sets the "order_id" field.
+func (oeuo *OrderEventUpdateOne) SetOrderID(d datasource.UUID) *OrderEventUpdateOne {
+	oeuo.mutation.SetOrderID(d)
+	return oeuo
+}
+
 // SetContent sets the "content" field.
 func (oeuo *OrderEventUpdateOne) SetContent(s string) *OrderEventUpdateOne {
 	oeuo.mutation.SetContent(s)
@@ -235,14 +253,6 @@ func (oeuo *OrderEventUpdateOne) AddOccurrence(i int64) *OrderEventUpdateOne {
 // SetOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID.
 func (oeuo *OrderEventUpdateOne) SetOrderInfoID(id datasource.UUID) *OrderEventUpdateOne {
 	oeuo.mutation.SetOrderInfoID(id)
-	return oeuo
-}
-
-// SetNillableOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID if the given value is not nil.
-func (oeuo *OrderEventUpdateOne) SetNillableOrderInfoID(id *datasource.UUID) *OrderEventUpdateOne {
-	if id != nil {
-		oeuo = oeuo.SetOrderInfoID(*id)
-	}
 	return oeuo
 }
 
@@ -276,12 +286,18 @@ func (oeuo *OrderEventUpdateOne) Save(ctx context.Context) (*OrderEvent, error) 
 		node *OrderEvent
 	)
 	if len(oeuo.hooks) == 0 {
+		if err = oeuo.check(); err != nil {
+			return nil, err
+		}
 		node, err = oeuo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*OrderEventMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = oeuo.check(); err != nil {
+				return nil, err
 			}
 			oeuo.mutation = mutation
 			node, err = oeuo.sqlSave(ctx)
@@ -327,6 +343,14 @@ func (oeuo *OrderEventUpdateOne) ExecX(ctx context.Context) {
 	if err := oeuo.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (oeuo *OrderEventUpdateOne) check() error {
+	if _, ok := oeuo.mutation.OrderInfoID(); oeuo.mutation.OrderInfoCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "OrderEvent.order_info"`)
+	}
+	return nil
 }
 
 func (oeuo *OrderEventUpdateOne) sqlSave(ctx context.Context) (_node *OrderEvent, err error) {

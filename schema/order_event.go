@@ -30,6 +30,7 @@ func (OrderEvent) Annotations() []schema.Annotation {
 func (OrderEvent) Fields() []ent.Field {
 	return []ent.Field{
 		field.Uint64("id").GoType(datasource.UUID(0)).DefaultFunc(id.Next().Uint64()).Immutable().Comment("主键"),
+		field.Uint64("order_id").GoType(datasource.UUID(0)).Comment("订单id"),
 		field.String("content").Comment("事件内容"),
 		field.Int64("occurrence").Comment("事件发生时间"),
 	}
@@ -37,6 +38,6 @@ func (OrderEvent) Fields() []ent.Field {
 
 func (OrderEvent) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("order_info", OrderInfo.Type).Ref("order_event").Unique(),
+		edge.From("order_info", OrderInfo.Type).Field("order_id").Ref("order_event").Unique().Required(),
 	}
 }

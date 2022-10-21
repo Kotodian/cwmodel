@@ -18,14 +18,15 @@ type OrderEvent struct {
 	// ID of the ent.
 	// 主键
 	ID datasource.UUID `json:"id,omitempty"`
+	// 订单id
+	OrderID datasource.UUID `json:"order_id,omitempty"`
 	// 事件内容
 	Content string `json:"content,omitempty"`
 	// 事件发生时间
 	Occurrence int64 `json:"occurrence,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrderEventQuery when eager-loading is set.
-	Edges    OrderEventEdges `json:"-"`
-	order_id *datasource.UUID
+	Edges OrderEventEdges `json:"-"`
 }
 
 // OrderEventEdges holds the relations/edges for other nodes in the graph.
@@ -55,12 +56,10 @@ func (*OrderEvent) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case orderevent.FieldID, orderevent.FieldOccurrence:
+		case orderevent.FieldID, orderevent.FieldOrderID, orderevent.FieldOccurrence:
 			values[i] = new(sql.NullInt64)
 		case orderevent.FieldContent:
 			values[i] = new(sql.NullString)
-		case orderevent.ForeignKeys[0]: // order_id
-			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type OrderEvent", columns[i])
 		}
@@ -82,6 +81,12 @@ func (oe *OrderEvent) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				oe.ID = datasource.UUID(value.Int64)
 			}
+		case orderevent.FieldOrderID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field order_id", values[i])
+			} else if value.Valid {
+				oe.OrderID = datasource.UUID(value.Int64)
+			}
 		case orderevent.FieldContent:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field content", values[i])
@@ -93,13 +98,6 @@ func (oe *OrderEvent) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field occurrence", values[i])
 			} else if value.Valid {
 				oe.Occurrence = value.Int64
-			}
-		case orderevent.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field order_id", values[i])
-			} else if value.Valid {
-				oe.order_id = new(datasource.UUID)
-				*oe.order_id = datasource.UUID(value.Int64)
 			}
 		}
 	}
@@ -134,6 +132,9 @@ func (oe *OrderEvent) String() string {
 	var builder strings.Builder
 	builder.WriteString("OrderEvent(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", oe.ID))
+	builder.WriteString("order_id=")
+	builder.WriteString(fmt.Sprintf("%v", oe.OrderID))
+	builder.WriteString(", ")
 	builder.WriteString("content=")
 	builder.WriteString(oe.Content)
 	builder.WriteString(", ")

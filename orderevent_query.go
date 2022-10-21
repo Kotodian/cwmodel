@@ -26,7 +26,6 @@ type OrderEventQuery struct {
 	fields        []string
 	predicates    []predicate.OrderEvent
 	withOrderInfo *OrderInfoQuery
-	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -291,12 +290,12 @@ func (oeq *OrderEventQuery) WithOrderInfo(opts ...func(*OrderInfoQuery)) *OrderE
 // Example:
 //
 //	var v []struct {
-//		Content string `json:"content,omitempty"`
+//		OrderID datasource.UUID `json:"order_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.OrderEvent.Query().
-//		GroupBy(orderevent.FieldContent).
+//		GroupBy(orderevent.FieldOrderID).
 //		Aggregate(cwmodel.Count()).
 //		Scan(ctx, &v)
 func (oeq *OrderEventQuery) GroupBy(field string, fields ...string) *OrderEventGroupBy {
@@ -319,11 +318,11 @@ func (oeq *OrderEventQuery) GroupBy(field string, fields ...string) *OrderEventG
 // Example:
 //
 //	var v []struct {
-//		Content string `json:"content,omitempty"`
+//		OrderID datasource.UUID `json:"order_id,omitempty"`
 //	}
 //
 //	client.OrderEvent.Query().
-//		Select(orderevent.FieldContent).
+//		Select(orderevent.FieldOrderID).
 //		Scan(ctx, &v)
 func (oeq *OrderEventQuery) Select(fields ...string) *OrderEventSelect {
 	oeq.fields = append(oeq.fields, fields...)
@@ -352,18 +351,11 @@ func (oeq *OrderEventQuery) prepareQuery(ctx context.Context) error {
 func (oeq *OrderEventQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*OrderEvent, error) {
 	var (
 		nodes       = []*OrderEvent{}
-		withFKs     = oeq.withFKs
 		_spec       = oeq.querySpec()
 		loadedTypes = [1]bool{
 			oeq.withOrderInfo != nil,
 		}
 	)
-	if oeq.withOrderInfo != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, orderevent.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*OrderEvent).scanValues(nil, columns)
 	}
@@ -395,10 +387,7 @@ func (oeq *OrderEventQuery) loadOrderInfo(ctx context.Context, query *OrderInfoQ
 	ids := make([]datasource.UUID, 0, len(nodes))
 	nodeids := make(map[datasource.UUID][]*OrderEvent)
 	for i := range nodes {
-		if nodes[i].order_id == nil {
-			continue
-		}
-		fk := *nodes[i].order_id
+		fk := nodes[i].OrderID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
