@@ -91,6 +91,12 @@ func (eac *EquipmentAlarmCreate) SetNillableUpdatedAt(i *int64) *EquipmentAlarmC
 	return eac
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (eac *EquipmentAlarmCreate) SetEquipmentID(d datasource.UUID) *EquipmentAlarmCreate {
+	eac.mutation.SetEquipmentID(d)
+	return eac
+}
+
 // SetDtcCode sets the "dtc_code" field.
 func (eac *EquipmentAlarmCreate) SetDtcCode(i int64) *EquipmentAlarmCreate {
 	eac.mutation.SetDtcCode(i)
@@ -156,12 +162,6 @@ func (eac *EquipmentAlarmCreate) SetNillableID(d *datasource.UUID) *EquipmentAla
 	if d != nil {
 		eac.SetID(*d)
 	}
-	return eac
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eac *EquipmentAlarmCreate) SetEquipmentID(id datasource.UUID) *EquipmentAlarmCreate {
-	eac.mutation.SetEquipmentID(id)
 	return eac
 }
 
@@ -294,6 +294,9 @@ func (eac *EquipmentAlarmCreate) check() error {
 	if _, ok := eac.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`cwmodel: missing required field "EquipmentAlarm.updated_at"`)}
 	}
+	if _, ok := eac.mutation.EquipmentID(); !ok {
+		return &ValidationError{Name: "equipment_id", err: errors.New(`cwmodel: missing required field "EquipmentAlarm.equipment_id"`)}
+	}
 	if _, ok := eac.mutation.DtcCode(); !ok {
 		return &ValidationError{Name: "dtc_code", err: errors.New(`cwmodel: missing required field "EquipmentAlarm.dtc_code"`)}
 	}
@@ -396,7 +399,7 @@ func (eac *EquipmentAlarmCreate) createSpec() (*EquipmentAlarm, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.equipment_id = &nodes[0]
+		_node.EquipmentID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

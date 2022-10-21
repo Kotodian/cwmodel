@@ -131,7 +131,7 @@ func init() {
 	// equipmentalarm.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	equipmentalarm.UpdateDefaultUpdatedAt = equipmentalarmDescUpdatedAt.UpdateDefault.(func() int64)
 	// equipmentalarmDescCount is the schema descriptor for count field.
-	equipmentalarmDescCount := equipmentalarmFields[4].Descriptor()
+	equipmentalarmDescCount := equipmentalarmFields[5].Descriptor()
 	// equipmentalarm.DefaultCount holds the default value on creation for the count field.
 	equipmentalarm.DefaultCount = equipmentalarmDescCount.Default.(int)
 	// equipmentalarmDescID is the schema descriptor for id field.

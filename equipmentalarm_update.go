@@ -84,6 +84,12 @@ func (eau *EquipmentAlarmUpdate) AddUpdatedAt(i int64) *EquipmentAlarmUpdate {
 	return eau
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (eau *EquipmentAlarmUpdate) SetEquipmentID(d datasource.UUID) *EquipmentAlarmUpdate {
+	eau.mutation.SetEquipmentID(d)
+	return eau
+}
+
 // SetDtcCode sets the "dtc_code" field.
 func (eau *EquipmentAlarmUpdate) SetDtcCode(i int64) *EquipmentAlarmUpdate {
 	eau.mutation.ResetDtcCode()
@@ -175,12 +181,6 @@ func (eau *EquipmentAlarmUpdate) SetNillableCount(i *int) *EquipmentAlarmUpdate 
 // AddCount adds i to the "count" field.
 func (eau *EquipmentAlarmUpdate) AddCount(i int) *EquipmentAlarmUpdate {
 	eau.mutation.AddCount(i)
-	return eau
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eau *EquipmentAlarmUpdate) SetEquipmentID(id datasource.UUID) *EquipmentAlarmUpdate {
-	eau.mutation.SetEquipmentID(id)
 	return eau
 }
 
@@ -455,6 +455,12 @@ func (eauo *EquipmentAlarmUpdateOne) AddUpdatedAt(i int64) *EquipmentAlarmUpdate
 	return eauo
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (eauo *EquipmentAlarmUpdateOne) SetEquipmentID(d datasource.UUID) *EquipmentAlarmUpdateOne {
+	eauo.mutation.SetEquipmentID(d)
+	return eauo
+}
+
 // SetDtcCode sets the "dtc_code" field.
 func (eauo *EquipmentAlarmUpdateOne) SetDtcCode(i int64) *EquipmentAlarmUpdateOne {
 	eauo.mutation.ResetDtcCode()
@@ -546,12 +552,6 @@ func (eauo *EquipmentAlarmUpdateOne) SetNillableCount(i *int) *EquipmentAlarmUpd
 // AddCount adds i to the "count" field.
 func (eauo *EquipmentAlarmUpdateOne) AddCount(i int) *EquipmentAlarmUpdateOne {
 	eauo.mutation.AddCount(i)
-	return eauo
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eauo *EquipmentAlarmUpdateOne) SetEquipmentID(id datasource.UUID) *EquipmentAlarmUpdateOne {
-	eauo.mutation.SetEquipmentID(id)
 	return eauo
 }
 
