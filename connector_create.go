@@ -98,6 +98,12 @@ func (cc *ConnectorCreate) SetEquipmentID(d datasource.UUID) *ConnectorCreate {
 	return cc
 }
 
+// SetEvseID sets the "evse_id" field.
+func (cc *ConnectorCreate) SetEvseID(d datasource.UUID) *ConnectorCreate {
+	cc.mutation.SetEvseID(d)
+	return cc
+}
+
 // SetEquipmentSn sets the "equipment_sn" field.
 func (cc *ConnectorCreate) SetEquipmentSn(s string) *ConnectorCreate {
 	cc.mutation.SetEquipmentSn(s)
@@ -195,12 +201,6 @@ func (cc *ConnectorCreate) SetNillableID(d *datasource.UUID) *ConnectorCreate {
 	if d != nil {
 		cc.SetID(*d)
 	}
-	return cc
-}
-
-// SetEvseID sets the "evse" edge to the Evse entity by ID.
-func (cc *ConnectorCreate) SetEvseID(id datasource.UUID) *ConnectorCreate {
-	cc.mutation.SetEvseID(id)
 	return cc
 }
 
@@ -341,6 +341,9 @@ func (cc *ConnectorCreate) check() error {
 	if _, ok := cc.mutation.EquipmentID(); !ok {
 		return &ValidationError{Name: "equipment_id", err: errors.New(`cwmodel: missing required field "Connector.equipment_id"`)}
 	}
+	if _, ok := cc.mutation.EvseID(); !ok {
+		return &ValidationError{Name: "evse_id", err: errors.New(`cwmodel: missing required field "Connector.evse_id"`)}
+	}
 	if _, ok := cc.mutation.EquipmentSn(); !ok {
 		return &ValidationError{Name: "equipment_sn", err: errors.New(`cwmodel: missing required field "Connector.equipment_sn"`)}
 	}
@@ -471,7 +474,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.evse_id = &nodes[0]
+		_node.EvseID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := cc.mutation.EquipmentIDs(); len(nodes) > 0 {

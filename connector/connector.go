@@ -23,6 +23,8 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldEquipmentID holds the string denoting the equipment_id field in the database.
 	FieldEquipmentID = "equipment_id"
+	// FieldEvseID holds the string denoting the evse_id field in the database.
+	FieldEvseID = "evse_id"
 	// FieldEquipmentSn holds the string denoting the equipment_sn field in the database.
 	FieldEquipmentSn = "equipment_sn"
 	// FieldEvseSerial holds the string denoting the evse_serial field in the database.
@@ -72,6 +74,7 @@ var Columns = []string{
 	FieldUpdatedBy,
 	FieldUpdatedAt,
 	FieldEquipmentID,
+	FieldEvseID,
 	FieldEquipmentSn,
 	FieldEvseSerial,
 	FieldSerial,
@@ -83,21 +86,10 @@ var Columns = []string{
 	FieldParkNo,
 }
 
-// ForeignKeys holds the SQL foreign-keys that are owned by the "base_connector"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"evse_id",
-}
-
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}

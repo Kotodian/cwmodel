@@ -844,7 +844,6 @@ func (eq *EquipmentQuery) loadConnector(ctx context.Context, query *ConnectorQue
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
 	query.Where(predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.InValues(equipment.ConnectorColumn, fks...))
 	}))

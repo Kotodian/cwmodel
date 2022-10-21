@@ -889,6 +889,42 @@ func (m *ConnectorMutation) ResetEquipmentID() {
 	m.equipment = nil
 }
 
+// SetEvseID sets the "evse_id" field.
+func (m *ConnectorMutation) SetEvseID(d datasource.UUID) {
+	m.evse = &d
+}
+
+// EvseID returns the value of the "evse_id" field in the mutation.
+func (m *ConnectorMutation) EvseID() (r datasource.UUID, exists bool) {
+	v := m.evse
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEvseID returns the old "evse_id" field's value of the Connector entity.
+// If the Connector object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ConnectorMutation) OldEvseID(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEvseID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEvseID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEvseID: %w", err)
+	}
+	return oldValue.EvseID, nil
+}
+
+// ResetEvseID resets all changes to the "evse_id" field.
+func (m *ConnectorMutation) ResetEvseID() {
+	m.evse = nil
+}
+
 // SetEquipmentSn sets the "equipment_sn" field.
 func (m *ConnectorMutation) SetEquipmentSn(s string) {
 	m.equipment_sn = &s
@@ -1355,11 +1391,6 @@ func (m *ConnectorMutation) ResetParkNo() {
 	m.park_no = nil
 }
 
-// SetEvseID sets the "evse" edge to the Evse entity by id.
-func (m *ConnectorMutation) SetEvseID(id datasource.UUID) {
-	m.evse = &id
-}
-
 // ClearEvse clears the "evse" edge to the Evse entity.
 func (m *ConnectorMutation) ClearEvse() {
 	m.clearedevse = true
@@ -1368,14 +1399,6 @@ func (m *ConnectorMutation) ClearEvse() {
 // EvseCleared reports if the "evse" edge to the Evse entity was cleared.
 func (m *ConnectorMutation) EvseCleared() bool {
 	return m.clearedevse
-}
-
-// EvseID returns the "evse" edge ID in the mutation.
-func (m *ConnectorMutation) EvseID() (id datasource.UUID, exists bool) {
-	if m.evse != nil {
-		return *m.evse, true
-	}
-	return
 }
 
 // EvseIDs returns the "evse" edge IDs in the mutation.
@@ -1439,7 +1462,7 @@ func (m *ConnectorMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ConnectorMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
 	if m.version != nil {
 		fields = append(fields, connector.FieldVersion)
 	}
@@ -1457,6 +1480,9 @@ func (m *ConnectorMutation) Fields() []string {
 	}
 	if m.equipment != nil {
 		fields = append(fields, connector.FieldEquipmentID)
+	}
+	if m.evse != nil {
+		fields = append(fields, connector.FieldEvseID)
 	}
 	if m.equipment_sn != nil {
 		fields = append(fields, connector.FieldEquipmentSn)
@@ -1505,6 +1531,8 @@ func (m *ConnectorMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case connector.FieldEquipmentID:
 		return m.EquipmentID()
+	case connector.FieldEvseID:
+		return m.EvseID()
 	case connector.FieldEquipmentSn:
 		return m.EquipmentSn()
 	case connector.FieldEvseSerial:
@@ -1544,6 +1572,8 @@ func (m *ConnectorMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldUpdatedAt(ctx)
 	case connector.FieldEquipmentID:
 		return m.OldEquipmentID(ctx)
+	case connector.FieldEvseID:
+		return m.OldEvseID(ctx)
 	case connector.FieldEquipmentSn:
 		return m.OldEquipmentSn(ctx)
 	case connector.FieldEvseSerial:
@@ -1612,6 +1642,13 @@ func (m *ConnectorMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetEquipmentID(v)
+		return nil
+	case connector.FieldEvseID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEvseID(v)
 		return nil
 	case connector.FieldEquipmentSn:
 		v, ok := value.(string)
@@ -1886,6 +1923,9 @@ func (m *ConnectorMutation) ResetField(name string) error {
 		return nil
 	case connector.FieldEquipmentID:
 		m.ResetEquipmentID()
+		return nil
+	case connector.FieldEvseID:
+		m.ResetEvseID()
 		return nil
 	case connector.FieldEquipmentSn:
 		m.ResetEquipmentSn()

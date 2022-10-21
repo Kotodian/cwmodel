@@ -125,6 +125,14 @@ func EquipmentID(v datasource.UUID) predicate.Connector {
 	})
 }
 
+// EvseID applies equality check predicate on the "evse_id" field. It's identical to EvseIDEQ.
+func EvseID(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldEvseID), vc))
+	})
+}
+
 // EquipmentSn applies equality check predicate on the "equipment_sn" field. It's identical to EquipmentSnEQ.
 func EquipmentSn(v string) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
@@ -557,6 +565,44 @@ func EquipmentIDNotIn(vs ...datasource.UUID) predicate.Connector {
 	}
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.NotIn(s.C(FieldEquipmentID), v...))
+	})
+}
+
+// EvseIDEQ applies the EQ predicate on the "evse_id" field.
+func EvseIDEQ(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldEvseID), vc))
+	})
+}
+
+// EvseIDNEQ applies the NEQ predicate on the "evse_id" field.
+func EvseIDNEQ(v datasource.UUID) predicate.Connector {
+	vc := uint64(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldEvseID), vc))
+	})
+}
+
+// EvseIDIn applies the In predicate on the "evse_id" field.
+func EvseIDIn(vs ...datasource.UUID) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldEvseID), v...))
+	})
+}
+
+// EvseIDNotIn applies the NotIn predicate on the "evse_id" field.
+func EvseIDNotIn(vs ...datasource.UUID) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldEvseID), v...))
 	})
 }
 

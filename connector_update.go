@@ -91,6 +91,12 @@ func (cu *ConnectorUpdate) SetEquipmentID(d datasource.UUID) *ConnectorUpdate {
 	return cu
 }
 
+// SetEvseID sets the "evse_id" field.
+func (cu *ConnectorUpdate) SetEvseID(d datasource.UUID) *ConnectorUpdate {
+	cu.mutation.SetEvseID(d)
+	return cu
+}
+
 // SetEquipmentSn sets the "equipment_sn" field.
 func (cu *ConnectorUpdate) SetEquipmentSn(s string) *ConnectorUpdate {
 	cu.mutation.SetEquipmentSn(s)
@@ -227,12 +233,6 @@ func (cu *ConnectorUpdate) SetNillableParkNo(s *string) *ConnectorUpdate {
 	if s != nil {
 		cu.SetParkNo(*s)
 	}
-	return cu
-}
-
-// SetEvseID sets the "evse" edge to the Evse entity by ID.
-func (cu *ConnectorUpdate) SetEvseID(id datasource.UUID) *ConnectorUpdate {
-	cu.mutation.SetEvseID(id)
 	return cu
 }
 
@@ -580,6 +580,12 @@ func (cuo *ConnectorUpdateOne) SetEquipmentID(d datasource.UUID) *ConnectorUpdat
 	return cuo
 }
 
+// SetEvseID sets the "evse_id" field.
+func (cuo *ConnectorUpdateOne) SetEvseID(d datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.SetEvseID(d)
+	return cuo
+}
+
 // SetEquipmentSn sets the "equipment_sn" field.
 func (cuo *ConnectorUpdateOne) SetEquipmentSn(s string) *ConnectorUpdateOne {
 	cuo.mutation.SetEquipmentSn(s)
@@ -716,12 +722,6 @@ func (cuo *ConnectorUpdateOne) SetNillableParkNo(s *string) *ConnectorUpdateOne 
 	if s != nil {
 		cuo.SetParkNo(*s)
 	}
-	return cuo
-}
-
-// SetEvseID sets the "evse" edge to the Evse entity by ID.
-func (cuo *ConnectorUpdateOne) SetEvseID(id datasource.UUID) *ConnectorUpdateOne {
-	cuo.mutation.SetEvseID(id)
 	return cuo
 }
 

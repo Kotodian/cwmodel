@@ -28,7 +28,6 @@ type ConnectorQuery struct {
 	predicates    []predicate.Connector
 	withEvse      *EvseQuery
 	withEquipment *EquipmentQuery
-	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -388,19 +387,12 @@ func (cq *ConnectorQuery) prepareQuery(ctx context.Context) error {
 func (cq *ConnectorQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Connector, error) {
 	var (
 		nodes       = []*Connector{}
-		withFKs     = cq.withFKs
 		_spec       = cq.querySpec()
 		loadedTypes = [2]bool{
 			cq.withEvse != nil,
 			cq.withEquipment != nil,
 		}
 	)
-	if cq.withEvse != nil || cq.withEquipment != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, connector.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Connector).scanValues(nil, columns)
 	}
@@ -438,10 +430,7 @@ func (cq *ConnectorQuery) loadEvse(ctx context.Context, query *EvseQuery, nodes 
 	ids := make([]datasource.UUID, 0, len(nodes))
 	nodeids := make(map[datasource.UUID][]*Connector)
 	for i := range nodes {
-		if nodes[i].evse_id == nil {
-			continue
-		}
-		fk := *nodes[i].evse_id
+		fk := nodes[i].EvseID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}

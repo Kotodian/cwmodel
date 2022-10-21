@@ -464,7 +464,6 @@ func (eq *EvseQuery) loadConnector(ctx context.Context, query *ConnectorQuery, n
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
 	query.Where(predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.InValues(evse.ConnectorColumn, fks...))
 	}))
@@ -473,13 +472,10 @@ func (eq *EvseQuery) loadConnector(ctx context.Context, query *ConnectorQuery, n
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.evse_id
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "evse_id" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.EvseID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "evse_id" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "evse_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

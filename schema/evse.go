@@ -40,6 +40,6 @@ func (Evse) Fields() []ent.Field {
 func (Evse) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("equipment", Equipment.Type).Field("equipment_id").Ref("evse").Unique().Required(),
-		edge.To("connector", Connector.Type).StorageKey(edge.Column("evse_id")),
+		edge.To("connector", Connector.Type),
 	}
 }
