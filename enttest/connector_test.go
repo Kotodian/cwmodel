@@ -19,7 +19,7 @@ func TestCreateConnector(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
 
-	e, err := equip.QueryEvse().
+	e, err := equip.QueryEvse().Unique(false).
 		Where(evse.SerialEQ("1")).
 		Only(ctx)
 	assert.Nil(t, err)

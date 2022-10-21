@@ -17,10 +17,6 @@ func TestUpdateFirmwareEffect(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
 
-	firmware, err := cli.Firmware.Get(ctx, 343755557568517)
-	assert.Nil(t, err)
-	assert.NotNil(t, firmware)
-
 	err = cli.EquipmentFirmwareEffect.Update().
 		SetEquipment(equip).
 		Where(equipmentfirmwareeffect.RequestIDEQ(1666080165)).
