@@ -40,7 +40,7 @@ func TestCreateReservation(t *testing.T) {
 		})
 	})
 
-	equip, err := cli.Equipment.Get(ctx, 244667116421190)
+	equip, err := cli.Equipment.Get(ctx, 336379858853894)
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
 

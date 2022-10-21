@@ -17,7 +17,7 @@ func TestQueryEquipmentInfo(t *testing.T) {
 	defer cli.Close()
 	ctx := context.TODO()
 
-	equip, err := cli.Equipment.Get(ctx, 244667116421190)
+	equip, err := cli.Equipment.Get(ctx, 336379858853894)
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
 
@@ -52,7 +52,7 @@ func TestCreateEquipmentInfo(t *testing.T) {
 		})
 	})
 
-	equip, err := cli.Equipment.Get(ctx, 244667116421190)
+	equip, err := cli.Equipment.Get(ctx, 336379858853894)
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
 	err = cli.EquipmentInfo.Create().SetEquipment(equip).
