@@ -9924,6 +9924,42 @@ func (m *EvseMutation) ResetUpdatedAt() {
 	m.addupdated_at = nil
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (m *EvseMutation) SetEquipmentID(d datasource.UUID) {
+	m.equipment = &d
+}
+
+// EquipmentID returns the value of the "equipment_id" field in the mutation.
+func (m *EvseMutation) EquipmentID() (r datasource.UUID, exists bool) {
+	v := m.equipment
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEquipmentID returns the old "equipment_id" field's value of the Evse entity.
+// If the Evse object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EvseMutation) OldEquipmentID(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEquipmentID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEquipmentID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEquipmentID: %w", err)
+	}
+	return oldValue.EquipmentID, nil
+}
+
+// ResetEquipmentID resets all changes to the "equipment_id" field.
+func (m *EvseMutation) ResetEquipmentID() {
+	m.equipment = nil
+}
+
 // SetSerial sets the "serial" field.
 func (m *EvseMutation) SetSerial(s string) {
 	m.serial = &s
@@ -10016,11 +10052,6 @@ func (m *EvseMutation) ResetConnectorNumber() {
 	m.addconnector_number = nil
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by id.
-func (m *EvseMutation) SetEquipmentID(id datasource.UUID) {
-	m.equipment = &id
-}
-
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
 func (m *EvseMutation) ClearEquipment() {
 	m.clearedequipment = true
@@ -10029,14 +10060,6 @@ func (m *EvseMutation) ClearEquipment() {
 // EquipmentCleared reports if the "equipment" edge to the Equipment entity was cleared.
 func (m *EvseMutation) EquipmentCleared() bool {
 	return m.clearedequipment
-}
-
-// EquipmentID returns the "equipment" edge ID in the mutation.
-func (m *EvseMutation) EquipmentID() (id datasource.UUID, exists bool) {
-	if m.equipment != nil {
-		return *m.equipment, true
-	}
-	return
 }
 
 // EquipmentIDs returns the "equipment" edge IDs in the mutation.
@@ -10128,7 +10151,7 @@ func (m *EvseMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EvseMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.version != nil {
 		fields = append(fields, evse.FieldVersion)
 	}
@@ -10143,6 +10166,9 @@ func (m *EvseMutation) Fields() []string {
 	}
 	if m.updated_at != nil {
 		fields = append(fields, evse.FieldUpdatedAt)
+	}
+	if m.equipment != nil {
+		fields = append(fields, evse.FieldEquipmentID)
 	}
 	if m.serial != nil {
 		fields = append(fields, evse.FieldSerial)
@@ -10168,6 +10194,8 @@ func (m *EvseMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedBy()
 	case evse.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case evse.FieldEquipmentID:
+		return m.EquipmentID()
 	case evse.FieldSerial:
 		return m.Serial()
 	case evse.FieldConnectorNumber:
@@ -10191,6 +10219,8 @@ func (m *EvseMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldUpdatedBy(ctx)
 	case evse.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case evse.FieldEquipmentID:
+		return m.OldEquipmentID(ctx)
 	case evse.FieldSerial:
 		return m.OldSerial(ctx)
 	case evse.FieldConnectorNumber:
@@ -10238,6 +10268,13 @@ func (m *EvseMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case evse.FieldEquipmentID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEquipmentID(v)
 		return nil
 	case evse.FieldSerial:
 		v, ok := value.(string)
@@ -10391,6 +10428,9 @@ func (m *EvseMutation) ResetField(name string) error {
 		return nil
 	case evse.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case evse.FieldEquipmentID:
+		m.ResetEquipmentID()
 		return nil
 	case evse.FieldSerial:
 		m.ResetSerial()

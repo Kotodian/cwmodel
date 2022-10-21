@@ -92,6 +92,12 @@ func (ec *EvseCreate) SetNillableUpdatedAt(i *int64) *EvseCreate {
 	return ec
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (ec *EvseCreate) SetEquipmentID(d datasource.UUID) *EvseCreate {
+	ec.mutation.SetEquipmentID(d)
+	return ec
+}
+
 // SetSerial sets the "serial" field.
 func (ec *EvseCreate) SetSerial(s string) *EvseCreate {
 	ec.mutation.SetSerial(s)
@@ -115,12 +121,6 @@ func (ec *EvseCreate) SetNillableID(d *datasource.UUID) *EvseCreate {
 	if d != nil {
 		ec.SetID(*d)
 	}
-	return ec
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (ec *EvseCreate) SetEquipmentID(id datasource.UUID) *EvseCreate {
-	ec.mutation.SetEquipmentID(id)
 	return ec
 }
 
@@ -264,6 +264,9 @@ func (ec *EvseCreate) check() error {
 	if _, ok := ec.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`cwmodel: missing required field "Evse.updated_at"`)}
 	}
+	if _, ok := ec.mutation.EquipmentID(); !ok {
+		return &ValidationError{Name: "equipment_id", err: errors.New(`cwmodel: missing required field "Evse.equipment_id"`)}
+	}
 	if _, ok := ec.mutation.Serial(); !ok {
 		return &ValidationError{Name: "serial", err: errors.New(`cwmodel: missing required field "Evse.serial"`)}
 	}
@@ -351,7 +354,7 @@ func (ec *EvseCreate) createSpec() (*Evse, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.equipment_id = &nodes[0]
+		_node.EquipmentID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := ec.mutation.ConnectorIDs(); len(nodes) > 0 {

@@ -85,6 +85,12 @@ func (eu *EvseUpdate) AddUpdatedAt(i int64) *EvseUpdate {
 	return eu
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (eu *EvseUpdate) SetEquipmentID(d datasource.UUID) *EvseUpdate {
+	eu.mutation.SetEquipmentID(d)
+	return eu
+}
+
 // SetSerial sets the "serial" field.
 func (eu *EvseUpdate) SetSerial(s string) *EvseUpdate {
 	eu.mutation.SetSerial(s)
@@ -101,12 +107,6 @@ func (eu *EvseUpdate) SetConnectorNumber(i int) *EvseUpdate {
 // AddConnectorNumber adds i to the "connector_number" field.
 func (eu *EvseUpdate) AddConnectorNumber(i int) *EvseUpdate {
 	eu.mutation.AddConnectorNumber(i)
-	return eu
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eu *EvseUpdate) SetEquipmentID(id datasource.UUID) *EvseUpdate {
-	eu.mutation.SetEquipmentID(id)
 	return eu
 }
 
@@ -447,6 +447,12 @@ func (euo *EvseUpdateOne) AddUpdatedAt(i int64) *EvseUpdateOne {
 	return euo
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (euo *EvseUpdateOne) SetEquipmentID(d datasource.UUID) *EvseUpdateOne {
+	euo.mutation.SetEquipmentID(d)
+	return euo
+}
+
 // SetSerial sets the "serial" field.
 func (euo *EvseUpdateOne) SetSerial(s string) *EvseUpdateOne {
 	euo.mutation.SetSerial(s)
@@ -463,12 +469,6 @@ func (euo *EvseUpdateOne) SetConnectorNumber(i int) *EvseUpdateOne {
 // AddConnectorNumber adds i to the "connector_number" field.
 func (euo *EvseUpdateOne) AddConnectorNumber(i int) *EvseUpdateOne {
 	euo.mutation.AddConnectorNumber(i)
-	return euo
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (euo *EvseUpdateOne) SetEquipmentID(id datasource.UUID) *EvseUpdateOne {
-	euo.mutation.SetEquipmentID(id)
 	return euo
 }
 

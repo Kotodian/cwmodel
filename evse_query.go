@@ -29,7 +29,6 @@ type EvseQuery struct {
 	predicates    []predicate.Evse
 	withEquipment *EquipmentQuery
 	withConnector *ConnectorQuery
-	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -389,19 +388,12 @@ func (eq *EvseQuery) prepareQuery(ctx context.Context) error {
 func (eq *EvseQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Evse, error) {
 	var (
 		nodes       = []*Evse{}
-		withFKs     = eq.withFKs
 		_spec       = eq.querySpec()
 		loadedTypes = [2]bool{
 			eq.withEquipment != nil,
 			eq.withConnector != nil,
 		}
 	)
-	if eq.withEquipment != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, evse.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Evse).scanValues(nil, columns)
 	}
@@ -440,10 +432,7 @@ func (eq *EvseQuery) loadEquipment(ctx context.Context, query *EquipmentQuery, n
 	ids := make([]datasource.UUID, 0, len(nodes))
 	nodeids := make(map[datasource.UUID][]*Evse)
 	for i := range nodes {
-		if nodes[i].equipment_id == nil {
-			continue
-		}
-		fk := *nodes[i].equipment_id
+		fk := nodes[i].EquipmentID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}

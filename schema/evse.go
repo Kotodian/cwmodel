@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 // Evse holds the schema definition for the Evse entity.
@@ -29,6 +30,7 @@ func (Evse) Annotations() []schema.Annotation {
 // Fields of the Evse.
 func (Evse) Fields() []ent.Field {
 	return []ent.Field{
+		field.Uint64("equipment_id").GoType(datasource.UUID(0)).Comment("桩id"),
 		field.String("serial").Comment("设备序列号"),
 		field.Int("connector_number").Comment("枪数量"),
 	}
@@ -37,7 +39,7 @@ func (Evse) Fields() []ent.Field {
 // Edges of the Evse.
 func (Evse) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("equipment", Equipment.Type).Ref("evse").Unique().Required(),
+		edge.From("equipment", Equipment.Type).Field("equipment_id").Ref("evse").Unique().Required(),
 		edge.To("connector", Connector.Type).StorageKey(edge.Column("evse_id")),
 	}
 }

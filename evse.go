@@ -28,14 +28,15 @@ type Evse struct {
 	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// 桩id
+	EquipmentID datasource.UUID `json:"equipment_id,omitempty"`
 	// 设备序列号
 	Serial string `json:"serial,omitempty"`
 	// 枪数量
 	ConnectorNumber int `json:"connector_number,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EvseQuery when eager-loading is set.
-	Edges        EvseEdges `json:"-"`
-	equipment_id *datasource.UUID
+	Edges EvseEdges `json:"-"`
 }
 
 // EvseEdges holds the relations/edges for other nodes in the graph.
@@ -76,12 +77,10 @@ func (*Evse) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case evse.FieldID, evse.FieldVersion, evse.FieldCreatedBy, evse.FieldCreatedAt, evse.FieldUpdatedBy, evse.FieldUpdatedAt, evse.FieldConnectorNumber:
+		case evse.FieldID, evse.FieldVersion, evse.FieldCreatedBy, evse.FieldCreatedAt, evse.FieldUpdatedBy, evse.FieldUpdatedAt, evse.FieldEquipmentID, evse.FieldConnectorNumber:
 			values[i] = new(sql.NullInt64)
 		case evse.FieldSerial:
 			values[i] = new(sql.NullString)
-		case evse.ForeignKeys[0]: // equipment_id
-			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Evse", columns[i])
 		}
@@ -133,6 +132,12 @@ func (e *Evse) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				e.UpdatedAt = value.Int64
 			}
+		case evse.FieldEquipmentID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
+			} else if value.Valid {
+				e.EquipmentID = datasource.UUID(value.Int64)
+			}
 		case evse.FieldSerial:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field serial", values[i])
@@ -144,13 +149,6 @@ func (e *Evse) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field connector_number", values[i])
 			} else if value.Valid {
 				e.ConnectorNumber = int(value.Int64)
-			}
-		case evse.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
-			} else if value.Valid {
-				e.equipment_id = new(datasource.UUID)
-				*e.equipment_id = datasource.UUID(value.Int64)
 			}
 		}
 	}
@@ -204,6 +202,9 @@ func (e *Evse) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", e.UpdatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("equipment_id=")
+	builder.WriteString(fmt.Sprintf("%v", e.EquipmentID))
 	builder.WriteString(", ")
 	builder.WriteString("serial=")
 	builder.WriteString(e.Serial)
