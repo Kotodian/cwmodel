@@ -91,6 +91,12 @@ func (efeu *EquipmentFirmwareEffectUpdate) SetEquipmentID(d datasource.UUID) *Eq
 	return efeu
 }
 
+// SetFirmwareID sets the "firmware_id" field.
+func (efeu *EquipmentFirmwareEffectUpdate) SetFirmwareID(d datasource.UUID) *EquipmentFirmwareEffectUpdate {
+	efeu.mutation.SetFirmwareID(d)
+	return efeu
+}
+
 // SetRequestID sets the "request_id" field.
 func (efeu *EquipmentFirmwareEffectUpdate) SetRequestID(i int64) *EquipmentFirmwareEffectUpdate {
 	efeu.mutation.ResetRequestID()
@@ -120,20 +126,6 @@ func (efeu *EquipmentFirmwareEffectUpdate) AddState(i int) *EquipmentFirmwareEff
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (efeu *EquipmentFirmwareEffectUpdate) SetEquipment(e *Equipment) *EquipmentFirmwareEffectUpdate {
 	return efeu.SetEquipmentID(e.ID)
-}
-
-// SetFirmwareID sets the "firmware" edge to the Firmware entity by ID.
-func (efeu *EquipmentFirmwareEffectUpdate) SetFirmwareID(id datasource.UUID) *EquipmentFirmwareEffectUpdate {
-	efeu.mutation.SetFirmwareID(id)
-	return efeu
-}
-
-// SetNillableFirmwareID sets the "firmware" edge to the Firmware entity by ID if the given value is not nil.
-func (efeu *EquipmentFirmwareEffectUpdate) SetNillableFirmwareID(id *datasource.UUID) *EquipmentFirmwareEffectUpdate {
-	if id != nil {
-		efeu = efeu.SetFirmwareID(*id)
-	}
-	return efeu
 }
 
 // SetFirmware sets the "firmware" edge to the Firmware entity.
@@ -231,6 +223,9 @@ func (efeu *EquipmentFirmwareEffectUpdate) defaults() {
 func (efeu *EquipmentFirmwareEffectUpdate) check() error {
 	if _, ok := efeu.mutation.EquipmentID(); efeu.mutation.EquipmentCleared() && !ok {
 		return errors.New(`cwmodel: clearing a required unique edge "EquipmentFirmwareEffect.equipment"`)
+	}
+	if _, ok := efeu.mutation.FirmwareID(); efeu.mutation.FirmwareCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "EquipmentFirmwareEffect.firmware"`)
 	}
 	return nil
 }
@@ -433,6 +428,12 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) SetEquipmentID(d datasource.UUID)
 	return efeuo
 }
 
+// SetFirmwareID sets the "firmware_id" field.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) SetFirmwareID(d datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
+	efeuo.mutation.SetFirmwareID(d)
+	return efeuo
+}
+
 // SetRequestID sets the "request_id" field.
 func (efeuo *EquipmentFirmwareEffectUpdateOne) SetRequestID(i int64) *EquipmentFirmwareEffectUpdateOne {
 	efeuo.mutation.ResetRequestID()
@@ -462,20 +463,6 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) AddState(i int) *EquipmentFirmwar
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (efeuo *EquipmentFirmwareEffectUpdateOne) SetEquipment(e *Equipment) *EquipmentFirmwareEffectUpdateOne {
 	return efeuo.SetEquipmentID(e.ID)
-}
-
-// SetFirmwareID sets the "firmware" edge to the Firmware entity by ID.
-func (efeuo *EquipmentFirmwareEffectUpdateOne) SetFirmwareID(id datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
-	efeuo.mutation.SetFirmwareID(id)
-	return efeuo
-}
-
-// SetNillableFirmwareID sets the "firmware" edge to the Firmware entity by ID if the given value is not nil.
-func (efeuo *EquipmentFirmwareEffectUpdateOne) SetNillableFirmwareID(id *datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
-	if id != nil {
-		efeuo = efeuo.SetFirmwareID(*id)
-	}
-	return efeuo
 }
 
 // SetFirmware sets the "firmware" edge to the Firmware entity.
@@ -586,6 +573,9 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) defaults() {
 func (efeuo *EquipmentFirmwareEffectUpdateOne) check() error {
 	if _, ok := efeuo.mutation.EquipmentID(); efeuo.mutation.EquipmentCleared() && !ok {
 		return errors.New(`cwmodel: clearing a required unique edge "EquipmentFirmwareEffect.equipment"`)
+	}
+	if _, ok := efeuo.mutation.FirmwareID(); efeuo.mutation.FirmwareCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "EquipmentFirmwareEffect.firmware"`)
 	}
 	return nil
 }

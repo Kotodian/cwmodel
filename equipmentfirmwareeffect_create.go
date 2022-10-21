@@ -98,6 +98,12 @@ func (efec *EquipmentFirmwareEffectCreate) SetEquipmentID(d datasource.UUID) *Eq
 	return efec
 }
 
+// SetFirmwareID sets the "firmware_id" field.
+func (efec *EquipmentFirmwareEffectCreate) SetFirmwareID(d datasource.UUID) *EquipmentFirmwareEffectCreate {
+	efec.mutation.SetFirmwareID(d)
+	return efec
+}
+
 // SetRequestID sets the "request_id" field.
 func (efec *EquipmentFirmwareEffectCreate) SetRequestID(i int64) *EquipmentFirmwareEffectCreate {
 	efec.mutation.SetRequestID(i)
@@ -127,20 +133,6 @@ func (efec *EquipmentFirmwareEffectCreate) SetNillableID(d *datasource.UUID) *Eq
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (efec *EquipmentFirmwareEffectCreate) SetEquipment(e *Equipment) *EquipmentFirmwareEffectCreate {
 	return efec.SetEquipmentID(e.ID)
-}
-
-// SetFirmwareID sets the "firmware" edge to the Firmware entity by ID.
-func (efec *EquipmentFirmwareEffectCreate) SetFirmwareID(id datasource.UUID) *EquipmentFirmwareEffectCreate {
-	efec.mutation.SetFirmwareID(id)
-	return efec
-}
-
-// SetNillableFirmwareID sets the "firmware" edge to the Firmware entity by ID if the given value is not nil.
-func (efec *EquipmentFirmwareEffectCreate) SetNillableFirmwareID(id *datasource.UUID) *EquipmentFirmwareEffectCreate {
-	if id != nil {
-		efec = efec.SetFirmwareID(*id)
-	}
-	return efec
 }
 
 // SetFirmware sets the "firmware" edge to the Firmware entity.
@@ -271,6 +263,9 @@ func (efec *EquipmentFirmwareEffectCreate) check() error {
 	if _, ok := efec.mutation.EquipmentID(); !ok {
 		return &ValidationError{Name: "equipment_id", err: errors.New(`cwmodel: missing required field "EquipmentFirmwareEffect.equipment_id"`)}
 	}
+	if _, ok := efec.mutation.FirmwareID(); !ok {
+		return &ValidationError{Name: "firmware_id", err: errors.New(`cwmodel: missing required field "EquipmentFirmwareEffect.firmware_id"`)}
+	}
 	if _, ok := efec.mutation.RequestID(); !ok {
 		return &ValidationError{Name: "request_id", err: errors.New(`cwmodel: missing required field "EquipmentFirmwareEffect.request_id"`)}
 	}
@@ -279,6 +274,9 @@ func (efec *EquipmentFirmwareEffectCreate) check() error {
 	}
 	if _, ok := efec.mutation.EquipmentID(); !ok {
 		return &ValidationError{Name: "equipment", err: errors.New(`cwmodel: missing required edge "EquipmentFirmwareEffect.equipment"`)}
+	}
+	if _, ok := efec.mutation.FirmwareID(); !ok {
+		return &ValidationError{Name: "firmware", err: errors.New(`cwmodel: missing required edge "EquipmentFirmwareEffect.firmware"`)}
 	}
 	return nil
 }
@@ -378,7 +376,7 @@ func (efec *EquipmentFirmwareEffectCreate) createSpec() (*EquipmentFirmwareEffec
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.firmware_id = &nodes[0]
+		_node.FirmwareID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

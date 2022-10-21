@@ -491,7 +491,6 @@ func (fq *FirmwareQuery) loadEquipmentFirmwareEffect(ctx context.Context, query 
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
 	query.Where(predicate.EquipmentFirmwareEffect(func(s *sql.Selector) {
 		s.Where(sql.InValues(firmware.EquipmentFirmwareEffectColumn, fks...))
 	}))
@@ -500,13 +499,10 @@ func (fq *FirmwareQuery) loadEquipmentFirmwareEffect(ctx context.Context, query 
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.firmware_id
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "firmware_id" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.FirmwareID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "firmware_id" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "firmware_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

@@ -28,7 +28,6 @@ type EquipmentFirmwareEffectQuery struct {
 	predicates    []predicate.EquipmentFirmwareEffect
 	withEquipment *EquipmentQuery
 	withFirmware  *FirmwareQuery
-	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -388,19 +387,12 @@ func (efeq *EquipmentFirmwareEffectQuery) prepareQuery(ctx context.Context) erro
 func (efeq *EquipmentFirmwareEffectQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*EquipmentFirmwareEffect, error) {
 	var (
 		nodes       = []*EquipmentFirmwareEffect{}
-		withFKs     = efeq.withFKs
 		_spec       = efeq.querySpec()
 		loadedTypes = [2]bool{
 			efeq.withEquipment != nil,
 			efeq.withFirmware != nil,
 		}
 	)
-	if efeq.withEquipment != nil || efeq.withFirmware != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, equipmentfirmwareeffect.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*EquipmentFirmwareEffect).scanValues(nil, columns)
 	}
@@ -464,10 +456,7 @@ func (efeq *EquipmentFirmwareEffectQuery) loadFirmware(ctx context.Context, quer
 	ids := make([]datasource.UUID, 0, len(nodes))
 	nodeids := make(map[datasource.UUID][]*EquipmentFirmwareEffect)
 	for i := range nodes {
-		if nodes[i].firmware_id == nil {
-			continue
-		}
-		fk := *nodes[i].firmware_id
+		fk := nodes[i].FirmwareID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}

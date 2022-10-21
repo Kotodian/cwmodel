@@ -125,6 +125,14 @@ func EquipmentID(v datasource.UUID) predicate.EquipmentFirmwareEffect {
 	})
 }
 
+// FirmwareID applies equality check predicate on the "firmware_id" field. It's identical to FirmwareIDEQ.
+func FirmwareID(v datasource.UUID) predicate.EquipmentFirmwareEffect {
+	vc := uint64(v)
+	return predicate.EquipmentFirmwareEffect(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldFirmwareID), vc))
+	})
+}
+
 // RequestID applies equality check predicate on the "request_id" field. It's identical to RequestIDEQ.
 func RequestID(v int64) predicate.EquipmentFirmwareEffect {
 	return predicate.EquipmentFirmwareEffect(func(s *sql.Selector) {
@@ -506,6 +514,44 @@ func EquipmentIDNotIn(vs ...datasource.UUID) predicate.EquipmentFirmwareEffect {
 	}
 	return predicate.EquipmentFirmwareEffect(func(s *sql.Selector) {
 		s.Where(sql.NotIn(s.C(FieldEquipmentID), v...))
+	})
+}
+
+// FirmwareIDEQ applies the EQ predicate on the "firmware_id" field.
+func FirmwareIDEQ(v datasource.UUID) predicate.EquipmentFirmwareEffect {
+	vc := uint64(v)
+	return predicate.EquipmentFirmwareEffect(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldFirmwareID), vc))
+	})
+}
+
+// FirmwareIDNEQ applies the NEQ predicate on the "firmware_id" field.
+func FirmwareIDNEQ(v datasource.UUID) predicate.EquipmentFirmwareEffect {
+	vc := uint64(v)
+	return predicate.EquipmentFirmwareEffect(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldFirmwareID), vc))
+	})
+}
+
+// FirmwareIDIn applies the In predicate on the "firmware_id" field.
+func FirmwareIDIn(vs ...datasource.UUID) predicate.EquipmentFirmwareEffect {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.EquipmentFirmwareEffect(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldFirmwareID), v...))
+	})
+}
+
+// FirmwareIDNotIn applies the NotIn predicate on the "firmware_id" field.
+func FirmwareIDNotIn(vs ...datasource.UUID) predicate.EquipmentFirmwareEffect {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.EquipmentFirmwareEffect(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldFirmwareID), v...))
 	})
 }
 

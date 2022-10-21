@@ -926,7 +926,6 @@ func (eq *EquipmentQuery) loadEquipmentFirmwareEffect(ctx context.Context, query
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
 	query.Where(predicate.EquipmentFirmwareEffect(func(s *sql.Selector) {
 		s.Where(sql.InValues(equipment.EquipmentFirmwareEffectColumn, fks...))
 	}))

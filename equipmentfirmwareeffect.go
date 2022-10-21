@@ -31,14 +31,15 @@ type EquipmentFirmwareEffect struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 桩id
 	EquipmentID datasource.UUID `json:"equipment_id,omitempty"`
+	// 固件id
+	FirmwareID datasource.UUID `json:"firmware_id,omitempty"`
 	// 请求id
 	RequestID int64 `json:"request_id,omitempty"`
 	// 状态
 	State int `json:"state,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentFirmwareEffectQuery when eager-loading is set.
-	Edges       EquipmentFirmwareEffectEdges `json:"-"`
-	firmware_id *datasource.UUID
+	Edges EquipmentFirmwareEffectEdges `json:"-"`
 }
 
 // EquipmentFirmwareEffectEdges holds the relations/edges for other nodes in the graph.
@@ -83,9 +84,7 @@ func (*EquipmentFirmwareEffect) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case equipmentfirmwareeffect.FieldID, equipmentfirmwareeffect.FieldVersion, equipmentfirmwareeffect.FieldCreatedBy, equipmentfirmwareeffect.FieldCreatedAt, equipmentfirmwareeffect.FieldUpdatedBy, equipmentfirmwareeffect.FieldUpdatedAt, equipmentfirmwareeffect.FieldEquipmentID, equipmentfirmwareeffect.FieldRequestID, equipmentfirmwareeffect.FieldState:
-			values[i] = new(sql.NullInt64)
-		case equipmentfirmwareeffect.ForeignKeys[0]: // firmware_id
+		case equipmentfirmwareeffect.FieldID, equipmentfirmwareeffect.FieldVersion, equipmentfirmwareeffect.FieldCreatedBy, equipmentfirmwareeffect.FieldCreatedAt, equipmentfirmwareeffect.FieldUpdatedBy, equipmentfirmwareeffect.FieldUpdatedAt, equipmentfirmwareeffect.FieldEquipmentID, equipmentfirmwareeffect.FieldFirmwareID, equipmentfirmwareeffect.FieldRequestID, equipmentfirmwareeffect.FieldState:
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type EquipmentFirmwareEffect", columns[i])
@@ -144,6 +143,12 @@ func (efe *EquipmentFirmwareEffect) assignValues(columns []string, values []any)
 			} else if value.Valid {
 				efe.EquipmentID = datasource.UUID(value.Int64)
 			}
+		case equipmentfirmwareeffect.FieldFirmwareID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field firmware_id", values[i])
+			} else if value.Valid {
+				efe.FirmwareID = datasource.UUID(value.Int64)
+			}
 		case equipmentfirmwareeffect.FieldRequestID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field request_id", values[i])
@@ -155,13 +160,6 @@ func (efe *EquipmentFirmwareEffect) assignValues(columns []string, values []any)
 				return fmt.Errorf("unexpected type %T for field state", values[i])
 			} else if value.Valid {
 				efe.State = int(value.Int64)
-			}
-		case equipmentfirmwareeffect.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field firmware_id", values[i])
-			} else if value.Valid {
-				efe.firmware_id = new(datasource.UUID)
-				*efe.firmware_id = datasource.UUID(value.Int64)
 			}
 		}
 	}
@@ -218,6 +216,9 @@ func (efe *EquipmentFirmwareEffect) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("equipment_id=")
 	builder.WriteString(fmt.Sprintf("%v", efe.EquipmentID))
+	builder.WriteString(", ")
+	builder.WriteString("firmware_id=")
+	builder.WriteString(fmt.Sprintf("%v", efe.FirmwareID))
 	builder.WriteString(", ")
 	builder.WriteString("request_id=")
 	builder.WriteString(fmt.Sprintf("%v", efe.RequestID))
