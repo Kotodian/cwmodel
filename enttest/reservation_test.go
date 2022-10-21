@@ -5,14 +5,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Kotodian/cwmodel"
 	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/gokit/id"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateReservation(t *testing.T) {
-	cli := Open(t, "mysql", dsn)
-	cli = cli.Debug()
+	cli := Open(t, "mysql", dsn, WithOptions(cwmodel.Debug()))
 	ctx := context.TODO()
 	defer cli.Close()
 
@@ -20,7 +20,11 @@ func TestCreateReservation(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
 
-	connector, err := equip.QueryConnector().Where(connector.SerialEQ("1")).Where(connector.EvseSerial("1")).Only(ctx)
+	connector, err := equip.QueryConnector().
+		Unique(false).
+		Where(connector.SerialEQ("1")).
+		Where(connector.EvseSerial("1")).
+		Only(ctx)
 	assert.Nil(t, err)
 	assert.NotNil(t, connector)
 
@@ -35,4 +39,8 @@ func TestCreateReservation(t *testing.T) {
 		SetState(3).
 		Exec(ctx)
 	assert.Nil(t, err)
+}
+
+func TestUpdateReservation(t *testing.T) {
+
 }
