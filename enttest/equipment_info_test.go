@@ -5,19 +5,22 @@ import (
 	"testing"
 	"time"
 
+	"entgo.io/ent"
 	"github.com/Kotodian/cwmodel"
+	"github.com/Kotodian/gokit/datasource"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestQueryEquipmentInfo(t *testing.T) {
-	cli := Open(t, "mysql", dsn)
-	cli = cli.Debug()
+	cli := Open(t, "mysql", dsn, WithOptions(cwmodel.Debug()))
 	defer cli.Close()
 	ctx := context.TODO()
+
 	equip, err := cli.Equipment.Get(ctx, 244667116421190)
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
+
 	info, err := equip.QueryEquipmentInfo().Only(ctx)
 	assert.Nil(t, err)
 	assert.NotNil(t, info)
@@ -27,6 +30,28 @@ func TestCreateEquipmentInfo(t *testing.T) {
 	cli := Open(t, "mysql", dsn, WithOptions(cwmodel.Debug()))
 	defer cli.Close()
 	ctx := context.TODO()
+	cli.EquipmentInfo.Use(func(next ent.Mutator) ent.Mutator {
+		type UpdateBy interface {
+			SetUpdatedBy(value datasource.UUID)
+		}
+		type CreateBy interface {
+			SetCreatedBy(value datasource.UUID)
+		}
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if m.Op() == ent.OpUpdate || m.Op() == ent.OpCreate {
+				if m.Op() == ent.OpCreate {
+					if cb, ok := m.(CreateBy); ok {
+						cb.SetCreatedBy(datasource.UUID(999999))
+					}
+				}
+				if ub, ok := m.(UpdateBy); ok {
+					ub.SetUpdatedBy(99999)
+				}
+			}
+			return next.Mutate(ctx, m)
+		})
+	})
+
 	equip, err := cli.Equipment.Get(ctx, 244667116421190)
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
@@ -48,6 +73,27 @@ func TestUpdateEquipmentInfo(t *testing.T) {
 	cli := Open(t, "mysql", dsn, WithOptions(cwmodel.Debug()))
 	defer cli.Close()
 	ctx := context.TODO()
+	cli.EquipmentInfo.Use(func(next ent.Mutator) ent.Mutator {
+		type UpdateBy interface {
+			SetUpdatedBy(value datasource.UUID)
+		}
+		type CreateBy interface {
+			SetCreatedBy(value datasource.UUID)
+		}
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if m.Op() == ent.OpUpdate || m.Op() == ent.OpCreate {
+				if m.Op() == ent.OpCreate {
+					if cb, ok := m.(CreateBy); ok {
+						cb.SetCreatedBy(datasource.UUID(999999))
+					}
+				}
+				if ub, ok := m.(UpdateBy); ok {
+					ub.SetUpdatedBy(99999)
+				}
+			}
+			return next.Mutate(ctx, m)
+		})
+	})
 	equip, err := cli.Equipment.Get(ctx, 244667116421190)
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
