@@ -30,6 +30,7 @@ func (Connector) Annotations() []schema.Annotation {
 // Fields of the Connector.
 func (Connector) Fields() []ent.Field {
 	return []ent.Field{
+		field.Uint64("equipment_id").GoType(datasource.UUID(0)).Comment("桩id"),
 		field.String("equipment_sn").Comment("桩序列号"),
 		field.String("evse_serial").Comment("设备序列号"),
 		field.String("serial").Comment("枪序列号"),
@@ -46,7 +47,7 @@ func (Connector) Fields() []ent.Field {
 func (Connector) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("evse", Evse.Type).Ref("connector").Unique().Required(),
-		edge.From("equipment", Equipment.Type).Ref("connector").Unique().Required(),
+		edge.From("equipment", Equipment.Type).Field("equipment_id").Ref("connector").Unique().Required(),
 		// edge.To("order_info", OrderInfo.Type).StorageKey(edge.Column("connector_id")),
 		// edge.To("reservation", Reservation.Type).StorageKey(edge.Column("connector_id")),
 		// edge.To("smart_charging_effect", SmartChargingEffect.Type).StorageKey(edge.Column("connector_id")),

@@ -29,6 +29,8 @@ type Connector struct {
 	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// 桩id
+	EquipmentID datasource.UUID `json:"equipment_id,omitempty"`
 	// 桩序列号
 	EquipmentSn string `json:"equipment_sn,omitempty"`
 	// 设备序列号
@@ -49,9 +51,8 @@ type Connector struct {
 	ParkNo string `json:"park_no,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ConnectorQuery when eager-loading is set.
-	Edges        ConnectorEdges `json:"-"`
-	equipment_id *datasource.UUID
-	evse_id      *datasource.UUID
+	Edges   ConnectorEdges `json:"-"`
+	evse_id *datasource.UUID
 
 	PushInterval int             `json:"push_interval"`
 	LastPushTime int64           `json:"last_push_time"`
@@ -101,13 +102,11 @@ func (*Connector) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case connector.FieldID, connector.FieldVersion, connector.FieldCreatedBy, connector.FieldCreatedAt, connector.FieldUpdatedBy, connector.FieldUpdatedAt, connector.FieldCurrentState, connector.FieldBeforeState, connector.FieldChargingState, connector.FieldReservationID, connector.FieldOrderID:
+		case connector.FieldID, connector.FieldVersion, connector.FieldCreatedBy, connector.FieldCreatedAt, connector.FieldUpdatedBy, connector.FieldUpdatedAt, connector.FieldEquipmentID, connector.FieldCurrentState, connector.FieldBeforeState, connector.FieldChargingState, connector.FieldReservationID, connector.FieldOrderID:
 			values[i] = new(sql.NullInt64)
 		case connector.FieldEquipmentSn, connector.FieldEvseSerial, connector.FieldSerial, connector.FieldParkNo:
 			values[i] = new(sql.NullString)
-		case connector.ForeignKeys[0]: // equipment_id
-			values[i] = new(sql.NullInt64)
-		case connector.ForeignKeys[1]: // evse_id
+		case connector.ForeignKeys[0]: // evse_id
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Connector", columns[i])
@@ -159,6 +158,12 @@ func (c *Connector) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				c.UpdatedAt = value.Int64
+			}
+		case connector.FieldEquipmentID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
+			} else if value.Valid {
+				c.EquipmentID = datasource.UUID(value.Int64)
 			}
 		case connector.FieldEquipmentSn:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -218,13 +223,6 @@ func (c *Connector) assignValues(columns []string, values []any) error {
 			}
 		case connector.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
-			} else if value.Valid {
-				c.equipment_id = new(datasource.UUID)
-				*c.equipment_id = datasource.UUID(value.Int64)
-			}
-		case connector.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field evse_id", values[i])
 			} else if value.Valid {
 				c.evse_id = new(datasource.UUID)
@@ -282,6 +280,9 @@ func (c *Connector) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", c.UpdatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("equipment_id=")
+	builder.WriteString(fmt.Sprintf("%v", c.EquipmentID))
 	builder.WriteString(", ")
 	builder.WriteString("equipment_sn=")
 	builder.WriteString(c.EquipmentSn)

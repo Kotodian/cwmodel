@@ -85,6 +85,12 @@ func (cu *ConnectorUpdate) AddUpdatedAt(i int64) *ConnectorUpdate {
 	return cu
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (cu *ConnectorUpdate) SetEquipmentID(d datasource.UUID) *ConnectorUpdate {
+	cu.mutation.SetEquipmentID(d)
+	return cu
+}
+
 // SetEquipmentSn sets the "equipment_sn" field.
 func (cu *ConnectorUpdate) SetEquipmentSn(s string) *ConnectorUpdate {
 	cu.mutation.SetEquipmentSn(s)
@@ -233,12 +239,6 @@ func (cu *ConnectorUpdate) SetEvseID(id datasource.UUID) *ConnectorUpdate {
 // SetEvse sets the "evse" edge to the Evse entity.
 func (cu *ConnectorUpdate) SetEvse(e *Evse) *ConnectorUpdate {
 	return cu.SetEvseID(e.ID)
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (cu *ConnectorUpdate) SetEquipmentID(id datasource.UUID) *ConnectorUpdate {
-	cu.mutation.SetEquipmentID(id)
-	return cu
 }
 
 // SetEquipment sets the "equipment" edge to the Equipment entity.
@@ -574,6 +574,12 @@ func (cuo *ConnectorUpdateOne) AddUpdatedAt(i int64) *ConnectorUpdateOne {
 	return cuo
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (cuo *ConnectorUpdateOne) SetEquipmentID(d datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.SetEquipmentID(d)
+	return cuo
+}
+
 // SetEquipmentSn sets the "equipment_sn" field.
 func (cuo *ConnectorUpdateOne) SetEquipmentSn(s string) *ConnectorUpdateOne {
 	cuo.mutation.SetEquipmentSn(s)
@@ -722,12 +728,6 @@ func (cuo *ConnectorUpdateOne) SetEvseID(id datasource.UUID) *ConnectorUpdateOne
 // SetEvse sets the "evse" edge to the Evse entity.
 func (cuo *ConnectorUpdateOne) SetEvse(e *Evse) *ConnectorUpdateOne {
 	return cuo.SetEvseID(e.ID)
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (cuo *ConnectorUpdateOne) SetEquipmentID(id datasource.UUID) *ConnectorUpdateOne {
-	cuo.mutation.SetEquipmentID(id)
-	return cuo
 }
 
 // SetEquipment sets the "equipment" edge to the Equipment entity.
