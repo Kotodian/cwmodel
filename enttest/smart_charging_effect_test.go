@@ -27,7 +27,7 @@ func TestCreateSmartChargingEffect(t *testing.T) {
 
 	err = cli.SmartChargingEffect.Create().
 		SetEquipment(equip).
-		SetConnector(connector).
+		SetConnectorID(connector.ID).
 		SetSmartID(time.Now().Unix()).
 		SetPid(id.Next()).
 		SetUnit("W").

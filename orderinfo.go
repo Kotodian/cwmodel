@@ -7,10 +7,8 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/orderinfo"
-	"github.com/Kotodian/cwmodel/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -30,6 +28,8 @@ type OrderInfo struct {
 	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// 枪id
+	ConnectorID datasource.UUID `json:"connector_id,omitempty"`
 	// 远程启动id
 	RemoteStartID *int64 `json:"remote_start_id,omitempty"`
 	// 桩端订单id
@@ -59,7 +59,7 @@ type OrderInfo struct {
 	// 停止原因代码
 	StopReasonCode *int32 `json:"stop_reason_code,omitempty"`
 	// 订单状态
-	State int32 `json:"state,omitempty"`
+	State int `json:"state,omitempty"`
 	// 是否为离线订单
 	Offline bool `json:"offline,omitempty"`
 	// 计费模板id
@@ -81,42 +81,24 @@ type OrderInfo struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrderInfoQuery when eager-loading is set.
 	Edges        OrderInfoEdges `json:"-"`
-	connector_id *datasource.UUID
 	equipment_id *datasource.UUID
 }
 
 // OrderInfoEdges holds the relations/edges for other nodes in the graph.
 type OrderInfoEdges struct {
-	// Connector holds the value of the connector edge.
-	Connector *Connector `json:"connector,omitempty"`
 	// Equipment holds the value of the equipment edge.
 	Equipment *Equipment `json:"equipment,omitempty"`
 	// OrderEvent holds the value of the order_event edge.
 	OrderEvent []*OrderEvent `json:"order_event,omitempty"`
-	// SmartChargingEffect holds the value of the smart_charging_effect edge.
-	SmartChargingEffect *SmartChargingEffect `json:"smart_charging_effect,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
-}
-
-// ConnectorOrErr returns the Connector value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e OrderInfoEdges) ConnectorOrErr() (*Connector, error) {
-	if e.loadedTypes[0] {
-		if e.Connector == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: connector.Label}
-		}
-		return e.Connector, nil
-	}
-	return nil, &NotLoadedError{edge: "connector"}
+	loadedTypes [2]bool
 }
 
 // EquipmentOrErr returns the Equipment value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e OrderInfoEdges) EquipmentOrErr() (*Equipment, error) {
-	if e.loadedTypes[1] {
+	if e.loadedTypes[0] {
 		if e.Equipment == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: equipment.Label}
@@ -129,23 +111,10 @@ func (e OrderInfoEdges) EquipmentOrErr() (*Equipment, error) {
 // OrderEventOrErr returns the OrderEvent value or an error if the edge
 // was not loaded in eager-loading.
 func (e OrderInfoEdges) OrderEventOrErr() ([]*OrderEvent, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[1] {
 		return e.OrderEvent, nil
 	}
 	return nil, &NotLoadedError{edge: "order_event"}
-}
-
-// SmartChargingEffectOrErr returns the SmartChargingEffect value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e OrderInfoEdges) SmartChargingEffectOrErr() (*SmartChargingEffect, error) {
-	if e.loadedTypes[3] {
-		if e.SmartChargingEffect == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: smartchargingeffect.Label}
-		}
-		return e.SmartChargingEffect, nil
-	}
-	return nil, &NotLoadedError{edge: "smart_charging_effect"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -157,13 +126,11 @@ func (*OrderInfo) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case orderinfo.FieldTotalElectricity, orderinfo.FieldChargeStartElectricity, orderinfo.FieldChargeFinalElectricity, orderinfo.FieldSharpElectricity, orderinfo.FieldPeakElectricity, orderinfo.FieldFlatElectricity, orderinfo.FieldValleyElectricity:
 			values[i] = new(sql.NullFloat64)
-		case orderinfo.FieldID, orderinfo.FieldVersion, orderinfo.FieldCreatedBy, orderinfo.FieldCreatedAt, orderinfo.FieldUpdatedBy, orderinfo.FieldUpdatedAt, orderinfo.FieldRemoteStartID, orderinfo.FieldAuthorizationMode, orderinfo.FieldStopReasonCode, orderinfo.FieldState, orderinfo.FieldPriceSchemeReleaseID, orderinfo.FieldOrderStartTime, orderinfo.FieldOrderFinalTime, orderinfo.FieldChargeStartTime, orderinfo.FieldChargeFinalTime, orderinfo.FieldIntellectID, orderinfo.FieldStationID, orderinfo.FieldOperatorID:
+		case orderinfo.FieldID, orderinfo.FieldVersion, orderinfo.FieldCreatedBy, orderinfo.FieldCreatedAt, orderinfo.FieldUpdatedBy, orderinfo.FieldUpdatedAt, orderinfo.FieldConnectorID, orderinfo.FieldRemoteStartID, orderinfo.FieldAuthorizationMode, orderinfo.FieldStopReasonCode, orderinfo.FieldState, orderinfo.FieldPriceSchemeReleaseID, orderinfo.FieldOrderStartTime, orderinfo.FieldOrderFinalTime, orderinfo.FieldChargeStartTime, orderinfo.FieldChargeFinalTime, orderinfo.FieldIntellectID, orderinfo.FieldStationID, orderinfo.FieldOperatorID:
 			values[i] = new(sql.NullInt64)
 		case orderinfo.FieldTransactionID, orderinfo.FieldAuthorizationID, orderinfo.FieldCustomerID, orderinfo.FieldCallerOrderID:
 			values[i] = new(sql.NullString)
-		case orderinfo.ForeignKeys[0]: // connector_id
-			values[i] = new(sql.NullInt64)
-		case orderinfo.ForeignKeys[1]: // equipment_id
+		case orderinfo.ForeignKeys[0]: // equipment_id
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type OrderInfo", columns[i])
@@ -215,6 +182,12 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				oi.UpdatedAt = value.Int64
+			}
+		case orderinfo.FieldConnectorID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field connector_id", values[i])
+			} else if value.Valid {
+				oi.ConnectorID = datasource.UUID(value.Int64)
 			}
 		case orderinfo.FieldRemoteStartID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -317,7 +290,7 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field state", values[i])
 			} else if value.Valid {
-				oi.State = int32(value.Int64)
+				oi.State = int(value.Int64)
 			}
 		case orderinfo.FieldOffline:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -382,13 +355,6 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 			}
 		case orderinfo.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field connector_id", values[i])
-			} else if value.Valid {
-				oi.connector_id = new(datasource.UUID)
-				*oi.connector_id = datasource.UUID(value.Int64)
-			}
-		case orderinfo.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
 			} else if value.Valid {
 				oi.equipment_id = new(datasource.UUID)
@@ -399,11 +365,6 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// QueryConnector queries the "connector" edge of the OrderInfo entity.
-func (oi *OrderInfo) QueryConnector() *ConnectorQuery {
-	return (&OrderInfoClient{config: oi.config}).QueryConnector(oi)
-}
-
 // QueryEquipment queries the "equipment" edge of the OrderInfo entity.
 func (oi *OrderInfo) QueryEquipment() *EquipmentQuery {
 	return (&OrderInfoClient{config: oi.config}).QueryEquipment(oi)
@@ -412,11 +373,6 @@ func (oi *OrderInfo) QueryEquipment() *EquipmentQuery {
 // QueryOrderEvent queries the "order_event" edge of the OrderInfo entity.
 func (oi *OrderInfo) QueryOrderEvent() *OrderEventQuery {
 	return (&OrderInfoClient{config: oi.config}).QueryOrderEvent(oi)
-}
-
-// QuerySmartChargingEffect queries the "smart_charging_effect" edge of the OrderInfo entity.
-func (oi *OrderInfo) QuerySmartChargingEffect() *SmartChargingEffectQuery {
-	return (&OrderInfoClient{config: oi.config}).QuerySmartChargingEffect(oi)
 }
 
 // Update returns a builder for updating this OrderInfo.
@@ -456,6 +412,9 @@ func (oi *OrderInfo) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", oi.UpdatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("connector_id=")
+	builder.WriteString(fmt.Sprintf("%v", oi.ConnectorID))
 	builder.WriteString(", ")
 	if v := oi.RemoteStartID; v != nil {
 		builder.WriteString("remote_start_id=")

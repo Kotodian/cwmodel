@@ -10,9 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
-	"github.com/Kotodian/cwmodel/orderinfo"
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/cwmodel/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
@@ -28,8 +26,6 @@ type SmartChargingEffectQuery struct {
 	fields        []string
 	predicates    []predicate.SmartChargingEffect
 	withEquipment *EquipmentQuery
-	withConnector *ConnectorQuery
-	withOrderInfo *OrderInfoQuery
 	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -82,50 +78,6 @@ func (sceq *SmartChargingEffectQuery) QueryEquipment() *EquipmentQuery {
 			sqlgraph.From(smartchargingeffect.Table, smartchargingeffect.FieldID, selector),
 			sqlgraph.To(equipment.Table, equipment.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, smartchargingeffect.EquipmentTable, smartchargingeffect.EquipmentColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(sceq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryConnector chains the current query on the "connector" edge.
-func (sceq *SmartChargingEffectQuery) QueryConnector() *ConnectorQuery {
-	query := &ConnectorQuery{config: sceq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := sceq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := sceq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(smartchargingeffect.Table, smartchargingeffect.FieldID, selector),
-			sqlgraph.To(connector.Table, connector.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, smartchargingeffect.ConnectorTable, smartchargingeffect.ConnectorColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(sceq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryOrderInfo chains the current query on the "order_info" edge.
-func (sceq *SmartChargingEffectQuery) QueryOrderInfo() *OrderInfoQuery {
-	query := &OrderInfoQuery{config: sceq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := sceq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := sceq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(smartchargingeffect.Table, smartchargingeffect.FieldID, selector),
-			sqlgraph.To(orderinfo.Table, orderinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, smartchargingeffect.OrderInfoTable, smartchargingeffect.OrderInfoColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(sceq.driver.Dialect(), step)
 		return fromU, nil
@@ -315,8 +267,6 @@ func (sceq *SmartChargingEffectQuery) Clone() *SmartChargingEffectQuery {
 		order:         append([]OrderFunc{}, sceq.order...),
 		predicates:    append([]predicate.SmartChargingEffect{}, sceq.predicates...),
 		withEquipment: sceq.withEquipment.Clone(),
-		withConnector: sceq.withConnector.Clone(),
-		withOrderInfo: sceq.withOrderInfo.Clone(),
 		// clone intermediate query.
 		sql:    sceq.sql.Clone(),
 		path:   sceq.path,
@@ -332,28 +282,6 @@ func (sceq *SmartChargingEffectQuery) WithEquipment(opts ...func(*EquipmentQuery
 		opt(query)
 	}
 	sceq.withEquipment = query
-	return sceq
-}
-
-// WithConnector tells the query-builder to eager-load the nodes that are connected to
-// the "connector" edge. The optional arguments are used to configure the query builder of the edge.
-func (sceq *SmartChargingEffectQuery) WithConnector(opts ...func(*ConnectorQuery)) *SmartChargingEffectQuery {
-	query := &ConnectorQuery{config: sceq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	sceq.withConnector = query
-	return sceq
-}
-
-// WithOrderInfo tells the query-builder to eager-load the nodes that are connected to
-// the "order_info" edge. The optional arguments are used to configure the query builder of the edge.
-func (sceq *SmartChargingEffectQuery) WithOrderInfo(opts ...func(*OrderInfoQuery)) *SmartChargingEffectQuery {
-	query := &OrderInfoQuery{config: sceq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	sceq.withOrderInfo = query
 	return sceq
 }
 
@@ -426,13 +354,11 @@ func (sceq *SmartChargingEffectQuery) sqlAll(ctx context.Context, hooks ...query
 		nodes       = []*SmartChargingEffect{}
 		withFKs     = sceq.withFKs
 		_spec       = sceq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [1]bool{
 			sceq.withEquipment != nil,
-			sceq.withConnector != nil,
-			sceq.withOrderInfo != nil,
 		}
 	)
-	if sceq.withEquipment != nil || sceq.withConnector != nil || sceq.withOrderInfo != nil {
+	if sceq.withEquipment != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -462,18 +388,6 @@ func (sceq *SmartChargingEffectQuery) sqlAll(ctx context.Context, hooks ...query
 			return nil, err
 		}
 	}
-	if query := sceq.withConnector; query != nil {
-		if err := sceq.loadConnector(ctx, query, nodes, nil,
-			func(n *SmartChargingEffect, e *Connector) { n.Edges.Connector = e }); err != nil {
-			return nil, err
-		}
-	}
-	if query := sceq.withOrderInfo; query != nil {
-		if err := sceq.loadOrderInfo(ctx, query, nodes, nil,
-			func(n *SmartChargingEffect, e *OrderInfo) { n.Edges.OrderInfo = e }); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
 }
 
@@ -499,64 +413,6 @@ func (sceq *SmartChargingEffectQuery) loadEquipment(ctx context.Context, query *
 		nodes, ok := nodeids[n.ID]
 		if !ok {
 			return fmt.Errorf(`unexpected foreign-key "equipment_id" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
-	}
-	return nil
-}
-func (sceq *SmartChargingEffectQuery) loadConnector(ctx context.Context, query *ConnectorQuery, nodes []*SmartChargingEffect, init func(*SmartChargingEffect), assign func(*SmartChargingEffect, *Connector)) error {
-	ids := make([]datasource.UUID, 0, len(nodes))
-	nodeids := make(map[datasource.UUID][]*SmartChargingEffect)
-	for i := range nodes {
-		if nodes[i].connector_id == nil {
-			continue
-		}
-		fk := *nodes[i].connector_id
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	query.Where(connector.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "connector_id" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
-	}
-	return nil
-}
-func (sceq *SmartChargingEffectQuery) loadOrderInfo(ctx context.Context, query *OrderInfoQuery, nodes []*SmartChargingEffect, init func(*SmartChargingEffect), assign func(*SmartChargingEffect, *OrderInfo)) error {
-	ids := make([]datasource.UUID, 0, len(nodes))
-	nodeids := make(map[datasource.UUID][]*SmartChargingEffect)
-	for i := range nodes {
-		if nodes[i].order_id == nil {
-			continue
-		}
-		fk := *nodes[i].order_id
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	query.Where(orderinfo.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "order_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

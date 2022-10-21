@@ -8,9 +8,7 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
-	"github.com/Kotodian/cwmodel/orderinfo"
 	"github.com/Kotodian/cwmodel/smartchargingeffect"
 	"github.com/Kotodian/cwmodel/types"
 	"github.com/Kotodian/gokit/datasource"
@@ -32,6 +30,10 @@ type SmartChargingEffect struct {
 	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// 枪id
+	ConnectorID datasource.UUID `json:"connector_id,omitempty"`
+	// 订单id
+	OrderID datasource.UUID `json:"order_id,omitempty"`
 	// 智慧id
 	SmartID int64 `json:"smart_id,omitempty"`
 	// 开始时间
@@ -51,22 +53,16 @@ type SmartChargingEffect struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SmartChargingEffectQuery when eager-loading is set.
 	Edges        SmartChargingEffectEdges `json:"-"`
-	connector_id *datasource.UUID
 	equipment_id *datasource.UUID
-	order_id     *datasource.UUID
 }
 
 // SmartChargingEffectEdges holds the relations/edges for other nodes in the graph.
 type SmartChargingEffectEdges struct {
 	// Equipment holds the value of the equipment edge.
 	Equipment *Equipment `json:"equipment,omitempty"`
-	// Connector holds the value of the connector edge.
-	Connector *Connector `json:"connector,omitempty"`
-	// OrderInfo holds the value of the order_info edge.
-	OrderInfo *OrderInfo `json:"order_info,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [1]bool
 }
 
 // EquipmentOrErr returns the Equipment value or an error if the edge
@@ -82,32 +78,6 @@ func (e SmartChargingEffectEdges) EquipmentOrErr() (*Equipment, error) {
 	return nil, &NotLoadedError{edge: "equipment"}
 }
 
-// ConnectorOrErr returns the Connector value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e SmartChargingEffectEdges) ConnectorOrErr() (*Connector, error) {
-	if e.loadedTypes[1] {
-		if e.Connector == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: connector.Label}
-		}
-		return e.Connector, nil
-	}
-	return nil, &NotLoadedError{edge: "connector"}
-}
-
-// OrderInfoOrErr returns the OrderInfo value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e SmartChargingEffectEdges) OrderInfoOrErr() (*OrderInfo, error) {
-	if e.loadedTypes[2] {
-		if e.OrderInfo == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: orderinfo.Label}
-		}
-		return e.OrderInfo, nil
-	}
-	return nil, &NotLoadedError{edge: "order_info"}
-}
-
 // scanValues returns the types for scanning values from sql.Rows.
 func (*SmartChargingEffect) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -115,15 +85,11 @@ func (*SmartChargingEffect) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case smartchargingeffect.FieldSpec:
 			values[i] = new([]byte)
-		case smartchargingeffect.FieldID, smartchargingeffect.FieldVersion, smartchargingeffect.FieldCreatedBy, smartchargingeffect.FieldCreatedAt, smartchargingeffect.FieldUpdatedBy, smartchargingeffect.FieldUpdatedAt, smartchargingeffect.FieldSmartID, smartchargingeffect.FieldStartTime, smartchargingeffect.FieldPid, smartchargingeffect.FieldValidFrom, smartchargingeffect.FieldValidTo:
+		case smartchargingeffect.FieldID, smartchargingeffect.FieldVersion, smartchargingeffect.FieldCreatedBy, smartchargingeffect.FieldCreatedAt, smartchargingeffect.FieldUpdatedBy, smartchargingeffect.FieldUpdatedAt, smartchargingeffect.FieldConnectorID, smartchargingeffect.FieldOrderID, smartchargingeffect.FieldSmartID, smartchargingeffect.FieldStartTime, smartchargingeffect.FieldPid, smartchargingeffect.FieldValidFrom, smartchargingeffect.FieldValidTo:
 			values[i] = new(sql.NullInt64)
 		case smartchargingeffect.FieldUnit, smartchargingeffect.FieldEquipmentSn:
 			values[i] = new(sql.NullString)
-		case smartchargingeffect.ForeignKeys[0]: // connector_id
-			values[i] = new(sql.NullInt64)
-		case smartchargingeffect.ForeignKeys[1]: // equipment_id
-			values[i] = new(sql.NullInt64)
-		case smartchargingeffect.ForeignKeys[2]: // order_id
+		case smartchargingeffect.ForeignKeys[0]: // equipment_id
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type SmartChargingEffect", columns[i])
@@ -175,6 +141,18 @@ func (sce *SmartChargingEffect) assignValues(columns []string, values []any) err
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				sce.UpdatedAt = value.Int64
+			}
+		case smartchargingeffect.FieldConnectorID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field connector_id", values[i])
+			} else if value.Valid {
+				sce.ConnectorID = datasource.UUID(value.Int64)
+			}
+		case smartchargingeffect.FieldOrderID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field order_id", values[i])
+			} else if value.Valid {
+				sce.OrderID = datasource.UUID(value.Int64)
 			}
 		case smartchargingeffect.FieldSmartID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -230,24 +208,10 @@ func (sce *SmartChargingEffect) assignValues(columns []string, values []any) err
 			}
 		case smartchargingeffect.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field connector_id", values[i])
-			} else if value.Valid {
-				sce.connector_id = new(datasource.UUID)
-				*sce.connector_id = datasource.UUID(value.Int64)
-			}
-		case smartchargingeffect.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
 			} else if value.Valid {
 				sce.equipment_id = new(datasource.UUID)
 				*sce.equipment_id = datasource.UUID(value.Int64)
-			}
-		case smartchargingeffect.ForeignKeys[2]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field order_id", values[i])
-			} else if value.Valid {
-				sce.order_id = new(datasource.UUID)
-				*sce.order_id = datasource.UUID(value.Int64)
 			}
 		}
 	}
@@ -257,16 +221,6 @@ func (sce *SmartChargingEffect) assignValues(columns []string, values []any) err
 // QueryEquipment queries the "equipment" edge of the SmartChargingEffect entity.
 func (sce *SmartChargingEffect) QueryEquipment() *EquipmentQuery {
 	return (&SmartChargingEffectClient{config: sce.config}).QueryEquipment(sce)
-}
-
-// QueryConnector queries the "connector" edge of the SmartChargingEffect entity.
-func (sce *SmartChargingEffect) QueryConnector() *ConnectorQuery {
-	return (&SmartChargingEffectClient{config: sce.config}).QueryConnector(sce)
-}
-
-// QueryOrderInfo queries the "order_info" edge of the SmartChargingEffect entity.
-func (sce *SmartChargingEffect) QueryOrderInfo() *OrderInfoQuery {
-	return (&SmartChargingEffectClient{config: sce.config}).QueryOrderInfo(sce)
 }
 
 // Update returns a builder for updating this SmartChargingEffect.
@@ -306,6 +260,12 @@ func (sce *SmartChargingEffect) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", sce.UpdatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("connector_id=")
+	builder.WriteString(fmt.Sprintf("%v", sce.ConnectorID))
+	builder.WriteString(", ")
+	builder.WriteString("order_id=")
+	builder.WriteString(fmt.Sprintf("%v", sce.OrderID))
 	builder.WriteString(", ")
 	builder.WriteString("smart_id=")
 	builder.WriteString(fmt.Sprintf("%v", sce.SmartID))

@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/reservation"
 	"github.com/Kotodian/gokit/datasource"
@@ -29,6 +28,8 @@ type Reservation struct {
 	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// 枪id
+	ConnectorID datasource.UUID `json:"connector_id,omitempty"`
 	// 预约id
 	ReservationID int64 `json:"reservation_id,omitempty"`
 	// 授权模式
@@ -46,7 +47,6 @@ type Reservation struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ReservationQuery when eager-loading is set.
 	Edges        ReservationEdges `json:"-"`
-	connector_id *datasource.UUID
 	equipment_id *datasource.UUID
 }
 
@@ -54,11 +54,9 @@ type Reservation struct {
 type ReservationEdges struct {
 	// Equipment holds the value of the equipment edge.
 	Equipment *Equipment `json:"equipment,omitempty"`
-	// Connector holds the value of the connector edge.
-	Connector *Connector `json:"connector,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [1]bool
 }
 
 // EquipmentOrErr returns the Equipment value or an error if the edge
@@ -74,31 +72,16 @@ func (e ReservationEdges) EquipmentOrErr() (*Equipment, error) {
 	return nil, &NotLoadedError{edge: "equipment"}
 }
 
-// ConnectorOrErr returns the Connector value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e ReservationEdges) ConnectorOrErr() (*Connector, error) {
-	if e.loadedTypes[1] {
-		if e.Connector == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: connector.Label}
-		}
-		return e.Connector, nil
-	}
-	return nil, &NotLoadedError{edge: "connector"}
-}
-
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Reservation) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case reservation.FieldID, reservation.FieldVersion, reservation.FieldCreatedBy, reservation.FieldCreatedAt, reservation.FieldUpdatedBy, reservation.FieldUpdatedAt, reservation.FieldReservationID, reservation.FieldAuthorizationMode, reservation.FieldExpired, reservation.FieldState:
+		case reservation.FieldID, reservation.FieldVersion, reservation.FieldCreatedBy, reservation.FieldCreatedAt, reservation.FieldUpdatedBy, reservation.FieldUpdatedAt, reservation.FieldConnectorID, reservation.FieldReservationID, reservation.FieldAuthorizationMode, reservation.FieldExpired, reservation.FieldState:
 			values[i] = new(sql.NullInt64)
 		case reservation.FieldAuthorizationID, reservation.FieldAdditional, reservation.FieldCustomerID:
 			values[i] = new(sql.NullString)
-		case reservation.ForeignKeys[0]: // connector_id
-			values[i] = new(sql.NullInt64)
-		case reservation.ForeignKeys[1]: // equipment_id
+		case reservation.ForeignKeys[0]: // equipment_id
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Reservation", columns[i])
@@ -151,6 +134,12 @@ func (r *Reservation) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				r.UpdatedAt = value.Int64
 			}
+		case reservation.FieldConnectorID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field connector_id", values[i])
+			} else if value.Valid {
+				r.ConnectorID = datasource.UUID(value.Int64)
+			}
 		case reservation.FieldReservationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field reservation_id", values[i])
@@ -197,13 +186,6 @@ func (r *Reservation) assignValues(columns []string, values []any) error {
 			}
 		case reservation.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field connector_id", values[i])
-			} else if value.Valid {
-				r.connector_id = new(datasource.UUID)
-				*r.connector_id = datasource.UUID(value.Int64)
-			}
-		case reservation.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
 			} else if value.Valid {
 				r.equipment_id = new(datasource.UUID)
@@ -217,11 +199,6 @@ func (r *Reservation) assignValues(columns []string, values []any) error {
 // QueryEquipment queries the "equipment" edge of the Reservation entity.
 func (r *Reservation) QueryEquipment() *EquipmentQuery {
 	return (&ReservationClient{config: r.config}).QueryEquipment(r)
-}
-
-// QueryConnector queries the "connector" edge of the Reservation entity.
-func (r *Reservation) QueryConnector() *ConnectorQuery {
-	return (&ReservationClient{config: r.config}).QueryConnector(r)
 }
 
 // Update returns a builder for updating this Reservation.
@@ -261,6 +238,9 @@ func (r *Reservation) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", r.UpdatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("connector_id=")
+	builder.WriteString(fmt.Sprintf("%v", r.ConnectorID))
 	builder.WriteString(", ")
 	builder.WriteString("reservation_id=")
 	builder.WriteString(fmt.Sprintf("%v", r.ReservationID))

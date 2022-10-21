@@ -9,11 +9,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/orderevent"
 	"github.com/Kotodian/cwmodel/orderinfo"
-	"github.com/Kotodian/cwmodel/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -91,6 +89,12 @@ func (oic *OrderInfoCreate) SetNillableUpdatedAt(i *int64) *OrderInfoCreate {
 	if i != nil {
 		oic.SetUpdatedAt(*i)
 	}
+	return oic
+}
+
+// SetConnectorID sets the "connector_id" field.
+func (oic *OrderInfoCreate) SetConnectorID(d datasource.UUID) *OrderInfoCreate {
+	oic.mutation.SetConnectorID(d)
 	return oic
 }
 
@@ -283,13 +287,13 @@ func (oic *OrderInfoCreate) SetNillableStopReasonCode(i *int32) *OrderInfoCreate
 }
 
 // SetState sets the "state" field.
-func (oic *OrderInfoCreate) SetState(i int32) *OrderInfoCreate {
+func (oic *OrderInfoCreate) SetState(i int) *OrderInfoCreate {
 	oic.mutation.SetState(i)
 	return oic
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (oic *OrderInfoCreate) SetNillableState(i *int32) *OrderInfoCreate {
+func (oic *OrderInfoCreate) SetNillableState(i *int) *OrderInfoCreate {
 	if i != nil {
 		oic.SetState(*i)
 	}
@@ -420,25 +424,6 @@ func (oic *OrderInfoCreate) SetNillableID(d *datasource.UUID) *OrderInfoCreate {
 	return oic
 }
 
-// SetConnectorID sets the "connector" edge to the Connector entity by ID.
-func (oic *OrderInfoCreate) SetConnectorID(id datasource.UUID) *OrderInfoCreate {
-	oic.mutation.SetConnectorID(id)
-	return oic
-}
-
-// SetNillableConnectorID sets the "connector" edge to the Connector entity by ID if the given value is not nil.
-func (oic *OrderInfoCreate) SetNillableConnectorID(id *datasource.UUID) *OrderInfoCreate {
-	if id != nil {
-		oic = oic.SetConnectorID(*id)
-	}
-	return oic
-}
-
-// SetConnector sets the "connector" edge to the Connector entity.
-func (oic *OrderInfoCreate) SetConnector(c *Connector) *OrderInfoCreate {
-	return oic.SetConnectorID(c.ID)
-}
-
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
 func (oic *OrderInfoCreate) SetEquipmentID(id datasource.UUID) *OrderInfoCreate {
 	oic.mutation.SetEquipmentID(id)
@@ -471,25 +456,6 @@ func (oic *OrderInfoCreate) AddOrderEvent(o ...*OrderEvent) *OrderInfoCreate {
 		ids[i] = o[i].ID
 	}
 	return oic.AddOrderEventIDs(ids...)
-}
-
-// SetSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by ID.
-func (oic *OrderInfoCreate) SetSmartChargingEffectID(id datasource.UUID) *OrderInfoCreate {
-	oic.mutation.SetSmartChargingEffectID(id)
-	return oic
-}
-
-// SetNillableSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by ID if the given value is not nil.
-func (oic *OrderInfoCreate) SetNillableSmartChargingEffectID(id *datasource.UUID) *OrderInfoCreate {
-	if id != nil {
-		oic = oic.SetSmartChargingEffectID(*id)
-	}
-	return oic
-}
-
-// SetSmartChargingEffect sets the "smart_charging_effect" edge to the SmartChargingEffect entity.
-func (oic *OrderInfoCreate) SetSmartChargingEffect(s *SmartChargingEffect) *OrderInfoCreate {
-	return oic.SetSmartChargingEffectID(s.ID)
 }
 
 // Mutation returns the OrderInfoMutation object of the builder.
@@ -612,6 +578,9 @@ func (oic *OrderInfoCreate) check() error {
 	if _, ok := oic.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`cwmodel: missing required field "OrderInfo.updated_at"`)}
 	}
+	if _, ok := oic.mutation.ConnectorID(); !ok {
+		return &ValidationError{Name: "connector_id", err: errors.New(`cwmodel: missing required field "OrderInfo.connector_id"`)}
+	}
 	if _, ok := oic.mutation.TransactionID(); !ok {
 		return &ValidationError{Name: "transaction_id", err: errors.New(`cwmodel: missing required field "OrderInfo.transaction_id"`)}
 	}
@@ -674,6 +643,10 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 		_spec.SetField(orderinfo.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
+	if value, ok := oic.mutation.ConnectorID(); ok {
+		_spec.SetField(orderinfo.FieldConnectorID, field.TypeUint64, value)
+		_node.ConnectorID = value
+	}
 	if value, ok := oic.mutation.RemoteStartID(); ok {
 		_spec.SetField(orderinfo.FieldRemoteStartID, field.TypeInt64, value)
 		_node.RemoteStartID = &value
@@ -731,7 +704,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 		_node.StopReasonCode = &value
 	}
 	if value, ok := oic.mutation.State(); ok {
-		_spec.SetField(orderinfo.FieldState, field.TypeInt32, value)
+		_spec.SetField(orderinfo.FieldState, field.TypeInt, value)
 		_node.State = value
 	}
 	if value, ok := oic.mutation.Offline(); ok {
@@ -770,26 +743,6 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 		_spec.SetField(orderinfo.FieldOperatorID, field.TypeUint64, value)
 		_node.OperatorID = &value
 	}
-	if nodes := oic.mutation.ConnectorIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   orderinfo.ConnectorTable,
-			Columns: []string{orderinfo.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.connector_id = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
 	if nodes := oic.mutation.EquipmentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -821,25 +774,6 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: orderevent.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := oic.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   orderinfo.SmartChargingEffectTable,
-			Columns: []string{orderinfo.SmartChargingEffectColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: smartchargingeffect.FieldID,
 				},
 			},
 		}

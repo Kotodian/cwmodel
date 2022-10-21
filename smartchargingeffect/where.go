@@ -117,6 +117,22 @@ func UpdatedAt(v int64) predicate.SmartChargingEffect {
 	})
 }
 
+// ConnectorID applies equality check predicate on the "connector_id" field. It's identical to ConnectorIDEQ.
+func ConnectorID(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldConnectorID), vc))
+	})
+}
+
+// OrderID applies equality check predicate on the "order_id" field. It's identical to OrderIDEQ.
+func OrderID(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldOrderID), vc))
+	})
+}
+
 // SmartID applies equality check predicate on the "smart_id" field. It's identical to SmartIDEQ.
 func SmartID(v int64) predicate.SmartChargingEffect {
 	return predicate.SmartChargingEffect(func(s *sql.Selector) {
@@ -496,6 +512,160 @@ func UpdatedAtLT(v int64) predicate.SmartChargingEffect {
 func UpdatedAtLTE(v int64) predicate.SmartChargingEffect {
 	return predicate.SmartChargingEffect(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldUpdatedAt), v))
+	})
+}
+
+// ConnectorIDEQ applies the EQ predicate on the "connector_id" field.
+func ConnectorIDEQ(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldConnectorID), vc))
+	})
+}
+
+// ConnectorIDNEQ applies the NEQ predicate on the "connector_id" field.
+func ConnectorIDNEQ(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldConnectorID), vc))
+	})
+}
+
+// ConnectorIDIn applies the In predicate on the "connector_id" field.
+func ConnectorIDIn(vs ...datasource.UUID) predicate.SmartChargingEffect {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldConnectorID), v...))
+	})
+}
+
+// ConnectorIDNotIn applies the NotIn predicate on the "connector_id" field.
+func ConnectorIDNotIn(vs ...datasource.UUID) predicate.SmartChargingEffect {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldConnectorID), v...))
+	})
+}
+
+// ConnectorIDGT applies the GT predicate on the "connector_id" field.
+func ConnectorIDGT(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldConnectorID), vc))
+	})
+}
+
+// ConnectorIDGTE applies the GTE predicate on the "connector_id" field.
+func ConnectorIDGTE(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldConnectorID), vc))
+	})
+}
+
+// ConnectorIDLT applies the LT predicate on the "connector_id" field.
+func ConnectorIDLT(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldConnectorID), vc))
+	})
+}
+
+// ConnectorIDLTE applies the LTE predicate on the "connector_id" field.
+func ConnectorIDLTE(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldConnectorID), vc))
+	})
+}
+
+// OrderIDEQ applies the EQ predicate on the "order_id" field.
+func OrderIDEQ(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDNEQ applies the NEQ predicate on the "order_id" field.
+func OrderIDNEQ(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDIn applies the In predicate on the "order_id" field.
+func OrderIDIn(vs ...datasource.UUID) predicate.SmartChargingEffect {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldOrderID), v...))
+	})
+}
+
+// OrderIDNotIn applies the NotIn predicate on the "order_id" field.
+func OrderIDNotIn(vs ...datasource.UUID) predicate.SmartChargingEffect {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldOrderID), v...))
+	})
+}
+
+// OrderIDGT applies the GT predicate on the "order_id" field.
+func OrderIDGT(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDGTE applies the GTE predicate on the "order_id" field.
+func OrderIDGTE(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDLT applies the LT predicate on the "order_id" field.
+func OrderIDLT(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDLTE applies the LTE predicate on the "order_id" field.
+func OrderIDLTE(v datasource.UUID) predicate.SmartChargingEffect {
+	vc := uint64(v)
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldOrderID), vc))
+	})
+}
+
+// OrderIDIsNil applies the IsNil predicate on the "order_id" field.
+func OrderIDIsNil() predicate.SmartChargingEffect {
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldOrderID)))
+	})
+}
+
+// OrderIDNotNil applies the NotNil predicate on the "order_id" field.
+func OrderIDNotNil() predicate.SmartChargingEffect {
+	return predicate.SmartChargingEffect(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldOrderID)))
 	})
 }
 
@@ -1070,62 +1240,6 @@ func HasEquipmentWith(preds ...predicate.Equipment) predicate.SmartChargingEffec
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(EquipmentInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, EquipmentTable, EquipmentColumn),
-		)
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasConnector applies the HasEdge predicate on the "connector" edge.
-func HasConnector() predicate.SmartChargingEffect {
-	return predicate.SmartChargingEffect(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ConnectorTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ConnectorTable, ConnectorColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasConnectorWith applies the HasEdge predicate on the "connector" edge with a given conditions (other predicates).
-func HasConnectorWith(preds ...predicate.Connector) predicate.SmartChargingEffect {
-	return predicate.SmartChargingEffect(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ConnectorInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ConnectorTable, ConnectorColumn),
-		)
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasOrderInfo applies the HasEdge predicate on the "order_info" edge.
-func HasOrderInfo() predicate.SmartChargingEffect {
-	return predicate.SmartChargingEffect(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrderInfoTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, OrderInfoTable, OrderInfoColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasOrderInfoWith applies the HasEdge predicate on the "order_info" edge with a given conditions (other predicates).
-func HasOrderInfoWith(preds ...predicate.OrderInfo) predicate.SmartChargingEffect {
-	return predicate.SmartChargingEffect(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrderInfoInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, OrderInfoTable, OrderInfoColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

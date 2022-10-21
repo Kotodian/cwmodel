@@ -432,50 +432,41 @@ func (m *AppModuleInfoMutation) ResetEdge(name string) error {
 // ConnectorMutation represents an operation that mutates the Connector nodes in the graph.
 type ConnectorMutation struct {
 	config
-	op                           Op
-	typ                          string
-	id                           *datasource.UUID
-	version                      *int64
-	addversion                   *int64
-	created_by                   *datasource.UUID
-	addcreated_by                *datasource.UUID
-	created_at                   *int64
-	addcreated_at                *int64
-	updated_by                   *datasource.UUID
-	addupdated_by                *datasource.UUID
-	updated_at                   *int64
-	addupdated_at                *int64
-	equipment_sn                 *string
-	evse_serial                  *string
-	serial                       *string
-	current_state                *int
-	addcurrent_state             *int
-	before_state                 *int
-	addbefore_state              *int
-	charging_state               *int
-	addcharging_state            *int
-	reservation_id               *datasource.UUID
-	addreservation_id            *datasource.UUID
-	order_id                     *datasource.UUID
-	addorder_id                  *datasource.UUID
-	park_no                      *string
-	clearedFields                map[string]struct{}
-	evse                         *datasource.UUID
-	clearedevse                  bool
-	equipment                    *datasource.UUID
-	clearedequipment             bool
-	order_info                   map[datasource.UUID]struct{}
-	removedorder_info            map[datasource.UUID]struct{}
-	clearedorder_info            bool
-	reservation                  map[datasource.UUID]struct{}
-	removedreservation           map[datasource.UUID]struct{}
-	clearedreservation           bool
-	smart_charging_effect        map[datasource.UUID]struct{}
-	removedsmart_charging_effect map[datasource.UUID]struct{}
-	clearedsmart_charging_effect bool
-	done                         bool
-	oldValue                     func(context.Context) (*Connector, error)
-	predicates                   []predicate.Connector
+	op                Op
+	typ               string
+	id                *datasource.UUID
+	version           *int64
+	addversion        *int64
+	created_by        *datasource.UUID
+	addcreated_by     *datasource.UUID
+	created_at        *int64
+	addcreated_at     *int64
+	updated_by        *datasource.UUID
+	addupdated_by     *datasource.UUID
+	updated_at        *int64
+	addupdated_at     *int64
+	equipment_sn      *string
+	evse_serial       *string
+	serial            *string
+	current_state     *int
+	addcurrent_state  *int
+	before_state      *int
+	addbefore_state   *int
+	charging_state    *int
+	addcharging_state *int
+	reservation_id    *datasource.UUID
+	addreservation_id *datasource.UUID
+	order_id          *datasource.UUID
+	addorder_id       *datasource.UUID
+	park_no           *string
+	clearedFields     map[string]struct{}
+	evse              *datasource.UUID
+	clearedevse       bool
+	equipment         *datasource.UUID
+	clearedequipment  bool
+	done              bool
+	oldValue          func(context.Context) (*Connector, error)
+	predicates        []predicate.Connector
 }
 
 var _ ent.Mutation = (*ConnectorMutation)(nil)
@@ -1406,168 +1397,6 @@ func (m *ConnectorMutation) ResetEquipment() {
 	m.clearedequipment = false
 }
 
-// AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by ids.
-func (m *ConnectorMutation) AddOrderInfoIDs(ids ...datasource.UUID) {
-	if m.order_info == nil {
-		m.order_info = make(map[datasource.UUID]struct{})
-	}
-	for i := range ids {
-		m.order_info[ids[i]] = struct{}{}
-	}
-}
-
-// ClearOrderInfo clears the "order_info" edge to the OrderInfo entity.
-func (m *ConnectorMutation) ClearOrderInfo() {
-	m.clearedorder_info = true
-}
-
-// OrderInfoCleared reports if the "order_info" edge to the OrderInfo entity was cleared.
-func (m *ConnectorMutation) OrderInfoCleared() bool {
-	return m.clearedorder_info
-}
-
-// RemoveOrderInfoIDs removes the "order_info" edge to the OrderInfo entity by IDs.
-func (m *ConnectorMutation) RemoveOrderInfoIDs(ids ...datasource.UUID) {
-	if m.removedorder_info == nil {
-		m.removedorder_info = make(map[datasource.UUID]struct{})
-	}
-	for i := range ids {
-		delete(m.order_info, ids[i])
-		m.removedorder_info[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedOrderInfo returns the removed IDs of the "order_info" edge to the OrderInfo entity.
-func (m *ConnectorMutation) RemovedOrderInfoIDs() (ids []datasource.UUID) {
-	for id := range m.removedorder_info {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// OrderInfoIDs returns the "order_info" edge IDs in the mutation.
-func (m *ConnectorMutation) OrderInfoIDs() (ids []datasource.UUID) {
-	for id := range m.order_info {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetOrderInfo resets all changes to the "order_info" edge.
-func (m *ConnectorMutation) ResetOrderInfo() {
-	m.order_info = nil
-	m.clearedorder_info = false
-	m.removedorder_info = nil
-}
-
-// AddReservationIDs adds the "reservation" edge to the Reservation entity by ids.
-func (m *ConnectorMutation) AddReservationIDs(ids ...datasource.UUID) {
-	if m.reservation == nil {
-		m.reservation = make(map[datasource.UUID]struct{})
-	}
-	for i := range ids {
-		m.reservation[ids[i]] = struct{}{}
-	}
-}
-
-// ClearReservation clears the "reservation" edge to the Reservation entity.
-func (m *ConnectorMutation) ClearReservation() {
-	m.clearedreservation = true
-}
-
-// ReservationCleared reports if the "reservation" edge to the Reservation entity was cleared.
-func (m *ConnectorMutation) ReservationCleared() bool {
-	return m.clearedreservation
-}
-
-// RemoveReservationIDs removes the "reservation" edge to the Reservation entity by IDs.
-func (m *ConnectorMutation) RemoveReservationIDs(ids ...datasource.UUID) {
-	if m.removedreservation == nil {
-		m.removedreservation = make(map[datasource.UUID]struct{})
-	}
-	for i := range ids {
-		delete(m.reservation, ids[i])
-		m.removedreservation[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedReservation returns the removed IDs of the "reservation" edge to the Reservation entity.
-func (m *ConnectorMutation) RemovedReservationIDs() (ids []datasource.UUID) {
-	for id := range m.removedreservation {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ReservationIDs returns the "reservation" edge IDs in the mutation.
-func (m *ConnectorMutation) ReservationIDs() (ids []datasource.UUID) {
-	for id := range m.reservation {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetReservation resets all changes to the "reservation" edge.
-func (m *ConnectorMutation) ResetReservation() {
-	m.reservation = nil
-	m.clearedreservation = false
-	m.removedreservation = nil
-}
-
-// AddSmartChargingEffectIDs adds the "smart_charging_effect" edge to the SmartChargingEffect entity by ids.
-func (m *ConnectorMutation) AddSmartChargingEffectIDs(ids ...datasource.UUID) {
-	if m.smart_charging_effect == nil {
-		m.smart_charging_effect = make(map[datasource.UUID]struct{})
-	}
-	for i := range ids {
-		m.smart_charging_effect[ids[i]] = struct{}{}
-	}
-}
-
-// ClearSmartChargingEffect clears the "smart_charging_effect" edge to the SmartChargingEffect entity.
-func (m *ConnectorMutation) ClearSmartChargingEffect() {
-	m.clearedsmart_charging_effect = true
-}
-
-// SmartChargingEffectCleared reports if the "smart_charging_effect" edge to the SmartChargingEffect entity was cleared.
-func (m *ConnectorMutation) SmartChargingEffectCleared() bool {
-	return m.clearedsmart_charging_effect
-}
-
-// RemoveSmartChargingEffectIDs removes the "smart_charging_effect" edge to the SmartChargingEffect entity by IDs.
-func (m *ConnectorMutation) RemoveSmartChargingEffectIDs(ids ...datasource.UUID) {
-	if m.removedsmart_charging_effect == nil {
-		m.removedsmart_charging_effect = make(map[datasource.UUID]struct{})
-	}
-	for i := range ids {
-		delete(m.smart_charging_effect, ids[i])
-		m.removedsmart_charging_effect[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedSmartChargingEffect returns the removed IDs of the "smart_charging_effect" edge to the SmartChargingEffect entity.
-func (m *ConnectorMutation) RemovedSmartChargingEffectIDs() (ids []datasource.UUID) {
-	for id := range m.removedsmart_charging_effect {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// SmartChargingEffectIDs returns the "smart_charging_effect" edge IDs in the mutation.
-func (m *ConnectorMutation) SmartChargingEffectIDs() (ids []datasource.UUID) {
-	for id := range m.smart_charging_effect {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetSmartChargingEffect resets all changes to the "smart_charging_effect" edge.
-func (m *ConnectorMutation) ResetSmartChargingEffect() {
-	m.smart_charging_effect = nil
-	m.clearedsmart_charging_effect = false
-	m.removedsmart_charging_effect = nil
-}
-
 // Where appends a list predicates to the ConnectorMutation builder.
 func (m *ConnectorMutation) Where(ps ...predicate.Connector) {
 	m.predicates = append(m.predicates, ps...)
@@ -2051,21 +1880,12 @@ func (m *ConnectorMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ConnectorMutation) AddedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 2)
 	if m.evse != nil {
 		edges = append(edges, connector.EdgeEvse)
 	}
 	if m.equipment != nil {
 		edges = append(edges, connector.EdgeEquipment)
-	}
-	if m.order_info != nil {
-		edges = append(edges, connector.EdgeOrderInfo)
-	}
-	if m.reservation != nil {
-		edges = append(edges, connector.EdgeReservation)
-	}
-	if m.smart_charging_effect != nil {
-		edges = append(edges, connector.EdgeSmartChargingEffect)
 	}
 	return edges
 }
@@ -2082,86 +1902,30 @@ func (m *ConnectorMutation) AddedIDs(name string) []ent.Value {
 		if id := m.equipment; id != nil {
 			return []ent.Value{*id}
 		}
-	case connector.EdgeOrderInfo:
-		ids := make([]ent.Value, 0, len(m.order_info))
-		for id := range m.order_info {
-			ids = append(ids, id)
-		}
-		return ids
-	case connector.EdgeReservation:
-		ids := make([]ent.Value, 0, len(m.reservation))
-		for id := range m.reservation {
-			ids = append(ids, id)
-		}
-		return ids
-	case connector.EdgeSmartChargingEffect:
-		ids := make([]ent.Value, 0, len(m.smart_charging_effect))
-		for id := range m.smart_charging_effect {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ConnectorMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 5)
-	if m.removedorder_info != nil {
-		edges = append(edges, connector.EdgeOrderInfo)
-	}
-	if m.removedreservation != nil {
-		edges = append(edges, connector.EdgeReservation)
-	}
-	if m.removedsmart_charging_effect != nil {
-		edges = append(edges, connector.EdgeSmartChargingEffect)
-	}
+	edges := make([]string, 0, 2)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *ConnectorMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case connector.EdgeOrderInfo:
-		ids := make([]ent.Value, 0, len(m.removedorder_info))
-		for id := range m.removedorder_info {
-			ids = append(ids, id)
-		}
-		return ids
-	case connector.EdgeReservation:
-		ids := make([]ent.Value, 0, len(m.removedreservation))
-		for id := range m.removedreservation {
-			ids = append(ids, id)
-		}
-		return ids
-	case connector.EdgeSmartChargingEffect:
-		ids := make([]ent.Value, 0, len(m.removedsmart_charging_effect))
-		for id := range m.removedsmart_charging_effect {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ConnectorMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 2)
 	if m.clearedevse {
 		edges = append(edges, connector.EdgeEvse)
 	}
 	if m.clearedequipment {
 		edges = append(edges, connector.EdgeEquipment)
-	}
-	if m.clearedorder_info {
-		edges = append(edges, connector.EdgeOrderInfo)
-	}
-	if m.clearedreservation {
-		edges = append(edges, connector.EdgeReservation)
-	}
-	if m.clearedsmart_charging_effect {
-		edges = append(edges, connector.EdgeSmartChargingEffect)
 	}
 	return edges
 }
@@ -2174,12 +1938,6 @@ func (m *ConnectorMutation) EdgeCleared(name string) bool {
 		return m.clearedevse
 	case connector.EdgeEquipment:
 		return m.clearedequipment
-	case connector.EdgeOrderInfo:
-		return m.clearedorder_info
-	case connector.EdgeReservation:
-		return m.clearedreservation
-	case connector.EdgeSmartChargingEffect:
-		return m.clearedsmart_charging_effect
 	}
 	return false
 }
@@ -2207,15 +1965,6 @@ func (m *ConnectorMutation) ResetEdge(name string) error {
 		return nil
 	case connector.EdgeEquipment:
 		m.ResetEquipment()
-		return nil
-	case connector.EdgeOrderInfo:
-		m.ResetOrderInfo()
-		return nil
-	case connector.EdgeReservation:
-		m.ResetReservation()
-		return nil
-	case connector.EdgeSmartChargingEffect:
-		m.ResetSmartChargingEffect()
 		return nil
 	}
 	return fmt.Errorf("unknown Connector edge %s", name)
@@ -14052,75 +13801,73 @@ func (m *OrderEventMutation) ResetEdge(name string) error {
 // OrderInfoMutation represents an operation that mutates the OrderInfo nodes in the graph.
 type OrderInfoMutation struct {
 	config
-	op                           Op
-	typ                          string
-	id                           *datasource.UUID
-	version                      *int64
-	addversion                   *int64
-	created_by                   *datasource.UUID
-	addcreated_by                *datasource.UUID
-	created_at                   *int64
-	addcreated_at                *int64
-	updated_by                   *datasource.UUID
-	addupdated_by                *datasource.UUID
-	updated_at                   *int64
-	addupdated_at                *int64
-	remote_start_id              *int64
-	addremote_start_id           *int64
-	transaction_id               *string
-	authorization_id             *string
-	authorization_mode           *int
-	addauthorization_mode        *int
-	customer_id                  *string
-	caller_order_id              *string
-	total_electricity            *float64
-	addtotal_electricity         *float64
-	charge_start_electricity     *float64
-	addcharge_start_electricity  *float64
-	charge_final_electricity     *float64
-	addcharge_final_electricity  *float64
-	sharp_electricity            *float64
-	addsharp_electricity         *float64
-	peak_electricity             *float64
-	addpeak_electricity          *float64
-	flat_electricity             *float64
-	addflat_electricity          *float64
-	valley_electricity           *float64
-	addvalley_electricity        *float64
-	stop_reason_code             *int32
-	addstop_reason_code          *int32
-	state                        *int32
-	addstate                     *int32
-	offline                      *bool
-	price_scheme_release_id      *int64
-	addprice_scheme_release_id   *int64
-	order_start_time             *int64
-	addorder_start_time          *int64
-	order_final_time             *int64
-	addorder_final_time          *int64
-	charge_start_time            *int64
-	addcharge_start_time         *int64
-	charge_final_time            *int64
-	addcharge_final_time         *int64
-	intellect_id                 *int64
-	addintellect_id              *int64
-	station_id                   *datasource.UUID
-	addstation_id                *datasource.UUID
-	operator_id                  *datasource.UUID
-	addoperator_id               *datasource.UUID
-	clearedFields                map[string]struct{}
-	connector                    *datasource.UUID
-	clearedconnector             bool
-	equipment                    *datasource.UUID
-	clearedequipment             bool
-	order_event                  map[datasource.UUID]struct{}
-	removedorder_event           map[datasource.UUID]struct{}
-	clearedorder_event           bool
-	smart_charging_effect        *datasource.UUID
-	clearedsmart_charging_effect bool
-	done                         bool
-	oldValue                     func(context.Context) (*OrderInfo, error)
-	predicates                   []predicate.OrderInfo
+	op                          Op
+	typ                         string
+	id                          *datasource.UUID
+	version                     *int64
+	addversion                  *int64
+	created_by                  *datasource.UUID
+	addcreated_by               *datasource.UUID
+	created_at                  *int64
+	addcreated_at               *int64
+	updated_by                  *datasource.UUID
+	addupdated_by               *datasource.UUID
+	updated_at                  *int64
+	addupdated_at               *int64
+	connector_id                *datasource.UUID
+	addconnector_id             *datasource.UUID
+	remote_start_id             *int64
+	addremote_start_id          *int64
+	transaction_id              *string
+	authorization_id            *string
+	authorization_mode          *int
+	addauthorization_mode       *int
+	customer_id                 *string
+	caller_order_id             *string
+	total_electricity           *float64
+	addtotal_electricity        *float64
+	charge_start_electricity    *float64
+	addcharge_start_electricity *float64
+	charge_final_electricity    *float64
+	addcharge_final_electricity *float64
+	sharp_electricity           *float64
+	addsharp_electricity        *float64
+	peak_electricity            *float64
+	addpeak_electricity         *float64
+	flat_electricity            *float64
+	addflat_electricity         *float64
+	valley_electricity          *float64
+	addvalley_electricity       *float64
+	stop_reason_code            *int32
+	addstop_reason_code         *int32
+	state                       *int
+	addstate                    *int
+	offline                     *bool
+	price_scheme_release_id     *int64
+	addprice_scheme_release_id  *int64
+	order_start_time            *int64
+	addorder_start_time         *int64
+	order_final_time            *int64
+	addorder_final_time         *int64
+	charge_start_time           *int64
+	addcharge_start_time        *int64
+	charge_final_time           *int64
+	addcharge_final_time        *int64
+	intellect_id                *int64
+	addintellect_id             *int64
+	station_id                  *datasource.UUID
+	addstation_id               *datasource.UUID
+	operator_id                 *datasource.UUID
+	addoperator_id              *datasource.UUID
+	clearedFields               map[string]struct{}
+	equipment                   *datasource.UUID
+	clearedequipment            bool
+	order_event                 map[datasource.UUID]struct{}
+	removedorder_event          map[datasource.UUID]struct{}
+	clearedorder_event          bool
+	done                        bool
+	oldValue                    func(context.Context) (*OrderInfo, error)
+	predicates                  []predicate.OrderInfo
 }
 
 var _ ent.Mutation = (*OrderInfoMutation)(nil)
@@ -14505,6 +14252,62 @@ func (m *OrderInfoMutation) AddedUpdatedAt() (r int64, exists bool) {
 func (m *OrderInfoMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 	m.addupdated_at = nil
+}
+
+// SetConnectorID sets the "connector_id" field.
+func (m *OrderInfoMutation) SetConnectorID(d datasource.UUID) {
+	m.connector_id = &d
+	m.addconnector_id = nil
+}
+
+// ConnectorID returns the value of the "connector_id" field in the mutation.
+func (m *OrderInfoMutation) ConnectorID() (r datasource.UUID, exists bool) {
+	v := m.connector_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConnectorID returns the old "connector_id" field's value of the OrderInfo entity.
+// If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrderInfoMutation) OldConnectorID(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConnectorID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConnectorID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConnectorID: %w", err)
+	}
+	return oldValue.ConnectorID, nil
+}
+
+// AddConnectorID adds d to the "connector_id" field.
+func (m *OrderInfoMutation) AddConnectorID(d datasource.UUID) {
+	if m.addconnector_id != nil {
+		*m.addconnector_id += d
+	} else {
+		m.addconnector_id = &d
+	}
+}
+
+// AddedConnectorID returns the value that was added to the "connector_id" field in this mutation.
+func (m *OrderInfoMutation) AddedConnectorID() (r datasource.UUID, exists bool) {
+	v := m.addconnector_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetConnectorID resets all changes to the "connector_id" field.
+func (m *OrderInfoMutation) ResetConnectorID() {
+	m.connector_id = nil
+	m.addconnector_id = nil
 }
 
 // SetRemoteStartID sets the "remote_start_id" field.
@@ -15391,13 +15194,13 @@ func (m *OrderInfoMutation) ResetStopReasonCode() {
 }
 
 // SetState sets the "state" field.
-func (m *OrderInfoMutation) SetState(i int32) {
+func (m *OrderInfoMutation) SetState(i int) {
 	m.state = &i
 	m.addstate = nil
 }
 
 // State returns the value of the "state" field in the mutation.
-func (m *OrderInfoMutation) State() (r int32, exists bool) {
+func (m *OrderInfoMutation) State() (r int, exists bool) {
 	v := m.state
 	if v == nil {
 		return
@@ -15408,7 +15211,7 @@ func (m *OrderInfoMutation) State() (r int32, exists bool) {
 // OldState returns the old "state" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldState(ctx context.Context) (v int32, err error) {
+func (m *OrderInfoMutation) OldState(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldState is only allowed on UpdateOne operations")
 	}
@@ -15423,7 +15226,7 @@ func (m *OrderInfoMutation) OldState(ctx context.Context) (v int32, err error) {
 }
 
 // AddState adds i to the "state" field.
-func (m *OrderInfoMutation) AddState(i int32) {
+func (m *OrderInfoMutation) AddState(i int) {
 	if m.addstate != nil {
 		*m.addstate += i
 	} else {
@@ -15432,7 +15235,7 @@ func (m *OrderInfoMutation) AddState(i int32) {
 }
 
 // AddedState returns the value that was added to the "state" field in this mutation.
-func (m *OrderInfoMutation) AddedState() (r int32, exists bool) {
+func (m *OrderInfoMutation) AddedState() (r int, exists bool) {
 	v := m.addstate
 	if v == nil {
 		return
@@ -16042,45 +15845,6 @@ func (m *OrderInfoMutation) ResetOperatorID() {
 	delete(m.clearedFields, orderinfo.FieldOperatorID)
 }
 
-// SetConnectorID sets the "connector" edge to the Connector entity by id.
-func (m *OrderInfoMutation) SetConnectorID(id datasource.UUID) {
-	m.connector = &id
-}
-
-// ClearConnector clears the "connector" edge to the Connector entity.
-func (m *OrderInfoMutation) ClearConnector() {
-	m.clearedconnector = true
-}
-
-// ConnectorCleared reports if the "connector" edge to the Connector entity was cleared.
-func (m *OrderInfoMutation) ConnectorCleared() bool {
-	return m.clearedconnector
-}
-
-// ConnectorID returns the "connector" edge ID in the mutation.
-func (m *OrderInfoMutation) ConnectorID() (id datasource.UUID, exists bool) {
-	if m.connector != nil {
-		return *m.connector, true
-	}
-	return
-}
-
-// ConnectorIDs returns the "connector" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// ConnectorID instead. It exists only for internal usage by the builders.
-func (m *OrderInfoMutation) ConnectorIDs() (ids []datasource.UUID) {
-	if id := m.connector; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetConnector resets all changes to the "connector" edge.
-func (m *OrderInfoMutation) ResetConnector() {
-	m.connector = nil
-	m.clearedconnector = false
-}
-
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by id.
 func (m *OrderInfoMutation) SetEquipmentID(id datasource.UUID) {
 	m.equipment = &id
@@ -16174,45 +15938,6 @@ func (m *OrderInfoMutation) ResetOrderEvent() {
 	m.removedorder_event = nil
 }
 
-// SetSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by id.
-func (m *OrderInfoMutation) SetSmartChargingEffectID(id datasource.UUID) {
-	m.smart_charging_effect = &id
-}
-
-// ClearSmartChargingEffect clears the "smart_charging_effect" edge to the SmartChargingEffect entity.
-func (m *OrderInfoMutation) ClearSmartChargingEffect() {
-	m.clearedsmart_charging_effect = true
-}
-
-// SmartChargingEffectCleared reports if the "smart_charging_effect" edge to the SmartChargingEffect entity was cleared.
-func (m *OrderInfoMutation) SmartChargingEffectCleared() bool {
-	return m.clearedsmart_charging_effect
-}
-
-// SmartChargingEffectID returns the "smart_charging_effect" edge ID in the mutation.
-func (m *OrderInfoMutation) SmartChargingEffectID() (id datasource.UUID, exists bool) {
-	if m.smart_charging_effect != nil {
-		return *m.smart_charging_effect, true
-	}
-	return
-}
-
-// SmartChargingEffectIDs returns the "smart_charging_effect" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// SmartChargingEffectID instead. It exists only for internal usage by the builders.
-func (m *OrderInfoMutation) SmartChargingEffectIDs() (ids []datasource.UUID) {
-	if id := m.smart_charging_effect; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetSmartChargingEffect resets all changes to the "smart_charging_effect" edge.
-func (m *OrderInfoMutation) ResetSmartChargingEffect() {
-	m.smart_charging_effect = nil
-	m.clearedsmart_charging_effect = false
-}
-
 // Where appends a list predicates to the OrderInfoMutation builder.
 func (m *OrderInfoMutation) Where(ps ...predicate.OrderInfo) {
 	m.predicates = append(m.predicates, ps...)
@@ -16232,7 +15957,7 @@ func (m *OrderInfoMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrderInfoMutation) Fields() []string {
-	fields := make([]string, 0, 29)
+	fields := make([]string, 0, 30)
 	if m.version != nil {
 		fields = append(fields, orderinfo.FieldVersion)
 	}
@@ -16247,6 +15972,9 @@ func (m *OrderInfoMutation) Fields() []string {
 	}
 	if m.updated_at != nil {
 		fields = append(fields, orderinfo.FieldUpdatedAt)
+	}
+	if m.connector_id != nil {
+		fields = append(fields, orderinfo.FieldConnectorID)
 	}
 	if m.remote_start_id != nil {
 		fields = append(fields, orderinfo.FieldRemoteStartID)
@@ -16338,6 +16066,8 @@ func (m *OrderInfoMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedBy()
 	case orderinfo.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case orderinfo.FieldConnectorID:
+		return m.ConnectorID()
 	case orderinfo.FieldRemoteStartID:
 		return m.RemoteStartID()
 	case orderinfo.FieldTransactionID:
@@ -16405,6 +16135,8 @@ func (m *OrderInfoMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldUpdatedBy(ctx)
 	case orderinfo.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case orderinfo.FieldConnectorID:
+		return m.OldConnectorID(ctx)
 	case orderinfo.FieldRemoteStartID:
 		return m.OldRemoteStartID(ctx)
 	case orderinfo.FieldTransactionID:
@@ -16496,6 +16228,13 @@ func (m *OrderInfoMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case orderinfo.FieldConnectorID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConnectorID(v)
 		return nil
 	case orderinfo.FieldRemoteStartID:
 		v, ok := value.(int64)
@@ -16596,7 +16335,7 @@ func (m *OrderInfoMutation) SetField(name string, value ent.Value) error {
 		m.SetStopReasonCode(v)
 		return nil
 	case orderinfo.FieldState:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -16688,6 +16427,9 @@ func (m *OrderInfoMutation) AddedFields() []string {
 	if m.addupdated_at != nil {
 		fields = append(fields, orderinfo.FieldUpdatedAt)
 	}
+	if m.addconnector_id != nil {
+		fields = append(fields, orderinfo.FieldConnectorID)
+	}
 	if m.addremote_start_id != nil {
 		fields = append(fields, orderinfo.FieldRemoteStartID)
 	}
@@ -16763,6 +16505,8 @@ func (m *OrderInfoMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedBy()
 	case orderinfo.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
+	case orderinfo.FieldConnectorID:
+		return m.AddedConnectorID()
 	case orderinfo.FieldRemoteStartID:
 		return m.AddedRemoteStartID()
 	case orderinfo.FieldAuthorizationMode:
@@ -16845,6 +16589,13 @@ func (m *OrderInfoMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddUpdatedAt(v)
 		return nil
+	case orderinfo.FieldConnectorID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddConnectorID(v)
+		return nil
 	case orderinfo.FieldRemoteStartID:
 		v, ok := value.(int64)
 		if !ok {
@@ -16916,7 +16667,7 @@ func (m *OrderInfoMutation) AddField(name string, value ent.Value) error {
 		m.AddStopReasonCode(v)
 		return nil
 	case orderinfo.FieldState:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -17149,6 +16900,9 @@ func (m *OrderInfoMutation) ResetField(name string) error {
 	case orderinfo.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case orderinfo.FieldConnectorID:
+		m.ResetConnectorID()
+		return nil
 	case orderinfo.FieldRemoteStartID:
 		m.ResetRemoteStartID()
 		return nil
@@ -17227,18 +16981,12 @@ func (m *OrderInfoMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *OrderInfoMutation) AddedEdges() []string {
-	edges := make([]string, 0, 4)
-	if m.connector != nil {
-		edges = append(edges, orderinfo.EdgeConnector)
-	}
+	edges := make([]string, 0, 2)
 	if m.equipment != nil {
 		edges = append(edges, orderinfo.EdgeEquipment)
 	}
 	if m.order_event != nil {
 		edges = append(edges, orderinfo.EdgeOrderEvent)
-	}
-	if m.smart_charging_effect != nil {
-		edges = append(edges, orderinfo.EdgeSmartChargingEffect)
 	}
 	return edges
 }
@@ -17247,10 +16995,6 @@ func (m *OrderInfoMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *OrderInfoMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case orderinfo.EdgeConnector:
-		if id := m.connector; id != nil {
-			return []ent.Value{*id}
-		}
 	case orderinfo.EdgeEquipment:
 		if id := m.equipment; id != nil {
 			return []ent.Value{*id}
@@ -17261,17 +17005,13 @@ func (m *OrderInfoMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case orderinfo.EdgeSmartChargingEffect:
-		if id := m.smart_charging_effect; id != nil {
-			return []ent.Value{*id}
-		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *OrderInfoMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 2)
 	if m.removedorder_event != nil {
 		edges = append(edges, orderinfo.EdgeOrderEvent)
 	}
@@ -17294,18 +17034,12 @@ func (m *OrderInfoMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *OrderInfoMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 4)
-	if m.clearedconnector {
-		edges = append(edges, orderinfo.EdgeConnector)
-	}
+	edges := make([]string, 0, 2)
 	if m.clearedequipment {
 		edges = append(edges, orderinfo.EdgeEquipment)
 	}
 	if m.clearedorder_event {
 		edges = append(edges, orderinfo.EdgeOrderEvent)
-	}
-	if m.clearedsmart_charging_effect {
-		edges = append(edges, orderinfo.EdgeSmartChargingEffect)
 	}
 	return edges
 }
@@ -17314,14 +17048,10 @@ func (m *OrderInfoMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *OrderInfoMutation) EdgeCleared(name string) bool {
 	switch name {
-	case orderinfo.EdgeConnector:
-		return m.clearedconnector
 	case orderinfo.EdgeEquipment:
 		return m.clearedequipment
 	case orderinfo.EdgeOrderEvent:
 		return m.clearedorder_event
-	case orderinfo.EdgeSmartChargingEffect:
-		return m.clearedsmart_charging_effect
 	}
 	return false
 }
@@ -17330,14 +17060,8 @@ func (m *OrderInfoMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *OrderInfoMutation) ClearEdge(name string) error {
 	switch name {
-	case orderinfo.EdgeConnector:
-		m.ClearConnector()
-		return nil
 	case orderinfo.EdgeEquipment:
 		m.ClearEquipment()
-		return nil
-	case orderinfo.EdgeSmartChargingEffect:
-		m.ClearSmartChargingEffect()
 		return nil
 	}
 	return fmt.Errorf("unknown OrderInfo unique edge %s", name)
@@ -17347,17 +17071,11 @@ func (m *OrderInfoMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *OrderInfoMutation) ResetEdge(name string) error {
 	switch name {
-	case orderinfo.EdgeConnector:
-		m.ResetConnector()
-		return nil
 	case orderinfo.EdgeEquipment:
 		m.ResetEquipment()
 		return nil
 	case orderinfo.EdgeOrderEvent:
 		m.ResetOrderEvent()
-		return nil
-	case orderinfo.EdgeSmartChargingEffect:
-		m.ResetSmartChargingEffect()
 		return nil
 	}
 	return fmt.Errorf("unknown OrderInfo edge %s", name)
@@ -17379,6 +17097,8 @@ type ReservationMutation struct {
 	addupdated_by         *datasource.UUID
 	updated_at            *int64
 	addupdated_at         *int64
+	connector_id          *datasource.UUID
+	addconnector_id       *datasource.UUID
 	reservation_id        *int64
 	addreservation_id     *int64
 	authorization_mode    *int
@@ -17393,8 +17113,6 @@ type ReservationMutation struct {
 	clearedFields         map[string]struct{}
 	equipment             *datasource.UUID
 	clearedequipment      bool
-	connector             *datasource.UUID
-	clearedconnector      bool
 	done                  bool
 	oldValue              func(context.Context) (*Reservation, error)
 	predicates            []predicate.Reservation
@@ -17782,6 +17500,62 @@ func (m *ReservationMutation) AddedUpdatedAt() (r int64, exists bool) {
 func (m *ReservationMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 	m.addupdated_at = nil
+}
+
+// SetConnectorID sets the "connector_id" field.
+func (m *ReservationMutation) SetConnectorID(d datasource.UUID) {
+	m.connector_id = &d
+	m.addconnector_id = nil
+}
+
+// ConnectorID returns the value of the "connector_id" field in the mutation.
+func (m *ReservationMutation) ConnectorID() (r datasource.UUID, exists bool) {
+	v := m.connector_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConnectorID returns the old "connector_id" field's value of the Reservation entity.
+// If the Reservation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ReservationMutation) OldConnectorID(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConnectorID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConnectorID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConnectorID: %w", err)
+	}
+	return oldValue.ConnectorID, nil
+}
+
+// AddConnectorID adds d to the "connector_id" field.
+func (m *ReservationMutation) AddConnectorID(d datasource.UUID) {
+	if m.addconnector_id != nil {
+		*m.addconnector_id += d
+	} else {
+		m.addconnector_id = &d
+	}
+}
+
+// AddedConnectorID returns the value that was added to the "connector_id" field in this mutation.
+func (m *ReservationMutation) AddedConnectorID() (r datasource.UUID, exists bool) {
+	v := m.addconnector_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetConnectorID resets all changes to the "connector_id" field.
+func (m *ReservationMutation) ResetConnectorID() {
+	m.connector_id = nil
+	m.addconnector_id = nil
 }
 
 // SetReservationID sets the "reservation_id" field.
@@ -18181,45 +17955,6 @@ func (m *ReservationMutation) ResetEquipment() {
 	m.clearedequipment = false
 }
 
-// SetConnectorID sets the "connector" edge to the Connector entity by id.
-func (m *ReservationMutation) SetConnectorID(id datasource.UUID) {
-	m.connector = &id
-}
-
-// ClearConnector clears the "connector" edge to the Connector entity.
-func (m *ReservationMutation) ClearConnector() {
-	m.clearedconnector = true
-}
-
-// ConnectorCleared reports if the "connector" edge to the Connector entity was cleared.
-func (m *ReservationMutation) ConnectorCleared() bool {
-	return m.clearedconnector
-}
-
-// ConnectorID returns the "connector" edge ID in the mutation.
-func (m *ReservationMutation) ConnectorID() (id datasource.UUID, exists bool) {
-	if m.connector != nil {
-		return *m.connector, true
-	}
-	return
-}
-
-// ConnectorIDs returns the "connector" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// ConnectorID instead. It exists only for internal usage by the builders.
-func (m *ReservationMutation) ConnectorIDs() (ids []datasource.UUID) {
-	if id := m.connector; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetConnector resets all changes to the "connector" edge.
-func (m *ReservationMutation) ResetConnector() {
-	m.connector = nil
-	m.clearedconnector = false
-}
-
 // Where appends a list predicates to the ReservationMutation builder.
 func (m *ReservationMutation) Where(ps ...predicate.Reservation) {
 	m.predicates = append(m.predicates, ps...)
@@ -18239,7 +17974,7 @@ func (m *ReservationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ReservationMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.version != nil {
 		fields = append(fields, reservation.FieldVersion)
 	}
@@ -18254,6 +17989,9 @@ func (m *ReservationMutation) Fields() []string {
 	}
 	if m.updated_at != nil {
 		fields = append(fields, reservation.FieldUpdatedAt)
+	}
+	if m.connector_id != nil {
+		fields = append(fields, reservation.FieldConnectorID)
 	}
 	if m.reservation_id != nil {
 		fields = append(fields, reservation.FieldReservationID)
@@ -18294,6 +18032,8 @@ func (m *ReservationMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedBy()
 	case reservation.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case reservation.FieldConnectorID:
+		return m.ConnectorID()
 	case reservation.FieldReservationID:
 		return m.ReservationID()
 	case reservation.FieldAuthorizationMode:
@@ -18327,6 +18067,8 @@ func (m *ReservationMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldUpdatedBy(ctx)
 	case reservation.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case reservation.FieldConnectorID:
+		return m.OldConnectorID(ctx)
 	case reservation.FieldReservationID:
 		return m.OldReservationID(ctx)
 	case reservation.FieldAuthorizationMode:
@@ -18384,6 +18126,13 @@ func (m *ReservationMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case reservation.FieldConnectorID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConnectorID(v)
 		return nil
 	case reservation.FieldReservationID:
 		v, ok := value.(int64)
@@ -18457,6 +18206,9 @@ func (m *ReservationMutation) AddedFields() []string {
 	if m.addupdated_at != nil {
 		fields = append(fields, reservation.FieldUpdatedAt)
 	}
+	if m.addconnector_id != nil {
+		fields = append(fields, reservation.FieldConnectorID)
+	}
 	if m.addreservation_id != nil {
 		fields = append(fields, reservation.FieldReservationID)
 	}
@@ -18487,6 +18239,8 @@ func (m *ReservationMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedBy()
 	case reservation.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
+	case reservation.FieldConnectorID:
+		return m.AddedConnectorID()
 	case reservation.FieldReservationID:
 		return m.AddedReservationID()
 	case reservation.FieldAuthorizationMode:
@@ -18538,6 +18292,13 @@ func (m *ReservationMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedAt(v)
+		return nil
+	case reservation.FieldConnectorID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddConnectorID(v)
 		return nil
 	case reservation.FieldReservationID:
 		v, ok := value.(int64)
@@ -18624,6 +18385,9 @@ func (m *ReservationMutation) ResetField(name string) error {
 	case reservation.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case reservation.FieldConnectorID:
+		m.ResetConnectorID()
+		return nil
 	case reservation.FieldReservationID:
 		m.ResetReservationID()
 		return nil
@@ -18651,12 +18415,9 @@ func (m *ReservationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ReservationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	if m.equipment != nil {
 		edges = append(edges, reservation.EdgeEquipment)
-	}
-	if m.connector != nil {
-		edges = append(edges, reservation.EdgeConnector)
 	}
 	return edges
 }
@@ -18669,17 +18430,13 @@ func (m *ReservationMutation) AddedIDs(name string) []ent.Value {
 		if id := m.equipment; id != nil {
 			return []ent.Value{*id}
 		}
-	case reservation.EdgeConnector:
-		if id := m.connector; id != nil {
-			return []ent.Value{*id}
-		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ReservationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -18691,12 +18448,9 @@ func (m *ReservationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ReservationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	if m.clearedequipment {
 		edges = append(edges, reservation.EdgeEquipment)
-	}
-	if m.clearedconnector {
-		edges = append(edges, reservation.EdgeConnector)
 	}
 	return edges
 }
@@ -18707,8 +18461,6 @@ func (m *ReservationMutation) EdgeCleared(name string) bool {
 	switch name {
 	case reservation.EdgeEquipment:
 		return m.clearedequipment
-	case reservation.EdgeConnector:
-		return m.clearedconnector
 	}
 	return false
 }
@@ -18719,9 +18471,6 @@ func (m *ReservationMutation) ClearEdge(name string) error {
 	switch name {
 	case reservation.EdgeEquipment:
 		m.ClearEquipment()
-		return nil
-	case reservation.EdgeConnector:
-		m.ClearConnector()
 		return nil
 	}
 	return fmt.Errorf("unknown Reservation unique edge %s", name)
@@ -18734,9 +18483,6 @@ func (m *ReservationMutation) ResetEdge(name string) error {
 	case reservation.EdgeEquipment:
 		m.ResetEquipment()
 		return nil
-	case reservation.EdgeConnector:
-		m.ResetConnector()
-		return nil
 	}
 	return fmt.Errorf("unknown Reservation edge %s", name)
 }
@@ -18744,43 +18490,43 @@ func (m *ReservationMutation) ResetEdge(name string) error {
 // SmartChargingEffectMutation represents an operation that mutates the SmartChargingEffect nodes in the graph.
 type SmartChargingEffectMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *datasource.UUID
-	version           *int64
-	addversion        *int64
-	created_by        *datasource.UUID
-	addcreated_by     *datasource.UUID
-	created_at        *int64
-	addcreated_at     *int64
-	updated_by        *datasource.UUID
-	addupdated_by     *datasource.UUID
-	updated_at        *int64
-	addupdated_at     *int64
-	smart_id          *int64
-	addsmart_id       *int64
-	start_time        *int64
-	addstart_time     *int64
-	pid               *datasource.UUID
-	addpid            *datasource.UUID
-	unit              *string
-	equipment_sn      *string
-	valid_from        *int64
-	addvalid_from     *int64
-	valid_to          *int64
-	addvalid_to       *int64
-	spec              *[]types.ChargingSchedulePeriod
-	appendspec        []types.ChargingSchedulePeriod
-	clearedFields     map[string]struct{}
-	equipment         *datasource.UUID
-	clearedequipment  bool
-	connector         *datasource.UUID
-	clearedconnector  bool
-	order_info        *datasource.UUID
-	clearedorder_info bool
-	done              bool
-	oldValue          func(context.Context) (*SmartChargingEffect, error)
-	predicates        []predicate.SmartChargingEffect
+	op               Op
+	typ              string
+	id               *datasource.UUID
+	version          *int64
+	addversion       *int64
+	created_by       *datasource.UUID
+	addcreated_by    *datasource.UUID
+	created_at       *int64
+	addcreated_at    *int64
+	updated_by       *datasource.UUID
+	addupdated_by    *datasource.UUID
+	updated_at       *int64
+	addupdated_at    *int64
+	connector_id     *datasource.UUID
+	addconnector_id  *datasource.UUID
+	order_id         *datasource.UUID
+	addorder_id      *datasource.UUID
+	smart_id         *int64
+	addsmart_id      *int64
+	start_time       *int64
+	addstart_time    *int64
+	pid              *datasource.UUID
+	addpid           *datasource.UUID
+	unit             *string
+	equipment_sn     *string
+	valid_from       *int64
+	addvalid_from    *int64
+	valid_to         *int64
+	addvalid_to      *int64
+	spec             *[]types.ChargingSchedulePeriod
+	appendspec       []types.ChargingSchedulePeriod
+	clearedFields    map[string]struct{}
+	equipment        *datasource.UUID
+	clearedequipment bool
+	done             bool
+	oldValue         func(context.Context) (*SmartChargingEffect, error)
+	predicates       []predicate.SmartChargingEffect
 }
 
 var _ ent.Mutation = (*SmartChargingEffectMutation)(nil)
@@ -19165,6 +18911,132 @@ func (m *SmartChargingEffectMutation) AddedUpdatedAt() (r int64, exists bool) {
 func (m *SmartChargingEffectMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 	m.addupdated_at = nil
+}
+
+// SetConnectorID sets the "connector_id" field.
+func (m *SmartChargingEffectMutation) SetConnectorID(d datasource.UUID) {
+	m.connector_id = &d
+	m.addconnector_id = nil
+}
+
+// ConnectorID returns the value of the "connector_id" field in the mutation.
+func (m *SmartChargingEffectMutation) ConnectorID() (r datasource.UUID, exists bool) {
+	v := m.connector_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConnectorID returns the old "connector_id" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SmartChargingEffectMutation) OldConnectorID(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConnectorID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConnectorID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConnectorID: %w", err)
+	}
+	return oldValue.ConnectorID, nil
+}
+
+// AddConnectorID adds d to the "connector_id" field.
+func (m *SmartChargingEffectMutation) AddConnectorID(d datasource.UUID) {
+	if m.addconnector_id != nil {
+		*m.addconnector_id += d
+	} else {
+		m.addconnector_id = &d
+	}
+}
+
+// AddedConnectorID returns the value that was added to the "connector_id" field in this mutation.
+func (m *SmartChargingEffectMutation) AddedConnectorID() (r datasource.UUID, exists bool) {
+	v := m.addconnector_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetConnectorID resets all changes to the "connector_id" field.
+func (m *SmartChargingEffectMutation) ResetConnectorID() {
+	m.connector_id = nil
+	m.addconnector_id = nil
+}
+
+// SetOrderID sets the "order_id" field.
+func (m *SmartChargingEffectMutation) SetOrderID(d datasource.UUID) {
+	m.order_id = &d
+	m.addorder_id = nil
+}
+
+// OrderID returns the value of the "order_id" field in the mutation.
+func (m *SmartChargingEffectMutation) OrderID() (r datasource.UUID, exists bool) {
+	v := m.order_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrderID returns the old "order_id" field's value of the SmartChargingEffect entity.
+// If the SmartChargingEffect object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SmartChargingEffectMutation) OldOrderID(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrderID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrderID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrderID: %w", err)
+	}
+	return oldValue.OrderID, nil
+}
+
+// AddOrderID adds d to the "order_id" field.
+func (m *SmartChargingEffectMutation) AddOrderID(d datasource.UUID) {
+	if m.addorder_id != nil {
+		*m.addorder_id += d
+	} else {
+		m.addorder_id = &d
+	}
+}
+
+// AddedOrderID returns the value that was added to the "order_id" field in this mutation.
+func (m *SmartChargingEffectMutation) AddedOrderID() (r datasource.UUID, exists bool) {
+	v := m.addorder_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearOrderID clears the value of the "order_id" field.
+func (m *SmartChargingEffectMutation) ClearOrderID() {
+	m.order_id = nil
+	m.addorder_id = nil
+	m.clearedFields[smartchargingeffect.FieldOrderID] = struct{}{}
+}
+
+// OrderIDCleared returns if the "order_id" field was cleared in this mutation.
+func (m *SmartChargingEffectMutation) OrderIDCleared() bool {
+	_, ok := m.clearedFields[smartchargingeffect.FieldOrderID]
+	return ok
+}
+
+// ResetOrderID resets all changes to the "order_id" field.
+func (m *SmartChargingEffectMutation) ResetOrderID() {
+	m.order_id = nil
+	m.addorder_id = nil
+	delete(m.clearedFields, smartchargingeffect.FieldOrderID)
 }
 
 // SetSmartID sets the "smart_id" field.
@@ -19637,84 +19509,6 @@ func (m *SmartChargingEffectMutation) ResetEquipment() {
 	m.clearedequipment = false
 }
 
-// SetConnectorID sets the "connector" edge to the Connector entity by id.
-func (m *SmartChargingEffectMutation) SetConnectorID(id datasource.UUID) {
-	m.connector = &id
-}
-
-// ClearConnector clears the "connector" edge to the Connector entity.
-func (m *SmartChargingEffectMutation) ClearConnector() {
-	m.clearedconnector = true
-}
-
-// ConnectorCleared reports if the "connector" edge to the Connector entity was cleared.
-func (m *SmartChargingEffectMutation) ConnectorCleared() bool {
-	return m.clearedconnector
-}
-
-// ConnectorID returns the "connector" edge ID in the mutation.
-func (m *SmartChargingEffectMutation) ConnectorID() (id datasource.UUID, exists bool) {
-	if m.connector != nil {
-		return *m.connector, true
-	}
-	return
-}
-
-// ConnectorIDs returns the "connector" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// ConnectorID instead. It exists only for internal usage by the builders.
-func (m *SmartChargingEffectMutation) ConnectorIDs() (ids []datasource.UUID) {
-	if id := m.connector; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetConnector resets all changes to the "connector" edge.
-func (m *SmartChargingEffectMutation) ResetConnector() {
-	m.connector = nil
-	m.clearedconnector = false
-}
-
-// SetOrderInfoID sets the "order_info" edge to the OrderInfo entity by id.
-func (m *SmartChargingEffectMutation) SetOrderInfoID(id datasource.UUID) {
-	m.order_info = &id
-}
-
-// ClearOrderInfo clears the "order_info" edge to the OrderInfo entity.
-func (m *SmartChargingEffectMutation) ClearOrderInfo() {
-	m.clearedorder_info = true
-}
-
-// OrderInfoCleared reports if the "order_info" edge to the OrderInfo entity was cleared.
-func (m *SmartChargingEffectMutation) OrderInfoCleared() bool {
-	return m.clearedorder_info
-}
-
-// OrderInfoID returns the "order_info" edge ID in the mutation.
-func (m *SmartChargingEffectMutation) OrderInfoID() (id datasource.UUID, exists bool) {
-	if m.order_info != nil {
-		return *m.order_info, true
-	}
-	return
-}
-
-// OrderInfoIDs returns the "order_info" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OrderInfoID instead. It exists only for internal usage by the builders.
-func (m *SmartChargingEffectMutation) OrderInfoIDs() (ids []datasource.UUID) {
-	if id := m.order_info; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetOrderInfo resets all changes to the "order_info" edge.
-func (m *SmartChargingEffectMutation) ResetOrderInfo() {
-	m.order_info = nil
-	m.clearedorder_info = false
-}
-
 // Where appends a list predicates to the SmartChargingEffectMutation builder.
 func (m *SmartChargingEffectMutation) Where(ps ...predicate.SmartChargingEffect) {
 	m.predicates = append(m.predicates, ps...)
@@ -19734,7 +19528,7 @@ func (m *SmartChargingEffectMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SmartChargingEffectMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 15)
 	if m.version != nil {
 		fields = append(fields, smartchargingeffect.FieldVersion)
 	}
@@ -19749,6 +19543,12 @@ func (m *SmartChargingEffectMutation) Fields() []string {
 	}
 	if m.updated_at != nil {
 		fields = append(fields, smartchargingeffect.FieldUpdatedAt)
+	}
+	if m.connector_id != nil {
+		fields = append(fields, smartchargingeffect.FieldConnectorID)
+	}
+	if m.order_id != nil {
+		fields = append(fields, smartchargingeffect.FieldOrderID)
 	}
 	if m.smart_id != nil {
 		fields = append(fields, smartchargingeffect.FieldSmartID)
@@ -19792,6 +19592,10 @@ func (m *SmartChargingEffectMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedBy()
 	case smartchargingeffect.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case smartchargingeffect.FieldConnectorID:
+		return m.ConnectorID()
+	case smartchargingeffect.FieldOrderID:
+		return m.OrderID()
 	case smartchargingeffect.FieldSmartID:
 		return m.SmartID()
 	case smartchargingeffect.FieldStartTime:
@@ -19827,6 +19631,10 @@ func (m *SmartChargingEffectMutation) OldField(ctx context.Context, name string)
 		return m.OldUpdatedBy(ctx)
 	case smartchargingeffect.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case smartchargingeffect.FieldConnectorID:
+		return m.OldConnectorID(ctx)
+	case smartchargingeffect.FieldOrderID:
+		return m.OldOrderID(ctx)
 	case smartchargingeffect.FieldSmartID:
 		return m.OldSmartID(ctx)
 	case smartchargingeffect.FieldStartTime:
@@ -19886,6 +19694,20 @@ func (m *SmartChargingEffectMutation) SetField(name string, value ent.Value) err
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case smartchargingeffect.FieldConnectorID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConnectorID(v)
+		return nil
+	case smartchargingeffect.FieldOrderID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrderID(v)
 		return nil
 	case smartchargingeffect.FieldSmartID:
 		v, ok := value.(int64)
@@ -19966,6 +19788,12 @@ func (m *SmartChargingEffectMutation) AddedFields() []string {
 	if m.addupdated_at != nil {
 		fields = append(fields, smartchargingeffect.FieldUpdatedAt)
 	}
+	if m.addconnector_id != nil {
+		fields = append(fields, smartchargingeffect.FieldConnectorID)
+	}
+	if m.addorder_id != nil {
+		fields = append(fields, smartchargingeffect.FieldOrderID)
+	}
 	if m.addsmart_id != nil {
 		fields = append(fields, smartchargingeffect.FieldSmartID)
 	}
@@ -19999,6 +19827,10 @@ func (m *SmartChargingEffectMutation) AddedField(name string) (ent.Value, bool) 
 		return m.AddedUpdatedBy()
 	case smartchargingeffect.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
+	case smartchargingeffect.FieldConnectorID:
+		return m.AddedConnectorID()
+	case smartchargingeffect.FieldOrderID:
+		return m.AddedOrderID()
 	case smartchargingeffect.FieldSmartID:
 		return m.AddedSmartID()
 	case smartchargingeffect.FieldStartTime:
@@ -20053,6 +19885,20 @@ func (m *SmartChargingEffectMutation) AddField(name string, value ent.Value) err
 		}
 		m.AddUpdatedAt(v)
 		return nil
+	case smartchargingeffect.FieldConnectorID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddConnectorID(v)
+		return nil
+	case smartchargingeffect.FieldOrderID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOrderID(v)
+		return nil
 	case smartchargingeffect.FieldSmartID:
 		v, ok := value.(int64)
 		if !ok {
@@ -20096,6 +19942,9 @@ func (m *SmartChargingEffectMutation) AddField(name string, value ent.Value) err
 // mutation.
 func (m *SmartChargingEffectMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(smartchargingeffect.FieldOrderID) {
+		fields = append(fields, smartchargingeffect.FieldOrderID)
+	}
 	if m.FieldCleared(smartchargingeffect.FieldValidFrom) {
 		fields = append(fields, smartchargingeffect.FieldValidFrom)
 	}
@@ -20116,6 +19965,9 @@ func (m *SmartChargingEffectMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *SmartChargingEffectMutation) ClearField(name string) error {
 	switch name {
+	case smartchargingeffect.FieldOrderID:
+		m.ClearOrderID()
+		return nil
 	case smartchargingeffect.FieldValidFrom:
 		m.ClearValidFrom()
 		return nil
@@ -20144,6 +19996,12 @@ func (m *SmartChargingEffectMutation) ResetField(name string) error {
 		return nil
 	case smartchargingeffect.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case smartchargingeffect.FieldConnectorID:
+		m.ResetConnectorID()
+		return nil
+	case smartchargingeffect.FieldOrderID:
+		m.ResetOrderID()
 		return nil
 	case smartchargingeffect.FieldSmartID:
 		m.ResetSmartID()
@@ -20175,15 +20033,9 @@ func (m *SmartChargingEffectMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *SmartChargingEffectMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 1)
 	if m.equipment != nil {
 		edges = append(edges, smartchargingeffect.EdgeEquipment)
-	}
-	if m.connector != nil {
-		edges = append(edges, smartchargingeffect.EdgeConnector)
-	}
-	if m.order_info != nil {
-		edges = append(edges, smartchargingeffect.EdgeOrderInfo)
 	}
 	return edges
 }
@@ -20196,21 +20048,13 @@ func (m *SmartChargingEffectMutation) AddedIDs(name string) []ent.Value {
 		if id := m.equipment; id != nil {
 			return []ent.Value{*id}
 		}
-	case smartchargingeffect.EdgeConnector:
-		if id := m.connector; id != nil {
-			return []ent.Value{*id}
-		}
-	case smartchargingeffect.EdgeOrderInfo:
-		if id := m.order_info; id != nil {
-			return []ent.Value{*id}
-		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *SmartChargingEffectMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -20222,15 +20066,9 @@ func (m *SmartChargingEffectMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *SmartChargingEffectMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 1)
 	if m.clearedequipment {
 		edges = append(edges, smartchargingeffect.EdgeEquipment)
-	}
-	if m.clearedconnector {
-		edges = append(edges, smartchargingeffect.EdgeConnector)
-	}
-	if m.clearedorder_info {
-		edges = append(edges, smartchargingeffect.EdgeOrderInfo)
 	}
 	return edges
 }
@@ -20241,10 +20079,6 @@ func (m *SmartChargingEffectMutation) EdgeCleared(name string) bool {
 	switch name {
 	case smartchargingeffect.EdgeEquipment:
 		return m.clearedequipment
-	case smartchargingeffect.EdgeConnector:
-		return m.clearedconnector
-	case smartchargingeffect.EdgeOrderInfo:
-		return m.clearedorder_info
 	}
 	return false
 }
@@ -20256,12 +20090,6 @@ func (m *SmartChargingEffectMutation) ClearEdge(name string) error {
 	case smartchargingeffect.EdgeEquipment:
 		m.ClearEquipment()
 		return nil
-	case smartchargingeffect.EdgeConnector:
-		m.ClearConnector()
-		return nil
-	case smartchargingeffect.EdgeOrderInfo:
-		m.ClearOrderInfo()
-		return nil
 	}
 	return fmt.Errorf("unknown SmartChargingEffect unique edge %s", name)
 }
@@ -20272,12 +20100,6 @@ func (m *SmartChargingEffectMutation) ResetEdge(name string) error {
 	switch name {
 	case smartchargingeffect.EdgeEquipment:
 		m.ResetEquipment()
-		return nil
-	case smartchargingeffect.EdgeConnector:
-		m.ResetConnector()
-		return nil
-	case smartchargingeffect.EdgeOrderInfo:
-		m.ResetOrderInfo()
 		return nil
 	}
 	return fmt.Errorf("unknown SmartChargingEffect edge %s", name)

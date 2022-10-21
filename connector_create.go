@@ -12,9 +12,6 @@ import (
 	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/evse"
-	"github.com/Kotodian/cwmodel/orderinfo"
-	"github.com/Kotodian/cwmodel/reservation"
-	"github.com/Kotodian/cwmodel/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -215,51 +212,6 @@ func (cc *ConnectorCreate) SetEquipmentID(id datasource.UUID) *ConnectorCreate {
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (cc *ConnectorCreate) SetEquipment(e *Equipment) *ConnectorCreate {
 	return cc.SetEquipmentID(e.ID)
-}
-
-// AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
-func (cc *ConnectorCreate) AddOrderInfoIDs(ids ...datasource.UUID) *ConnectorCreate {
-	cc.mutation.AddOrderInfoIDs(ids...)
-	return cc
-}
-
-// AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
-func (cc *ConnectorCreate) AddOrderInfo(o ...*OrderInfo) *ConnectorCreate {
-	ids := make([]datasource.UUID, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
-	}
-	return cc.AddOrderInfoIDs(ids...)
-}
-
-// AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
-func (cc *ConnectorCreate) AddReservationIDs(ids ...datasource.UUID) *ConnectorCreate {
-	cc.mutation.AddReservationIDs(ids...)
-	return cc
-}
-
-// AddReservation adds the "reservation" edges to the Reservation entity.
-func (cc *ConnectorCreate) AddReservation(r ...*Reservation) *ConnectorCreate {
-	ids := make([]datasource.UUID, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
-	}
-	return cc.AddReservationIDs(ids...)
-}
-
-// AddSmartChargingEffectIDs adds the "smart_charging_effect" edge to the SmartChargingEffect entity by IDs.
-func (cc *ConnectorCreate) AddSmartChargingEffectIDs(ids ...datasource.UUID) *ConnectorCreate {
-	cc.mutation.AddSmartChargingEffectIDs(ids...)
-	return cc
-}
-
-// AddSmartChargingEffect adds the "smart_charging_effect" edges to the SmartChargingEffect entity.
-func (cc *ConnectorCreate) AddSmartChargingEffect(s ...*SmartChargingEffect) *ConnectorCreate {
-	ids := make([]datasource.UUID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return cc.AddSmartChargingEffectIDs(ids...)
 }
 
 // Mutation returns the ConnectorMutation object of the builder.
@@ -537,63 +489,6 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.equipment_id = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := cc.mutation.OrderInfoIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   connector.OrderInfoTable,
-			Columns: []string{connector.OrderInfoColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: orderinfo.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := cc.mutation.ReservationIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   connector.ReservationTable,
-			Columns: []string{connector.ReservationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: reservation.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := cc.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   connector.SmartChargingEffectTable,
-			Columns: []string{connector.SmartChargingEffectColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: smartchargingeffect.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

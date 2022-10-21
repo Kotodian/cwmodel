@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 type Reservation struct {
@@ -27,6 +28,7 @@ func (Reservation) Annotations() []schema.Annotation {
 
 func (Reservation) Fields() []ent.Field {
 	return []ent.Field{
+		field.Uint64("connector_id").GoType(datasource.UUID(0)).Comment("枪id"),
 		field.Int64("reservation_id").Comment("预约id"),
 		field.Int("authorization_mode").Comment("授权模式"),
 		field.String("authorization_id").Comment("授权id"),
@@ -40,6 +42,6 @@ func (Reservation) Fields() []ent.Field {
 func (Reservation) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("equipment", Equipment.Type).Ref("reservation").Unique(),
-		edge.From("connector", Connector.Type).Ref("reservation").Unique(),
+		// edge.From("connector", Connector.Type).Ref("reservation").Unique(),
 	}
 }

@@ -9,7 +9,6 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/reservation"
 	"github.com/Kotodian/gokit/datasource"
@@ -89,6 +88,12 @@ func (rc *ReservationCreate) SetNillableUpdatedAt(i *int64) *ReservationCreate {
 	if i != nil {
 		rc.SetUpdatedAt(*i)
 	}
+	return rc
+}
+
+// SetConnectorID sets the "connector_id" field.
+func (rc *ReservationCreate) SetConnectorID(d datasource.UUID) *ReservationCreate {
+	rc.mutation.SetConnectorID(d)
 	return rc
 }
 
@@ -181,25 +186,6 @@ func (rc *ReservationCreate) SetNillableEquipmentID(id *datasource.UUID) *Reserv
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (rc *ReservationCreate) SetEquipment(e *Equipment) *ReservationCreate {
 	return rc.SetEquipmentID(e.ID)
-}
-
-// SetConnectorID sets the "connector" edge to the Connector entity by ID.
-func (rc *ReservationCreate) SetConnectorID(id datasource.UUID) *ReservationCreate {
-	rc.mutation.SetConnectorID(id)
-	return rc
-}
-
-// SetNillableConnectorID sets the "connector" edge to the Connector entity by ID if the given value is not nil.
-func (rc *ReservationCreate) SetNillableConnectorID(id *datasource.UUID) *ReservationCreate {
-	if id != nil {
-		rc = rc.SetConnectorID(*id)
-	}
-	return rc
-}
-
-// SetConnector sets the "connector" edge to the Connector entity.
-func (rc *ReservationCreate) SetConnector(c *Connector) *ReservationCreate {
-	return rc.SetConnectorID(c.ID)
 }
 
 // Mutation returns the ReservationMutation object of the builder.
@@ -322,6 +308,9 @@ func (rc *ReservationCreate) check() error {
 	if _, ok := rc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`cwmodel: missing required field "Reservation.updated_at"`)}
 	}
+	if _, ok := rc.mutation.ConnectorID(); !ok {
+		return &ValidationError{Name: "connector_id", err: errors.New(`cwmodel: missing required field "Reservation.connector_id"`)}
+	}
 	if _, ok := rc.mutation.ReservationID(); !ok {
 		return &ValidationError{Name: "reservation_id", err: errors.New(`cwmodel: missing required field "Reservation.reservation_id"`)}
 	}
@@ -390,6 +379,10 @@ func (rc *ReservationCreate) createSpec() (*Reservation, *sqlgraph.CreateSpec) {
 		_spec.SetField(reservation.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
+	if value, ok := rc.mutation.ConnectorID(); ok {
+		_spec.SetField(reservation.FieldConnectorID, field.TypeUint64, value)
+		_node.ConnectorID = value
+	}
 	if value, ok := rc.mutation.ReservationID(); ok {
 		_spec.SetField(reservation.FieldReservationID, field.TypeInt64, value)
 		_node.ReservationID = value
@@ -436,26 +429,6 @@ func (rc *ReservationCreate) createSpec() (*Reservation, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.equipment_id = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := rc.mutation.ConnectorIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   reservation.ConnectorTable,
-			Columns: []string{reservation.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.connector_id = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

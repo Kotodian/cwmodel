@@ -21,6 +21,10 @@ const (
 	FieldUpdatedBy = "updated_by"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldConnectorID holds the string denoting the connector_id field in the database.
+	FieldConnectorID = "connector_id"
+	// FieldOrderID holds the string denoting the order_id field in the database.
+	FieldOrderID = "order_id"
 	// FieldSmartID holds the string denoting the smart_id field in the database.
 	FieldSmartID = "smart_id"
 	// FieldStartTime holds the string denoting the start_time field in the database.
@@ -39,10 +43,6 @@ const (
 	FieldSpec = "spec"
 	// EdgeEquipment holds the string denoting the equipment edge name in mutations.
 	EdgeEquipment = "equipment"
-	// EdgeConnector holds the string denoting the connector edge name in mutations.
-	EdgeConnector = "connector"
-	// EdgeOrderInfo holds the string denoting the order_info edge name in mutations.
-	EdgeOrderInfo = "order_info"
 	// Table holds the table name of the smartchargingeffect in the database.
 	Table = "smart_charging_effect"
 	// EquipmentTable is the table that holds the equipment relation/edge.
@@ -52,20 +52,6 @@ const (
 	EquipmentInverseTable = "base_equipment"
 	// EquipmentColumn is the table column denoting the equipment relation/edge.
 	EquipmentColumn = "equipment_id"
-	// ConnectorTable is the table that holds the connector relation/edge.
-	ConnectorTable = "smart_charging_effect"
-	// ConnectorInverseTable is the table name for the Connector entity.
-	// It exists in this package in order to avoid circular dependency with the "connector" package.
-	ConnectorInverseTable = "base_connector"
-	// ConnectorColumn is the table column denoting the connector relation/edge.
-	ConnectorColumn = "connector_id"
-	// OrderInfoTable is the table that holds the order_info relation/edge.
-	OrderInfoTable = "smart_charging_effect"
-	// OrderInfoInverseTable is the table name for the OrderInfo entity.
-	// It exists in this package in order to avoid circular dependency with the "orderinfo" package.
-	OrderInfoInverseTable = "order_info"
-	// OrderInfoColumn is the table column denoting the order_info relation/edge.
-	OrderInfoColumn = "order_id"
 )
 
 // Columns holds all SQL columns for smartchargingeffect fields.
@@ -76,6 +62,8 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedBy,
 	FieldUpdatedAt,
+	FieldConnectorID,
+	FieldOrderID,
 	FieldSmartID,
 	FieldStartTime,
 	FieldPid,
@@ -89,9 +77,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "smart_charging_effect"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"connector_id",
 	"equipment_id",
-	"order_id",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

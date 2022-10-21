@@ -21,6 +21,8 @@ const (
 	FieldUpdatedBy = "updated_by"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldConnectorID holds the string denoting the connector_id field in the database.
+	FieldConnectorID = "connector_id"
 	// FieldReservationID holds the string denoting the reservation_id field in the database.
 	FieldReservationID = "reservation_id"
 	// FieldAuthorizationMode holds the string denoting the authorization_mode field in the database.
@@ -37,8 +39,6 @@ const (
 	FieldState = "state"
 	// EdgeEquipment holds the string denoting the equipment edge name in mutations.
 	EdgeEquipment = "equipment"
-	// EdgeConnector holds the string denoting the connector edge name in mutations.
-	EdgeConnector = "connector"
 	// Table holds the table name of the reservation in the database.
 	Table = "reservation_charging_release"
 	// EquipmentTable is the table that holds the equipment relation/edge.
@@ -48,13 +48,6 @@ const (
 	EquipmentInverseTable = "base_equipment"
 	// EquipmentColumn is the table column denoting the equipment relation/edge.
 	EquipmentColumn = "equipment_id"
-	// ConnectorTable is the table that holds the connector relation/edge.
-	ConnectorTable = "reservation_charging_release"
-	// ConnectorInverseTable is the table name for the Connector entity.
-	// It exists in this package in order to avoid circular dependency with the "connector" package.
-	ConnectorInverseTable = "base_connector"
-	// ConnectorColumn is the table column denoting the connector relation/edge.
-	ConnectorColumn = "connector_id"
 )
 
 // Columns holds all SQL columns for reservation fields.
@@ -65,6 +58,7 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedBy,
 	FieldUpdatedAt,
+	FieldConnectorID,
 	FieldReservationID,
 	FieldAuthorizationMode,
 	FieldAuthorizationID,
@@ -77,7 +71,6 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "reservation_charging_release"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"connector_id",
 	"equipment_id",
 }
 

@@ -28,6 +28,7 @@ func (OrderInfo) Annotations() []schema.Annotation {
 
 func (OrderInfo) Fields() []ent.Field {
 	return []ent.Field{
+		field.Uint64("connector_id").GoType(datasource.UUID(0)).Comment("枪id"),
 		field.Int64("remote_start_id").Optional().Nillable().Comment("远程启动id"),
 		field.String("transaction_id").Comment("桩端订单id"),
 		field.String("authorization_id").Optional().Nillable().Comment("授权id"),
@@ -42,7 +43,7 @@ func (OrderInfo) Fields() []ent.Field {
 		field.Float("flat_electricity").Optional().Nillable().Comment("平电量"),
 		field.Float("valley_electricity").Optional().Nillable().Comment("谷电量"),
 		field.Int32("stop_reason_code").Optional().Nillable().Comment("停止原因代码"),
-		field.Int32("state").Optional().Comment("订单状态"),
+		field.Int("state").Optional().Comment("订单状态"),
 		field.Bool("offline").Comment("是否为离线订单"),
 		field.Int64("price_scheme_release_id").Comment("计费模板id"),
 		field.Int64("order_start_time").Optional().Nillable().Comment("订单开始时间"),
@@ -57,9 +58,9 @@ func (OrderInfo) Fields() []ent.Field {
 
 func (OrderInfo) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("connector", Connector.Type).Ref("order_info").Unique(),
+		// edge.From("connector", Connector.Type).Ref("order_info").Unique(),
 		edge.From("equipment", Equipment.Type).Ref("order_info").Unique(),
 		edge.To("order_event", OrderEvent.Type).StorageKey(edge.Column("order_id")),
-		edge.To("smart_charging_effect", SmartChargingEffect.Type).StorageKey(edge.Column("order_id")).Unique(),
+		// edge.To("smart_charging_effect", SmartChargingEffect.Type).StorageKey(edge.Column("order_id")).Unique(),
 	}
 }

@@ -10,12 +10,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/orderevent"
 	"github.com/Kotodian/cwmodel/orderinfo"
 	"github.com/Kotodian/cwmodel/predicate"
-	"github.com/Kotodian/cwmodel/smartchargingeffect"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -84,6 +82,19 @@ func (oiu *OrderInfoUpdate) SetUpdatedAt(i int64) *OrderInfoUpdate {
 // AddUpdatedAt adds i to the "updated_at" field.
 func (oiu *OrderInfoUpdate) AddUpdatedAt(i int64) *OrderInfoUpdate {
 	oiu.mutation.AddUpdatedAt(i)
+	return oiu
+}
+
+// SetConnectorID sets the "connector_id" field.
+func (oiu *OrderInfoUpdate) SetConnectorID(d datasource.UUID) *OrderInfoUpdate {
+	oiu.mutation.ResetConnectorID()
+	oiu.mutation.SetConnectorID(d)
+	return oiu
+}
+
+// AddConnectorID adds d to the "connector_id" field.
+func (oiu *OrderInfoUpdate) AddConnectorID(d datasource.UUID) *OrderInfoUpdate {
+	oiu.mutation.AddConnectorID(d)
 	return oiu
 }
 
@@ -424,14 +435,14 @@ func (oiu *OrderInfoUpdate) ClearStopReasonCode() *OrderInfoUpdate {
 }
 
 // SetState sets the "state" field.
-func (oiu *OrderInfoUpdate) SetState(i int32) *OrderInfoUpdate {
+func (oiu *OrderInfoUpdate) SetState(i int) *OrderInfoUpdate {
 	oiu.mutation.ResetState()
 	oiu.mutation.SetState(i)
 	return oiu
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (oiu *OrderInfoUpdate) SetNillableState(i *int32) *OrderInfoUpdate {
+func (oiu *OrderInfoUpdate) SetNillableState(i *int) *OrderInfoUpdate {
 	if i != nil {
 		oiu.SetState(*i)
 	}
@@ -439,7 +450,7 @@ func (oiu *OrderInfoUpdate) SetNillableState(i *int32) *OrderInfoUpdate {
 }
 
 // AddState adds i to the "state" field.
-func (oiu *OrderInfoUpdate) AddState(i int32) *OrderInfoUpdate {
+func (oiu *OrderInfoUpdate) AddState(i int) *OrderInfoUpdate {
 	oiu.mutation.AddState(i)
 	return oiu
 }
@@ -658,25 +669,6 @@ func (oiu *OrderInfoUpdate) ClearOperatorID() *OrderInfoUpdate {
 	return oiu
 }
 
-// SetConnectorID sets the "connector" edge to the Connector entity by ID.
-func (oiu *OrderInfoUpdate) SetConnectorID(id datasource.UUID) *OrderInfoUpdate {
-	oiu.mutation.SetConnectorID(id)
-	return oiu
-}
-
-// SetNillableConnectorID sets the "connector" edge to the Connector entity by ID if the given value is not nil.
-func (oiu *OrderInfoUpdate) SetNillableConnectorID(id *datasource.UUID) *OrderInfoUpdate {
-	if id != nil {
-		oiu = oiu.SetConnectorID(*id)
-	}
-	return oiu
-}
-
-// SetConnector sets the "connector" edge to the Connector entity.
-func (oiu *OrderInfoUpdate) SetConnector(c *Connector) *OrderInfoUpdate {
-	return oiu.SetConnectorID(c.ID)
-}
-
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
 func (oiu *OrderInfoUpdate) SetEquipmentID(id datasource.UUID) *OrderInfoUpdate {
 	oiu.mutation.SetEquipmentID(id)
@@ -711,34 +703,9 @@ func (oiu *OrderInfoUpdate) AddOrderEvent(o ...*OrderEvent) *OrderInfoUpdate {
 	return oiu.AddOrderEventIDs(ids...)
 }
 
-// SetSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by ID.
-func (oiu *OrderInfoUpdate) SetSmartChargingEffectID(id datasource.UUID) *OrderInfoUpdate {
-	oiu.mutation.SetSmartChargingEffectID(id)
-	return oiu
-}
-
-// SetNillableSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by ID if the given value is not nil.
-func (oiu *OrderInfoUpdate) SetNillableSmartChargingEffectID(id *datasource.UUID) *OrderInfoUpdate {
-	if id != nil {
-		oiu = oiu.SetSmartChargingEffectID(*id)
-	}
-	return oiu
-}
-
-// SetSmartChargingEffect sets the "smart_charging_effect" edge to the SmartChargingEffect entity.
-func (oiu *OrderInfoUpdate) SetSmartChargingEffect(s *SmartChargingEffect) *OrderInfoUpdate {
-	return oiu.SetSmartChargingEffectID(s.ID)
-}
-
 // Mutation returns the OrderInfoMutation object of the builder.
 func (oiu *OrderInfoUpdate) Mutation() *OrderInfoMutation {
 	return oiu.mutation
-}
-
-// ClearConnector clears the "connector" edge to the Connector entity.
-func (oiu *OrderInfoUpdate) ClearConnector() *OrderInfoUpdate {
-	oiu.mutation.ClearConnector()
-	return oiu
 }
 
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
@@ -766,12 +733,6 @@ func (oiu *OrderInfoUpdate) RemoveOrderEvent(o ...*OrderEvent) *OrderInfoUpdate 
 		ids[i] = o[i].ID
 	}
 	return oiu.RemoveOrderEventIDs(ids...)
-}
-
-// ClearSmartChargingEffect clears the "smart_charging_effect" edge to the SmartChargingEffect entity.
-func (oiu *OrderInfoUpdate) ClearSmartChargingEffect() *OrderInfoUpdate {
-	oiu.mutation.ClearSmartChargingEffect()
-	return oiu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -872,6 +833,12 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := oiu.mutation.AddedUpdatedAt(); ok {
 		_spec.AddField(orderinfo.FieldUpdatedAt, field.TypeInt64, value)
+	}
+	if value, ok := oiu.mutation.ConnectorID(); ok {
+		_spec.SetField(orderinfo.FieldConnectorID, field.TypeUint64, value)
+	}
+	if value, ok := oiu.mutation.AddedConnectorID(); ok {
+		_spec.AddField(orderinfo.FieldConnectorID, field.TypeUint64, value)
 	}
 	if value, ok := oiu.mutation.RemoteStartID(); ok {
 		_spec.SetField(orderinfo.FieldRemoteStartID, field.TypeInt64, value)
@@ -985,13 +952,13 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.ClearField(orderinfo.FieldStopReasonCode, field.TypeInt32)
 	}
 	if value, ok := oiu.mutation.State(); ok {
-		_spec.SetField(orderinfo.FieldState, field.TypeInt32, value)
+		_spec.SetField(orderinfo.FieldState, field.TypeInt, value)
 	}
 	if value, ok := oiu.mutation.AddedState(); ok {
-		_spec.AddField(orderinfo.FieldState, field.TypeInt32, value)
+		_spec.AddField(orderinfo.FieldState, field.TypeInt, value)
 	}
 	if oiu.mutation.StateCleared() {
-		_spec.ClearField(orderinfo.FieldState, field.TypeInt32)
+		_spec.ClearField(orderinfo.FieldState, field.TypeInt)
 	}
 	if value, ok := oiu.mutation.Offline(); ok {
 		_spec.SetField(orderinfo.FieldOffline, field.TypeBool, value)
@@ -1064,41 +1031,6 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if oiu.mutation.OperatorIDCleared() {
 		_spec.ClearField(orderinfo.FieldOperatorID, field.TypeUint64)
-	}
-	if oiu.mutation.ConnectorCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   orderinfo.ConnectorTable,
-			Columns: []string{orderinfo.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := oiu.mutation.ConnectorIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   orderinfo.ConnectorTable,
-			Columns: []string{orderinfo.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if oiu.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1189,41 +1121,6 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if oiu.mutation.SmartChargingEffectCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   orderinfo.SmartChargingEffectTable,
-			Columns: []string{orderinfo.SmartChargingEffectColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: smartchargingeffect.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := oiu.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   orderinfo.SmartChargingEffectTable,
-			Columns: []string{orderinfo.SmartChargingEffectColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: smartchargingeffect.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, oiu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{orderinfo.Label}
@@ -1295,6 +1192,19 @@ func (oiuo *OrderInfoUpdateOne) SetUpdatedAt(i int64) *OrderInfoUpdateOne {
 // AddUpdatedAt adds i to the "updated_at" field.
 func (oiuo *OrderInfoUpdateOne) AddUpdatedAt(i int64) *OrderInfoUpdateOne {
 	oiuo.mutation.AddUpdatedAt(i)
+	return oiuo
+}
+
+// SetConnectorID sets the "connector_id" field.
+func (oiuo *OrderInfoUpdateOne) SetConnectorID(d datasource.UUID) *OrderInfoUpdateOne {
+	oiuo.mutation.ResetConnectorID()
+	oiuo.mutation.SetConnectorID(d)
+	return oiuo
+}
+
+// AddConnectorID adds d to the "connector_id" field.
+func (oiuo *OrderInfoUpdateOne) AddConnectorID(d datasource.UUID) *OrderInfoUpdateOne {
+	oiuo.mutation.AddConnectorID(d)
 	return oiuo
 }
 
@@ -1635,14 +1545,14 @@ func (oiuo *OrderInfoUpdateOne) ClearStopReasonCode() *OrderInfoUpdateOne {
 }
 
 // SetState sets the "state" field.
-func (oiuo *OrderInfoUpdateOne) SetState(i int32) *OrderInfoUpdateOne {
+func (oiuo *OrderInfoUpdateOne) SetState(i int) *OrderInfoUpdateOne {
 	oiuo.mutation.ResetState()
 	oiuo.mutation.SetState(i)
 	return oiuo
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (oiuo *OrderInfoUpdateOne) SetNillableState(i *int32) *OrderInfoUpdateOne {
+func (oiuo *OrderInfoUpdateOne) SetNillableState(i *int) *OrderInfoUpdateOne {
 	if i != nil {
 		oiuo.SetState(*i)
 	}
@@ -1650,7 +1560,7 @@ func (oiuo *OrderInfoUpdateOne) SetNillableState(i *int32) *OrderInfoUpdateOne {
 }
 
 // AddState adds i to the "state" field.
-func (oiuo *OrderInfoUpdateOne) AddState(i int32) *OrderInfoUpdateOne {
+func (oiuo *OrderInfoUpdateOne) AddState(i int) *OrderInfoUpdateOne {
 	oiuo.mutation.AddState(i)
 	return oiuo
 }
@@ -1869,25 +1779,6 @@ func (oiuo *OrderInfoUpdateOne) ClearOperatorID() *OrderInfoUpdateOne {
 	return oiuo
 }
 
-// SetConnectorID sets the "connector" edge to the Connector entity by ID.
-func (oiuo *OrderInfoUpdateOne) SetConnectorID(id datasource.UUID) *OrderInfoUpdateOne {
-	oiuo.mutation.SetConnectorID(id)
-	return oiuo
-}
-
-// SetNillableConnectorID sets the "connector" edge to the Connector entity by ID if the given value is not nil.
-func (oiuo *OrderInfoUpdateOne) SetNillableConnectorID(id *datasource.UUID) *OrderInfoUpdateOne {
-	if id != nil {
-		oiuo = oiuo.SetConnectorID(*id)
-	}
-	return oiuo
-}
-
-// SetConnector sets the "connector" edge to the Connector entity.
-func (oiuo *OrderInfoUpdateOne) SetConnector(c *Connector) *OrderInfoUpdateOne {
-	return oiuo.SetConnectorID(c.ID)
-}
-
 // SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
 func (oiuo *OrderInfoUpdateOne) SetEquipmentID(id datasource.UUID) *OrderInfoUpdateOne {
 	oiuo.mutation.SetEquipmentID(id)
@@ -1922,34 +1813,9 @@ func (oiuo *OrderInfoUpdateOne) AddOrderEvent(o ...*OrderEvent) *OrderInfoUpdate
 	return oiuo.AddOrderEventIDs(ids...)
 }
 
-// SetSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by ID.
-func (oiuo *OrderInfoUpdateOne) SetSmartChargingEffectID(id datasource.UUID) *OrderInfoUpdateOne {
-	oiuo.mutation.SetSmartChargingEffectID(id)
-	return oiuo
-}
-
-// SetNillableSmartChargingEffectID sets the "smart_charging_effect" edge to the SmartChargingEffect entity by ID if the given value is not nil.
-func (oiuo *OrderInfoUpdateOne) SetNillableSmartChargingEffectID(id *datasource.UUID) *OrderInfoUpdateOne {
-	if id != nil {
-		oiuo = oiuo.SetSmartChargingEffectID(*id)
-	}
-	return oiuo
-}
-
-// SetSmartChargingEffect sets the "smart_charging_effect" edge to the SmartChargingEffect entity.
-func (oiuo *OrderInfoUpdateOne) SetSmartChargingEffect(s *SmartChargingEffect) *OrderInfoUpdateOne {
-	return oiuo.SetSmartChargingEffectID(s.ID)
-}
-
 // Mutation returns the OrderInfoMutation object of the builder.
 func (oiuo *OrderInfoUpdateOne) Mutation() *OrderInfoMutation {
 	return oiuo.mutation
-}
-
-// ClearConnector clears the "connector" edge to the Connector entity.
-func (oiuo *OrderInfoUpdateOne) ClearConnector() *OrderInfoUpdateOne {
-	oiuo.mutation.ClearConnector()
-	return oiuo
 }
 
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
@@ -1977,12 +1843,6 @@ func (oiuo *OrderInfoUpdateOne) RemoveOrderEvent(o ...*OrderEvent) *OrderInfoUpd
 		ids[i] = o[i].ID
 	}
 	return oiuo.RemoveOrderEventIDs(ids...)
-}
-
-// ClearSmartChargingEffect clears the "smart_charging_effect" edge to the SmartChargingEffect entity.
-func (oiuo *OrderInfoUpdateOne) ClearSmartChargingEffect() *OrderInfoUpdateOne {
-	oiuo.mutation.ClearSmartChargingEffect()
-	return oiuo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -2114,6 +1974,12 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 	if value, ok := oiuo.mutation.AddedUpdatedAt(); ok {
 		_spec.AddField(orderinfo.FieldUpdatedAt, field.TypeInt64, value)
 	}
+	if value, ok := oiuo.mutation.ConnectorID(); ok {
+		_spec.SetField(orderinfo.FieldConnectorID, field.TypeUint64, value)
+	}
+	if value, ok := oiuo.mutation.AddedConnectorID(); ok {
+		_spec.AddField(orderinfo.FieldConnectorID, field.TypeUint64, value)
+	}
 	if value, ok := oiuo.mutation.RemoteStartID(); ok {
 		_spec.SetField(orderinfo.FieldRemoteStartID, field.TypeInt64, value)
 	}
@@ -2226,13 +2092,13 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 		_spec.ClearField(orderinfo.FieldStopReasonCode, field.TypeInt32)
 	}
 	if value, ok := oiuo.mutation.State(); ok {
-		_spec.SetField(orderinfo.FieldState, field.TypeInt32, value)
+		_spec.SetField(orderinfo.FieldState, field.TypeInt, value)
 	}
 	if value, ok := oiuo.mutation.AddedState(); ok {
-		_spec.AddField(orderinfo.FieldState, field.TypeInt32, value)
+		_spec.AddField(orderinfo.FieldState, field.TypeInt, value)
 	}
 	if oiuo.mutation.StateCleared() {
-		_spec.ClearField(orderinfo.FieldState, field.TypeInt32)
+		_spec.ClearField(orderinfo.FieldState, field.TypeInt)
 	}
 	if value, ok := oiuo.mutation.Offline(); ok {
 		_spec.SetField(orderinfo.FieldOffline, field.TypeBool, value)
@@ -2305,41 +2171,6 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 	}
 	if oiuo.mutation.OperatorIDCleared() {
 		_spec.ClearField(orderinfo.FieldOperatorID, field.TypeUint64)
-	}
-	if oiuo.mutation.ConnectorCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   orderinfo.ConnectorTable,
-			Columns: []string{orderinfo.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := oiuo.mutation.ConnectorIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   orderinfo.ConnectorTable,
-			Columns: []string{orderinfo.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if oiuo.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -2422,41 +2253,6 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: orderevent.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if oiuo.mutation.SmartChargingEffectCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   orderinfo.SmartChargingEffectTable,
-			Columns: []string{orderinfo.SmartChargingEffectColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: smartchargingeffect.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := oiuo.mutation.SmartChargingEffectIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   orderinfo.SmartChargingEffectTable,
-			Columns: []string{orderinfo.SmartChargingEffectColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: smartchargingeffect.FieldID,
 				},
 			},
 		}

@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/cwmodel/reservation"
@@ -27,7 +26,6 @@ type ReservationQuery struct {
 	fields        []string
 	predicates    []predicate.Reservation
 	withEquipment *EquipmentQuery
-	withConnector *ConnectorQuery
 	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -80,28 +78,6 @@ func (rq *ReservationQuery) QueryEquipment() *EquipmentQuery {
 			sqlgraph.From(reservation.Table, reservation.FieldID, selector),
 			sqlgraph.To(equipment.Table, equipment.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, reservation.EquipmentTable, reservation.EquipmentColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryConnector chains the current query on the "connector" edge.
-func (rq *ReservationQuery) QueryConnector() *ConnectorQuery {
-	query := &ConnectorQuery{config: rq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := rq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := rq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(reservation.Table, reservation.FieldID, selector),
-			sqlgraph.To(connector.Table, connector.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, reservation.ConnectorTable, reservation.ConnectorColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
 		return fromU, nil
@@ -291,7 +267,6 @@ func (rq *ReservationQuery) Clone() *ReservationQuery {
 		order:         append([]OrderFunc{}, rq.order...),
 		predicates:    append([]predicate.Reservation{}, rq.predicates...),
 		withEquipment: rq.withEquipment.Clone(),
-		withConnector: rq.withConnector.Clone(),
 		// clone intermediate query.
 		sql:    rq.sql.Clone(),
 		path:   rq.path,
@@ -307,17 +282,6 @@ func (rq *ReservationQuery) WithEquipment(opts ...func(*EquipmentQuery)) *Reserv
 		opt(query)
 	}
 	rq.withEquipment = query
-	return rq
-}
-
-// WithConnector tells the query-builder to eager-load the nodes that are connected to
-// the "connector" edge. The optional arguments are used to configure the query builder of the edge.
-func (rq *ReservationQuery) WithConnector(opts ...func(*ConnectorQuery)) *ReservationQuery {
-	query := &ConnectorQuery{config: rq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	rq.withConnector = query
 	return rq
 }
 
@@ -390,12 +354,11 @@ func (rq *ReservationQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		nodes       = []*Reservation{}
 		withFKs     = rq.withFKs
 		_spec       = rq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [1]bool{
 			rq.withEquipment != nil,
-			rq.withConnector != nil,
 		}
 	)
-	if rq.withEquipment != nil || rq.withConnector != nil {
+	if rq.withEquipment != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -425,12 +388,6 @@ func (rq *ReservationQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 			return nil, err
 		}
 	}
-	if query := rq.withConnector; query != nil {
-		if err := rq.loadConnector(ctx, query, nodes, nil,
-			func(n *Reservation, e *Connector) { n.Edges.Connector = e }); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
 }
 
@@ -456,35 +413,6 @@ func (rq *ReservationQuery) loadEquipment(ctx context.Context, query *EquipmentQ
 		nodes, ok := nodeids[n.ID]
 		if !ok {
 			return fmt.Errorf(`unexpected foreign-key "equipment_id" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
-	}
-	return nil
-}
-func (rq *ReservationQuery) loadConnector(ctx context.Context, query *ConnectorQuery, nodes []*Reservation, init func(*Reservation), assign func(*Reservation, *Connector)) error {
-	ids := make([]datasource.UUID, 0, len(nodes))
-	nodeids := make(map[datasource.UUID][]*Reservation)
-	for i := range nodes {
-		if nodes[i].connector_id == nil {
-			continue
-		}
-		fk := *nodes[i].connector_id
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	query.Where(connector.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "connector_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

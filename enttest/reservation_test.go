@@ -26,7 +26,7 @@ func TestCreateReservation(t *testing.T) {
 
 	err = cli.Reservation.Create().
 		SetEquipment(equip).
-		SetConnector(connector).
+		SetConnectorID(connector.ID).
 		SetAuthorizationID(id.Next().String()).
 		SetAuthorizationMode(1).
 		SetAdditional(`[{"authorizationMode":1,"authorizationId":"299953297383429"}]`).

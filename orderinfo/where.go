@@ -117,6 +117,14 @@ func UpdatedAt(v int64) predicate.OrderInfo {
 	})
 }
 
+// ConnectorID applies equality check predicate on the "connector_id" field. It's identical to ConnectorIDEQ.
+func ConnectorID(v datasource.UUID) predicate.OrderInfo {
+	vc := uint64(v)
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldConnectorID), vc))
+	})
+}
+
 // RemoteStartID applies equality check predicate on the "remote_start_id" field. It's identical to RemoteStartIDEQ.
 func RemoteStartID(v int64) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
@@ -216,7 +224,7 @@ func StopReasonCode(v int32) predicate.OrderInfo {
 }
 
 // State applies equality check predicate on the "state" field. It's identical to StateEQ.
-func State(v int32) predicate.OrderInfo {
+func State(v int) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldState), v))
 	})
@@ -616,6 +624,76 @@ func UpdatedAtLT(v int64) predicate.OrderInfo {
 func UpdatedAtLTE(v int64) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldUpdatedAt), v))
+	})
+}
+
+// ConnectorIDEQ applies the EQ predicate on the "connector_id" field.
+func ConnectorIDEQ(v datasource.UUID) predicate.OrderInfo {
+	vc := uint64(v)
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldConnectorID), vc))
+	})
+}
+
+// ConnectorIDNEQ applies the NEQ predicate on the "connector_id" field.
+func ConnectorIDNEQ(v datasource.UUID) predicate.OrderInfo {
+	vc := uint64(v)
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldConnectorID), vc))
+	})
+}
+
+// ConnectorIDIn applies the In predicate on the "connector_id" field.
+func ConnectorIDIn(vs ...datasource.UUID) predicate.OrderInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldConnectorID), v...))
+	})
+}
+
+// ConnectorIDNotIn applies the NotIn predicate on the "connector_id" field.
+func ConnectorIDNotIn(vs ...datasource.UUID) predicate.OrderInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldConnectorID), v...))
+	})
+}
+
+// ConnectorIDGT applies the GT predicate on the "connector_id" field.
+func ConnectorIDGT(v datasource.UUID) predicate.OrderInfo {
+	vc := uint64(v)
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldConnectorID), vc))
+	})
+}
+
+// ConnectorIDGTE applies the GTE predicate on the "connector_id" field.
+func ConnectorIDGTE(v datasource.UUID) predicate.OrderInfo {
+	vc := uint64(v)
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldConnectorID), vc))
+	})
+}
+
+// ConnectorIDLT applies the LT predicate on the "connector_id" field.
+func ConnectorIDLT(v datasource.UUID) predicate.OrderInfo {
+	vc := uint64(v)
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldConnectorID), vc))
+	})
+}
+
+// ConnectorIDLTE applies the LTE predicate on the "connector_id" field.
+func ConnectorIDLTE(v datasource.UUID) predicate.OrderInfo {
+	vc := uint64(v)
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldConnectorID), vc))
 	})
 }
 
@@ -1838,21 +1916,21 @@ func StopReasonCodeNotNil() predicate.OrderInfo {
 }
 
 // StateEQ applies the EQ predicate on the "state" field.
-func StateEQ(v int32) predicate.OrderInfo {
+func StateEQ(v int) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldState), v))
 	})
 }
 
 // StateNEQ applies the NEQ predicate on the "state" field.
-func StateNEQ(v int32) predicate.OrderInfo {
+func StateNEQ(v int) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldState), v))
 	})
 }
 
 // StateIn applies the In predicate on the "state" field.
-func StateIn(vs ...int32) predicate.OrderInfo {
+func StateIn(vs ...int) predicate.OrderInfo {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -1863,7 +1941,7 @@ func StateIn(vs ...int32) predicate.OrderInfo {
 }
 
 // StateNotIn applies the NotIn predicate on the "state" field.
-func StateNotIn(vs ...int32) predicate.OrderInfo {
+func StateNotIn(vs ...int) predicate.OrderInfo {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -1874,28 +1952,28 @@ func StateNotIn(vs ...int32) predicate.OrderInfo {
 }
 
 // StateGT applies the GT predicate on the "state" field.
-func StateGT(v int32) predicate.OrderInfo {
+func StateGT(v int) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldState), v))
 	})
 }
 
 // StateGTE applies the GTE predicate on the "state" field.
-func StateGTE(v int32) predicate.OrderInfo {
+func StateGTE(v int) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldState), v))
 	})
 }
 
 // StateLT applies the LT predicate on the "state" field.
-func StateLT(v int32) predicate.OrderInfo {
+func StateLT(v int) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldState), v))
 	})
 }
 
 // StateLTE applies the LTE predicate on the "state" field.
-func StateLTE(v int32) predicate.OrderInfo {
+func StateLTE(v int) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldState), v))
 	})
@@ -2551,34 +2629,6 @@ func OperatorIDNotNil() predicate.OrderInfo {
 	})
 }
 
-// HasConnector applies the HasEdge predicate on the "connector" edge.
-func HasConnector() predicate.OrderInfo {
-	return predicate.OrderInfo(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ConnectorTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ConnectorTable, ConnectorColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasConnectorWith applies the HasEdge predicate on the "connector" edge with a given conditions (other predicates).
-func HasConnectorWith(preds ...predicate.Connector) predicate.OrderInfo {
-	return predicate.OrderInfo(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ConnectorInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ConnectorTable, ConnectorColumn),
-		)
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // HasEquipment applies the HasEdge predicate on the "equipment" edge.
 func HasEquipment() predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
@@ -2626,34 +2676,6 @@ func HasOrderEventWith(preds ...predicate.OrderEvent) predicate.OrderInfo {
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(OrderEventInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, OrderEventTable, OrderEventColumn),
-		)
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasSmartChargingEffect applies the HasEdge predicate on the "smart_charging_effect" edge.
-func HasSmartChargingEffect() predicate.OrderInfo {
-	return predicate.OrderInfo(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(SmartChargingEffectTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, SmartChargingEffectTable, SmartChargingEffectColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasSmartChargingEffectWith applies the HasEdge predicate on the "smart_charging_effect" edge with a given conditions (other predicates).
-func HasSmartChargingEffectWith(preds ...predicate.SmartChargingEffect) predicate.OrderInfo {
-	return predicate.OrderInfo(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(SmartChargingEffectInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, SmartChargingEffectTable, SmartChargingEffectColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

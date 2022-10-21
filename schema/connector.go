@@ -47,8 +47,8 @@ func (Connector) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("evse", Evse.Type).Ref("connector").Unique().Required(),
 		edge.From("equipment", Equipment.Type).Ref("connector").Unique().Required(),
-		edge.To("order_info", OrderInfo.Type).StorageKey(edge.Column("connector_id")),
-		edge.To("reservation", Reservation.Type).StorageKey(edge.Column("connector_id")),
-		edge.To("smart_charging_effect", SmartChargingEffect.Type).StorageKey(edge.Column("connector_id")),
+		// edge.To("order_info", OrderInfo.Type).StorageKey(edge.Column("connector_id")),
+		// edge.To("reservation", Reservation.Type).StorageKey(edge.Column("connector_id")),
+		// edge.To("smart_charging_effect", SmartChargingEffect.Type).StorageKey(edge.Column("connector_id")),
 	}
 }

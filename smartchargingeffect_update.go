@@ -11,9 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
-	"github.com/Kotodian/cwmodel/orderinfo"
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/cwmodel/smartchargingeffect"
 	"github.com/Kotodian/cwmodel/types"
@@ -85,6 +83,46 @@ func (sceu *SmartChargingEffectUpdate) SetUpdatedAt(i int64) *SmartChargingEffec
 // AddUpdatedAt adds i to the "updated_at" field.
 func (sceu *SmartChargingEffectUpdate) AddUpdatedAt(i int64) *SmartChargingEffectUpdate {
 	sceu.mutation.AddUpdatedAt(i)
+	return sceu
+}
+
+// SetConnectorID sets the "connector_id" field.
+func (sceu *SmartChargingEffectUpdate) SetConnectorID(d datasource.UUID) *SmartChargingEffectUpdate {
+	sceu.mutation.ResetConnectorID()
+	sceu.mutation.SetConnectorID(d)
+	return sceu
+}
+
+// AddConnectorID adds d to the "connector_id" field.
+func (sceu *SmartChargingEffectUpdate) AddConnectorID(d datasource.UUID) *SmartChargingEffectUpdate {
+	sceu.mutation.AddConnectorID(d)
+	return sceu
+}
+
+// SetOrderID sets the "order_id" field.
+func (sceu *SmartChargingEffectUpdate) SetOrderID(d datasource.UUID) *SmartChargingEffectUpdate {
+	sceu.mutation.ResetOrderID()
+	sceu.mutation.SetOrderID(d)
+	return sceu
+}
+
+// SetNillableOrderID sets the "order_id" field if the given value is not nil.
+func (sceu *SmartChargingEffectUpdate) SetNillableOrderID(d *datasource.UUID) *SmartChargingEffectUpdate {
+	if d != nil {
+		sceu.SetOrderID(*d)
+	}
+	return sceu
+}
+
+// AddOrderID adds d to the "order_id" field.
+func (sceu *SmartChargingEffectUpdate) AddOrderID(d datasource.UUID) *SmartChargingEffectUpdate {
+	sceu.mutation.AddOrderID(d)
+	return sceu
+}
+
+// ClearOrderID clears the value of the "order_id" field.
+func (sceu *SmartChargingEffectUpdate) ClearOrderID() *SmartChargingEffectUpdate {
+	sceu.mutation.ClearOrderID()
 	return sceu
 }
 
@@ -216,36 +254,6 @@ func (sceu *SmartChargingEffectUpdate) SetEquipment(e *Equipment) *SmartCharging
 	return sceu.SetEquipmentID(e.ID)
 }
 
-// SetConnectorID sets the "connector" edge to the Connector entity by ID.
-func (sceu *SmartChargingEffectUpdate) SetConnectorID(id datasource.UUID) *SmartChargingEffectUpdate {
-	sceu.mutation.SetConnectorID(id)
-	return sceu
-}
-
-// SetConnector sets the "connector" edge to the Connector entity.
-func (sceu *SmartChargingEffectUpdate) SetConnector(c *Connector) *SmartChargingEffectUpdate {
-	return sceu.SetConnectorID(c.ID)
-}
-
-// SetOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID.
-func (sceu *SmartChargingEffectUpdate) SetOrderInfoID(id datasource.UUID) *SmartChargingEffectUpdate {
-	sceu.mutation.SetOrderInfoID(id)
-	return sceu
-}
-
-// SetNillableOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID if the given value is not nil.
-func (sceu *SmartChargingEffectUpdate) SetNillableOrderInfoID(id *datasource.UUID) *SmartChargingEffectUpdate {
-	if id != nil {
-		sceu = sceu.SetOrderInfoID(*id)
-	}
-	return sceu
-}
-
-// SetOrderInfo sets the "order_info" edge to the OrderInfo entity.
-func (sceu *SmartChargingEffectUpdate) SetOrderInfo(o *OrderInfo) *SmartChargingEffectUpdate {
-	return sceu.SetOrderInfoID(o.ID)
-}
-
 // Mutation returns the SmartChargingEffectMutation object of the builder.
 func (sceu *SmartChargingEffectUpdate) Mutation() *SmartChargingEffectMutation {
 	return sceu.mutation
@@ -254,18 +262,6 @@ func (sceu *SmartChargingEffectUpdate) Mutation() *SmartChargingEffectMutation {
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
 func (sceu *SmartChargingEffectUpdate) ClearEquipment() *SmartChargingEffectUpdate {
 	sceu.mutation.ClearEquipment()
-	return sceu
-}
-
-// ClearConnector clears the "connector" edge to the Connector entity.
-func (sceu *SmartChargingEffectUpdate) ClearConnector() *SmartChargingEffectUpdate {
-	sceu.mutation.ClearConnector()
-	return sceu
-}
-
-// ClearOrderInfo clears the "order_info" edge to the OrderInfo entity.
-func (sceu *SmartChargingEffectUpdate) ClearOrderInfo() *SmartChargingEffectUpdate {
-	sceu.mutation.ClearOrderInfo()
 	return sceu
 }
 
@@ -343,9 +339,6 @@ func (sceu *SmartChargingEffectUpdate) check() error {
 	if _, ok := sceu.mutation.EquipmentID(); sceu.mutation.EquipmentCleared() && !ok {
 		return errors.New(`cwmodel: clearing a required unique edge "SmartChargingEffect.equipment"`)
 	}
-	if _, ok := sceu.mutation.ConnectorID(); sceu.mutation.ConnectorCleared() && !ok {
-		return errors.New(`cwmodel: clearing a required unique edge "SmartChargingEffect.connector"`)
-	}
 	return nil
 }
 
@@ -384,6 +377,21 @@ func (sceu *SmartChargingEffectUpdate) sqlSave(ctx context.Context) (n int, err 
 	}
 	if value, ok := sceu.mutation.AddedUpdatedAt(); ok {
 		_spec.AddField(smartchargingeffect.FieldUpdatedAt, field.TypeInt64, value)
+	}
+	if value, ok := sceu.mutation.ConnectorID(); ok {
+		_spec.SetField(smartchargingeffect.FieldConnectorID, field.TypeUint64, value)
+	}
+	if value, ok := sceu.mutation.AddedConnectorID(); ok {
+		_spec.AddField(smartchargingeffect.FieldConnectorID, field.TypeUint64, value)
+	}
+	if value, ok := sceu.mutation.OrderID(); ok {
+		_spec.SetField(smartchargingeffect.FieldOrderID, field.TypeUint64, value)
+	}
+	if value, ok := sceu.mutation.AddedOrderID(); ok {
+		_spec.AddField(smartchargingeffect.FieldOrderID, field.TypeUint64, value)
+	}
+	if sceu.mutation.OrderIDCleared() {
+		_spec.ClearField(smartchargingeffect.FieldOrderID, field.TypeUint64)
 	}
 	if value, ok := sceu.mutation.SmartID(); ok {
 		_spec.SetField(smartchargingeffect.FieldSmartID, field.TypeInt64, value)
@@ -470,76 +478,6 @@ func (sceu *SmartChargingEffectUpdate) sqlSave(ctx context.Context) (n int, err 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if sceu.mutation.ConnectorCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   smartchargingeffect.ConnectorTable,
-			Columns: []string{smartchargingeffect.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := sceu.mutation.ConnectorIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   smartchargingeffect.ConnectorTable,
-			Columns: []string{smartchargingeffect.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if sceu.mutation.OrderInfoCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   smartchargingeffect.OrderInfoTable,
-			Columns: []string{smartchargingeffect.OrderInfoColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: orderinfo.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := sceu.mutation.OrderInfoIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   smartchargingeffect.OrderInfoTable,
-			Columns: []string{smartchargingeffect.OrderInfoColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: orderinfo.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, sceu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{smartchargingeffect.Label}
@@ -611,6 +549,46 @@ func (sceuo *SmartChargingEffectUpdateOne) SetUpdatedAt(i int64) *SmartChargingE
 // AddUpdatedAt adds i to the "updated_at" field.
 func (sceuo *SmartChargingEffectUpdateOne) AddUpdatedAt(i int64) *SmartChargingEffectUpdateOne {
 	sceuo.mutation.AddUpdatedAt(i)
+	return sceuo
+}
+
+// SetConnectorID sets the "connector_id" field.
+func (sceuo *SmartChargingEffectUpdateOne) SetConnectorID(d datasource.UUID) *SmartChargingEffectUpdateOne {
+	sceuo.mutation.ResetConnectorID()
+	sceuo.mutation.SetConnectorID(d)
+	return sceuo
+}
+
+// AddConnectorID adds d to the "connector_id" field.
+func (sceuo *SmartChargingEffectUpdateOne) AddConnectorID(d datasource.UUID) *SmartChargingEffectUpdateOne {
+	sceuo.mutation.AddConnectorID(d)
+	return sceuo
+}
+
+// SetOrderID sets the "order_id" field.
+func (sceuo *SmartChargingEffectUpdateOne) SetOrderID(d datasource.UUID) *SmartChargingEffectUpdateOne {
+	sceuo.mutation.ResetOrderID()
+	sceuo.mutation.SetOrderID(d)
+	return sceuo
+}
+
+// SetNillableOrderID sets the "order_id" field if the given value is not nil.
+func (sceuo *SmartChargingEffectUpdateOne) SetNillableOrderID(d *datasource.UUID) *SmartChargingEffectUpdateOne {
+	if d != nil {
+		sceuo.SetOrderID(*d)
+	}
+	return sceuo
+}
+
+// AddOrderID adds d to the "order_id" field.
+func (sceuo *SmartChargingEffectUpdateOne) AddOrderID(d datasource.UUID) *SmartChargingEffectUpdateOne {
+	sceuo.mutation.AddOrderID(d)
+	return sceuo
+}
+
+// ClearOrderID clears the value of the "order_id" field.
+func (sceuo *SmartChargingEffectUpdateOne) ClearOrderID() *SmartChargingEffectUpdateOne {
+	sceuo.mutation.ClearOrderID()
 	return sceuo
 }
 
@@ -742,36 +720,6 @@ func (sceuo *SmartChargingEffectUpdateOne) SetEquipment(e *Equipment) *SmartChar
 	return sceuo.SetEquipmentID(e.ID)
 }
 
-// SetConnectorID sets the "connector" edge to the Connector entity by ID.
-func (sceuo *SmartChargingEffectUpdateOne) SetConnectorID(id datasource.UUID) *SmartChargingEffectUpdateOne {
-	sceuo.mutation.SetConnectorID(id)
-	return sceuo
-}
-
-// SetConnector sets the "connector" edge to the Connector entity.
-func (sceuo *SmartChargingEffectUpdateOne) SetConnector(c *Connector) *SmartChargingEffectUpdateOne {
-	return sceuo.SetConnectorID(c.ID)
-}
-
-// SetOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID.
-func (sceuo *SmartChargingEffectUpdateOne) SetOrderInfoID(id datasource.UUID) *SmartChargingEffectUpdateOne {
-	sceuo.mutation.SetOrderInfoID(id)
-	return sceuo
-}
-
-// SetNillableOrderInfoID sets the "order_info" edge to the OrderInfo entity by ID if the given value is not nil.
-func (sceuo *SmartChargingEffectUpdateOne) SetNillableOrderInfoID(id *datasource.UUID) *SmartChargingEffectUpdateOne {
-	if id != nil {
-		sceuo = sceuo.SetOrderInfoID(*id)
-	}
-	return sceuo
-}
-
-// SetOrderInfo sets the "order_info" edge to the OrderInfo entity.
-func (sceuo *SmartChargingEffectUpdateOne) SetOrderInfo(o *OrderInfo) *SmartChargingEffectUpdateOne {
-	return sceuo.SetOrderInfoID(o.ID)
-}
-
 // Mutation returns the SmartChargingEffectMutation object of the builder.
 func (sceuo *SmartChargingEffectUpdateOne) Mutation() *SmartChargingEffectMutation {
 	return sceuo.mutation
@@ -780,18 +728,6 @@ func (sceuo *SmartChargingEffectUpdateOne) Mutation() *SmartChargingEffectMutati
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
 func (sceuo *SmartChargingEffectUpdateOne) ClearEquipment() *SmartChargingEffectUpdateOne {
 	sceuo.mutation.ClearEquipment()
-	return sceuo
-}
-
-// ClearConnector clears the "connector" edge to the Connector entity.
-func (sceuo *SmartChargingEffectUpdateOne) ClearConnector() *SmartChargingEffectUpdateOne {
-	sceuo.mutation.ClearConnector()
-	return sceuo
-}
-
-// ClearOrderInfo clears the "order_info" edge to the OrderInfo entity.
-func (sceuo *SmartChargingEffectUpdateOne) ClearOrderInfo() *SmartChargingEffectUpdateOne {
-	sceuo.mutation.ClearOrderInfo()
 	return sceuo
 }
 
@@ -882,9 +818,6 @@ func (sceuo *SmartChargingEffectUpdateOne) check() error {
 	if _, ok := sceuo.mutation.EquipmentID(); sceuo.mutation.EquipmentCleared() && !ok {
 		return errors.New(`cwmodel: clearing a required unique edge "SmartChargingEffect.equipment"`)
 	}
-	if _, ok := sceuo.mutation.ConnectorID(); sceuo.mutation.ConnectorCleared() && !ok {
-		return errors.New(`cwmodel: clearing a required unique edge "SmartChargingEffect.connector"`)
-	}
 	return nil
 }
 
@@ -940,6 +873,21 @@ func (sceuo *SmartChargingEffectUpdateOne) sqlSave(ctx context.Context) (_node *
 	}
 	if value, ok := sceuo.mutation.AddedUpdatedAt(); ok {
 		_spec.AddField(smartchargingeffect.FieldUpdatedAt, field.TypeInt64, value)
+	}
+	if value, ok := sceuo.mutation.ConnectorID(); ok {
+		_spec.SetField(smartchargingeffect.FieldConnectorID, field.TypeUint64, value)
+	}
+	if value, ok := sceuo.mutation.AddedConnectorID(); ok {
+		_spec.AddField(smartchargingeffect.FieldConnectorID, field.TypeUint64, value)
+	}
+	if value, ok := sceuo.mutation.OrderID(); ok {
+		_spec.SetField(smartchargingeffect.FieldOrderID, field.TypeUint64, value)
+	}
+	if value, ok := sceuo.mutation.AddedOrderID(); ok {
+		_spec.AddField(smartchargingeffect.FieldOrderID, field.TypeUint64, value)
+	}
+	if sceuo.mutation.OrderIDCleared() {
+		_spec.ClearField(smartchargingeffect.FieldOrderID, field.TypeUint64)
 	}
 	if value, ok := sceuo.mutation.SmartID(); ok {
 		_spec.SetField(smartchargingeffect.FieldSmartID, field.TypeInt64, value)
@@ -1018,76 +966,6 @@ func (sceuo *SmartChargingEffectUpdateOne) sqlSave(ctx context.Context) (_node *
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if sceuo.mutation.ConnectorCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   smartchargingeffect.ConnectorTable,
-			Columns: []string{smartchargingeffect.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := sceuo.mutation.ConnectorIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   smartchargingeffect.ConnectorTable,
-			Columns: []string{smartchargingeffect.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if sceuo.mutation.OrderInfoCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   smartchargingeffect.OrderInfoTable,
-			Columns: []string{smartchargingeffect.OrderInfoColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: orderinfo.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := sceuo.mutation.OrderInfoIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   smartchargingeffect.OrderInfoTable,
-			Columns: []string{smartchargingeffect.OrderInfoColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: orderinfo.FieldID,
 				},
 			},
 		}

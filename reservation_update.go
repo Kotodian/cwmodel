@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/cwmodel/reservation"
@@ -82,6 +81,19 @@ func (ru *ReservationUpdate) SetUpdatedAt(i int64) *ReservationUpdate {
 // AddUpdatedAt adds i to the "updated_at" field.
 func (ru *ReservationUpdate) AddUpdatedAt(i int64) *ReservationUpdate {
 	ru.mutation.AddUpdatedAt(i)
+	return ru
+}
+
+// SetConnectorID sets the "connector_id" field.
+func (ru *ReservationUpdate) SetConnectorID(d datasource.UUID) *ReservationUpdate {
+	ru.mutation.ResetConnectorID()
+	ru.mutation.SetConnectorID(d)
+	return ru
+}
+
+// AddConnectorID adds d to the "connector_id" field.
+func (ru *ReservationUpdate) AddConnectorID(d datasource.UUID) *ReservationUpdate {
+	ru.mutation.AddConnectorID(d)
 	return ru
 }
 
@@ -202,25 +214,6 @@ func (ru *ReservationUpdate) SetEquipment(e *Equipment) *ReservationUpdate {
 	return ru.SetEquipmentID(e.ID)
 }
 
-// SetConnectorID sets the "connector" edge to the Connector entity by ID.
-func (ru *ReservationUpdate) SetConnectorID(id datasource.UUID) *ReservationUpdate {
-	ru.mutation.SetConnectorID(id)
-	return ru
-}
-
-// SetNillableConnectorID sets the "connector" edge to the Connector entity by ID if the given value is not nil.
-func (ru *ReservationUpdate) SetNillableConnectorID(id *datasource.UUID) *ReservationUpdate {
-	if id != nil {
-		ru = ru.SetConnectorID(*id)
-	}
-	return ru
-}
-
-// SetConnector sets the "connector" edge to the Connector entity.
-func (ru *ReservationUpdate) SetConnector(c *Connector) *ReservationUpdate {
-	return ru.SetConnectorID(c.ID)
-}
-
 // Mutation returns the ReservationMutation object of the builder.
 func (ru *ReservationUpdate) Mutation() *ReservationMutation {
 	return ru.mutation
@@ -229,12 +222,6 @@ func (ru *ReservationUpdate) Mutation() *ReservationMutation {
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
 func (ru *ReservationUpdate) ClearEquipment() *ReservationUpdate {
 	ru.mutation.ClearEquipment()
-	return ru
-}
-
-// ClearConnector clears the "connector" edge to the Connector entity.
-func (ru *ReservationUpdate) ClearConnector() *ReservationUpdate {
-	ru.mutation.ClearConnector()
 	return ru
 }
 
@@ -337,6 +324,12 @@ func (ru *ReservationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ru.mutation.AddedUpdatedAt(); ok {
 		_spec.AddField(reservation.FieldUpdatedAt, field.TypeInt64, value)
 	}
+	if value, ok := ru.mutation.ConnectorID(); ok {
+		_spec.SetField(reservation.FieldConnectorID, field.TypeUint64, value)
+	}
+	if value, ok := ru.mutation.AddedConnectorID(); ok {
+		_spec.AddField(reservation.FieldConnectorID, field.TypeUint64, value)
+	}
 	if value, ok := ru.mutation.ReservationID(); ok {
 		_spec.SetField(reservation.FieldReservationID, field.TypeInt64, value)
 	}
@@ -403,41 +396,6 @@ func (ru *ReservationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if ru.mutation.ConnectorCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   reservation.ConnectorTable,
-			Columns: []string{reservation.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ru.mutation.ConnectorIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   reservation.ConnectorTable,
-			Columns: []string{reservation.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
 				},
 			},
 		}
@@ -517,6 +475,19 @@ func (ruo *ReservationUpdateOne) SetUpdatedAt(i int64) *ReservationUpdateOne {
 // AddUpdatedAt adds i to the "updated_at" field.
 func (ruo *ReservationUpdateOne) AddUpdatedAt(i int64) *ReservationUpdateOne {
 	ruo.mutation.AddUpdatedAt(i)
+	return ruo
+}
+
+// SetConnectorID sets the "connector_id" field.
+func (ruo *ReservationUpdateOne) SetConnectorID(d datasource.UUID) *ReservationUpdateOne {
+	ruo.mutation.ResetConnectorID()
+	ruo.mutation.SetConnectorID(d)
+	return ruo
+}
+
+// AddConnectorID adds d to the "connector_id" field.
+func (ruo *ReservationUpdateOne) AddConnectorID(d datasource.UUID) *ReservationUpdateOne {
+	ruo.mutation.AddConnectorID(d)
 	return ruo
 }
 
@@ -637,25 +608,6 @@ func (ruo *ReservationUpdateOne) SetEquipment(e *Equipment) *ReservationUpdateOn
 	return ruo.SetEquipmentID(e.ID)
 }
 
-// SetConnectorID sets the "connector" edge to the Connector entity by ID.
-func (ruo *ReservationUpdateOne) SetConnectorID(id datasource.UUID) *ReservationUpdateOne {
-	ruo.mutation.SetConnectorID(id)
-	return ruo
-}
-
-// SetNillableConnectorID sets the "connector" edge to the Connector entity by ID if the given value is not nil.
-func (ruo *ReservationUpdateOne) SetNillableConnectorID(id *datasource.UUID) *ReservationUpdateOne {
-	if id != nil {
-		ruo = ruo.SetConnectorID(*id)
-	}
-	return ruo
-}
-
-// SetConnector sets the "connector" edge to the Connector entity.
-func (ruo *ReservationUpdateOne) SetConnector(c *Connector) *ReservationUpdateOne {
-	return ruo.SetConnectorID(c.ID)
-}
-
 // Mutation returns the ReservationMutation object of the builder.
 func (ruo *ReservationUpdateOne) Mutation() *ReservationMutation {
 	return ruo.mutation
@@ -664,12 +616,6 @@ func (ruo *ReservationUpdateOne) Mutation() *ReservationMutation {
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
 func (ruo *ReservationUpdateOne) ClearEquipment() *ReservationUpdateOne {
 	ruo.mutation.ClearEquipment()
-	return ruo
-}
-
-// ClearConnector clears the "connector" edge to the Connector entity.
-func (ruo *ReservationUpdateOne) ClearConnector() *ReservationUpdateOne {
-	ruo.mutation.ClearConnector()
 	return ruo
 }
 
@@ -802,6 +748,12 @@ func (ruo *ReservationUpdateOne) sqlSave(ctx context.Context) (_node *Reservatio
 	if value, ok := ruo.mutation.AddedUpdatedAt(); ok {
 		_spec.AddField(reservation.FieldUpdatedAt, field.TypeInt64, value)
 	}
+	if value, ok := ruo.mutation.ConnectorID(); ok {
+		_spec.SetField(reservation.FieldConnectorID, field.TypeUint64, value)
+	}
+	if value, ok := ruo.mutation.AddedConnectorID(); ok {
+		_spec.AddField(reservation.FieldConnectorID, field.TypeUint64, value)
+	}
 	if value, ok := ruo.mutation.ReservationID(); ok {
 		_spec.SetField(reservation.FieldReservationID, field.TypeInt64, value)
 	}
@@ -868,41 +820,6 @@ func (ruo *ReservationUpdateOne) sqlSave(ctx context.Context) (_node *Reservatio
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if ruo.mutation.ConnectorCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   reservation.ConnectorTable,
-			Columns: []string{reservation.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ruo.mutation.ConnectorIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   reservation.ConnectorTable,
-			Columns: []string{reservation.ConnectorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeUint64,
-					Column: connector.FieldID,
 				},
 			},
 		}

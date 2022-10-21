@@ -26,9 +26,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "equipment_sn", Type: field.TypeString},
 		{Name: "evse_serial", Type: field.TypeString},
 		{Name: "serial", Type: field.TypeString},
@@ -66,9 +66,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "sn", Type: field.TypeString},
 		{Name: "operator_id", Type: field.TypeUint64},
 		{Name: "station_id", Type: field.TypeUint64},
@@ -84,9 +84,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "dtc_code", Type: field.TypeInt64},
 		{Name: "remote_address", Type: field.TypeString},
 		{Name: "trigger_time", Type: field.TypeInt64, Nullable: true},
@@ -113,9 +113,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "request_id", Type: field.TypeInt64},
 		{Name: "state", Type: field.TypeInt},
 		{Name: "equipment_id", Type: field.TypeUint64, Nullable: true},
@@ -146,9 +146,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "equipment_sn", Type: field.TypeString},
 		{Name: "model_id", Type: field.TypeUint64},
 		{Name: "manufacturer_id", Type: field.TypeUint64},
@@ -180,9 +180,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "iccid", Type: field.TypeString, Nullable: true},
 		{Name: "imei", Type: field.TypeString, Nullable: true},
 		{Name: "remote_address", Type: field.TypeString, Nullable: true},
@@ -207,9 +207,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "request_id", Type: field.TypeInt64},
 		{Name: "state", Type: field.TypeInt},
 		{Name: "data_link", Type: field.TypeUint64},
@@ -234,9 +234,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "serial", Type: field.TypeString},
 		{Name: "connector_number", Type: field.TypeInt},
 		{Name: "equipment_id", Type: field.TypeUint64},
@@ -260,9 +260,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "equip_version", Type: field.TypeString},
 		{Name: "manufacturer_id", Type: field.TypeUint64},
 		{Name: "model_id", Type: field.TypeUint64},
@@ -292,9 +292,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "code", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 	}
@@ -309,9 +309,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "code", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
 		{Name: "phase_category", Type: field.TypeString},
@@ -349,9 +349,10 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
+		{Name: "connector_id", Type: field.TypeUint64},
 		{Name: "remote_start_id", Type: field.TypeInt64, Nullable: true},
 		{Name: "transaction_id", Type: field.TypeString},
 		{Name: "authorization_id", Type: field.TypeString, Nullable: true},
@@ -366,7 +367,7 @@ var (
 		{Name: "flat_electricity", Type: field.TypeFloat64, Nullable: true},
 		{Name: "valley_electricity", Type: field.TypeFloat64, Nullable: true},
 		{Name: "stop_reason_code", Type: field.TypeInt32, Nullable: true},
-		{Name: "state", Type: field.TypeInt32, Nullable: true},
+		{Name: "state", Type: field.TypeInt, Nullable: true},
 		{Name: "offline", Type: field.TypeBool},
 		{Name: "price_scheme_release_id", Type: field.TypeInt64},
 		{Name: "order_start_time", Type: field.TypeInt64, Nullable: true},
@@ -376,7 +377,6 @@ var (
 		{Name: "intellect_id", Type: field.TypeInt64, Nullable: true},
 		{Name: "station_id", Type: field.TypeUint64, Nullable: true},
 		{Name: "operator_id", Type: field.TypeUint64, Nullable: true},
-		{Name: "connector_id", Type: field.TypeUint64, Nullable: true},
 		{Name: "equipment_id", Type: field.TypeUint64, Nullable: true},
 	}
 	// OrderInfoTable holds the schema information for the "order_info" table.
@@ -385,12 +385,6 @@ var (
 		Columns:    OrderInfoColumns,
 		PrimaryKey: []*schema.Column{OrderInfoColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "order_info_base_connector_order_info",
-				Columns:    []*schema.Column{OrderInfoColumns[30]},
-				RefColumns: []*schema.Column{BaseConnectorColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
 			{
 				Symbol:     "order_info_base_equipment_order_info",
 				Columns:    []*schema.Column{OrderInfoColumns[31]},
@@ -404,9 +398,10 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
+		{Name: "connector_id", Type: field.TypeUint64},
 		{Name: "reservation_id", Type: field.TypeInt64},
 		{Name: "authorization_mode", Type: field.TypeInt},
 		{Name: "authorization_id", Type: field.TypeString},
@@ -414,7 +409,6 @@ var (
 		{Name: "customer_id", Type: field.TypeString, Nullable: true},
 		{Name: "expired", Type: field.TypeInt64},
 		{Name: "state", Type: field.TypeInt},
-		{Name: "connector_id", Type: field.TypeUint64, Nullable: true},
 		{Name: "equipment_id", Type: field.TypeUint64, Nullable: true},
 	}
 	// ReservationChargingReleaseTable holds the schema information for the "reservation_charging_release" table.
@@ -423,12 +417,6 @@ var (
 		Columns:    ReservationChargingReleaseColumns,
 		PrimaryKey: []*schema.Column{ReservationChargingReleaseColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "reservation_charging_release_base_connector_reservation",
-				Columns:    []*schema.Column{ReservationChargingReleaseColumns[13]},
-				RefColumns: []*schema.Column{BaseConnectorColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
 			{
 				Symbol:     "reservation_charging_release_base_equipment_reservation",
 				Columns:    []*schema.Column{ReservationChargingReleaseColumns[14]},
@@ -442,9 +430,11 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "created_by", Type: field.TypeUint64, Default: 1},
-		{Name: "created_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "created_at", Type: field.TypeInt64, Default: 1666319620},
 		{Name: "updated_by", Type: field.TypeUint64, Default: 1},
-		{Name: "updated_at", Type: field.TypeInt64, Default: 1666256270},
+		{Name: "updated_at", Type: field.TypeInt64, Default: 1666319620},
+		{Name: "connector_id", Type: field.TypeUint64},
+		{Name: "order_id", Type: field.TypeUint64, Nullable: true},
 		{Name: "smart_id", Type: field.TypeInt64},
 		{Name: "start_time", Type: field.TypeInt64},
 		{Name: "pid", Type: field.TypeUint64},
@@ -453,9 +443,7 @@ var (
 		{Name: "valid_from", Type: field.TypeInt64, Nullable: true},
 		{Name: "valid_to", Type: field.TypeInt64, Nullable: true},
 		{Name: "spec", Type: field.TypeJSON},
-		{Name: "connector_id", Type: field.TypeUint64},
 		{Name: "equipment_id", Type: field.TypeUint64},
-		{Name: "order_id", Type: field.TypeUint64, Unique: true, Nullable: true},
 	}
 	// SmartChargingEffectTable holds the schema information for the "smart_charging_effect" table.
 	SmartChargingEffectTable = &schema.Table{
@@ -464,22 +452,10 @@ var (
 		PrimaryKey: []*schema.Column{SmartChargingEffectColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "smart_charging_effect_base_connector_smart_charging_effect",
-				Columns:    []*schema.Column{SmartChargingEffectColumns[14]},
-				RefColumns: []*schema.Column{BaseConnectorColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-			{
 				Symbol:     "smart_charging_effect_base_equipment_smart_charging_effect",
-				Columns:    []*schema.Column{SmartChargingEffectColumns[15]},
+				Columns:    []*schema.Column{SmartChargingEffectColumns[16]},
 				RefColumns: []*schema.Column{BaseEquipmentColumns[0]},
 				OnDelete:   schema.NoAction,
-			},
-			{
-				Symbol:     "smart_charging_effect_order_info_smart_charging_effect",
-				Columns:    []*schema.Column{SmartChargingEffectColumns[16]},
-				RefColumns: []*schema.Column{OrderInfoColumns[0]},
-				OnDelete:   schema.SetNull,
 			},
 		},
 	}
@@ -556,19 +532,15 @@ func init() {
 	OrderEventTable.Annotation = &entsql.Annotation{
 		Table: "order_event",
 	}
-	OrderInfoTable.ForeignKeys[0].RefTable = BaseConnectorTable
-	OrderInfoTable.ForeignKeys[1].RefTable = BaseEquipmentTable
+	OrderInfoTable.ForeignKeys[0].RefTable = BaseEquipmentTable
 	OrderInfoTable.Annotation = &entsql.Annotation{
 		Table: "order_info",
 	}
-	ReservationChargingReleaseTable.ForeignKeys[0].RefTable = BaseConnectorTable
-	ReservationChargingReleaseTable.ForeignKeys[1].RefTable = BaseEquipmentTable
+	ReservationChargingReleaseTable.ForeignKeys[0].RefTable = BaseEquipmentTable
 	ReservationChargingReleaseTable.Annotation = &entsql.Annotation{
 		Table: "reservation_charging_release",
 	}
-	SmartChargingEffectTable.ForeignKeys[0].RefTable = BaseConnectorTable
-	SmartChargingEffectTable.ForeignKeys[1].RefTable = BaseEquipmentTable
-	SmartChargingEffectTable.ForeignKeys[2].RefTable = OrderInfoTable
+	SmartChargingEffectTable.ForeignKeys[0].RefTable = BaseEquipmentTable
 	SmartChargingEffectTable.Annotation = &entsql.Annotation{
 		Table: "smart_charging_effect",
 	}
