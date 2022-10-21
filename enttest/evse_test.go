@@ -22,7 +22,7 @@ func TestCreateEvse(t *testing.T) {
 			SetCreatedBy(value datasource.UUID)
 		}
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			if m.Op() == ent.OpUpdate || m.Op() == ent.OpCreate {
+			if m.Op() == ent.OpUpdate || m.Op() == ent.OpCreate || m.Op() == ent.OpUpdateOne {
 				if m.Op() == ent.OpCreate {
 					if cb, ok := m.(CreateBy); ok {
 						cb.SetCreatedBy(datasource.UUID(999999))

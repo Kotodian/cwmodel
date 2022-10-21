@@ -21,7 +21,7 @@ func TestQueryEquipmentInfo(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, equip)
 
-	info, err := equip.QueryEquipmentInfo().Only(ctx)
+	info, err := equip.QueryEquipmentInfo().Unique(false).Only(ctx)
 	assert.Nil(t, err)
 	assert.NotNil(t, info)
 }
@@ -38,7 +38,7 @@ func TestCreateEquipmentInfo(t *testing.T) {
 			SetCreatedBy(value datasource.UUID)
 		}
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			if m.Op() == ent.OpUpdate || m.Op() == ent.OpCreate {
+			if m.Op() == ent.OpUpdate || m.Op() == ent.OpCreate || m.Op() == ent.OpUpdateOne {
 				if m.Op() == ent.OpCreate {
 					if cb, ok := m.(CreateBy); ok {
 						cb.SetCreatedBy(datasource.UUID(999999))

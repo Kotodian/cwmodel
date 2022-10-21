@@ -13,7 +13,7 @@ func TestQueryManufacturer(t *testing.T) {
 	ctx := context.TODO()
 	defer cli.Close()
 
-	manufacturer, err := cli.Manufacturer.Query().All(ctx)
+	manufacturer, err := cli.Manufacturer.Query().Unique(false).All(ctx)
 	assert.Nil(t, err)
 	assert.NotNil(t, manufacturer)
 }
