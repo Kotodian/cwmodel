@@ -15,6 +15,7 @@ import (
 	"github.com/Kotodian/cwmodel/evse"
 	"github.com/Kotodian/cwmodel/orderinfo"
 	"github.com/Kotodian/cwmodel/predicate"
+	"github.com/Kotodian/cwmodel/reservation"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -262,6 +263,21 @@ func (cu *ConnectorUpdate) AddOrderInfo(o ...*OrderInfo) *ConnectorUpdate {
 	return cu.AddOrderInfoIDs(ids...)
 }
 
+// AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
+func (cu *ConnectorUpdate) AddReservationIDs(ids ...datasource.UUID) *ConnectorUpdate {
+	cu.mutation.AddReservationIDs(ids...)
+	return cu
+}
+
+// AddReservation adds the "reservation" edges to the Reservation entity.
+func (cu *ConnectorUpdate) AddReservation(r ...*Reservation) *ConnectorUpdate {
+	ids := make([]datasource.UUID, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return cu.AddReservationIDs(ids...)
+}
+
 // Mutation returns the ConnectorMutation object of the builder.
 func (cu *ConnectorUpdate) Mutation() *ConnectorMutation {
 	return cu.mutation
@@ -298,6 +314,27 @@ func (cu *ConnectorUpdate) RemoveOrderInfo(o ...*OrderInfo) *ConnectorUpdate {
 		ids[i] = o[i].ID
 	}
 	return cu.RemoveOrderInfoIDs(ids...)
+}
+
+// ClearReservation clears all "reservation" edges to the Reservation entity.
+func (cu *ConnectorUpdate) ClearReservation() *ConnectorUpdate {
+	cu.mutation.ClearReservation()
+	return cu
+}
+
+// RemoveReservationIDs removes the "reservation" edge to Reservation entities by IDs.
+func (cu *ConnectorUpdate) RemoveReservationIDs(ids ...datasource.UUID) *ConnectorUpdate {
+	cu.mutation.RemoveReservationIDs(ids...)
+	return cu
+}
+
+// RemoveReservation removes "reservation" edges to Reservation entities.
+func (cu *ConnectorUpdate) RemoveReservation(r ...*Reservation) *ConnectorUpdate {
+	ids := make([]datasource.UUID, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return cu.RemoveReservationIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -591,6 +628,60 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if cu.mutation.ReservationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: reservation.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.RemovedReservationIDs(); len(nodes) > 0 && !cu.mutation.ReservationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: reservation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.ReservationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: reservation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{connector.Label}
@@ -841,6 +932,21 @@ func (cuo *ConnectorUpdateOne) AddOrderInfo(o ...*OrderInfo) *ConnectorUpdateOne
 	return cuo.AddOrderInfoIDs(ids...)
 }
 
+// AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
+func (cuo *ConnectorUpdateOne) AddReservationIDs(ids ...datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.AddReservationIDs(ids...)
+	return cuo
+}
+
+// AddReservation adds the "reservation" edges to the Reservation entity.
+func (cuo *ConnectorUpdateOne) AddReservation(r ...*Reservation) *ConnectorUpdateOne {
+	ids := make([]datasource.UUID, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return cuo.AddReservationIDs(ids...)
+}
+
 // Mutation returns the ConnectorMutation object of the builder.
 func (cuo *ConnectorUpdateOne) Mutation() *ConnectorMutation {
 	return cuo.mutation
@@ -877,6 +983,27 @@ func (cuo *ConnectorUpdateOne) RemoveOrderInfo(o ...*OrderInfo) *ConnectorUpdate
 		ids[i] = o[i].ID
 	}
 	return cuo.RemoveOrderInfoIDs(ids...)
+}
+
+// ClearReservation clears all "reservation" edges to the Reservation entity.
+func (cuo *ConnectorUpdateOne) ClearReservation() *ConnectorUpdateOne {
+	cuo.mutation.ClearReservation()
+	return cuo
+}
+
+// RemoveReservationIDs removes the "reservation" edge to Reservation entities by IDs.
+func (cuo *ConnectorUpdateOne) RemoveReservationIDs(ids ...datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.RemoveReservationIDs(ids...)
+	return cuo
+}
+
+// RemoveReservation removes "reservation" edges to Reservation entities.
+func (cuo *ConnectorUpdateOne) RemoveReservation(r ...*Reservation) *ConnectorUpdateOne {
+	ids := make([]datasource.UUID, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return cuo.RemoveReservationIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -1192,6 +1319,60 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cuo.mutation.ReservationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: reservation.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.RemovedReservationIDs(); len(nodes) > 0 && !cuo.mutation.ReservationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: reservation.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.ReservationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: reservation.FieldID,
 				},
 			},
 		}

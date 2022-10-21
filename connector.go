@@ -69,9 +69,11 @@ type ConnectorEdges struct {
 	Equipment *Equipment `json:"equipment,omitempty"`
 	// OrderInfo holds the value of the order_info edge.
 	OrderInfo []*OrderInfo `json:"order_info,omitempty"`
+	// Reservation holds the value of the reservation edge.
+	Reservation []*Reservation `json:"reservation,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 }
 
 // EvseOrErr returns the Evse value or an error if the edge
@@ -107,6 +109,15 @@ func (e ConnectorEdges) OrderInfoOrErr() ([]*OrderInfo, error) {
 		return e.OrderInfo, nil
 	}
 	return nil, &NotLoadedError{edge: "order_info"}
+}
+
+// ReservationOrErr returns the Reservation value or an error if the edge
+// was not loaded in eager-loading.
+func (e ConnectorEdges) ReservationOrErr() ([]*Reservation, error) {
+	if e.loadedTypes[3] {
+		return e.Reservation, nil
+	}
+	return nil, &NotLoadedError{edge: "reservation"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -255,6 +266,11 @@ func (c *Connector) QueryEquipment() *EquipmentQuery {
 // QueryOrderInfo queries the "order_info" edge of the Connector entity.
 func (c *Connector) QueryOrderInfo() *OrderInfoQuery {
 	return (&ConnectorClient{config: c.config}).QueryOrderInfo(c)
+}
+
+// QueryReservation queries the "reservation" edge of the Connector entity.
+func (c *Connector) QueryReservation() *ReservationQuery {
+	return (&ConnectorClient{config: c.config}).QueryReservation(c)
 }
 
 // Update returns a builder for updating this Connector.

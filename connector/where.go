@@ -1460,6 +1460,34 @@ func HasOrderInfoWith(preds ...predicate.OrderInfo) predicate.Connector {
 	})
 }
 
+// HasReservation applies the HasEdge predicate on the "reservation" edge.
+func HasReservation() predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ReservationTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ReservationTable, ReservationColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasReservationWith applies the HasEdge predicate on the "reservation" edge with a given conditions (other predicates).
+func HasReservationWith(preds ...predicate.Reservation) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ReservationInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ReservationTable, ReservationColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Connector) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {

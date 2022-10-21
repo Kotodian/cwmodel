@@ -452,6 +452,22 @@ func (c *ConnectorClient) QueryOrderInfo(co *Connector) *OrderInfoQuery {
 	return query
 }
 
+// QueryReservation queries the reservation edge of a Connector.
+func (c *ConnectorClient) QueryReservation(co *Connector) *ReservationQuery {
+	query := &ReservationQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(connector.Table, connector.FieldID, id),
+			sqlgraph.To(reservation.Table, reservation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, connector.ReservationTable, connector.ReservationColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ConnectorClient) Hooks() []Hook {
 	return c.hooks.Connector
@@ -2063,6 +2079,22 @@ func (c *ReservationClient) QueryEquipment(r *Reservation) *EquipmentQuery {
 			sqlgraph.From(reservation.Table, reservation.FieldID, id),
 			sqlgraph.To(equipment.Table, equipment.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, reservation.EquipmentTable, reservation.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryConnector queries the connector edge of a Reservation.
+func (c *ReservationClient) QueryConnector(r *Reservation) *ConnectorQuery {
+	query := &ConnectorQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(reservation.Table, reservation.FieldID, id),
+			sqlgraph.To(connector.Table, connector.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, reservation.ConnectorTable, reservation.ConnectorColumn),
 		)
 		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
 		return fromV, nil

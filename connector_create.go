@@ -13,6 +13,7 @@ import (
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/evse"
 	"github.com/Kotodian/cwmodel/orderinfo"
+	"github.com/Kotodian/cwmodel/reservation"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -228,6 +229,21 @@ func (cc *ConnectorCreate) AddOrderInfo(o ...*OrderInfo) *ConnectorCreate {
 		ids[i] = o[i].ID
 	}
 	return cc.AddOrderInfoIDs(ids...)
+}
+
+// AddReservationIDs adds the "reservation" edge to the Reservation entity by IDs.
+func (cc *ConnectorCreate) AddReservationIDs(ids ...datasource.UUID) *ConnectorCreate {
+	cc.mutation.AddReservationIDs(ids...)
+	return cc
+}
+
+// AddReservation adds the "reservation" edges to the Reservation entity.
+func (cc *ConnectorCreate) AddReservation(r ...*Reservation) *ConnectorCreate {
+	ids := make([]datasource.UUID, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return cc.AddReservationIDs(ids...)
 }
 
 // Mutation returns the ConnectorMutation object of the builder.
@@ -524,6 +540,25 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.ReservationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.ReservationTable,
+			Columns: []string{connector.ReservationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: reservation.FieldID,
 				},
 			},
 		}

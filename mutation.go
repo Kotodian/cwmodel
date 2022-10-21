@@ -432,44 +432,47 @@ func (m *AppModuleInfoMutation) ResetEdge(name string) error {
 // ConnectorMutation represents an operation that mutates the Connector nodes in the graph.
 type ConnectorMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *datasource.UUID
-	version           *int64
-	addversion        *int64
-	created_by        *datasource.UUID
-	addcreated_by     *datasource.UUID
-	created_at        *int64
-	addcreated_at     *int64
-	updated_by        *datasource.UUID
-	addupdated_by     *datasource.UUID
-	updated_at        *int64
-	addupdated_at     *int64
-	equipment_sn      *string
-	evse_serial       *string
-	serial            *string
-	current_state     *int
-	addcurrent_state  *int
-	before_state      *int
-	addbefore_state   *int
-	charging_state    *int
-	addcharging_state *int
-	reservation_id    *datasource.UUID
-	addreservation_id *datasource.UUID
-	order_id          *datasource.UUID
-	addorder_id       *datasource.UUID
-	park_no           *string
-	clearedFields     map[string]struct{}
-	evse              *datasource.UUID
-	clearedevse       bool
-	equipment         *datasource.UUID
-	clearedequipment  bool
-	order_info        map[datasource.UUID]struct{}
-	removedorder_info map[datasource.UUID]struct{}
-	clearedorder_info bool
-	done              bool
-	oldValue          func(context.Context) (*Connector, error)
-	predicates        []predicate.Connector
+	op                 Op
+	typ                string
+	id                 *datasource.UUID
+	version            *int64
+	addversion         *int64
+	created_by         *datasource.UUID
+	addcreated_by      *datasource.UUID
+	created_at         *int64
+	addcreated_at      *int64
+	updated_by         *datasource.UUID
+	addupdated_by      *datasource.UUID
+	updated_at         *int64
+	addupdated_at      *int64
+	equipment_sn       *string
+	evse_serial        *string
+	serial             *string
+	current_state      *int
+	addcurrent_state   *int
+	before_state       *int
+	addbefore_state    *int
+	charging_state     *int
+	addcharging_state  *int
+	reservation_id     *datasource.UUID
+	addreservation_id  *datasource.UUID
+	order_id           *datasource.UUID
+	addorder_id        *datasource.UUID
+	park_no            *string
+	clearedFields      map[string]struct{}
+	evse               *datasource.UUID
+	clearedevse        bool
+	equipment          *datasource.UUID
+	clearedequipment   bool
+	order_info         map[datasource.UUID]struct{}
+	removedorder_info  map[datasource.UUID]struct{}
+	clearedorder_info  bool
+	reservation        map[datasource.UUID]struct{}
+	removedreservation map[datasource.UUID]struct{}
+	clearedreservation bool
+	done               bool
+	oldValue           func(context.Context) (*Connector, error)
+	predicates         []predicate.Connector
 }
 
 var _ ent.Mutation = (*ConnectorMutation)(nil)
@@ -1500,6 +1503,60 @@ func (m *ConnectorMutation) ResetOrderInfo() {
 	m.removedorder_info = nil
 }
 
+// AddReservationIDs adds the "reservation" edge to the Reservation entity by ids.
+func (m *ConnectorMutation) AddReservationIDs(ids ...datasource.UUID) {
+	if m.reservation == nil {
+		m.reservation = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		m.reservation[ids[i]] = struct{}{}
+	}
+}
+
+// ClearReservation clears the "reservation" edge to the Reservation entity.
+func (m *ConnectorMutation) ClearReservation() {
+	m.clearedreservation = true
+}
+
+// ReservationCleared reports if the "reservation" edge to the Reservation entity was cleared.
+func (m *ConnectorMutation) ReservationCleared() bool {
+	return m.clearedreservation
+}
+
+// RemoveReservationIDs removes the "reservation" edge to the Reservation entity by IDs.
+func (m *ConnectorMutation) RemoveReservationIDs(ids ...datasource.UUID) {
+	if m.removedreservation == nil {
+		m.removedreservation = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.reservation, ids[i])
+		m.removedreservation[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedReservation returns the removed IDs of the "reservation" edge to the Reservation entity.
+func (m *ConnectorMutation) RemovedReservationIDs() (ids []datasource.UUID) {
+	for id := range m.removedreservation {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ReservationIDs returns the "reservation" edge IDs in the mutation.
+func (m *ConnectorMutation) ReservationIDs() (ids []datasource.UUID) {
+	for id := range m.reservation {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetReservation resets all changes to the "reservation" edge.
+func (m *ConnectorMutation) ResetReservation() {
+	m.reservation = nil
+	m.clearedreservation = false
+	m.removedreservation = nil
+}
+
 // Where appends a list predicates to the ConnectorMutation builder.
 func (m *ConnectorMutation) Where(ps ...predicate.Connector) {
 	m.predicates = append(m.predicates, ps...)
@@ -2017,7 +2074,7 @@ func (m *ConnectorMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ConnectorMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.evse != nil {
 		edges = append(edges, connector.EdgeEvse)
 	}
@@ -2026,6 +2083,9 @@ func (m *ConnectorMutation) AddedEdges() []string {
 	}
 	if m.order_info != nil {
 		edges = append(edges, connector.EdgeOrderInfo)
+	}
+	if m.reservation != nil {
+		edges = append(edges, connector.EdgeReservation)
 	}
 	return edges
 }
@@ -2048,15 +2108,24 @@ func (m *ConnectorMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case connector.EdgeReservation:
+		ids := make([]ent.Value, 0, len(m.reservation))
+		for id := range m.reservation {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ConnectorMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removedorder_info != nil {
 		edges = append(edges, connector.EdgeOrderInfo)
+	}
+	if m.removedreservation != nil {
+		edges = append(edges, connector.EdgeReservation)
 	}
 	return edges
 }
@@ -2071,13 +2140,19 @@ func (m *ConnectorMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case connector.EdgeReservation:
+		ids := make([]ent.Value, 0, len(m.removedreservation))
+		for id := range m.removedreservation {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ConnectorMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedevse {
 		edges = append(edges, connector.EdgeEvse)
 	}
@@ -2086,6 +2161,9 @@ func (m *ConnectorMutation) ClearedEdges() []string {
 	}
 	if m.clearedorder_info {
 		edges = append(edges, connector.EdgeOrderInfo)
+	}
+	if m.clearedreservation {
+		edges = append(edges, connector.EdgeReservation)
 	}
 	return edges
 }
@@ -2100,6 +2178,8 @@ func (m *ConnectorMutation) EdgeCleared(name string) bool {
 		return m.clearedequipment
 	case connector.EdgeOrderInfo:
 		return m.clearedorder_info
+	case connector.EdgeReservation:
+		return m.clearedreservation
 	}
 	return false
 }
@@ -2130,6 +2210,9 @@ func (m *ConnectorMutation) ResetEdge(name string) error {
 		return nil
 	case connector.EdgeOrderInfo:
 		m.ResetOrderInfo()
+		return nil
+	case connector.EdgeReservation:
+		m.ResetReservation()
 		return nil
 	}
 	return fmt.Errorf("unknown Connector edge %s", name)
@@ -17687,8 +17770,6 @@ type ReservationMutation struct {
 	addupdated_by         *datasource.UUID
 	updated_at            *int64
 	addupdated_at         *int64
-	connector_id          *datasource.UUID
-	addconnector_id       *datasource.UUID
 	reservation_id        *int64
 	addreservation_id     *int64
 	authorization_mode    *int
@@ -17703,6 +17784,8 @@ type ReservationMutation struct {
 	clearedFields         map[string]struct{}
 	equipment             *datasource.UUID
 	clearedequipment      bool
+	connector             *datasource.UUID
+	clearedconnector      bool
 	done                  bool
 	oldValue              func(context.Context) (*Reservation, error)
 	predicates            []predicate.Reservation
@@ -18092,15 +18175,50 @@ func (m *ReservationMutation) ResetUpdatedAt() {
 	m.addupdated_at = nil
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (m *ReservationMutation) SetEquipmentID(d datasource.UUID) {
+	m.equipment = &d
+}
+
+// EquipmentID returns the value of the "equipment_id" field in the mutation.
+func (m *ReservationMutation) EquipmentID() (r datasource.UUID, exists bool) {
+	v := m.equipment
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEquipmentID returns the old "equipment_id" field's value of the Reservation entity.
+// If the Reservation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ReservationMutation) OldEquipmentID(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEquipmentID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEquipmentID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEquipmentID: %w", err)
+	}
+	return oldValue.EquipmentID, nil
+}
+
+// ResetEquipmentID resets all changes to the "equipment_id" field.
+func (m *ReservationMutation) ResetEquipmentID() {
+	m.equipment = nil
+}
+
 // SetConnectorID sets the "connector_id" field.
 func (m *ReservationMutation) SetConnectorID(d datasource.UUID) {
-	m.connector_id = &d
-	m.addconnector_id = nil
+	m.connector = &d
 }
 
 // ConnectorID returns the value of the "connector_id" field in the mutation.
 func (m *ReservationMutation) ConnectorID() (r datasource.UUID, exists bool) {
-	v := m.connector_id
+	v := m.connector
 	if v == nil {
 		return
 	}
@@ -18124,28 +18242,9 @@ func (m *ReservationMutation) OldConnectorID(ctx context.Context) (v datasource.
 	return oldValue.ConnectorID, nil
 }
 
-// AddConnectorID adds d to the "connector_id" field.
-func (m *ReservationMutation) AddConnectorID(d datasource.UUID) {
-	if m.addconnector_id != nil {
-		*m.addconnector_id += d
-	} else {
-		m.addconnector_id = &d
-	}
-}
-
-// AddedConnectorID returns the value that was added to the "connector_id" field in this mutation.
-func (m *ReservationMutation) AddedConnectorID() (r datasource.UUID, exists bool) {
-	v := m.addconnector_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetConnectorID resets all changes to the "connector_id" field.
 func (m *ReservationMutation) ResetConnectorID() {
-	m.connector_id = nil
-	m.addconnector_id = nil
+	m.connector = nil
 }
 
 // SetReservationID sets the "reservation_id" field.
@@ -18506,11 +18605,6 @@ func (m *ReservationMutation) ResetState() {
 	m.addstate = nil
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by id.
-func (m *ReservationMutation) SetEquipmentID(id datasource.UUID) {
-	m.equipment = &id
-}
-
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
 func (m *ReservationMutation) ClearEquipment() {
 	m.clearedequipment = true
@@ -18519,14 +18613,6 @@ func (m *ReservationMutation) ClearEquipment() {
 // EquipmentCleared reports if the "equipment" edge to the Equipment entity was cleared.
 func (m *ReservationMutation) EquipmentCleared() bool {
 	return m.clearedequipment
-}
-
-// EquipmentID returns the "equipment" edge ID in the mutation.
-func (m *ReservationMutation) EquipmentID() (id datasource.UUID, exists bool) {
-	if m.equipment != nil {
-		return *m.equipment, true
-	}
-	return
 }
 
 // EquipmentIDs returns the "equipment" edge IDs in the mutation.
@@ -18543,6 +18629,32 @@ func (m *ReservationMutation) EquipmentIDs() (ids []datasource.UUID) {
 func (m *ReservationMutation) ResetEquipment() {
 	m.equipment = nil
 	m.clearedequipment = false
+}
+
+// ClearConnector clears the "connector" edge to the Connector entity.
+func (m *ReservationMutation) ClearConnector() {
+	m.clearedconnector = true
+}
+
+// ConnectorCleared reports if the "connector" edge to the Connector entity was cleared.
+func (m *ReservationMutation) ConnectorCleared() bool {
+	return m.clearedconnector
+}
+
+// ConnectorIDs returns the "connector" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ConnectorID instead. It exists only for internal usage by the builders.
+func (m *ReservationMutation) ConnectorIDs() (ids []datasource.UUID) {
+	if id := m.connector; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetConnector resets all changes to the "connector" edge.
+func (m *ReservationMutation) ResetConnector() {
+	m.connector = nil
+	m.clearedconnector = false
 }
 
 // Where appends a list predicates to the ReservationMutation builder.
@@ -18564,7 +18676,7 @@ func (m *ReservationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ReservationMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 14)
 	if m.version != nil {
 		fields = append(fields, reservation.FieldVersion)
 	}
@@ -18580,7 +18692,10 @@ func (m *ReservationMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, reservation.FieldUpdatedAt)
 	}
-	if m.connector_id != nil {
+	if m.equipment != nil {
+		fields = append(fields, reservation.FieldEquipmentID)
+	}
+	if m.connector != nil {
 		fields = append(fields, reservation.FieldConnectorID)
 	}
 	if m.reservation_id != nil {
@@ -18622,6 +18737,8 @@ func (m *ReservationMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedBy()
 	case reservation.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case reservation.FieldEquipmentID:
+		return m.EquipmentID()
 	case reservation.FieldConnectorID:
 		return m.ConnectorID()
 	case reservation.FieldReservationID:
@@ -18657,6 +18774,8 @@ func (m *ReservationMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldUpdatedBy(ctx)
 	case reservation.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case reservation.FieldEquipmentID:
+		return m.OldEquipmentID(ctx)
 	case reservation.FieldConnectorID:
 		return m.OldConnectorID(ctx)
 	case reservation.FieldReservationID:
@@ -18716,6 +18835,13 @@ func (m *ReservationMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case reservation.FieldEquipmentID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEquipmentID(v)
 		return nil
 	case reservation.FieldConnectorID:
 		v, ok := value.(datasource.UUID)
@@ -18796,9 +18922,6 @@ func (m *ReservationMutation) AddedFields() []string {
 	if m.addupdated_at != nil {
 		fields = append(fields, reservation.FieldUpdatedAt)
 	}
-	if m.addconnector_id != nil {
-		fields = append(fields, reservation.FieldConnectorID)
-	}
 	if m.addreservation_id != nil {
 		fields = append(fields, reservation.FieldReservationID)
 	}
@@ -18829,8 +18952,6 @@ func (m *ReservationMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedBy()
 	case reservation.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
-	case reservation.FieldConnectorID:
-		return m.AddedConnectorID()
 	case reservation.FieldReservationID:
 		return m.AddedReservationID()
 	case reservation.FieldAuthorizationMode:
@@ -18882,13 +19003,6 @@ func (m *ReservationMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedAt(v)
-		return nil
-	case reservation.FieldConnectorID:
-		v, ok := value.(datasource.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddConnectorID(v)
 		return nil
 	case reservation.FieldReservationID:
 		v, ok := value.(int64)
@@ -18975,6 +19089,9 @@ func (m *ReservationMutation) ResetField(name string) error {
 	case reservation.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case reservation.FieldEquipmentID:
+		m.ResetEquipmentID()
+		return nil
 	case reservation.FieldConnectorID:
 		m.ResetConnectorID()
 		return nil
@@ -19005,9 +19122,12 @@ func (m *ReservationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ReservationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.equipment != nil {
 		edges = append(edges, reservation.EdgeEquipment)
+	}
+	if m.connector != nil {
+		edges = append(edges, reservation.EdgeConnector)
 	}
 	return edges
 }
@@ -19020,13 +19140,17 @@ func (m *ReservationMutation) AddedIDs(name string) []ent.Value {
 		if id := m.equipment; id != nil {
 			return []ent.Value{*id}
 		}
+	case reservation.EdgeConnector:
+		if id := m.connector; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ReservationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -19038,9 +19162,12 @@ func (m *ReservationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ReservationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedequipment {
 		edges = append(edges, reservation.EdgeEquipment)
+	}
+	if m.clearedconnector {
+		edges = append(edges, reservation.EdgeConnector)
 	}
 	return edges
 }
@@ -19051,6 +19178,8 @@ func (m *ReservationMutation) EdgeCleared(name string) bool {
 	switch name {
 	case reservation.EdgeEquipment:
 		return m.clearedequipment
+	case reservation.EdgeConnector:
+		return m.clearedconnector
 	}
 	return false
 }
@@ -19062,6 +19191,9 @@ func (m *ReservationMutation) ClearEdge(name string) error {
 	case reservation.EdgeEquipment:
 		m.ClearEquipment()
 		return nil
+	case reservation.EdgeConnector:
+		m.ClearConnector()
+		return nil
 	}
 	return fmt.Errorf("unknown Reservation unique edge %s", name)
 }
@@ -19072,6 +19204,9 @@ func (m *ReservationMutation) ResetEdge(name string) error {
 	switch name {
 	case reservation.EdgeEquipment:
 		m.ResetEquipment()
+		return nil
+	case reservation.EdgeConnector:
+		m.ResetConnector()
 		return nil
 	}
 	return fmt.Errorf("unknown Reservation edge %s", name)

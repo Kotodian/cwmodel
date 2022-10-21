@@ -49,6 +49,8 @@ const (
 	EdgeEquipment = "equipment"
 	// EdgeOrderInfo holds the string denoting the order_info edge name in mutations.
 	EdgeOrderInfo = "order_info"
+	// EdgeReservation holds the string denoting the reservation edge name in mutations.
+	EdgeReservation = "reservation"
 	// Table holds the table name of the connector in the database.
 	Table = "base_connector"
 	// EvseTable is the table that holds the evse relation/edge.
@@ -72,6 +74,13 @@ const (
 	OrderInfoInverseTable = "order_info"
 	// OrderInfoColumn is the table column denoting the order_info relation/edge.
 	OrderInfoColumn = "connector_id"
+	// ReservationTable is the table that holds the reservation relation/edge.
+	ReservationTable = "reservation_charging_release"
+	// ReservationInverseTable is the table name for the Reservation entity.
+	// It exists in this package in order to avoid circular dependency with the "reservation" package.
+	ReservationInverseTable = "reservation_charging_release"
+	// ReservationColumn is the table column denoting the reservation relation/edge.
+	ReservationColumn = "connector_id"
 )
 
 // Columns holds all SQL columns for connector fields.

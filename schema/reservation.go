@@ -28,6 +28,7 @@ func (Reservation) Annotations() []schema.Annotation {
 
 func (Reservation) Fields() []ent.Field {
 	return []ent.Field{
+		field.Uint64("equipment_id").GoType(datasource.UUID(0)).Comment("桩id"),
 		field.Uint64("connector_id").GoType(datasource.UUID(0)).Comment("枪id"),
 		field.Int64("reservation_id").Comment("预约id"),
 		field.Int("authorization_mode").Comment("授权模式"),
@@ -41,7 +42,7 @@ func (Reservation) Fields() []ent.Field {
 
 func (Reservation) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("equipment", Equipment.Type).Ref("reservation").Unique(),
-		// edge.From("connector", Connector.Type).Ref("reservation").Unique(),
+		edge.From("equipment", Equipment.Type).Field("equipment_id").Ref("reservation").Unique().Required(),
+		edge.From("connector", Connector.Type).Field("connector_id").Ref("reservation").Unique().Required(), //
 	}
 }

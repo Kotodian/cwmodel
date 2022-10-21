@@ -16,21 +16,23 @@ import (
 	"github.com/Kotodian/cwmodel/evse"
 	"github.com/Kotodian/cwmodel/orderinfo"
 	"github.com/Kotodian/cwmodel/predicate"
+	"github.com/Kotodian/cwmodel/reservation"
 	"github.com/Kotodian/gokit/datasource"
 )
 
 // ConnectorQuery is the builder for querying Connector entities.
 type ConnectorQuery struct {
 	config
-	limit         *int
-	offset        *int
-	unique        *bool
-	order         []OrderFunc
-	fields        []string
-	predicates    []predicate.Connector
-	withEvse      *EvseQuery
-	withEquipment *EquipmentQuery
-	withOrderInfo *OrderInfoQuery
+	limit           *int
+	offset          *int
+	unique          *bool
+	order           []OrderFunc
+	fields          []string
+	predicates      []predicate.Connector
+	withEvse        *EvseQuery
+	withEquipment   *EquipmentQuery
+	withOrderInfo   *OrderInfoQuery
+	withReservation *ReservationQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -126,6 +128,28 @@ func (cq *ConnectorQuery) QueryOrderInfo() *OrderInfoQuery {
 			sqlgraph.From(connector.Table, connector.FieldID, selector),
 			sqlgraph.To(orderinfo.Table, orderinfo.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, connector.OrderInfoTable, connector.OrderInfoColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryReservation chains the current query on the "reservation" edge.
+func (cq *ConnectorQuery) QueryReservation() *ReservationQuery {
+	query := &ReservationQuery{config: cq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := cq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(connector.Table, connector.FieldID, selector),
+			sqlgraph.To(reservation.Table, reservation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, connector.ReservationTable, connector.ReservationColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
 		return fromU, nil
@@ -309,14 +333,15 @@ func (cq *ConnectorQuery) Clone() *ConnectorQuery {
 		return nil
 	}
 	return &ConnectorQuery{
-		config:        cq.config,
-		limit:         cq.limit,
-		offset:        cq.offset,
-		order:         append([]OrderFunc{}, cq.order...),
-		predicates:    append([]predicate.Connector{}, cq.predicates...),
-		withEvse:      cq.withEvse.Clone(),
-		withEquipment: cq.withEquipment.Clone(),
-		withOrderInfo: cq.withOrderInfo.Clone(),
+		config:          cq.config,
+		limit:           cq.limit,
+		offset:          cq.offset,
+		order:           append([]OrderFunc{}, cq.order...),
+		predicates:      append([]predicate.Connector{}, cq.predicates...),
+		withEvse:        cq.withEvse.Clone(),
+		withEquipment:   cq.withEquipment.Clone(),
+		withOrderInfo:   cq.withOrderInfo.Clone(),
+		withReservation: cq.withReservation.Clone(),
 		// clone intermediate query.
 		sql:    cq.sql.Clone(),
 		path:   cq.path,
@@ -354,6 +379,17 @@ func (cq *ConnectorQuery) WithOrderInfo(opts ...func(*OrderInfoQuery)) *Connecto
 		opt(query)
 	}
 	cq.withOrderInfo = query
+	return cq
+}
+
+// WithReservation tells the query-builder to eager-load the nodes that are connected to
+// the "reservation" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *ConnectorQuery) WithReservation(opts ...func(*ReservationQuery)) *ConnectorQuery {
+	query := &ReservationQuery{config: cq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withReservation = query
 	return cq
 }
 
@@ -425,10 +461,11 @@ func (cq *ConnectorQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Co
 	var (
 		nodes       = []*Connector{}
 		_spec       = cq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
 			cq.withEvse != nil,
 			cq.withEquipment != nil,
 			cq.withOrderInfo != nil,
+			cq.withReservation != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -465,6 +502,13 @@ func (cq *ConnectorQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Co
 		if err := cq.loadOrderInfo(ctx, query, nodes,
 			func(n *Connector) { n.Edges.OrderInfo = []*OrderInfo{} },
 			func(n *Connector, e *OrderInfo) { n.Edges.OrderInfo = append(n.Edges.OrderInfo, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := cq.withReservation; query != nil {
+		if err := cq.loadReservation(ctx, query, nodes,
+			func(n *Connector) { n.Edges.Reservation = []*Reservation{} },
+			func(n *Connector, e *Reservation) { n.Edges.Reservation = append(n.Edges.Reservation, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -535,6 +579,33 @@ func (cq *ConnectorQuery) loadOrderInfo(ctx context.Context, query *OrderInfoQue
 	}
 	query.Where(predicate.OrderInfo(func(s *sql.Selector) {
 		s.Where(sql.InValues(connector.OrderInfoColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.ConnectorID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "connector_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (cq *ConnectorQuery) loadReservation(ctx context.Context, query *ReservationQuery, nodes []*Connector, init func(*Connector), assign func(*Connector, *Reservation)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[datasource.UUID]*Connector)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.Where(predicate.Reservation(func(s *sql.Selector) {
+		s.Where(sql.InValues(connector.ReservationColumn, fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/cwmodel/reservation"
@@ -84,16 +85,15 @@ func (ru *ReservationUpdate) AddUpdatedAt(i int64) *ReservationUpdate {
 	return ru
 }
 
-// SetConnectorID sets the "connector_id" field.
-func (ru *ReservationUpdate) SetConnectorID(d datasource.UUID) *ReservationUpdate {
-	ru.mutation.ResetConnectorID()
-	ru.mutation.SetConnectorID(d)
+// SetEquipmentID sets the "equipment_id" field.
+func (ru *ReservationUpdate) SetEquipmentID(d datasource.UUID) *ReservationUpdate {
+	ru.mutation.SetEquipmentID(d)
 	return ru
 }
 
-// AddConnectorID adds d to the "connector_id" field.
-func (ru *ReservationUpdate) AddConnectorID(d datasource.UUID) *ReservationUpdate {
-	ru.mutation.AddConnectorID(d)
+// SetConnectorID sets the "connector_id" field.
+func (ru *ReservationUpdate) SetConnectorID(d datasource.UUID) *ReservationUpdate {
+	ru.mutation.SetConnectorID(d)
 	return ru
 }
 
@@ -195,23 +195,14 @@ func (ru *ReservationUpdate) AddState(i int) *ReservationUpdate {
 	return ru
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (ru *ReservationUpdate) SetEquipmentID(id datasource.UUID) *ReservationUpdate {
-	ru.mutation.SetEquipmentID(id)
-	return ru
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (ru *ReservationUpdate) SetNillableEquipmentID(id *datasource.UUID) *ReservationUpdate {
-	if id != nil {
-		ru = ru.SetEquipmentID(*id)
-	}
-	return ru
-}
-
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (ru *ReservationUpdate) SetEquipment(e *Equipment) *ReservationUpdate {
 	return ru.SetEquipmentID(e.ID)
+}
+
+// SetConnector sets the "connector" edge to the Connector entity.
+func (ru *ReservationUpdate) SetConnector(c *Connector) *ReservationUpdate {
+	return ru.SetConnectorID(c.ID)
 }
 
 // Mutation returns the ReservationMutation object of the builder.
@@ -225,6 +216,12 @@ func (ru *ReservationUpdate) ClearEquipment() *ReservationUpdate {
 	return ru
 }
 
+// ClearConnector clears the "connector" edge to the Connector entity.
+func (ru *ReservationUpdate) ClearConnector() *ReservationUpdate {
+	ru.mutation.ClearConnector()
+	return ru
+}
+
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (ru *ReservationUpdate) Save(ctx context.Context) (int, error) {
 	var (
@@ -233,12 +230,18 @@ func (ru *ReservationUpdate) Save(ctx context.Context) (int, error) {
 	)
 	ru.defaults()
 	if len(ru.hooks) == 0 {
+		if err = ru.check(); err != nil {
+			return 0, err
+		}
 		affected, err = ru.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ReservationMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = ru.check(); err != nil {
+				return 0, err
 			}
 			ru.mutation = mutation
 			affected, err = ru.sqlSave(ctx)
@@ -288,6 +291,17 @@ func (ru *ReservationUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (ru *ReservationUpdate) check() error {
+	if _, ok := ru.mutation.EquipmentID(); ru.mutation.EquipmentCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "Reservation.equipment"`)
+	}
+	if _, ok := ru.mutation.ConnectorID(); ru.mutation.ConnectorCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "Reservation.connector"`)
+	}
+	return nil
+}
+
 func (ru *ReservationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -323,12 +337,6 @@ func (ru *ReservationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := ru.mutation.AddedUpdatedAt(); ok {
 		_spec.AddField(reservation.FieldUpdatedAt, field.TypeInt64, value)
-	}
-	if value, ok := ru.mutation.ConnectorID(); ok {
-		_spec.SetField(reservation.FieldConnectorID, field.TypeUint64, value)
-	}
-	if value, ok := ru.mutation.AddedConnectorID(); ok {
-		_spec.AddField(reservation.FieldConnectorID, field.TypeUint64, value)
 	}
 	if value, ok := ru.mutation.ReservationID(); ok {
 		_spec.SetField(reservation.FieldReservationID, field.TypeInt64, value)
@@ -396,6 +404,41 @@ func (ru *ReservationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ru.mutation.ConnectorCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   reservation.ConnectorTable,
+			Columns: []string{reservation.ConnectorColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: connector.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ru.mutation.ConnectorIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   reservation.ConnectorTable,
+			Columns: []string{reservation.ConnectorColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: connector.FieldID,
 				},
 			},
 		}
@@ -478,16 +521,15 @@ func (ruo *ReservationUpdateOne) AddUpdatedAt(i int64) *ReservationUpdateOne {
 	return ruo
 }
 
-// SetConnectorID sets the "connector_id" field.
-func (ruo *ReservationUpdateOne) SetConnectorID(d datasource.UUID) *ReservationUpdateOne {
-	ruo.mutation.ResetConnectorID()
-	ruo.mutation.SetConnectorID(d)
+// SetEquipmentID sets the "equipment_id" field.
+func (ruo *ReservationUpdateOne) SetEquipmentID(d datasource.UUID) *ReservationUpdateOne {
+	ruo.mutation.SetEquipmentID(d)
 	return ruo
 }
 
-// AddConnectorID adds d to the "connector_id" field.
-func (ruo *ReservationUpdateOne) AddConnectorID(d datasource.UUID) *ReservationUpdateOne {
-	ruo.mutation.AddConnectorID(d)
+// SetConnectorID sets the "connector_id" field.
+func (ruo *ReservationUpdateOne) SetConnectorID(d datasource.UUID) *ReservationUpdateOne {
+	ruo.mutation.SetConnectorID(d)
 	return ruo
 }
 
@@ -589,23 +631,14 @@ func (ruo *ReservationUpdateOne) AddState(i int) *ReservationUpdateOne {
 	return ruo
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (ruo *ReservationUpdateOne) SetEquipmentID(id datasource.UUID) *ReservationUpdateOne {
-	ruo.mutation.SetEquipmentID(id)
-	return ruo
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (ruo *ReservationUpdateOne) SetNillableEquipmentID(id *datasource.UUID) *ReservationUpdateOne {
-	if id != nil {
-		ruo = ruo.SetEquipmentID(*id)
-	}
-	return ruo
-}
-
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (ruo *ReservationUpdateOne) SetEquipment(e *Equipment) *ReservationUpdateOne {
 	return ruo.SetEquipmentID(e.ID)
+}
+
+// SetConnector sets the "connector" edge to the Connector entity.
+func (ruo *ReservationUpdateOne) SetConnector(c *Connector) *ReservationUpdateOne {
+	return ruo.SetConnectorID(c.ID)
 }
 
 // Mutation returns the ReservationMutation object of the builder.
@@ -616,6 +649,12 @@ func (ruo *ReservationUpdateOne) Mutation() *ReservationMutation {
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
 func (ruo *ReservationUpdateOne) ClearEquipment() *ReservationUpdateOne {
 	ruo.mutation.ClearEquipment()
+	return ruo
+}
+
+// ClearConnector clears the "connector" edge to the Connector entity.
+func (ruo *ReservationUpdateOne) ClearConnector() *ReservationUpdateOne {
+	ruo.mutation.ClearConnector()
 	return ruo
 }
 
@@ -634,12 +673,18 @@ func (ruo *ReservationUpdateOne) Save(ctx context.Context) (*Reservation, error)
 	)
 	ruo.defaults()
 	if len(ruo.hooks) == 0 {
+		if err = ruo.check(); err != nil {
+			return nil, err
+		}
 		node, err = ruo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ReservationMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = ruo.check(); err != nil {
+				return nil, err
 			}
 			ruo.mutation = mutation
 			node, err = ruo.sqlSave(ctx)
@@ -695,6 +740,17 @@ func (ruo *ReservationUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (ruo *ReservationUpdateOne) check() error {
+	if _, ok := ruo.mutation.EquipmentID(); ruo.mutation.EquipmentCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "Reservation.equipment"`)
+	}
+	if _, ok := ruo.mutation.ConnectorID(); ruo.mutation.ConnectorCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "Reservation.connector"`)
+	}
+	return nil
+}
+
 func (ruo *ReservationUpdateOne) sqlSave(ctx context.Context) (_node *Reservation, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -747,12 +803,6 @@ func (ruo *ReservationUpdateOne) sqlSave(ctx context.Context) (_node *Reservatio
 	}
 	if value, ok := ruo.mutation.AddedUpdatedAt(); ok {
 		_spec.AddField(reservation.FieldUpdatedAt, field.TypeInt64, value)
-	}
-	if value, ok := ruo.mutation.ConnectorID(); ok {
-		_spec.SetField(reservation.FieldConnectorID, field.TypeUint64, value)
-	}
-	if value, ok := ruo.mutation.AddedConnectorID(); ok {
-		_spec.AddField(reservation.FieldConnectorID, field.TypeUint64, value)
 	}
 	if value, ok := ruo.mutation.ReservationID(); ok {
 		_spec.SetField(reservation.FieldReservationID, field.TypeInt64, value)
@@ -820,6 +870,41 @@ func (ruo *ReservationUpdateOne) sqlSave(ctx context.Context) (_node *Reservatio
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ruo.mutation.ConnectorCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   reservation.ConnectorTable,
+			Columns: []string{reservation.ConnectorColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: connector.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ruo.mutation.ConnectorIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   reservation.ConnectorTable,
+			Columns: []string{reservation.ConnectorColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: connector.FieldID,
 				},
 			},
 		}

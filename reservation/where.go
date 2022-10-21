@@ -117,6 +117,14 @@ func UpdatedAt(v int64) predicate.Reservation {
 	})
 }
 
+// EquipmentID applies equality check predicate on the "equipment_id" field. It's identical to EquipmentIDEQ.
+func EquipmentID(v datasource.UUID) predicate.Reservation {
+	vc := uint64(v)
+	return predicate.Reservation(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldEquipmentID), vc))
+	})
+}
+
 // ConnectorID applies equality check predicate on the "connector_id" field. It's identical to ConnectorIDEQ.
 func ConnectorID(v datasource.UUID) predicate.Reservation {
 	vc := uint64(v)
@@ -506,6 +514,44 @@ func UpdatedAtLTE(v int64) predicate.Reservation {
 	})
 }
 
+// EquipmentIDEQ applies the EQ predicate on the "equipment_id" field.
+func EquipmentIDEQ(v datasource.UUID) predicate.Reservation {
+	vc := uint64(v)
+	return predicate.Reservation(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldEquipmentID), vc))
+	})
+}
+
+// EquipmentIDNEQ applies the NEQ predicate on the "equipment_id" field.
+func EquipmentIDNEQ(v datasource.UUID) predicate.Reservation {
+	vc := uint64(v)
+	return predicate.Reservation(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldEquipmentID), vc))
+	})
+}
+
+// EquipmentIDIn applies the In predicate on the "equipment_id" field.
+func EquipmentIDIn(vs ...datasource.UUID) predicate.Reservation {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.Reservation(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldEquipmentID), v...))
+	})
+}
+
+// EquipmentIDNotIn applies the NotIn predicate on the "equipment_id" field.
+func EquipmentIDNotIn(vs ...datasource.UUID) predicate.Reservation {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.Reservation(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldEquipmentID), v...))
+	})
+}
+
 // ConnectorIDEQ applies the EQ predicate on the "connector_id" field.
 func ConnectorIDEQ(v datasource.UUID) predicate.Reservation {
 	vc := uint64(v)
@@ -541,38 +587,6 @@ func ConnectorIDNotIn(vs ...datasource.UUID) predicate.Reservation {
 	}
 	return predicate.Reservation(func(s *sql.Selector) {
 		s.Where(sql.NotIn(s.C(FieldConnectorID), v...))
-	})
-}
-
-// ConnectorIDGT applies the GT predicate on the "connector_id" field.
-func ConnectorIDGT(v datasource.UUID) predicate.Reservation {
-	vc := uint64(v)
-	return predicate.Reservation(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldConnectorID), vc))
-	})
-}
-
-// ConnectorIDGTE applies the GTE predicate on the "connector_id" field.
-func ConnectorIDGTE(v datasource.UUID) predicate.Reservation {
-	vc := uint64(v)
-	return predicate.Reservation(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldConnectorID), vc))
-	})
-}
-
-// ConnectorIDLT applies the LT predicate on the "connector_id" field.
-func ConnectorIDLT(v datasource.UUID) predicate.Reservation {
-	vc := uint64(v)
-	return predicate.Reservation(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldConnectorID), vc))
-	})
-}
-
-// ConnectorIDLTE applies the LTE predicate on the "connector_id" field.
-func ConnectorIDLTE(v datasource.UUID) predicate.Reservation {
-	vc := uint64(v)
-	return predicate.Reservation(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldConnectorID), vc))
 	})
 }
 
@@ -1176,6 +1190,34 @@ func HasEquipmentWith(preds ...predicate.Equipment) predicate.Reservation {
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(EquipmentInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, EquipmentTable, EquipmentColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasConnector applies the HasEdge predicate on the "connector" edge.
+func HasConnector() predicate.Reservation {
+	return predicate.Reservation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ConnectorTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ConnectorTable, ConnectorColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasConnectorWith applies the HasEdge predicate on the "connector" edge with a given conditions (other predicates).
+func HasConnectorWith(preds ...predicate.Connector) predicate.Reservation {
+	return predicate.Reservation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ConnectorInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ConnectorTable, ConnectorColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
