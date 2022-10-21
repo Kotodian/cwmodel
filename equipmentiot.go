@@ -28,6 +28,8 @@ type EquipmentIot struct {
 	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// 桩id
+	EquipmentID datasource.UUID `json:"equipment_id,omitempty"`
 	// iccid
 	Iccid *string `json:"iccid,omitempty"`
 	// imei
@@ -36,8 +38,7 @@ type EquipmentIot struct {
 	RemoteAddress *string `json:"remote_address,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentIotQuery when eager-loading is set.
-	Edges        EquipmentIotEdges `json:"-"`
-	equipment_id *datasource.UUID
+	Edges EquipmentIotEdges `json:"-"`
 }
 
 // EquipmentIotEdges holds the relations/edges for other nodes in the graph.
@@ -67,12 +68,10 @@ func (*EquipmentIot) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case equipmentiot.FieldID, equipmentiot.FieldVersion, equipmentiot.FieldCreatedBy, equipmentiot.FieldCreatedAt, equipmentiot.FieldUpdatedBy, equipmentiot.FieldUpdatedAt:
+		case equipmentiot.FieldID, equipmentiot.FieldVersion, equipmentiot.FieldCreatedBy, equipmentiot.FieldCreatedAt, equipmentiot.FieldUpdatedBy, equipmentiot.FieldUpdatedAt, equipmentiot.FieldEquipmentID:
 			values[i] = new(sql.NullInt64)
 		case equipmentiot.FieldIccid, equipmentiot.FieldImei, equipmentiot.FieldRemoteAddress:
 			values[i] = new(sql.NullString)
-		case equipmentiot.ForeignKeys[0]: // equipment_id
-			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type EquipmentIot", columns[i])
 		}
@@ -124,6 +123,12 @@ func (ei *EquipmentIot) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ei.UpdatedAt = value.Int64
 			}
+		case equipmentiot.FieldEquipmentID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
+			} else if value.Valid {
+				ei.EquipmentID = datasource.UUID(value.Int64)
+			}
 		case equipmentiot.FieldIccid:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field iccid", values[i])
@@ -144,13 +149,6 @@ func (ei *EquipmentIot) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ei.RemoteAddress = new(string)
 				*ei.RemoteAddress = value.String
-			}
-		case equipmentiot.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
-			} else if value.Valid {
-				ei.equipment_id = new(datasource.UUID)
-				*ei.equipment_id = datasource.UUID(value.Int64)
 			}
 		}
 	}
@@ -199,6 +197,9 @@ func (ei *EquipmentIot) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", ei.UpdatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("equipment_id=")
+	builder.WriteString(fmt.Sprintf("%v", ei.EquipmentID))
 	builder.WriteString(", ")
 	if v := ei.Iccid; v != nil {
 		builder.WriteString("iccid=")

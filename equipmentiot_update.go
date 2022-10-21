@@ -84,6 +84,12 @@ func (eiu *EquipmentIotUpdate) AddUpdatedAt(i int64) *EquipmentIotUpdate {
 	return eiu
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (eiu *EquipmentIotUpdate) SetEquipmentID(d datasource.UUID) *EquipmentIotUpdate {
+	eiu.mutation.SetEquipmentID(d)
+	return eiu
+}
+
 // SetIccid sets the "iccid" field.
 func (eiu *EquipmentIotUpdate) SetIccid(s string) *EquipmentIotUpdate {
 	eiu.mutation.SetIccid(s)
@@ -144,20 +150,6 @@ func (eiu *EquipmentIotUpdate) ClearRemoteAddress() *EquipmentIotUpdate {
 	return eiu
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eiu *EquipmentIotUpdate) SetEquipmentID(id datasource.UUID) *EquipmentIotUpdate {
-	eiu.mutation.SetEquipmentID(id)
-	return eiu
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (eiu *EquipmentIotUpdate) SetNillableEquipmentID(id *datasource.UUID) *EquipmentIotUpdate {
-	if id != nil {
-		eiu = eiu.SetEquipmentID(*id)
-	}
-	return eiu
-}
-
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (eiu *EquipmentIotUpdate) SetEquipment(e *Equipment) *EquipmentIotUpdate {
 	return eiu.SetEquipmentID(e.ID)
@@ -182,12 +174,18 @@ func (eiu *EquipmentIotUpdate) Save(ctx context.Context) (int, error) {
 	)
 	eiu.defaults()
 	if len(eiu.hooks) == 0 {
+		if err = eiu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = eiu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*EquipmentIotMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = eiu.check(); err != nil {
+				return 0, err
 			}
 			eiu.mutation = mutation
 			affected, err = eiu.sqlSave(ctx)
@@ -235,6 +233,14 @@ func (eiu *EquipmentIotUpdate) defaults() {
 		v := equipmentiot.UpdateDefaultUpdatedAt()
 		eiu.mutation.SetUpdatedAt(v)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (eiu *EquipmentIotUpdate) check() error {
+	if _, ok := eiu.mutation.EquipmentID(); eiu.mutation.EquipmentCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "EquipmentIot.equipment"`)
+	}
+	return nil
 }
 
 func (eiu *EquipmentIotUpdate) sqlSave(ctx context.Context) (n int, err error) {
@@ -400,6 +406,12 @@ func (eiuo *EquipmentIotUpdateOne) AddUpdatedAt(i int64) *EquipmentIotUpdateOne 
 	return eiuo
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (eiuo *EquipmentIotUpdateOne) SetEquipmentID(d datasource.UUID) *EquipmentIotUpdateOne {
+	eiuo.mutation.SetEquipmentID(d)
+	return eiuo
+}
+
 // SetIccid sets the "iccid" field.
 func (eiuo *EquipmentIotUpdateOne) SetIccid(s string) *EquipmentIotUpdateOne {
 	eiuo.mutation.SetIccid(s)
@@ -460,20 +472,6 @@ func (eiuo *EquipmentIotUpdateOne) ClearRemoteAddress() *EquipmentIotUpdateOne {
 	return eiuo
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eiuo *EquipmentIotUpdateOne) SetEquipmentID(id datasource.UUID) *EquipmentIotUpdateOne {
-	eiuo.mutation.SetEquipmentID(id)
-	return eiuo
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (eiuo *EquipmentIotUpdateOne) SetNillableEquipmentID(id *datasource.UUID) *EquipmentIotUpdateOne {
-	if id != nil {
-		eiuo = eiuo.SetEquipmentID(*id)
-	}
-	return eiuo
-}
-
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (eiuo *EquipmentIotUpdateOne) SetEquipment(e *Equipment) *EquipmentIotUpdateOne {
 	return eiuo.SetEquipmentID(e.ID)
@@ -505,12 +503,18 @@ func (eiuo *EquipmentIotUpdateOne) Save(ctx context.Context) (*EquipmentIot, err
 	)
 	eiuo.defaults()
 	if len(eiuo.hooks) == 0 {
+		if err = eiuo.check(); err != nil {
+			return nil, err
+		}
 		node, err = eiuo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*EquipmentIotMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = eiuo.check(); err != nil {
+				return nil, err
 			}
 			eiuo.mutation = mutation
 			node, err = eiuo.sqlSave(ctx)
@@ -564,6 +568,14 @@ func (eiuo *EquipmentIotUpdateOne) defaults() {
 		v := equipmentiot.UpdateDefaultUpdatedAt()
 		eiuo.mutation.SetUpdatedAt(v)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (eiuo *EquipmentIotUpdateOne) check() error {
+	if _, ok := eiuo.mutation.EquipmentID(); eiuo.mutation.EquipmentCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "EquipmentIot.equipment"`)
+	}
+	return nil
 }
 
 func (eiuo *EquipmentIotUpdateOne) sqlSave(ctx context.Context) (_node *EquipmentIot, err error) {

@@ -47,7 +47,7 @@ func (Equipment) Edges() []ent.Edge {
 		edge.To("evse", Evse.Type),
 		edge.To("connector", Connector.Type),
 		edge.To("equipment_alarm", EquipmentAlarm.Type),
-		edge.To("equipment_iot", EquipmentIot.Type).StorageKey(edge.Column("equipment_id")).Unique(),
+		edge.To("equipment_iot", EquipmentIot.Type).Unique(),
 		edge.To("equipment_firmware_effect", EquipmentFirmwareEffect.Type),
 		edge.To("order_info", OrderInfo.Type),
 		edge.To("reservation", Reservation.Type),

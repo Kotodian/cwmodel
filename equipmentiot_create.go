@@ -91,6 +91,12 @@ func (eic *EquipmentIotCreate) SetNillableUpdatedAt(i *int64) *EquipmentIotCreat
 	return eic
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (eic *EquipmentIotCreate) SetEquipmentID(d datasource.UUID) *EquipmentIotCreate {
+	eic.mutation.SetEquipmentID(d)
+	return eic
+}
+
 // SetIccid sets the "iccid" field.
 func (eic *EquipmentIotCreate) SetIccid(s string) *EquipmentIotCreate {
 	eic.mutation.SetIccid(s)
@@ -143,20 +149,6 @@ func (eic *EquipmentIotCreate) SetID(d datasource.UUID) *EquipmentIotCreate {
 func (eic *EquipmentIotCreate) SetNillableID(d *datasource.UUID) *EquipmentIotCreate {
 	if d != nil {
 		eic.SetID(*d)
-	}
-	return eic
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eic *EquipmentIotCreate) SetEquipmentID(id datasource.UUID) *EquipmentIotCreate {
-	eic.mutation.SetEquipmentID(id)
-	return eic
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (eic *EquipmentIotCreate) SetNillableEquipmentID(id *datasource.UUID) *EquipmentIotCreate {
-	if id != nil {
-		eic = eic.SetEquipmentID(*id)
 	}
 	return eic
 }
@@ -286,6 +278,12 @@ func (eic *EquipmentIotCreate) check() error {
 	if _, ok := eic.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`cwmodel: missing required field "EquipmentIot.updated_at"`)}
 	}
+	if _, ok := eic.mutation.EquipmentID(); !ok {
+		return &ValidationError{Name: "equipment_id", err: errors.New(`cwmodel: missing required field "EquipmentIot.equipment_id"`)}
+	}
+	if _, ok := eic.mutation.EquipmentID(); !ok {
+		return &ValidationError{Name: "equipment", err: errors.New(`cwmodel: missing required edge "EquipmentIot.equipment"`)}
+	}
 	return nil
 }
 
@@ -368,7 +366,7 @@ func (eic *EquipmentIotCreate) createSpec() (*EquipmentIot, *sqlgraph.CreateSpec
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.equipment_id = &nodes[0]
+		_node.EquipmentID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

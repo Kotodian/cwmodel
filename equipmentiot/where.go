@@ -117,6 +117,14 @@ func UpdatedAt(v int64) predicate.EquipmentIot {
 	})
 }
 
+// EquipmentID applies equality check predicate on the "equipment_id" field. It's identical to EquipmentIDEQ.
+func EquipmentID(v datasource.UUID) predicate.EquipmentIot {
+	vc := uint64(v)
+	return predicate.EquipmentIot(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldEquipmentID), vc))
+	})
+}
+
 // Iccid applies equality check predicate on the "iccid" field. It's identical to IccidEQ.
 func Iccid(v string) predicate.EquipmentIot {
 	return predicate.EquipmentIot(func(s *sql.Selector) {
@@ -467,6 +475,44 @@ func UpdatedAtLT(v int64) predicate.EquipmentIot {
 func UpdatedAtLTE(v int64) predicate.EquipmentIot {
 	return predicate.EquipmentIot(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldUpdatedAt), v))
+	})
+}
+
+// EquipmentIDEQ applies the EQ predicate on the "equipment_id" field.
+func EquipmentIDEQ(v datasource.UUID) predicate.EquipmentIot {
+	vc := uint64(v)
+	return predicate.EquipmentIot(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldEquipmentID), vc))
+	})
+}
+
+// EquipmentIDNEQ applies the NEQ predicate on the "equipment_id" field.
+func EquipmentIDNEQ(v datasource.UUID) predicate.EquipmentIot {
+	vc := uint64(v)
+	return predicate.EquipmentIot(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldEquipmentID), vc))
+	})
+}
+
+// EquipmentIDIn applies the In predicate on the "equipment_id" field.
+func EquipmentIDIn(vs ...datasource.UUID) predicate.EquipmentIot {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.EquipmentIot(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldEquipmentID), v...))
+	})
+}
+
+// EquipmentIDNotIn applies the NotIn predicate on the "equipment_id" field.
+func EquipmentIDNotIn(vs ...datasource.UUID) predicate.EquipmentIot {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.EquipmentIot(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldEquipmentID), v...))
 	})
 }
 

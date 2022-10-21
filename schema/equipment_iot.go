@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 type EquipmentIot struct {
@@ -27,6 +28,7 @@ func (EquipmentIot) Annotations() []schema.Annotation {
 
 func (EquipmentIot) Fields() []ent.Field {
 	return []ent.Field{
+		field.Uint64("equipment_id").GoType(datasource.UUID(0)).Comment("桩id"),
 		field.String("iccid").Optional().Nillable().Comment("iccid"),
 		field.String("imei").Optional().Nillable().Comment("imei"),
 		field.String("remote_address").Optional().Nillable().Comment("remote_address"),
@@ -35,6 +37,6 @@ func (EquipmentIot) Fields() []ent.Field {
 
 func (EquipmentIot) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("equipment", Equipment.Type).Ref("equipment_iot").Unique(),
+		edge.From("equipment", Equipment.Type).Field("equipment_id").Ref("equipment_iot").Unique().Required(),
 	}
 }
