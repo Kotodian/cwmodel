@@ -21,6 +21,8 @@ const (
 	FieldUpdatedBy = "updated_by"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldEquipmentID holds the string denoting the equipment_id field in the database.
+	FieldEquipmentID = "equipment_id"
 	// FieldRequestID holds the string denoting the request_id field in the database.
 	FieldRequestID = "request_id"
 	// FieldState holds the string denoting the state field in the database.
@@ -55,6 +57,7 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedBy,
 	FieldUpdatedAt,
+	FieldEquipmentID,
 	FieldRequestID,
 	FieldState,
 }
@@ -62,7 +65,6 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "equip_firmware_effect"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"equipment_id",
 	"firmware_id",
 }
 

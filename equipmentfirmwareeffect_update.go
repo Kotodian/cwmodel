@@ -85,6 +85,12 @@ func (efeu *EquipmentFirmwareEffectUpdate) AddUpdatedAt(i int64) *EquipmentFirmw
 	return efeu
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (efeu *EquipmentFirmwareEffectUpdate) SetEquipmentID(d datasource.UUID) *EquipmentFirmwareEffectUpdate {
+	efeu.mutation.SetEquipmentID(d)
+	return efeu
+}
+
 // SetRequestID sets the "request_id" field.
 func (efeu *EquipmentFirmwareEffectUpdate) SetRequestID(i int64) *EquipmentFirmwareEffectUpdate {
 	efeu.mutation.ResetRequestID()
@@ -108,20 +114,6 @@ func (efeu *EquipmentFirmwareEffectUpdate) SetState(i int) *EquipmentFirmwareEff
 // AddState adds i to the "state" field.
 func (efeu *EquipmentFirmwareEffectUpdate) AddState(i int) *EquipmentFirmwareEffectUpdate {
 	efeu.mutation.AddState(i)
-	return efeu
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (efeu *EquipmentFirmwareEffectUpdate) SetEquipmentID(id datasource.UUID) *EquipmentFirmwareEffectUpdate {
-	efeu.mutation.SetEquipmentID(id)
-	return efeu
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (efeu *EquipmentFirmwareEffectUpdate) SetNillableEquipmentID(id *datasource.UUID) *EquipmentFirmwareEffectUpdate {
-	if id != nil {
-		efeu = efeu.SetEquipmentID(*id)
-	}
 	return efeu
 }
 
@@ -174,12 +166,18 @@ func (efeu *EquipmentFirmwareEffectUpdate) Save(ctx context.Context) (int, error
 	)
 	efeu.defaults()
 	if len(efeu.hooks) == 0 {
+		if err = efeu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = efeu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*EquipmentFirmwareEffectMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = efeu.check(); err != nil {
+				return 0, err
 			}
 			efeu.mutation = mutation
 			affected, err = efeu.sqlSave(ctx)
@@ -227,6 +225,14 @@ func (efeu *EquipmentFirmwareEffectUpdate) defaults() {
 		v := equipmentfirmwareeffect.UpdateDefaultUpdatedAt()
 		efeu.mutation.SetUpdatedAt(v)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (efeu *EquipmentFirmwareEffectUpdate) check() error {
+	if _, ok := efeu.mutation.EquipmentID(); efeu.mutation.EquipmentCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "EquipmentFirmwareEffect.equipment"`)
+	}
+	return nil
 }
 
 func (efeu *EquipmentFirmwareEffectUpdate) sqlSave(ctx context.Context) (n int, err error) {
@@ -421,6 +427,12 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) AddUpdatedAt(i int64) *EquipmentF
 	return efeuo
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) SetEquipmentID(d datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
+	efeuo.mutation.SetEquipmentID(d)
+	return efeuo
+}
+
 // SetRequestID sets the "request_id" field.
 func (efeuo *EquipmentFirmwareEffectUpdateOne) SetRequestID(i int64) *EquipmentFirmwareEffectUpdateOne {
 	efeuo.mutation.ResetRequestID()
@@ -444,20 +456,6 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) SetState(i int) *EquipmentFirmwar
 // AddState adds i to the "state" field.
 func (efeuo *EquipmentFirmwareEffectUpdateOne) AddState(i int) *EquipmentFirmwareEffectUpdateOne {
 	efeuo.mutation.AddState(i)
-	return efeuo
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (efeuo *EquipmentFirmwareEffectUpdateOne) SetEquipmentID(id datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
-	efeuo.mutation.SetEquipmentID(id)
-	return efeuo
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (efeuo *EquipmentFirmwareEffectUpdateOne) SetNillableEquipmentID(id *datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
-	if id != nil {
-		efeuo = efeuo.SetEquipmentID(*id)
-	}
 	return efeuo
 }
 
@@ -517,12 +515,18 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) Save(ctx context.Context) (*Equip
 	)
 	efeuo.defaults()
 	if len(efeuo.hooks) == 0 {
+		if err = efeuo.check(); err != nil {
+			return nil, err
+		}
 		node, err = efeuo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*EquipmentFirmwareEffectMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = efeuo.check(); err != nil {
+				return nil, err
 			}
 			efeuo.mutation = mutation
 			node, err = efeuo.sqlSave(ctx)
@@ -576,6 +580,14 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) defaults() {
 		v := equipmentfirmwareeffect.UpdateDefaultUpdatedAt()
 		efeuo.mutation.SetUpdatedAt(v)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (efeuo *EquipmentFirmwareEffectUpdateOne) check() error {
+	if _, ok := efeuo.mutation.EquipmentID(); efeuo.mutation.EquipmentCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "EquipmentFirmwareEffect.equipment"`)
+	}
+	return nil
 }
 
 func (efeuo *EquipmentFirmwareEffectUpdateOne) sqlSave(ctx context.Context) (_node *EquipmentFirmwareEffect, err error) {

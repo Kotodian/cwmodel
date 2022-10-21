@@ -438,10 +438,7 @@ func (efeq *EquipmentFirmwareEffectQuery) loadEquipment(ctx context.Context, que
 	ids := make([]datasource.UUID, 0, len(nodes))
 	nodeids := make(map[datasource.UUID][]*EquipmentFirmwareEffect)
 	for i := range nodes {
-		if nodes[i].equipment_id == nil {
-			continue
-		}
-		fk := *nodes[i].equipment_id
+		fk := nodes[i].EquipmentID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}

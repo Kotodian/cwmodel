@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/gokit/datasource"
 )
 
 type EquipmentFirmwareEffect struct {
@@ -27,6 +28,7 @@ func (EquipmentFirmwareEffect) Annotations() []schema.Annotation {
 
 func (EquipmentFirmwareEffect) Fields() []ent.Field {
 	return []ent.Field{
+		field.Uint64("equipment_id").GoType(datasource.UUID(0)).Comment("桩id"),
 		field.Int64("request_id").Comment("请求id"),
 		field.Int("state").Comment("状态"),
 	}
@@ -34,7 +36,7 @@ func (EquipmentFirmwareEffect) Fields() []ent.Field {
 
 func (EquipmentFirmwareEffect) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("equipment", Equipment.Type).Ref("equipment_firmware_effect").Unique(),
+		edge.From("equipment", Equipment.Type).Field("equipment_id").Ref("equipment_firmware_effect").Unique().Required(),
 		edge.From("firmware", Firmware.Type).Ref("equipment_firmware_effect").Unique(),
 	}
 }
