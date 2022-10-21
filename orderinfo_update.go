@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/orderevent"
 	"github.com/Kotodian/cwmodel/orderinfo"
@@ -85,16 +86,15 @@ func (oiu *OrderInfoUpdate) AddUpdatedAt(i int64) *OrderInfoUpdate {
 	return oiu
 }
 
-// SetConnectorID sets the "connector_id" field.
-func (oiu *OrderInfoUpdate) SetConnectorID(d datasource.UUID) *OrderInfoUpdate {
-	oiu.mutation.ResetConnectorID()
-	oiu.mutation.SetConnectorID(d)
+// SetEquipmentID sets the "equipment_id" field.
+func (oiu *OrderInfoUpdate) SetEquipmentID(d datasource.UUID) *OrderInfoUpdate {
+	oiu.mutation.SetEquipmentID(d)
 	return oiu
 }
 
-// AddConnectorID adds d to the "connector_id" field.
-func (oiu *OrderInfoUpdate) AddConnectorID(d datasource.UUID) *OrderInfoUpdate {
-	oiu.mutation.AddConnectorID(d)
+// SetConnectorID sets the "connector_id" field.
+func (oiu *OrderInfoUpdate) SetConnectorID(d datasource.UUID) *OrderInfoUpdate {
+	oiu.mutation.SetConnectorID(d)
 	return oiu
 }
 
@@ -669,18 +669,9 @@ func (oiu *OrderInfoUpdate) ClearOperatorID() *OrderInfoUpdate {
 	return oiu
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (oiu *OrderInfoUpdate) SetEquipmentID(id datasource.UUID) *OrderInfoUpdate {
-	oiu.mutation.SetEquipmentID(id)
-	return oiu
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (oiu *OrderInfoUpdate) SetNillableEquipmentID(id *datasource.UUID) *OrderInfoUpdate {
-	if id != nil {
-		oiu = oiu.SetEquipmentID(*id)
-	}
-	return oiu
+// SetConnector sets the "connector" edge to the Connector entity.
+func (oiu *OrderInfoUpdate) SetConnector(c *Connector) *OrderInfoUpdate {
+	return oiu.SetConnectorID(c.ID)
 }
 
 // SetEquipment sets the "equipment" edge to the Equipment entity.
@@ -706,6 +697,12 @@ func (oiu *OrderInfoUpdate) AddOrderEvent(o ...*OrderEvent) *OrderInfoUpdate {
 // Mutation returns the OrderInfoMutation object of the builder.
 func (oiu *OrderInfoUpdate) Mutation() *OrderInfoMutation {
 	return oiu.mutation
+}
+
+// ClearConnector clears the "connector" edge to the Connector entity.
+func (oiu *OrderInfoUpdate) ClearConnector() *OrderInfoUpdate {
+	oiu.mutation.ClearConnector()
+	return oiu
 }
 
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
@@ -743,12 +740,18 @@ func (oiu *OrderInfoUpdate) Save(ctx context.Context) (int, error) {
 	)
 	oiu.defaults()
 	if len(oiu.hooks) == 0 {
+		if err = oiu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = oiu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*OrderInfoMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = oiu.check(); err != nil {
+				return 0, err
 			}
 			oiu.mutation = mutation
 			affected, err = oiu.sqlSave(ctx)
@@ -798,6 +801,17 @@ func (oiu *OrderInfoUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (oiu *OrderInfoUpdate) check() error {
+	if _, ok := oiu.mutation.ConnectorID(); oiu.mutation.ConnectorCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "OrderInfo.connector"`)
+	}
+	if _, ok := oiu.mutation.EquipmentID(); oiu.mutation.EquipmentCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "OrderInfo.equipment"`)
+	}
+	return nil
+}
+
 func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -833,12 +847,6 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := oiu.mutation.AddedUpdatedAt(); ok {
 		_spec.AddField(orderinfo.FieldUpdatedAt, field.TypeInt64, value)
-	}
-	if value, ok := oiu.mutation.ConnectorID(); ok {
-		_spec.SetField(orderinfo.FieldConnectorID, field.TypeUint64, value)
-	}
-	if value, ok := oiu.mutation.AddedConnectorID(); ok {
-		_spec.AddField(orderinfo.FieldConnectorID, field.TypeUint64, value)
 	}
 	if value, ok := oiu.mutation.RemoteStartID(); ok {
 		_spec.SetField(orderinfo.FieldRemoteStartID, field.TypeInt64, value)
@@ -1032,6 +1040,41 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if oiu.mutation.OperatorIDCleared() {
 		_spec.ClearField(orderinfo.FieldOperatorID, field.TypeUint64)
 	}
+	if oiu.mutation.ConnectorCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   orderinfo.ConnectorTable,
+			Columns: []string{orderinfo.ConnectorColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: connector.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := oiu.mutation.ConnectorIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   orderinfo.ConnectorTable,
+			Columns: []string{orderinfo.ConnectorColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: connector.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if oiu.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -1195,16 +1238,15 @@ func (oiuo *OrderInfoUpdateOne) AddUpdatedAt(i int64) *OrderInfoUpdateOne {
 	return oiuo
 }
 
-// SetConnectorID sets the "connector_id" field.
-func (oiuo *OrderInfoUpdateOne) SetConnectorID(d datasource.UUID) *OrderInfoUpdateOne {
-	oiuo.mutation.ResetConnectorID()
-	oiuo.mutation.SetConnectorID(d)
+// SetEquipmentID sets the "equipment_id" field.
+func (oiuo *OrderInfoUpdateOne) SetEquipmentID(d datasource.UUID) *OrderInfoUpdateOne {
+	oiuo.mutation.SetEquipmentID(d)
 	return oiuo
 }
 
-// AddConnectorID adds d to the "connector_id" field.
-func (oiuo *OrderInfoUpdateOne) AddConnectorID(d datasource.UUID) *OrderInfoUpdateOne {
-	oiuo.mutation.AddConnectorID(d)
+// SetConnectorID sets the "connector_id" field.
+func (oiuo *OrderInfoUpdateOne) SetConnectorID(d datasource.UUID) *OrderInfoUpdateOne {
+	oiuo.mutation.SetConnectorID(d)
 	return oiuo
 }
 
@@ -1779,18 +1821,9 @@ func (oiuo *OrderInfoUpdateOne) ClearOperatorID() *OrderInfoUpdateOne {
 	return oiuo
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (oiuo *OrderInfoUpdateOne) SetEquipmentID(id datasource.UUID) *OrderInfoUpdateOne {
-	oiuo.mutation.SetEquipmentID(id)
-	return oiuo
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (oiuo *OrderInfoUpdateOne) SetNillableEquipmentID(id *datasource.UUID) *OrderInfoUpdateOne {
-	if id != nil {
-		oiuo = oiuo.SetEquipmentID(*id)
-	}
-	return oiuo
+// SetConnector sets the "connector" edge to the Connector entity.
+func (oiuo *OrderInfoUpdateOne) SetConnector(c *Connector) *OrderInfoUpdateOne {
+	return oiuo.SetConnectorID(c.ID)
 }
 
 // SetEquipment sets the "equipment" edge to the Equipment entity.
@@ -1816,6 +1849,12 @@ func (oiuo *OrderInfoUpdateOne) AddOrderEvent(o ...*OrderEvent) *OrderInfoUpdate
 // Mutation returns the OrderInfoMutation object of the builder.
 func (oiuo *OrderInfoUpdateOne) Mutation() *OrderInfoMutation {
 	return oiuo.mutation
+}
+
+// ClearConnector clears the "connector" edge to the Connector entity.
+func (oiuo *OrderInfoUpdateOne) ClearConnector() *OrderInfoUpdateOne {
+	oiuo.mutation.ClearConnector()
+	return oiuo
 }
 
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
@@ -1860,12 +1899,18 @@ func (oiuo *OrderInfoUpdateOne) Save(ctx context.Context) (*OrderInfo, error) {
 	)
 	oiuo.defaults()
 	if len(oiuo.hooks) == 0 {
+		if err = oiuo.check(); err != nil {
+			return nil, err
+		}
 		node, err = oiuo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*OrderInfoMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = oiuo.check(); err != nil {
+				return nil, err
 			}
 			oiuo.mutation = mutation
 			node, err = oiuo.sqlSave(ctx)
@@ -1921,6 +1966,17 @@ func (oiuo *OrderInfoUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (oiuo *OrderInfoUpdateOne) check() error {
+	if _, ok := oiuo.mutation.ConnectorID(); oiuo.mutation.ConnectorCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "OrderInfo.connector"`)
+	}
+	if _, ok := oiuo.mutation.EquipmentID(); oiuo.mutation.EquipmentCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "OrderInfo.equipment"`)
+	}
+	return nil
+}
+
 func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -1973,12 +2029,6 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 	}
 	if value, ok := oiuo.mutation.AddedUpdatedAt(); ok {
 		_spec.AddField(orderinfo.FieldUpdatedAt, field.TypeInt64, value)
-	}
-	if value, ok := oiuo.mutation.ConnectorID(); ok {
-		_spec.SetField(orderinfo.FieldConnectorID, field.TypeUint64, value)
-	}
-	if value, ok := oiuo.mutation.AddedConnectorID(); ok {
-		_spec.AddField(orderinfo.FieldConnectorID, field.TypeUint64, value)
 	}
 	if value, ok := oiuo.mutation.RemoteStartID(); ok {
 		_spec.SetField(orderinfo.FieldRemoteStartID, field.TypeInt64, value)
@@ -2171,6 +2221,41 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 	}
 	if oiuo.mutation.OperatorIDCleared() {
 		_spec.ClearField(orderinfo.FieldOperatorID, field.TypeUint64)
+	}
+	if oiuo.mutation.ConnectorCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   orderinfo.ConnectorTable,
+			Columns: []string{orderinfo.ConnectorColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: connector.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := oiuo.mutation.ConnectorIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   orderinfo.ConnectorTable,
+			Columns: []string{orderinfo.ConnectorColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: connector.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if oiuo.mutation.EquipmentCleared() {
 		edge := &sqlgraph.EdgeSpec{

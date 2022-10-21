@@ -436,6 +436,22 @@ func (c *ConnectorClient) QueryEquipment(co *Connector) *EquipmentQuery {
 	return query
 }
 
+// QueryOrderInfo queries the order_info edge of a Connector.
+func (c *ConnectorClient) QueryOrderInfo(co *Connector) *OrderInfoQuery {
+	query := &OrderInfoQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(connector.Table, connector.FieldID, id),
+			sqlgraph.To(orderinfo.Table, orderinfo.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, connector.OrderInfoTable, connector.OrderInfoColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ConnectorClient) Hooks() []Hook {
 	return c.hooks.Connector
@@ -1898,6 +1914,22 @@ func (c *OrderInfoClient) GetX(ctx context.Context, id datasource.UUID) *OrderIn
 		panic(err)
 	}
 	return obj
+}
+
+// QueryConnector queries the connector edge of a OrderInfo.
+func (c *OrderInfoClient) QueryConnector(oi *OrderInfo) *ConnectorQuery {
+	query := &ConnectorQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orderinfo.Table, orderinfo.FieldID, id),
+			sqlgraph.To(connector.Table, connector.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, orderinfo.ConnectorTable, orderinfo.ConnectorColumn),
+		)
+		fromV = sqlgraph.Neighbors(oi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // QueryEquipment queries the equipment edge of a OrderInfo.

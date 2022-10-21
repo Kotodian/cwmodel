@@ -464,6 +464,9 @@ type ConnectorMutation struct {
 	clearedevse       bool
 	equipment         *datasource.UUID
 	clearedequipment  bool
+	order_info        map[datasource.UUID]struct{}
+	removedorder_info map[datasource.UUID]struct{}
+	clearedorder_info bool
 	done              bool
 	oldValue          func(context.Context) (*Connector, error)
 	predicates        []predicate.Connector
@@ -1443,6 +1446,60 @@ func (m *ConnectorMutation) ResetEquipment() {
 	m.clearedequipment = false
 }
 
+// AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by ids.
+func (m *ConnectorMutation) AddOrderInfoIDs(ids ...datasource.UUID) {
+	if m.order_info == nil {
+		m.order_info = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		m.order_info[ids[i]] = struct{}{}
+	}
+}
+
+// ClearOrderInfo clears the "order_info" edge to the OrderInfo entity.
+func (m *ConnectorMutation) ClearOrderInfo() {
+	m.clearedorder_info = true
+}
+
+// OrderInfoCleared reports if the "order_info" edge to the OrderInfo entity was cleared.
+func (m *ConnectorMutation) OrderInfoCleared() bool {
+	return m.clearedorder_info
+}
+
+// RemoveOrderInfoIDs removes the "order_info" edge to the OrderInfo entity by IDs.
+func (m *ConnectorMutation) RemoveOrderInfoIDs(ids ...datasource.UUID) {
+	if m.removedorder_info == nil {
+		m.removedorder_info = make(map[datasource.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.order_info, ids[i])
+		m.removedorder_info[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedOrderInfo returns the removed IDs of the "order_info" edge to the OrderInfo entity.
+func (m *ConnectorMutation) RemovedOrderInfoIDs() (ids []datasource.UUID) {
+	for id := range m.removedorder_info {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// OrderInfoIDs returns the "order_info" edge IDs in the mutation.
+func (m *ConnectorMutation) OrderInfoIDs() (ids []datasource.UUID) {
+	for id := range m.order_info {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetOrderInfo resets all changes to the "order_info" edge.
+func (m *ConnectorMutation) ResetOrderInfo() {
+	m.order_info = nil
+	m.clearedorder_info = false
+	m.removedorder_info = nil
+}
+
 // Where appends a list predicates to the ConnectorMutation builder.
 func (m *ConnectorMutation) Where(ps ...predicate.Connector) {
 	m.predicates = append(m.predicates, ps...)
@@ -1960,12 +2017,15 @@ func (m *ConnectorMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ConnectorMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.evse != nil {
 		edges = append(edges, connector.EdgeEvse)
 	}
 	if m.equipment != nil {
 		edges = append(edges, connector.EdgeEquipment)
+	}
+	if m.order_info != nil {
+		edges = append(edges, connector.EdgeOrderInfo)
 	}
 	return edges
 }
@@ -1982,30 +2042,50 @@ func (m *ConnectorMutation) AddedIDs(name string) []ent.Value {
 		if id := m.equipment; id != nil {
 			return []ent.Value{*id}
 		}
+	case connector.EdgeOrderInfo:
+		ids := make([]ent.Value, 0, len(m.order_info))
+		for id := range m.order_info {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ConnectorMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
+	if m.removedorder_info != nil {
+		edges = append(edges, connector.EdgeOrderInfo)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *ConnectorMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case connector.EdgeOrderInfo:
+		ids := make([]ent.Value, 0, len(m.removedorder_info))
+		for id := range m.removedorder_info {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ConnectorMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.clearedevse {
 		edges = append(edges, connector.EdgeEvse)
 	}
 	if m.clearedequipment {
 		edges = append(edges, connector.EdgeEquipment)
+	}
+	if m.clearedorder_info {
+		edges = append(edges, connector.EdgeOrderInfo)
 	}
 	return edges
 }
@@ -2018,6 +2098,8 @@ func (m *ConnectorMutation) EdgeCleared(name string) bool {
 		return m.clearedevse
 	case connector.EdgeEquipment:
 		return m.clearedequipment
+	case connector.EdgeOrderInfo:
+		return m.clearedorder_info
 	}
 	return false
 }
@@ -2045,6 +2127,9 @@ func (m *ConnectorMutation) ResetEdge(name string) error {
 		return nil
 	case connector.EdgeEquipment:
 		m.ResetEquipment()
+		return nil
+	case connector.EdgeOrderInfo:
+		m.ResetOrderInfo()
 		return nil
 	}
 	return fmt.Errorf("unknown Connector edge %s", name)
@@ -14214,8 +14299,6 @@ type OrderInfoMutation struct {
 	addupdated_by               *datasource.UUID
 	updated_at                  *int64
 	addupdated_at               *int64
-	connector_id                *datasource.UUID
-	addconnector_id             *datasource.UUID
 	remote_start_id             *int64
 	addremote_start_id          *int64
 	transaction_id              *string
@@ -14260,6 +14343,8 @@ type OrderInfoMutation struct {
 	operator_id                 *datasource.UUID
 	addoperator_id              *datasource.UUID
 	clearedFields               map[string]struct{}
+	connector                   *datasource.UUID
+	clearedconnector            bool
 	equipment                   *datasource.UUID
 	clearedequipment            bool
 	order_event                 map[datasource.UUID]struct{}
@@ -14654,15 +14739,50 @@ func (m *OrderInfoMutation) ResetUpdatedAt() {
 	m.addupdated_at = nil
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (m *OrderInfoMutation) SetEquipmentID(d datasource.UUID) {
+	m.equipment = &d
+}
+
+// EquipmentID returns the value of the "equipment_id" field in the mutation.
+func (m *OrderInfoMutation) EquipmentID() (r datasource.UUID, exists bool) {
+	v := m.equipment
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEquipmentID returns the old "equipment_id" field's value of the OrderInfo entity.
+// If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrderInfoMutation) OldEquipmentID(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEquipmentID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEquipmentID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEquipmentID: %w", err)
+	}
+	return oldValue.EquipmentID, nil
+}
+
+// ResetEquipmentID resets all changes to the "equipment_id" field.
+func (m *OrderInfoMutation) ResetEquipmentID() {
+	m.equipment = nil
+}
+
 // SetConnectorID sets the "connector_id" field.
 func (m *OrderInfoMutation) SetConnectorID(d datasource.UUID) {
-	m.connector_id = &d
-	m.addconnector_id = nil
+	m.connector = &d
 }
 
 // ConnectorID returns the value of the "connector_id" field in the mutation.
 func (m *OrderInfoMutation) ConnectorID() (r datasource.UUID, exists bool) {
-	v := m.connector_id
+	v := m.connector
 	if v == nil {
 		return
 	}
@@ -14686,28 +14806,9 @@ func (m *OrderInfoMutation) OldConnectorID(ctx context.Context) (v datasource.UU
 	return oldValue.ConnectorID, nil
 }
 
-// AddConnectorID adds d to the "connector_id" field.
-func (m *OrderInfoMutation) AddConnectorID(d datasource.UUID) {
-	if m.addconnector_id != nil {
-		*m.addconnector_id += d
-	} else {
-		m.addconnector_id = &d
-	}
-}
-
-// AddedConnectorID returns the value that was added to the "connector_id" field in this mutation.
-func (m *OrderInfoMutation) AddedConnectorID() (r datasource.UUID, exists bool) {
-	v := m.addconnector_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetConnectorID resets all changes to the "connector_id" field.
 func (m *OrderInfoMutation) ResetConnectorID() {
-	m.connector_id = nil
-	m.addconnector_id = nil
+	m.connector = nil
 }
 
 // SetRemoteStartID sets the "remote_start_id" field.
@@ -16245,9 +16346,30 @@ func (m *OrderInfoMutation) ResetOperatorID() {
 	delete(m.clearedFields, orderinfo.FieldOperatorID)
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by id.
-func (m *OrderInfoMutation) SetEquipmentID(id datasource.UUID) {
-	m.equipment = &id
+// ClearConnector clears the "connector" edge to the Connector entity.
+func (m *OrderInfoMutation) ClearConnector() {
+	m.clearedconnector = true
+}
+
+// ConnectorCleared reports if the "connector" edge to the Connector entity was cleared.
+func (m *OrderInfoMutation) ConnectorCleared() bool {
+	return m.clearedconnector
+}
+
+// ConnectorIDs returns the "connector" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ConnectorID instead. It exists only for internal usage by the builders.
+func (m *OrderInfoMutation) ConnectorIDs() (ids []datasource.UUID) {
+	if id := m.connector; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetConnector resets all changes to the "connector" edge.
+func (m *OrderInfoMutation) ResetConnector() {
+	m.connector = nil
+	m.clearedconnector = false
 }
 
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
@@ -16258,14 +16380,6 @@ func (m *OrderInfoMutation) ClearEquipment() {
 // EquipmentCleared reports if the "equipment" edge to the Equipment entity was cleared.
 func (m *OrderInfoMutation) EquipmentCleared() bool {
 	return m.clearedequipment
-}
-
-// EquipmentID returns the "equipment" edge ID in the mutation.
-func (m *OrderInfoMutation) EquipmentID() (id datasource.UUID, exists bool) {
-	if m.equipment != nil {
-		return *m.equipment, true
-	}
-	return
 }
 
 // EquipmentIDs returns the "equipment" edge IDs in the mutation.
@@ -16357,7 +16471,7 @@ func (m *OrderInfoMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrderInfoMutation) Fields() []string {
-	fields := make([]string, 0, 30)
+	fields := make([]string, 0, 31)
 	if m.version != nil {
 		fields = append(fields, orderinfo.FieldVersion)
 	}
@@ -16373,7 +16487,10 @@ func (m *OrderInfoMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, orderinfo.FieldUpdatedAt)
 	}
-	if m.connector_id != nil {
+	if m.equipment != nil {
+		fields = append(fields, orderinfo.FieldEquipmentID)
+	}
+	if m.connector != nil {
 		fields = append(fields, orderinfo.FieldConnectorID)
 	}
 	if m.remote_start_id != nil {
@@ -16466,6 +16583,8 @@ func (m *OrderInfoMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedBy()
 	case orderinfo.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case orderinfo.FieldEquipmentID:
+		return m.EquipmentID()
 	case orderinfo.FieldConnectorID:
 		return m.ConnectorID()
 	case orderinfo.FieldRemoteStartID:
@@ -16535,6 +16654,8 @@ func (m *OrderInfoMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldUpdatedBy(ctx)
 	case orderinfo.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case orderinfo.FieldEquipmentID:
+		return m.OldEquipmentID(ctx)
 	case orderinfo.FieldConnectorID:
 		return m.OldConnectorID(ctx)
 	case orderinfo.FieldRemoteStartID:
@@ -16628,6 +16749,13 @@ func (m *OrderInfoMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case orderinfo.FieldEquipmentID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEquipmentID(v)
 		return nil
 	case orderinfo.FieldConnectorID:
 		v, ok := value.(datasource.UUID)
@@ -16827,9 +16955,6 @@ func (m *OrderInfoMutation) AddedFields() []string {
 	if m.addupdated_at != nil {
 		fields = append(fields, orderinfo.FieldUpdatedAt)
 	}
-	if m.addconnector_id != nil {
-		fields = append(fields, orderinfo.FieldConnectorID)
-	}
 	if m.addremote_start_id != nil {
 		fields = append(fields, orderinfo.FieldRemoteStartID)
 	}
@@ -16905,8 +17030,6 @@ func (m *OrderInfoMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedBy()
 	case orderinfo.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
-	case orderinfo.FieldConnectorID:
-		return m.AddedConnectorID()
 	case orderinfo.FieldRemoteStartID:
 		return m.AddedRemoteStartID()
 	case orderinfo.FieldAuthorizationMode:
@@ -16988,13 +17111,6 @@ func (m *OrderInfoMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedAt(v)
-		return nil
-	case orderinfo.FieldConnectorID:
-		v, ok := value.(datasource.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddConnectorID(v)
 		return nil
 	case orderinfo.FieldRemoteStartID:
 		v, ok := value.(int64)
@@ -17300,6 +17416,9 @@ func (m *OrderInfoMutation) ResetField(name string) error {
 	case orderinfo.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case orderinfo.FieldEquipmentID:
+		m.ResetEquipmentID()
+		return nil
 	case orderinfo.FieldConnectorID:
 		m.ResetConnectorID()
 		return nil
@@ -17381,7 +17500,10 @@ func (m *OrderInfoMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *OrderInfoMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
+	if m.connector != nil {
+		edges = append(edges, orderinfo.EdgeConnector)
+	}
 	if m.equipment != nil {
 		edges = append(edges, orderinfo.EdgeEquipment)
 	}
@@ -17395,6 +17517,10 @@ func (m *OrderInfoMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *OrderInfoMutation) AddedIDs(name string) []ent.Value {
 	switch name {
+	case orderinfo.EdgeConnector:
+		if id := m.connector; id != nil {
+			return []ent.Value{*id}
+		}
 	case orderinfo.EdgeEquipment:
 		if id := m.equipment; id != nil {
 			return []ent.Value{*id}
@@ -17411,7 +17537,7 @@ func (m *OrderInfoMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *OrderInfoMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.removedorder_event != nil {
 		edges = append(edges, orderinfo.EdgeOrderEvent)
 	}
@@ -17434,7 +17560,10 @@ func (m *OrderInfoMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *OrderInfoMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
+	if m.clearedconnector {
+		edges = append(edges, orderinfo.EdgeConnector)
+	}
 	if m.clearedequipment {
 		edges = append(edges, orderinfo.EdgeEquipment)
 	}
@@ -17448,6 +17577,8 @@ func (m *OrderInfoMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *OrderInfoMutation) EdgeCleared(name string) bool {
 	switch name {
+	case orderinfo.EdgeConnector:
+		return m.clearedconnector
 	case orderinfo.EdgeEquipment:
 		return m.clearedequipment
 	case orderinfo.EdgeOrderEvent:
@@ -17460,6 +17591,9 @@ func (m *OrderInfoMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *OrderInfoMutation) ClearEdge(name string) error {
 	switch name {
+	case orderinfo.EdgeConnector:
+		m.ClearConnector()
+		return nil
 	case orderinfo.EdgeEquipment:
 		m.ClearEquipment()
 		return nil
@@ -17471,6 +17605,9 @@ func (m *OrderInfoMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *OrderInfoMutation) ResetEdge(name string) error {
 	switch name {
+	case orderinfo.EdgeConnector:
+		m.ResetConnector()
+		return nil
 	case orderinfo.EdgeEquipment:
 		m.ResetEquipment()
 		return nil

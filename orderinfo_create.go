@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/orderevent"
 	"github.com/Kotodian/cwmodel/orderinfo"
@@ -89,6 +90,12 @@ func (oic *OrderInfoCreate) SetNillableUpdatedAt(i *int64) *OrderInfoCreate {
 	if i != nil {
 		oic.SetUpdatedAt(*i)
 	}
+	return oic
+}
+
+// SetEquipmentID sets the "equipment_id" field.
+func (oic *OrderInfoCreate) SetEquipmentID(d datasource.UUID) *OrderInfoCreate {
+	oic.mutation.SetEquipmentID(d)
 	return oic
 }
 
@@ -424,18 +431,9 @@ func (oic *OrderInfoCreate) SetNillableID(d *datasource.UUID) *OrderInfoCreate {
 	return oic
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (oic *OrderInfoCreate) SetEquipmentID(id datasource.UUID) *OrderInfoCreate {
-	oic.mutation.SetEquipmentID(id)
-	return oic
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (oic *OrderInfoCreate) SetNillableEquipmentID(id *datasource.UUID) *OrderInfoCreate {
-	if id != nil {
-		oic = oic.SetEquipmentID(*id)
-	}
-	return oic
+// SetConnector sets the "connector" edge to the Connector entity.
+func (oic *OrderInfoCreate) SetConnector(c *Connector) *OrderInfoCreate {
+	return oic.SetConnectorID(c.ID)
 }
 
 // SetEquipment sets the "equipment" edge to the Equipment entity.
@@ -578,6 +576,9 @@ func (oic *OrderInfoCreate) check() error {
 	if _, ok := oic.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`cwmodel: missing required field "OrderInfo.updated_at"`)}
 	}
+	if _, ok := oic.mutation.EquipmentID(); !ok {
+		return &ValidationError{Name: "equipment_id", err: errors.New(`cwmodel: missing required field "OrderInfo.equipment_id"`)}
+	}
 	if _, ok := oic.mutation.ConnectorID(); !ok {
 		return &ValidationError{Name: "connector_id", err: errors.New(`cwmodel: missing required field "OrderInfo.connector_id"`)}
 	}
@@ -589,6 +590,12 @@ func (oic *OrderInfoCreate) check() error {
 	}
 	if _, ok := oic.mutation.PriceSchemeReleaseID(); !ok {
 		return &ValidationError{Name: "price_scheme_release_id", err: errors.New(`cwmodel: missing required field "OrderInfo.price_scheme_release_id"`)}
+	}
+	if _, ok := oic.mutation.ConnectorID(); !ok {
+		return &ValidationError{Name: "connector", err: errors.New(`cwmodel: missing required edge "OrderInfo.connector"`)}
+	}
+	if _, ok := oic.mutation.EquipmentID(); !ok {
+		return &ValidationError{Name: "equipment", err: errors.New(`cwmodel: missing required edge "OrderInfo.equipment"`)}
 	}
 	return nil
 }
@@ -642,10 +649,6 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 	if value, ok := oic.mutation.UpdatedAt(); ok {
 		_spec.SetField(orderinfo.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
-	}
-	if value, ok := oic.mutation.ConnectorID(); ok {
-		_spec.SetField(orderinfo.FieldConnectorID, field.TypeUint64, value)
-		_node.ConnectorID = value
 	}
 	if value, ok := oic.mutation.RemoteStartID(); ok {
 		_spec.SetField(orderinfo.FieldRemoteStartID, field.TypeInt64, value)
@@ -743,6 +746,26 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 		_spec.SetField(orderinfo.FieldOperatorID, field.TypeUint64, value)
 		_node.OperatorID = &value
 	}
+	if nodes := oic.mutation.ConnectorIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   orderinfo.ConnectorTable,
+			Columns: []string{orderinfo.ConnectorColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: connector.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ConnectorID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	if nodes := oic.mutation.EquipmentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -760,7 +783,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.equipment_id = &nodes[0]
+		_node.EquipmentID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := oic.mutation.OrderEventIDs(); len(nodes) > 0 {

@@ -47,6 +47,8 @@ const (
 	EdgeEvse = "evse"
 	// EdgeEquipment holds the string denoting the equipment edge name in mutations.
 	EdgeEquipment = "equipment"
+	// EdgeOrderInfo holds the string denoting the order_info edge name in mutations.
+	EdgeOrderInfo = "order_info"
 	// Table holds the table name of the connector in the database.
 	Table = "base_connector"
 	// EvseTable is the table that holds the evse relation/edge.
@@ -63,6 +65,13 @@ const (
 	EquipmentInverseTable = "base_equipment"
 	// EquipmentColumn is the table column denoting the equipment relation/edge.
 	EquipmentColumn = "equipment_id"
+	// OrderInfoTable is the table that holds the order_info relation/edge.
+	OrderInfoTable = "order_info"
+	// OrderInfoInverseTable is the table name for the OrderInfo entity.
+	// It exists in this package in order to avoid circular dependency with the "orderinfo" package.
+	OrderInfoInverseTable = "order_info"
+	// OrderInfoColumn is the table column denoting the order_info relation/edge.
+	OrderInfoColumn = "connector_id"
 )
 
 // Columns holds all SQL columns for connector fields.

@@ -4,6 +4,7 @@ package cwmodel
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/evse"
+	"github.com/Kotodian/cwmodel/orderinfo"
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/gokit/datasource"
 )
@@ -28,6 +30,7 @@ type ConnectorQuery struct {
 	predicates    []predicate.Connector
 	withEvse      *EvseQuery
 	withEquipment *EquipmentQuery
+	withOrderInfo *OrderInfoQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -101,6 +104,28 @@ func (cq *ConnectorQuery) QueryEquipment() *EquipmentQuery {
 			sqlgraph.From(connector.Table, connector.FieldID, selector),
 			sqlgraph.To(equipment.Table, equipment.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, connector.EquipmentTable, connector.EquipmentColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryOrderInfo chains the current query on the "order_info" edge.
+func (cq *ConnectorQuery) QueryOrderInfo() *OrderInfoQuery {
+	query := &OrderInfoQuery{config: cq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := cq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(connector.Table, connector.FieldID, selector),
+			sqlgraph.To(orderinfo.Table, orderinfo.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, connector.OrderInfoTable, connector.OrderInfoColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
 		return fromU, nil
@@ -291,6 +316,7 @@ func (cq *ConnectorQuery) Clone() *ConnectorQuery {
 		predicates:    append([]predicate.Connector{}, cq.predicates...),
 		withEvse:      cq.withEvse.Clone(),
 		withEquipment: cq.withEquipment.Clone(),
+		withOrderInfo: cq.withOrderInfo.Clone(),
 		// clone intermediate query.
 		sql:    cq.sql.Clone(),
 		path:   cq.path,
@@ -317,6 +343,17 @@ func (cq *ConnectorQuery) WithEquipment(opts ...func(*EquipmentQuery)) *Connecto
 		opt(query)
 	}
 	cq.withEquipment = query
+	return cq
+}
+
+// WithOrderInfo tells the query-builder to eager-load the nodes that are connected to
+// the "order_info" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *ConnectorQuery) WithOrderInfo(opts ...func(*OrderInfoQuery)) *ConnectorQuery {
+	query := &OrderInfoQuery{config: cq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withOrderInfo = query
 	return cq
 }
 
@@ -388,9 +425,10 @@ func (cq *ConnectorQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Co
 	var (
 		nodes       = []*Connector{}
 		_spec       = cq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			cq.withEvse != nil,
 			cq.withEquipment != nil,
+			cq.withOrderInfo != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -420,6 +458,13 @@ func (cq *ConnectorQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Co
 	if query := cq.withEquipment; query != nil {
 		if err := cq.loadEquipment(ctx, query, nodes, nil,
 			func(n *Connector, e *Equipment) { n.Edges.Equipment = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := cq.withOrderInfo; query != nil {
+		if err := cq.loadOrderInfo(ctx, query, nodes,
+			func(n *Connector) { n.Edges.OrderInfo = []*OrderInfo{} },
+			func(n *Connector, e *OrderInfo) { n.Edges.OrderInfo = append(n.Edges.OrderInfo, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -475,6 +520,33 @@ func (cq *ConnectorQuery) loadEquipment(ctx context.Context, query *EquipmentQue
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (cq *ConnectorQuery) loadOrderInfo(ctx context.Context, query *OrderInfoQuery, nodes []*Connector, init func(*Connector), assign func(*Connector, *OrderInfo)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[datasource.UUID]*Connector)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.Where(predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.InValues(connector.OrderInfoColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.ConnectorID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "connector_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/evse"
+	"github.com/Kotodian/cwmodel/orderinfo"
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/gokit/datasource"
 )
@@ -246,6 +247,21 @@ func (cu *ConnectorUpdate) SetEquipment(e *Equipment) *ConnectorUpdate {
 	return cu.SetEquipmentID(e.ID)
 }
 
+// AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
+func (cu *ConnectorUpdate) AddOrderInfoIDs(ids ...datasource.UUID) *ConnectorUpdate {
+	cu.mutation.AddOrderInfoIDs(ids...)
+	return cu
+}
+
+// AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
+func (cu *ConnectorUpdate) AddOrderInfo(o ...*OrderInfo) *ConnectorUpdate {
+	ids := make([]datasource.UUID, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return cu.AddOrderInfoIDs(ids...)
+}
+
 // Mutation returns the ConnectorMutation object of the builder.
 func (cu *ConnectorUpdate) Mutation() *ConnectorMutation {
 	return cu.mutation
@@ -261,6 +277,27 @@ func (cu *ConnectorUpdate) ClearEvse() *ConnectorUpdate {
 func (cu *ConnectorUpdate) ClearEquipment() *ConnectorUpdate {
 	cu.mutation.ClearEquipment()
 	return cu
+}
+
+// ClearOrderInfo clears all "order_info" edges to the OrderInfo entity.
+func (cu *ConnectorUpdate) ClearOrderInfo() *ConnectorUpdate {
+	cu.mutation.ClearOrderInfo()
+	return cu
+}
+
+// RemoveOrderInfoIDs removes the "order_info" edge to OrderInfo entities by IDs.
+func (cu *ConnectorUpdate) RemoveOrderInfoIDs(ids ...datasource.UUID) *ConnectorUpdate {
+	cu.mutation.RemoveOrderInfoIDs(ids...)
+	return cu
+}
+
+// RemoveOrderInfo removes "order_info" edges to OrderInfo entities.
+func (cu *ConnectorUpdate) RemoveOrderInfo(o ...*OrderInfo) *ConnectorUpdate {
+	ids := make([]datasource.UUID, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return cu.RemoveOrderInfoIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -492,6 +529,60 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cu.mutation.OrderInfoCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.RemovedOrderInfoIDs(); len(nodes) > 0 && !cu.mutation.OrderInfoCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.OrderInfoIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: orderinfo.FieldID,
 				},
 			},
 		}
@@ -735,6 +826,21 @@ func (cuo *ConnectorUpdateOne) SetEquipment(e *Equipment) *ConnectorUpdateOne {
 	return cuo.SetEquipmentID(e.ID)
 }
 
+// AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
+func (cuo *ConnectorUpdateOne) AddOrderInfoIDs(ids ...datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.AddOrderInfoIDs(ids...)
+	return cuo
+}
+
+// AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
+func (cuo *ConnectorUpdateOne) AddOrderInfo(o ...*OrderInfo) *ConnectorUpdateOne {
+	ids := make([]datasource.UUID, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return cuo.AddOrderInfoIDs(ids...)
+}
+
 // Mutation returns the ConnectorMutation object of the builder.
 func (cuo *ConnectorUpdateOne) Mutation() *ConnectorMutation {
 	return cuo.mutation
@@ -750,6 +856,27 @@ func (cuo *ConnectorUpdateOne) ClearEvse() *ConnectorUpdateOne {
 func (cuo *ConnectorUpdateOne) ClearEquipment() *ConnectorUpdateOne {
 	cuo.mutation.ClearEquipment()
 	return cuo
+}
+
+// ClearOrderInfo clears all "order_info" edges to the OrderInfo entity.
+func (cuo *ConnectorUpdateOne) ClearOrderInfo() *ConnectorUpdateOne {
+	cuo.mutation.ClearOrderInfo()
+	return cuo
+}
+
+// RemoveOrderInfoIDs removes the "order_info" edge to OrderInfo entities by IDs.
+func (cuo *ConnectorUpdateOne) RemoveOrderInfoIDs(ids ...datasource.UUID) *ConnectorUpdateOne {
+	cuo.mutation.RemoveOrderInfoIDs(ids...)
+	return cuo
+}
+
+// RemoveOrderInfo removes "order_info" edges to OrderInfo entities.
+func (cuo *ConnectorUpdateOne) RemoveOrderInfo(o ...*OrderInfo) *ConnectorUpdateOne {
+	ids := make([]datasource.UUID, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return cuo.RemoveOrderInfoIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -1011,6 +1138,60 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cuo.mutation.OrderInfoCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.RemovedOrderInfoIDs(); len(nodes) > 0 && !cuo.mutation.OrderInfoCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.OrderInfoIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: orderinfo.FieldID,
 				},
 			},
 		}

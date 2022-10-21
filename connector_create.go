@@ -12,6 +12,7 @@ import (
 	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/evse"
+	"github.com/Kotodian/cwmodel/orderinfo"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -212,6 +213,21 @@ func (cc *ConnectorCreate) SetEvse(e *Evse) *ConnectorCreate {
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (cc *ConnectorCreate) SetEquipment(e *Equipment) *ConnectorCreate {
 	return cc.SetEquipmentID(e.ID)
+}
+
+// AddOrderInfoIDs adds the "order_info" edge to the OrderInfo entity by IDs.
+func (cc *ConnectorCreate) AddOrderInfoIDs(ids ...datasource.UUID) *ConnectorCreate {
+	cc.mutation.AddOrderInfoIDs(ids...)
+	return cc
+}
+
+// AddOrderInfo adds the "order_info" edges to the OrderInfo entity.
+func (cc *ConnectorCreate) AddOrderInfo(o ...*OrderInfo) *ConnectorCreate {
+	ids := make([]datasource.UUID, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return cc.AddOrderInfoIDs(ids...)
 }
 
 // Mutation returns the ConnectorMutation object of the builder.
@@ -495,6 +511,25 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.EquipmentID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.OrderInfoIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   connector.OrderInfoTable,
+			Columns: []string{connector.OrderInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: orderinfo.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/orderinfo"
 	"github.com/Kotodian/gokit/datasource"
@@ -28,6 +29,8 @@ type OrderInfo struct {
 	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// 桩id
+	EquipmentID datasource.UUID `json:"equipment_id,omitempty"`
 	// 枪id
 	ConnectorID datasource.UUID `json:"connector_id,omitempty"`
 	// 远程启动id
@@ -80,25 +83,39 @@ type OrderInfo struct {
 	OperatorID *datasource.UUID `json:"operator_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrderInfoQuery when eager-loading is set.
-	Edges        OrderInfoEdges `json:"-"`
-	equipment_id *datasource.UUID
+	Edges OrderInfoEdges `json:"-"`
 }
 
 // OrderInfoEdges holds the relations/edges for other nodes in the graph.
 type OrderInfoEdges struct {
+	// Connector holds the value of the connector edge.
+	Connector *Connector `json:"connector,omitempty"`
 	// Equipment holds the value of the equipment edge.
 	Equipment *Equipment `json:"equipment,omitempty"`
 	// OrderEvent holds the value of the order_event edge.
 	OrderEvent []*OrderEvent `json:"order_event,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
+}
+
+// ConnectorOrErr returns the Connector value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e OrderInfoEdges) ConnectorOrErr() (*Connector, error) {
+	if e.loadedTypes[0] {
+		if e.Connector == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: connector.Label}
+		}
+		return e.Connector, nil
+	}
+	return nil, &NotLoadedError{edge: "connector"}
 }
 
 // EquipmentOrErr returns the Equipment value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e OrderInfoEdges) EquipmentOrErr() (*Equipment, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[1] {
 		if e.Equipment == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: equipment.Label}
@@ -111,7 +128,7 @@ func (e OrderInfoEdges) EquipmentOrErr() (*Equipment, error) {
 // OrderEventOrErr returns the OrderEvent value or an error if the edge
 // was not loaded in eager-loading.
 func (e OrderInfoEdges) OrderEventOrErr() ([]*OrderEvent, error) {
-	if e.loadedTypes[1] {
+	if e.loadedTypes[2] {
 		return e.OrderEvent, nil
 	}
 	return nil, &NotLoadedError{edge: "order_event"}
@@ -126,12 +143,10 @@ func (*OrderInfo) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case orderinfo.FieldTotalElectricity, orderinfo.FieldChargeStartElectricity, orderinfo.FieldChargeFinalElectricity, orderinfo.FieldSharpElectricity, orderinfo.FieldPeakElectricity, orderinfo.FieldFlatElectricity, orderinfo.FieldValleyElectricity:
 			values[i] = new(sql.NullFloat64)
-		case orderinfo.FieldID, orderinfo.FieldVersion, orderinfo.FieldCreatedBy, orderinfo.FieldCreatedAt, orderinfo.FieldUpdatedBy, orderinfo.FieldUpdatedAt, orderinfo.FieldConnectorID, orderinfo.FieldRemoteStartID, orderinfo.FieldAuthorizationMode, orderinfo.FieldStopReasonCode, orderinfo.FieldState, orderinfo.FieldPriceSchemeReleaseID, orderinfo.FieldOrderStartTime, orderinfo.FieldOrderFinalTime, orderinfo.FieldChargeStartTime, orderinfo.FieldChargeFinalTime, orderinfo.FieldIntellectID, orderinfo.FieldStationID, orderinfo.FieldOperatorID:
+		case orderinfo.FieldID, orderinfo.FieldVersion, orderinfo.FieldCreatedBy, orderinfo.FieldCreatedAt, orderinfo.FieldUpdatedBy, orderinfo.FieldUpdatedAt, orderinfo.FieldEquipmentID, orderinfo.FieldConnectorID, orderinfo.FieldRemoteStartID, orderinfo.FieldAuthorizationMode, orderinfo.FieldStopReasonCode, orderinfo.FieldState, orderinfo.FieldPriceSchemeReleaseID, orderinfo.FieldOrderStartTime, orderinfo.FieldOrderFinalTime, orderinfo.FieldChargeStartTime, orderinfo.FieldChargeFinalTime, orderinfo.FieldIntellectID, orderinfo.FieldStationID, orderinfo.FieldOperatorID:
 			values[i] = new(sql.NullInt64)
 		case orderinfo.FieldTransactionID, orderinfo.FieldAuthorizationID, orderinfo.FieldCustomerID, orderinfo.FieldCallerOrderID:
 			values[i] = new(sql.NullString)
-		case orderinfo.ForeignKeys[0]: // equipment_id
-			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type OrderInfo", columns[i])
 		}
@@ -182,6 +197,12 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				oi.UpdatedAt = value.Int64
+			}
+		case orderinfo.FieldEquipmentID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
+			} else if value.Valid {
+				oi.EquipmentID = datasource.UUID(value.Int64)
 			}
 		case orderinfo.FieldConnectorID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -353,16 +374,14 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 				oi.OperatorID = new(datasource.UUID)
 				*oi.OperatorID = datasource.UUID(value.Int64)
 			}
-		case orderinfo.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
-			} else if value.Valid {
-				oi.equipment_id = new(datasource.UUID)
-				*oi.equipment_id = datasource.UUID(value.Int64)
-			}
 		}
 	}
 	return nil
+}
+
+// QueryConnector queries the "connector" edge of the OrderInfo entity.
+func (oi *OrderInfo) QueryConnector() *ConnectorQuery {
+	return (&OrderInfoClient{config: oi.config}).QueryConnector(oi)
 }
 
 // QueryEquipment queries the "equipment" edge of the OrderInfo entity.
@@ -412,6 +431,9 @@ func (oi *OrderInfo) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", oi.UpdatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("equipment_id=")
+	builder.WriteString(fmt.Sprintf("%v", oi.EquipmentID))
 	builder.WriteString(", ")
 	builder.WriteString("connector_id=")
 	builder.WriteString(fmt.Sprintf("%v", oi.ConnectorID))

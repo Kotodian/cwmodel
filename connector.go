@@ -67,9 +67,11 @@ type ConnectorEdges struct {
 	Evse *Evse `json:"evse,omitempty"`
 	// Equipment holds the value of the equipment edge.
 	Equipment *Equipment `json:"equipment,omitempty"`
+	// OrderInfo holds the value of the order_info edge.
+	OrderInfo []*OrderInfo `json:"order_info,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 }
 
 // EvseOrErr returns the Evse value or an error if the edge
@@ -96,6 +98,15 @@ func (e ConnectorEdges) EquipmentOrErr() (*Equipment, error) {
 		return e.Equipment, nil
 	}
 	return nil, &NotLoadedError{edge: "equipment"}
+}
+
+// OrderInfoOrErr returns the OrderInfo value or an error if the edge
+// was not loaded in eager-loading.
+func (e ConnectorEdges) OrderInfoOrErr() ([]*OrderInfo, error) {
+	if e.loadedTypes[2] {
+		return e.OrderInfo, nil
+	}
+	return nil, &NotLoadedError{edge: "order_info"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -239,6 +250,11 @@ func (c *Connector) QueryEvse() *EvseQuery {
 // QueryEquipment queries the "equipment" edge of the Connector entity.
 func (c *Connector) QueryEquipment() *EquipmentQuery {
 	return (&ConnectorClient{config: c.config}).QueryEquipment(c)
+}
+
+// QueryOrderInfo queries the "order_info" edge of the Connector entity.
+func (c *Connector) QueryOrderInfo() *OrderInfoQuery {
+	return (&ConnectorClient{config: c.config}).QueryOrderInfo(c)
 }
 
 // Update returns a builder for updating this Connector.

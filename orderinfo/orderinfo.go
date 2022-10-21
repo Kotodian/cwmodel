@@ -21,6 +21,8 @@ const (
 	FieldUpdatedBy = "updated_by"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldEquipmentID holds the string denoting the equipment_id field in the database.
+	FieldEquipmentID = "equipment_id"
 	// FieldConnectorID holds the string denoting the connector_id field in the database.
 	FieldConnectorID = "connector_id"
 	// FieldRemoteStartID holds the string denoting the remote_start_id field in the database.
@@ -71,12 +73,21 @@ const (
 	FieldStationID = "station_id"
 	// FieldOperatorID holds the string denoting the operator_id field in the database.
 	FieldOperatorID = "operator_id"
+	// EdgeConnector holds the string denoting the connector edge name in mutations.
+	EdgeConnector = "connector"
 	// EdgeEquipment holds the string denoting the equipment edge name in mutations.
 	EdgeEquipment = "equipment"
 	// EdgeOrderEvent holds the string denoting the order_event edge name in mutations.
 	EdgeOrderEvent = "order_event"
 	// Table holds the table name of the orderinfo in the database.
 	Table = "order_info"
+	// ConnectorTable is the table that holds the connector relation/edge.
+	ConnectorTable = "order_info"
+	// ConnectorInverseTable is the table name for the Connector entity.
+	// It exists in this package in order to avoid circular dependency with the "connector" package.
+	ConnectorInverseTable = "base_connector"
+	// ConnectorColumn is the table column denoting the connector relation/edge.
+	ConnectorColumn = "connector_id"
 	// EquipmentTable is the table that holds the equipment relation/edge.
 	EquipmentTable = "order_info"
 	// EquipmentInverseTable is the table name for the Equipment entity.
@@ -101,6 +112,7 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedBy,
 	FieldUpdatedAt,
+	FieldEquipmentID,
 	FieldConnectorID,
 	FieldRemoteStartID,
 	FieldTransactionID,
@@ -128,21 +140,10 @@ var Columns = []string{
 	FieldOperatorID,
 }
 
-// ForeignKeys holds the SQL foreign-keys that are owned by the "order_info"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"equipment_id",
-}
-
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}

@@ -1432,6 +1432,34 @@ func HasEquipmentWith(preds ...predicate.Equipment) predicate.Connector {
 	})
 }
 
+// HasOrderInfo applies the HasEdge predicate on the "order_info" edge.
+func HasOrderInfo() predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrderInfoTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, OrderInfoTable, OrderInfoColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrderInfoWith applies the HasEdge predicate on the "order_info" edge with a given conditions (other predicates).
+func HasOrderInfoWith(preds ...predicate.OrderInfo) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrderInfoInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, OrderInfoTable, OrderInfoColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Connector) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
