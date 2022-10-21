@@ -26,7 +26,6 @@ type EquipmentLogQuery struct {
 	fields        []string
 	predicates    []predicate.EquipmentLog
 	withEquipment *EquipmentQuery
-	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -352,18 +351,11 @@ func (elq *EquipmentLogQuery) prepareQuery(ctx context.Context) error {
 func (elq *EquipmentLogQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*EquipmentLog, error) {
 	var (
 		nodes       = []*EquipmentLog{}
-		withFKs     = elq.withFKs
 		_spec       = elq.querySpec()
 		loadedTypes = [1]bool{
 			elq.withEquipment != nil,
 		}
 	)
-	if elq.withEquipment != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, equipmentlog.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*EquipmentLog).scanValues(nil, columns)
 	}
@@ -395,10 +387,7 @@ func (elq *EquipmentLogQuery) loadEquipment(ctx context.Context, query *Equipmen
 	ids := make([]datasource.UUID, 0, len(nodes))
 	nodeids := make(map[datasource.UUID][]*EquipmentLog)
 	for i := range nodes {
-		if nodes[i].equipment_id == nil {
-			continue
-		}
-		fk := *nodes[i].equipment_id
+		fk := nodes[i].EquipmentID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}

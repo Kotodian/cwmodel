@@ -91,6 +91,12 @@ func (elc *EquipmentLogCreate) SetNillableUpdatedAt(i *int64) *EquipmentLogCreat
 	return elc
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (elc *EquipmentLogCreate) SetEquipmentID(d datasource.UUID) *EquipmentLogCreate {
+	elc.mutation.SetEquipmentID(d)
+	return elc
+}
+
 // SetRequestID sets the "request_id" field.
 func (elc *EquipmentLogCreate) SetRequestID(i int64) *EquipmentLogCreate {
 	elc.mutation.SetRequestID(i)
@@ -119,20 +125,6 @@ func (elc *EquipmentLogCreate) SetID(d datasource.UUID) *EquipmentLogCreate {
 func (elc *EquipmentLogCreate) SetNillableID(d *datasource.UUID) *EquipmentLogCreate {
 	if d != nil {
 		elc.SetID(*d)
-	}
-	return elc
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (elc *EquipmentLogCreate) SetEquipmentID(id datasource.UUID) *EquipmentLogCreate {
-	elc.mutation.SetEquipmentID(id)
-	return elc
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (elc *EquipmentLogCreate) SetNillableEquipmentID(id *datasource.UUID) *EquipmentLogCreate {
-	if id != nil {
-		elc = elc.SetEquipmentID(*id)
 	}
 	return elc
 }
@@ -262,6 +254,9 @@ func (elc *EquipmentLogCreate) check() error {
 	if _, ok := elc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`cwmodel: missing required field "EquipmentLog.updated_at"`)}
 	}
+	if _, ok := elc.mutation.EquipmentID(); !ok {
+		return &ValidationError{Name: "equipment_id", err: errors.New(`cwmodel: missing required field "EquipmentLog.equipment_id"`)}
+	}
 	if _, ok := elc.mutation.RequestID(); !ok {
 		return &ValidationError{Name: "request_id", err: errors.New(`cwmodel: missing required field "EquipmentLog.request_id"`)}
 	}
@@ -270,6 +265,9 @@ func (elc *EquipmentLogCreate) check() error {
 	}
 	if _, ok := elc.mutation.DataLink(); !ok {
 		return &ValidationError{Name: "data_link", err: errors.New(`cwmodel: missing required field "EquipmentLog.data_link"`)}
+	}
+	if _, ok := elc.mutation.EquipmentID(); !ok {
+		return &ValidationError{Name: "equipment", err: errors.New(`cwmodel: missing required edge "EquipmentLog.equipment"`)}
 	}
 	return nil
 }
@@ -353,7 +351,7 @@ func (elc *EquipmentLogCreate) createSpec() (*EquipmentLog, *sqlgraph.CreateSpec
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.equipment_id = &nodes[0]
+		_node.EquipmentID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

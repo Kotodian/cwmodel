@@ -28,6 +28,8 @@ type EquipmentLog struct {
 	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// 桩id
+	EquipmentID datasource.UUID `json:"equipmentId"`
 	// 请求id
 	RequestID int64 `json:"requestId"`
 	// 状态
@@ -36,8 +38,7 @@ type EquipmentLog struct {
 	DataLink datasource.UUID `json:"dataLink"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentLogQuery when eager-loading is set.
-	Edges        EquipmentLogEdges `json:"-"`
-	equipment_id *datasource.UUID
+	Edges EquipmentLogEdges `json:"-"`
 }
 
 // EquipmentLogEdges holds the relations/edges for other nodes in the graph.
@@ -67,9 +68,7 @@ func (*EquipmentLog) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case equipmentlog.FieldID, equipmentlog.FieldVersion, equipmentlog.FieldCreatedBy, equipmentlog.FieldCreatedAt, equipmentlog.FieldUpdatedBy, equipmentlog.FieldUpdatedAt, equipmentlog.FieldRequestID, equipmentlog.FieldState, equipmentlog.FieldDataLink:
-			values[i] = new(sql.NullInt64)
-		case equipmentlog.ForeignKeys[0]: // equipment_id
+		case equipmentlog.FieldID, equipmentlog.FieldVersion, equipmentlog.FieldCreatedBy, equipmentlog.FieldCreatedAt, equipmentlog.FieldUpdatedBy, equipmentlog.FieldUpdatedAt, equipmentlog.FieldEquipmentID, equipmentlog.FieldRequestID, equipmentlog.FieldState, equipmentlog.FieldDataLink:
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type EquipmentLog", columns[i])
@@ -122,6 +121,12 @@ func (el *EquipmentLog) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				el.UpdatedAt = value.Int64
 			}
+		case equipmentlog.FieldEquipmentID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
+			} else if value.Valid {
+				el.EquipmentID = datasource.UUID(value.Int64)
+			}
 		case equipmentlog.FieldRequestID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field request_id", values[i])
@@ -139,13 +144,6 @@ func (el *EquipmentLog) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field data_link", values[i])
 			} else if value.Valid {
 				el.DataLink = datasource.UUID(value.Int64)
-			}
-		case equipmentlog.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
-			} else if value.Valid {
-				el.equipment_id = new(datasource.UUID)
-				*el.equipment_id = datasource.UUID(value.Int64)
 			}
 		}
 	}
@@ -194,6 +192,9 @@ func (el *EquipmentLog) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", el.UpdatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("equipment_id=")
+	builder.WriteString(fmt.Sprintf("%v", el.EquipmentID))
 	builder.WriteString(", ")
 	builder.WriteString("request_id=")
 	builder.WriteString(fmt.Sprintf("%v", el.RequestID))

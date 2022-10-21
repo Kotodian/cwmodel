@@ -117,6 +117,22 @@ func UpdatedAt(v int64) predicate.Firmware {
 	})
 }
 
+// ModelID applies equality check predicate on the "model_id" field. It's identical to ModelIDEQ.
+func ModelID(v datasource.UUID) predicate.Firmware {
+	vc := uint64(v)
+	return predicate.Firmware(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldModelID), vc))
+	})
+}
+
+// ManufacturerID applies equality check predicate on the "manufacturer_id" field. It's identical to ManufacturerIDEQ.
+func ManufacturerID(v datasource.UUID) predicate.Firmware {
+	vc := uint64(v)
+	return predicate.Firmware(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldManufacturerID), vc))
+	})
+}
+
 // EquipVersion applies equality check predicate on the "equip_version" field. It's identical to EquipVersionEQ.
 func EquipVersion(v string) predicate.Firmware {
 	return predicate.Firmware(func(s *sql.Selector) {
@@ -453,6 +469,82 @@ func UpdatedAtLT(v int64) predicate.Firmware {
 func UpdatedAtLTE(v int64) predicate.Firmware {
 	return predicate.Firmware(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldUpdatedAt), v))
+	})
+}
+
+// ModelIDEQ applies the EQ predicate on the "model_id" field.
+func ModelIDEQ(v datasource.UUID) predicate.Firmware {
+	vc := uint64(v)
+	return predicate.Firmware(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldModelID), vc))
+	})
+}
+
+// ModelIDNEQ applies the NEQ predicate on the "model_id" field.
+func ModelIDNEQ(v datasource.UUID) predicate.Firmware {
+	vc := uint64(v)
+	return predicate.Firmware(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldModelID), vc))
+	})
+}
+
+// ModelIDIn applies the In predicate on the "model_id" field.
+func ModelIDIn(vs ...datasource.UUID) predicate.Firmware {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.Firmware(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldModelID), v...))
+	})
+}
+
+// ModelIDNotIn applies the NotIn predicate on the "model_id" field.
+func ModelIDNotIn(vs ...datasource.UUID) predicate.Firmware {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.Firmware(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldModelID), v...))
+	})
+}
+
+// ManufacturerIDEQ applies the EQ predicate on the "manufacturer_id" field.
+func ManufacturerIDEQ(v datasource.UUID) predicate.Firmware {
+	vc := uint64(v)
+	return predicate.Firmware(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldManufacturerID), vc))
+	})
+}
+
+// ManufacturerIDNEQ applies the NEQ predicate on the "manufacturer_id" field.
+func ManufacturerIDNEQ(v datasource.UUID) predicate.Firmware {
+	vc := uint64(v)
+	return predicate.Firmware(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldManufacturerID), vc))
+	})
+}
+
+// ManufacturerIDIn applies the In predicate on the "manufacturer_id" field.
+func ManufacturerIDIn(vs ...datasource.UUID) predicate.Firmware {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.Firmware(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldManufacturerID), v...))
+	})
+}
+
+// ManufacturerIDNotIn applies the NotIn predicate on the "manufacturer_id" field.
+func ManufacturerIDNotIn(vs ...datasource.UUID) predicate.Firmware {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = uint64(vs[i])
+	}
+	return predicate.Firmware(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldManufacturerID), v...))
 	})
 }
 

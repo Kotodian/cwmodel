@@ -84,6 +84,12 @@ func (elu *EquipmentLogUpdate) AddUpdatedAt(i int64) *EquipmentLogUpdate {
 	return elu
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (elu *EquipmentLogUpdate) SetEquipmentID(d datasource.UUID) *EquipmentLogUpdate {
+	elu.mutation.SetEquipmentID(d)
+	return elu
+}
+
 // SetRequestID sets the "request_id" field.
 func (elu *EquipmentLogUpdate) SetRequestID(i int64) *EquipmentLogUpdate {
 	elu.mutation.ResetRequestID()
@@ -123,20 +129,6 @@ func (elu *EquipmentLogUpdate) AddDataLink(d datasource.UUID) *EquipmentLogUpdat
 	return elu
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (elu *EquipmentLogUpdate) SetEquipmentID(id datasource.UUID) *EquipmentLogUpdate {
-	elu.mutation.SetEquipmentID(id)
-	return elu
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (elu *EquipmentLogUpdate) SetNillableEquipmentID(id *datasource.UUID) *EquipmentLogUpdate {
-	if id != nil {
-		elu = elu.SetEquipmentID(*id)
-	}
-	return elu
-}
-
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (elu *EquipmentLogUpdate) SetEquipment(e *Equipment) *EquipmentLogUpdate {
 	return elu.SetEquipmentID(e.ID)
@@ -161,12 +153,18 @@ func (elu *EquipmentLogUpdate) Save(ctx context.Context) (int, error) {
 	)
 	elu.defaults()
 	if len(elu.hooks) == 0 {
+		if err = elu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = elu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*EquipmentLogMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = elu.check(); err != nil {
+				return 0, err
 			}
 			elu.mutation = mutation
 			affected, err = elu.sqlSave(ctx)
@@ -214,6 +212,14 @@ func (elu *EquipmentLogUpdate) defaults() {
 		v := equipmentlog.UpdateDefaultUpdatedAt()
 		elu.mutation.SetUpdatedAt(v)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (elu *EquipmentLogUpdate) check() error {
+	if _, ok := elu.mutation.EquipmentID(); elu.mutation.EquipmentCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "EquipmentLog.equipment"`)
+	}
+	return nil
 }
 
 func (elu *EquipmentLogUpdate) sqlSave(ctx context.Context) (n int, err error) {
@@ -379,6 +385,12 @@ func (eluo *EquipmentLogUpdateOne) AddUpdatedAt(i int64) *EquipmentLogUpdateOne 
 	return eluo
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (eluo *EquipmentLogUpdateOne) SetEquipmentID(d datasource.UUID) *EquipmentLogUpdateOne {
+	eluo.mutation.SetEquipmentID(d)
+	return eluo
+}
+
 // SetRequestID sets the "request_id" field.
 func (eluo *EquipmentLogUpdateOne) SetRequestID(i int64) *EquipmentLogUpdateOne {
 	eluo.mutation.ResetRequestID()
@@ -418,20 +430,6 @@ func (eluo *EquipmentLogUpdateOne) AddDataLink(d datasource.UUID) *EquipmentLogU
 	return eluo
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eluo *EquipmentLogUpdateOne) SetEquipmentID(id datasource.UUID) *EquipmentLogUpdateOne {
-	eluo.mutation.SetEquipmentID(id)
-	return eluo
-}
-
-// SetNillableEquipmentID sets the "equipment" edge to the Equipment entity by ID if the given value is not nil.
-func (eluo *EquipmentLogUpdateOne) SetNillableEquipmentID(id *datasource.UUID) *EquipmentLogUpdateOne {
-	if id != nil {
-		eluo = eluo.SetEquipmentID(*id)
-	}
-	return eluo
-}
-
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (eluo *EquipmentLogUpdateOne) SetEquipment(e *Equipment) *EquipmentLogUpdateOne {
 	return eluo.SetEquipmentID(e.ID)
@@ -463,12 +461,18 @@ func (eluo *EquipmentLogUpdateOne) Save(ctx context.Context) (*EquipmentLog, err
 	)
 	eluo.defaults()
 	if len(eluo.hooks) == 0 {
+		if err = eluo.check(); err != nil {
+			return nil, err
+		}
 		node, err = eluo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*EquipmentLogMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = eluo.check(); err != nil {
+				return nil, err
 			}
 			eluo.mutation = mutation
 			node, err = eluo.sqlSave(ctx)
@@ -522,6 +526,14 @@ func (eluo *EquipmentLogUpdateOne) defaults() {
 		v := equipmentlog.UpdateDefaultUpdatedAt()
 		eluo.mutation.SetUpdatedAt(v)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (eluo *EquipmentLogUpdateOne) check() error {
+	if _, ok := eluo.mutation.EquipmentID(); eluo.mutation.EquipmentCleared() && !ok {
+		return errors.New(`cwmodel: clearing a required unique edge "EquipmentLog.equipment"`)
+	}
+	return nil
 }
 
 func (eluo *EquipmentLogUpdateOne) sqlSave(ctx context.Context) (_node *EquipmentLog, err error) {

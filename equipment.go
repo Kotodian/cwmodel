@@ -61,7 +61,7 @@ type EquipmentEdges struct {
 	// Reservation holds the value of the reservation edge.
 	Reservation []*Reservation `json:"reservation,omitempty"`
 	// EquipmentLog holds the value of the equipment_log edge.
-	EquipmentLog []*EquipmentLog `json:"equipmentId"`
+	EquipmentLog []*EquipmentLog `json:"equipment_log,omitempty"`
 	// SmartChargingEffect holds the value of the smart_charging_effect edge.
 	SmartChargingEffect []*SmartChargingEffect `json:"smart_charging_effect,omitempty"`
 	// loadedTypes holds the information for reporting if a

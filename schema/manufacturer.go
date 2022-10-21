@@ -34,6 +34,6 @@ func (Manufacturer) Fields() []ent.Field {
 
 func (Manufacturer) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("firmware", Firmware.Type).StorageKey(edge.Column("manufacturer_id")),
+		edge.To("firmware", Firmware.Type),
 	}
 }

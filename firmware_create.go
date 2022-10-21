@@ -93,6 +93,18 @@ func (fc *FirmwareCreate) SetNillableUpdatedAt(i *int64) *FirmwareCreate {
 	return fc
 }
 
+// SetModelID sets the "model_id" field.
+func (fc *FirmwareCreate) SetModelID(d datasource.UUID) *FirmwareCreate {
+	fc.mutation.SetModelID(d)
+	return fc
+}
+
+// SetManufacturerID sets the "manufacturer_id" field.
+func (fc *FirmwareCreate) SetManufacturerID(d datasource.UUID) *FirmwareCreate {
+	fc.mutation.SetManufacturerID(d)
+	return fc
+}
+
 // SetEquipVersion sets the "equip_version" field.
 func (fc *FirmwareCreate) SetEquipVersion(s string) *FirmwareCreate {
 	fc.mutation.SetEquipVersion(s)
@@ -128,21 +140,9 @@ func (fc *FirmwareCreate) AddEquipmentFirmwareEffect(e ...*EquipmentFirmwareEffe
 	return fc.AddEquipmentFirmwareEffectIDs(ids...)
 }
 
-// SetModelID sets the "model" edge to the Model entity by ID.
-func (fc *FirmwareCreate) SetModelID(id datasource.UUID) *FirmwareCreate {
-	fc.mutation.SetModelID(id)
-	return fc
-}
-
 // SetModel sets the "model" edge to the Model entity.
 func (fc *FirmwareCreate) SetModel(m *Model) *FirmwareCreate {
 	return fc.SetModelID(m.ID)
-}
-
-// SetManufacturerID sets the "manufacturer" edge to the Manufacturer entity by ID.
-func (fc *FirmwareCreate) SetManufacturerID(id datasource.UUID) *FirmwareCreate {
-	fc.mutation.SetManufacturerID(id)
-	return fc
 }
 
 // SetManufacturer sets the "manufacturer" edge to the Manufacturer entity.
@@ -270,6 +270,12 @@ func (fc *FirmwareCreate) check() error {
 	if _, ok := fc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`cwmodel: missing required field "Firmware.updated_at"`)}
 	}
+	if _, ok := fc.mutation.ModelID(); !ok {
+		return &ValidationError{Name: "model_id", err: errors.New(`cwmodel: missing required field "Firmware.model_id"`)}
+	}
+	if _, ok := fc.mutation.ManufacturerID(); !ok {
+		return &ValidationError{Name: "manufacturer_id", err: errors.New(`cwmodel: missing required field "Firmware.manufacturer_id"`)}
+	}
 	if _, ok := fc.mutation.EquipVersion(); !ok {
 		return &ValidationError{Name: "equip_version", err: errors.New(`cwmodel: missing required field "Firmware.equip_version"`)}
 	}
@@ -372,7 +378,7 @@ func (fc *FirmwareCreate) createSpec() (*Firmware, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.model_id = &nodes[0]
+		_node.ModelID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := fc.mutation.ManufacturerIDs(); len(nodes) > 0 {
@@ -392,7 +398,7 @@ func (fc *FirmwareCreate) createSpec() (*Firmware, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.manufacturer_id = &nodes[0]
+		_node.ManufacturerID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

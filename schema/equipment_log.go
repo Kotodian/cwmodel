@@ -28,6 +28,7 @@ func (EquipmentLog) Annotations() []schema.Annotation {
 
 func (EquipmentLog) Fields() []ent.Field {
 	return []ent.Field{
+		field.Uint64("equipment_id").GoType(datasource.UUID(0)).Comment("桩id").StructTag(`json:"equipmentId"`),
 		field.Int64("request_id").Comment("请求id").StructTag(`json:"requestId"`),
 		field.Int("state").Comment("状态").StructTag(`json:"state"`),
 		field.Uint64("data_link").GoType(datasource.UUID(0)).Comment("data link").StructTag(`json:"dataLink"`),
@@ -36,6 +37,6 @@ func (EquipmentLog) Fields() []ent.Field {
 
 func (EquipmentLog) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("equipment", Equipment.Type).Ref("equipment_log").Unique(),
+		edge.From("equipment", Equipment.Type).Field("equipment_id").Ref("equipment_log").Unique().Required(),
 	}
 }

@@ -31,7 +31,6 @@ type FirmwareQuery struct {
 	withEquipmentFirmwareEffect *EquipmentFirmwareEffectQuery
 	withModel                   *ModelQuery
 	withManufacturer            *ManufacturerQuery
-	withFKs                     bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -425,7 +424,6 @@ func (fq *FirmwareQuery) prepareQuery(ctx context.Context) error {
 func (fq *FirmwareQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Firmware, error) {
 	var (
 		nodes       = []*Firmware{}
-		withFKs     = fq.withFKs
 		_spec       = fq.querySpec()
 		loadedTypes = [3]bool{
 			fq.withEquipmentFirmwareEffect != nil,
@@ -433,12 +431,6 @@ func (fq *FirmwareQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Fir
 			fq.withManufacturer != nil,
 		}
 	)
-	if fq.withModel != nil || fq.withManufacturer != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, firmware.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Firmware).scanValues(nil, columns)
 	}
@@ -512,10 +504,7 @@ func (fq *FirmwareQuery) loadModel(ctx context.Context, query *ModelQuery, nodes
 	ids := make([]datasource.UUID, 0, len(nodes))
 	nodeids := make(map[datasource.UUID][]*Firmware)
 	for i := range nodes {
-		if nodes[i].model_id == nil {
-			continue
-		}
-		fk := *nodes[i].model_id
+		fk := nodes[i].ModelID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -541,10 +530,7 @@ func (fq *FirmwareQuery) loadManufacturer(ctx context.Context, query *Manufactur
 	ids := make([]datasource.UUID, 0, len(nodes))
 	nodeids := make(map[datasource.UUID][]*Firmware)
 	for i := range nodes {
-		if nodes[i].manufacturer_id == nil {
-			continue
-		}
-		fk := *nodes[i].manufacturer_id
+		fk := nodes[i].ManufacturerID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}

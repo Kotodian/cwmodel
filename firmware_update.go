@@ -86,6 +86,18 @@ func (fu *FirmwareUpdate) AddUpdatedAt(i int64) *FirmwareUpdate {
 	return fu
 }
 
+// SetModelID sets the "model_id" field.
+func (fu *FirmwareUpdate) SetModelID(d datasource.UUID) *FirmwareUpdate {
+	fu.mutation.SetModelID(d)
+	return fu
+}
+
+// SetManufacturerID sets the "manufacturer_id" field.
+func (fu *FirmwareUpdate) SetManufacturerID(d datasource.UUID) *FirmwareUpdate {
+	fu.mutation.SetManufacturerID(d)
+	return fu
+}
+
 // SetEquipVersion sets the "equip_version" field.
 func (fu *FirmwareUpdate) SetEquipVersion(s string) *FirmwareUpdate {
 	fu.mutation.SetEquipVersion(s)
@@ -107,21 +119,9 @@ func (fu *FirmwareUpdate) AddEquipmentFirmwareEffect(e ...*EquipmentFirmwareEffe
 	return fu.AddEquipmentFirmwareEffectIDs(ids...)
 }
 
-// SetModelID sets the "model" edge to the Model entity by ID.
-func (fu *FirmwareUpdate) SetModelID(id datasource.UUID) *FirmwareUpdate {
-	fu.mutation.SetModelID(id)
-	return fu
-}
-
 // SetModel sets the "model" edge to the Model entity.
 func (fu *FirmwareUpdate) SetModel(m *Model) *FirmwareUpdate {
 	return fu.SetModelID(m.ID)
-}
-
-// SetManufacturerID sets the "manufacturer" edge to the Manufacturer entity by ID.
-func (fu *FirmwareUpdate) SetManufacturerID(id datasource.UUID) *FirmwareUpdate {
-	fu.mutation.SetManufacturerID(id)
-	return fu
 }
 
 // SetManufacturer sets the "manufacturer" edge to the Manufacturer entity.
@@ -484,6 +484,18 @@ func (fuo *FirmwareUpdateOne) AddUpdatedAt(i int64) *FirmwareUpdateOne {
 	return fuo
 }
 
+// SetModelID sets the "model_id" field.
+func (fuo *FirmwareUpdateOne) SetModelID(d datasource.UUID) *FirmwareUpdateOne {
+	fuo.mutation.SetModelID(d)
+	return fuo
+}
+
+// SetManufacturerID sets the "manufacturer_id" field.
+func (fuo *FirmwareUpdateOne) SetManufacturerID(d datasource.UUID) *FirmwareUpdateOne {
+	fuo.mutation.SetManufacturerID(d)
+	return fuo
+}
+
 // SetEquipVersion sets the "equip_version" field.
 func (fuo *FirmwareUpdateOne) SetEquipVersion(s string) *FirmwareUpdateOne {
 	fuo.mutation.SetEquipVersion(s)
@@ -505,21 +517,9 @@ func (fuo *FirmwareUpdateOne) AddEquipmentFirmwareEffect(e ...*EquipmentFirmware
 	return fuo.AddEquipmentFirmwareEffectIDs(ids...)
 }
 
-// SetModelID sets the "model" edge to the Model entity by ID.
-func (fuo *FirmwareUpdateOne) SetModelID(id datasource.UUID) *FirmwareUpdateOne {
-	fuo.mutation.SetModelID(id)
-	return fuo
-}
-
 // SetModel sets the "model" edge to the Model entity.
 func (fuo *FirmwareUpdateOne) SetModel(m *Model) *FirmwareUpdateOne {
 	return fuo.SetModelID(m.ID)
-}
-
-// SetManufacturerID sets the "manufacturer" edge to the Manufacturer entity by ID.
-func (fuo *FirmwareUpdateOne) SetManufacturerID(id datasource.UUID) *FirmwareUpdateOne {
-	fuo.mutation.SetManufacturerID(id)
-	return fuo
 }
 
 // SetManufacturer sets the "manufacturer" edge to the Manufacturer entity.

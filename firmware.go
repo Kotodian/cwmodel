@@ -29,13 +29,15 @@ type Firmware struct {
 	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// 型号id
+	ModelID datasource.UUID `json:"model_id,omitempty"`
+	// 产商id
+	ManufacturerID datasource.UUID `json:"manufacturer_id,omitempty"`
 	// 固件版本
 	EquipVersion string `json:"equip_version,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FirmwareQuery when eager-loading is set.
-	Edges           FirmwareEdges `json:"-"`
-	manufacturer_id *datasource.UUID
-	model_id        *datasource.UUID
+	Edges FirmwareEdges `json:"-"`
 }
 
 // FirmwareEdges holds the relations/edges for other nodes in the graph.
@@ -91,14 +93,10 @@ func (*Firmware) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case firmware.FieldID, firmware.FieldVersion, firmware.FieldCreatedBy, firmware.FieldCreatedAt, firmware.FieldUpdatedBy, firmware.FieldUpdatedAt:
+		case firmware.FieldID, firmware.FieldVersion, firmware.FieldCreatedBy, firmware.FieldCreatedAt, firmware.FieldUpdatedBy, firmware.FieldUpdatedAt, firmware.FieldModelID, firmware.FieldManufacturerID:
 			values[i] = new(sql.NullInt64)
 		case firmware.FieldEquipVersion:
 			values[i] = new(sql.NullString)
-		case firmware.ForeignKeys[0]: // manufacturer_id
-			values[i] = new(sql.NullInt64)
-		case firmware.ForeignKeys[1]: // model_id
-			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Firmware", columns[i])
 		}
@@ -150,25 +148,23 @@ func (f *Firmware) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				f.UpdatedAt = value.Int64
 			}
+		case firmware.FieldModelID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field model_id", values[i])
+			} else if value.Valid {
+				f.ModelID = datasource.UUID(value.Int64)
+			}
+		case firmware.FieldManufacturerID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field manufacturer_id", values[i])
+			} else if value.Valid {
+				f.ManufacturerID = datasource.UUID(value.Int64)
+			}
 		case firmware.FieldEquipVersion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field equip_version", values[i])
 			} else if value.Valid {
 				f.EquipVersion = value.String
-			}
-		case firmware.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field manufacturer_id", values[i])
-			} else if value.Valid {
-				f.manufacturer_id = new(datasource.UUID)
-				*f.manufacturer_id = datasource.UUID(value.Int64)
-			}
-		case firmware.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field model_id", values[i])
-			} else if value.Valid {
-				f.model_id = new(datasource.UUID)
-				*f.model_id = datasource.UUID(value.Int64)
 			}
 		}
 	}
@@ -227,6 +223,12 @@ func (f *Firmware) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", f.UpdatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("model_id=")
+	builder.WriteString(fmt.Sprintf("%v", f.ModelID))
+	builder.WriteString(", ")
+	builder.WriteString("manufacturer_id=")
+	builder.WriteString(fmt.Sprintf("%v", f.ManufacturerID))
 	builder.WriteString(", ")
 	builder.WriteString("equip_version=")
 	builder.WriteString(f.EquipVersion)
