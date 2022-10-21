@@ -29,7 +29,7 @@ func (SmartChargingEffect) Annotations() []schema.Annotation {
 
 func (SmartChargingEffect) Fields() []ent.Field {
 	return []ent.Field{
-		// field.Uint64("equipment_id").GoType(datasource.UUID(0)).Comment("桩端id"),
+		field.Uint64("equipment_id").GoType(datasource.UUID(0)).Comment("桩端id"),
 		field.Uint64("connector_id").GoType(datasource.UUID(0)).Comment("枪id"),
 		field.Uint64("order_id").Optional().GoType(datasource.UUID(0)).Comment("订单id"),
 		field.Int64("smart_id").Comment("智慧id"),
@@ -45,8 +45,7 @@ func (SmartChargingEffect) Fields() []ent.Field {
 
 func (SmartChargingEffect) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("equipment", Equipment.Type).Ref("smart_charging_effect").Unique().Required(),
-		// edge.From("connector", Connector.Type).Ref("smart_charging_effect").Unique().Required(),
-		// edge.From("order_info", OrderInfo.Type).Ref("smart_charging_effect").Unique(),
+		edge.From("equipment", Equipment.Type).Field("equipment_id").Ref("smart_charging_effect").Unique().Required(),
+		edge.From("connector", Connector.Type).Field("connector_id").Ref("smart_charging_effect").Unique().Required(),
 	}
 }

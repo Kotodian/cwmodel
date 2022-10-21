@@ -51,6 +51,6 @@ func (Connector) Edges() []ent.Edge {
 		edge.From("equipment", Equipment.Type).Field("equipment_id").Ref("connector").Unique().Required(),
 		edge.To("order_info", OrderInfo.Type),
 		edge.To("reservation", Reservation.Type),
-		// edge.To("smart_charging_effect", SmartChargingEffect.Type).StorageKey(edge.Column("connector_id")),
+		edge.To("smart_charging_effect", SmartChargingEffect.Type),
 	}
 }

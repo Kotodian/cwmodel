@@ -71,9 +71,11 @@ type ConnectorEdges struct {
 	OrderInfo []*OrderInfo `json:"order_info,omitempty"`
 	// Reservation holds the value of the reservation edge.
 	Reservation []*Reservation `json:"reservation,omitempty"`
+	// SmartChargingEffect holds the value of the smart_charging_effect edge.
+	SmartChargingEffect []*SmartChargingEffect `json:"smart_charging_effect,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
+	loadedTypes [5]bool
 }
 
 // EvseOrErr returns the Evse value or an error if the edge
@@ -118,6 +120,15 @@ func (e ConnectorEdges) ReservationOrErr() ([]*Reservation, error) {
 		return e.Reservation, nil
 	}
 	return nil, &NotLoadedError{edge: "reservation"}
+}
+
+// SmartChargingEffectOrErr returns the SmartChargingEffect value or an error if the edge
+// was not loaded in eager-loading.
+func (e ConnectorEdges) SmartChargingEffectOrErr() ([]*SmartChargingEffect, error) {
+	if e.loadedTypes[4] {
+		return e.SmartChargingEffect, nil
+	}
+	return nil, &NotLoadedError{edge: "smart_charging_effect"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -271,6 +282,11 @@ func (c *Connector) QueryOrderInfo() *OrderInfoQuery {
 // QueryReservation queries the "reservation" edge of the Connector entity.
 func (c *Connector) QueryReservation() *ReservationQuery {
 	return (&ConnectorClient{config: c.config}).QueryReservation(c)
+}
+
+// QuerySmartChargingEffect queries the "smart_charging_effect" edge of the Connector entity.
+func (c *Connector) QuerySmartChargingEffect() *SmartChargingEffectQuery {
+	return (&ConnectorClient{config: c.config}).QuerySmartChargingEffect(c)
 }
 
 // Update returns a builder for updating this Connector.

@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/smartchargingeffect"
 	"github.com/Kotodian/cwmodel/types"
@@ -89,6 +90,12 @@ func (scec *SmartChargingEffectCreate) SetNillableUpdatedAt(i *int64) *SmartChar
 	if i != nil {
 		scec.SetUpdatedAt(*i)
 	}
+	return scec
+}
+
+// SetEquipmentID sets the "equipment_id" field.
+func (scec *SmartChargingEffectCreate) SetEquipmentID(d datasource.UUID) *SmartChargingEffectCreate {
+	scec.mutation.SetEquipmentID(d)
 	return scec
 }
 
@@ -190,15 +197,14 @@ func (scec *SmartChargingEffectCreate) SetNillableID(d *datasource.UUID) *SmartC
 	return scec
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (scec *SmartChargingEffectCreate) SetEquipmentID(id datasource.UUID) *SmartChargingEffectCreate {
-	scec.mutation.SetEquipmentID(id)
-	return scec
-}
-
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (scec *SmartChargingEffectCreate) SetEquipment(e *Equipment) *SmartChargingEffectCreate {
 	return scec.SetEquipmentID(e.ID)
+}
+
+// SetConnector sets the "connector" edge to the Connector entity.
+func (scec *SmartChargingEffectCreate) SetConnector(c *Connector) *SmartChargingEffectCreate {
+	return scec.SetConnectorID(c.ID)
 }
 
 // Mutation returns the SmartChargingEffectMutation object of the builder.
@@ -321,6 +327,9 @@ func (scec *SmartChargingEffectCreate) check() error {
 	if _, ok := scec.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`cwmodel: missing required field "SmartChargingEffect.updated_at"`)}
 	}
+	if _, ok := scec.mutation.EquipmentID(); !ok {
+		return &ValidationError{Name: "equipment_id", err: errors.New(`cwmodel: missing required field "SmartChargingEffect.equipment_id"`)}
+	}
 	if _, ok := scec.mutation.ConnectorID(); !ok {
 		return &ValidationError{Name: "connector_id", err: errors.New(`cwmodel: missing required field "SmartChargingEffect.connector_id"`)}
 	}
@@ -344,6 +353,9 @@ func (scec *SmartChargingEffectCreate) check() error {
 	}
 	if _, ok := scec.mutation.EquipmentID(); !ok {
 		return &ValidationError{Name: "equipment", err: errors.New(`cwmodel: missing required edge "SmartChargingEffect.equipment"`)}
+	}
+	if _, ok := scec.mutation.ConnectorID(); !ok {
+		return &ValidationError{Name: "connector", err: errors.New(`cwmodel: missing required edge "SmartChargingEffect.connector"`)}
 	}
 	return nil
 }
@@ -398,10 +410,6 @@ func (scec *SmartChargingEffectCreate) createSpec() (*SmartChargingEffect, *sqlg
 		_spec.SetField(smartchargingeffect.FieldUpdatedAt, field.TypeInt64, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := scec.mutation.ConnectorID(); ok {
-		_spec.SetField(smartchargingeffect.FieldConnectorID, field.TypeUint64, value)
-		_node.ConnectorID = value
-	}
 	if value, ok := scec.mutation.OrderID(); ok {
 		_spec.SetField(smartchargingeffect.FieldOrderID, field.TypeUint64, value)
 		_node.OrderID = value
@@ -455,7 +463,27 @@ func (scec *SmartChargingEffectCreate) createSpec() (*SmartChargingEffect, *sqlg
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.equipment_id = &nodes[0]
+		_node.EquipmentID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := scec.mutation.ConnectorIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   smartchargingeffect.ConnectorTable,
+			Columns: []string{smartchargingeffect.ConnectorColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: connector.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ConnectorID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

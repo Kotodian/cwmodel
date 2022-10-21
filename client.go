@@ -468,6 +468,22 @@ func (c *ConnectorClient) QueryReservation(co *Connector) *ReservationQuery {
 	return query
 }
 
+// QuerySmartChargingEffect queries the smart_charging_effect edge of a Connector.
+func (c *ConnectorClient) QuerySmartChargingEffect(co *Connector) *SmartChargingEffectQuery {
+	query := &SmartChargingEffectQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(connector.Table, connector.FieldID, id),
+			sqlgraph.To(smartchargingeffect.Table, smartchargingeffect.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, connector.SmartChargingEffectTable, connector.SmartChargingEffectColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ConnectorClient) Hooks() []Hook {
 	return c.hooks.Connector
@@ -2201,6 +2217,22 @@ func (c *SmartChargingEffectClient) QueryEquipment(sce *SmartChargingEffect) *Eq
 			sqlgraph.From(smartchargingeffect.Table, smartchargingeffect.FieldID, id),
 			sqlgraph.To(equipment.Table, equipment.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, smartchargingeffect.EquipmentTable, smartchargingeffect.EquipmentColumn),
+		)
+		fromV = sqlgraph.Neighbors(sce.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryConnector queries the connector edge of a SmartChargingEffect.
+func (c *SmartChargingEffectClient) QueryConnector(sce *SmartChargingEffect) *ConnectorQuery {
+	query := &ConnectorQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sce.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(smartchargingeffect.Table, smartchargingeffect.FieldID, id),
+			sqlgraph.To(connector.Table, connector.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, smartchargingeffect.ConnectorTable, smartchargingeffect.ConnectorColumn),
 		)
 		fromV = sqlgraph.Neighbors(sce.driver.Dialect(), step)
 		return fromV, nil

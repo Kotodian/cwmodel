@@ -50,8 +50,8 @@ func (Equipment) Edges() []ent.Edge {
 		edge.To("equipment_iot", EquipmentIot.Type).StorageKey(edge.Column("equipment_id")).Unique(),
 		edge.To("equipment_firmware_effect", EquipmentFirmwareEffect.Type),
 		edge.To("order_info", OrderInfo.Type),
-		edge.To("reservation", Reservation.Type).StorageKey(edge.Column("equipment_id")),
+		edge.To("reservation", Reservation.Type),
 		edge.To("equipment_log", EquipmentLog.Type),
-		edge.To("smart_charging_effect", SmartChargingEffect.Type).StorageKey(edge.Column("equipment_id")),
+		edge.To("smart_charging_effect", SmartChargingEffect.Type),
 	}
 }
