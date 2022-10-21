@@ -28,6 +28,8 @@ type EquipmentInfo struct {
 	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// 桩id
+	EquipmentID datasource.UUID `json:"equipmentId"`
 	// 桩序列号
 	EquipmentSn string `json:"equipmentSN"`
 	// 型号id
@@ -50,8 +52,7 @@ type EquipmentInfo struct {
 	RemoteAddress string `json:"remoteAddress"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentInfoQuery when eager-loading is set.
-	Edges        EquipmentInfoEdges `json:"-"`
-	equipment_id *datasource.UUID
+	Edges EquipmentInfoEdges `json:"-"`
 }
 
 // EquipmentInfoEdges holds the relations/edges for other nodes in the graph.
@@ -83,12 +84,10 @@ func (*EquipmentInfo) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case equipmentinfo.FieldState:
 			values[i] = new(sql.NullBool)
-		case equipmentinfo.FieldID, equipmentinfo.FieldVersion, equipmentinfo.FieldCreatedBy, equipmentinfo.FieldCreatedAt, equipmentinfo.FieldUpdatedBy, equipmentinfo.FieldUpdatedAt, equipmentinfo.FieldModelID, equipmentinfo.FieldManufacturerID, equipmentinfo.FieldFirmwareID, equipmentinfo.FieldEvseNumber, equipmentinfo.FieldAlarmNumber, equipmentinfo.FieldRegisterDatetime:
+		case equipmentinfo.FieldID, equipmentinfo.FieldVersion, equipmentinfo.FieldCreatedBy, equipmentinfo.FieldCreatedAt, equipmentinfo.FieldUpdatedBy, equipmentinfo.FieldUpdatedAt, equipmentinfo.FieldEquipmentID, equipmentinfo.FieldModelID, equipmentinfo.FieldManufacturerID, equipmentinfo.FieldFirmwareID, equipmentinfo.FieldEvseNumber, equipmentinfo.FieldAlarmNumber, equipmentinfo.FieldRegisterDatetime:
 			values[i] = new(sql.NullInt64)
 		case equipmentinfo.FieldEquipmentSn, equipmentinfo.FieldAccessPod, equipmentinfo.FieldRemoteAddress:
 			values[i] = new(sql.NullString)
-		case equipmentinfo.ForeignKeys[0]: // equipment_id
-			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type EquipmentInfo", columns[i])
 		}
@@ -139,6 +138,12 @@ func (ei *EquipmentInfo) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				ei.UpdatedAt = value.Int64
+			}
+		case equipmentinfo.FieldEquipmentID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
+			} else if value.Valid {
+				ei.EquipmentID = datasource.UUID(value.Int64)
 			}
 		case equipmentinfo.FieldEquipmentSn:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -200,13 +205,6 @@ func (ei *EquipmentInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ei.RemoteAddress = value.String
 			}
-		case equipmentinfo.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field equipment_id", values[i])
-			} else if value.Valid {
-				ei.equipment_id = new(datasource.UUID)
-				*ei.equipment_id = datasource.UUID(value.Int64)
-			}
 		}
 	}
 	return nil
@@ -254,6 +252,9 @@ func (ei *EquipmentInfo) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fmt.Sprintf("%v", ei.UpdatedAt))
+	builder.WriteString(", ")
+	builder.WriteString("equipment_id=")
+	builder.WriteString(fmt.Sprintf("%v", ei.EquipmentID))
 	builder.WriteString(", ")
 	builder.WriteString("equipment_sn=")
 	builder.WriteString(ei.EquipmentSn)

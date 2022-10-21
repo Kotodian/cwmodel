@@ -42,7 +42,7 @@ func (Equipment) Fields() []ent.Field {
 // Edges of the Equipment.
 func (Equipment) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("equipment_info", EquipmentInfo.Type).StorageKey(edge.Column("equipment_id")).StructTag(`json:"equipmentId"`).Unique(),
+		edge.To("equipment_info", EquipmentInfo.Type).Unique(),
 		edge.To("evse", Evse.Type).StorageKey(edge.Column("equipment_id")),
 		edge.To("connector", Connector.Type).StorageKey(edge.Column("equipment_id")),
 		edge.To("equipment_alarm", EquipmentAlarm.Type).StorageKey(edge.Column("equipment_id")),

@@ -30,6 +30,7 @@ func (EquipmentInfo) Annotations() []schema.Annotation {
 // Fields of the EquipmentInfo.
 func (EquipmentInfo) Fields() []ent.Field {
 	return []ent.Field{
+		field.Uint64("equipment_id").GoType(datasource.UUID(0)).Comment("桩id").StructTag(`json:"equipmentId"`),
 		field.String("equipment_sn").Comment("桩序列号").StructTag(`json:"equipmentSN"`),
 		field.Uint64("model_id").GoType(datasource.UUID(0)).Comment("型号id").StructTag(`json:"modelId"`),
 		field.Uint64("manufacturer_id").GoType(datasource.UUID(0)).Comment("产商id").StructTag(`json:"manufacturerId"`),
@@ -46,6 +47,6 @@ func (EquipmentInfo) Fields() []ent.Field {
 // Edges of the EquipmentInfo.
 func (EquipmentInfo) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("equipment", Equipment.Type).Ref("equipment_info").Unique().Required(),
+		edge.From("equipment", Equipment.Type).Field("equipment_id").Ref("equipment_info").Unique().Required(),
 	}
 }

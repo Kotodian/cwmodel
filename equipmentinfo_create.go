@@ -91,6 +91,12 @@ func (eic *EquipmentInfoCreate) SetNillableUpdatedAt(i *int64) *EquipmentInfoCre
 	return eic
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (eic *EquipmentInfoCreate) SetEquipmentID(d datasource.UUID) *EquipmentInfoCreate {
+	eic.mutation.SetEquipmentID(d)
+	return eic
+}
+
 // SetEquipmentSn sets the "equipment_sn" field.
 func (eic *EquipmentInfoCreate) SetEquipmentSn(s string) *EquipmentInfoCreate {
 	eic.mutation.SetEquipmentSn(s)
@@ -162,12 +168,6 @@ func (eic *EquipmentInfoCreate) SetNillableID(d *datasource.UUID) *EquipmentInfo
 	if d != nil {
 		eic.SetID(*d)
 	}
-	return eic
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eic *EquipmentInfoCreate) SetEquipmentID(id datasource.UUID) *EquipmentInfoCreate {
-	eic.mutation.SetEquipmentID(id)
 	return eic
 }
 
@@ -295,6 +295,9 @@ func (eic *EquipmentInfoCreate) check() error {
 	}
 	if _, ok := eic.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`cwmodel: missing required field "EquipmentInfo.updated_at"`)}
+	}
+	if _, ok := eic.mutation.EquipmentID(); !ok {
+		return &ValidationError{Name: "equipment_id", err: errors.New(`cwmodel: missing required field "EquipmentInfo.equipment_id"`)}
 	}
 	if _, ok := eic.mutation.EquipmentSn(); !ok {
 		return &ValidationError{Name: "equipment_sn", err: errors.New(`cwmodel: missing required field "EquipmentInfo.equipment_sn"`)}
@@ -439,7 +442,7 @@ func (eic *EquipmentInfoCreate) createSpec() (*EquipmentInfo, *sqlgraph.CreateSp
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.equipment_id = &nodes[0]
+		_node.EquipmentID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

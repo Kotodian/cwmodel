@@ -84,6 +84,12 @@ func (eiu *EquipmentInfoUpdate) AddUpdatedAt(i int64) *EquipmentInfoUpdate {
 	return eiu
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (eiu *EquipmentInfoUpdate) SetEquipmentID(d datasource.UUID) *EquipmentInfoUpdate {
+	eiu.mutation.SetEquipmentID(d)
+	return eiu
+}
+
 // SetEquipmentSn sets the "equipment_sn" field.
 func (eiu *EquipmentInfoUpdate) SetEquipmentSn(s string) *EquipmentInfoUpdate {
 	eiu.mutation.SetEquipmentSn(s)
@@ -183,12 +189,6 @@ func (eiu *EquipmentInfoUpdate) AddRegisterDatetime(i int64) *EquipmentInfoUpdat
 // SetRemoteAddress sets the "remote_address" field.
 func (eiu *EquipmentInfoUpdate) SetRemoteAddress(s string) *EquipmentInfoUpdate {
 	eiu.mutation.SetRemoteAddress(s)
-	return eiu
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eiu *EquipmentInfoUpdate) SetEquipmentID(id datasource.UUID) *EquipmentInfoUpdate {
-	eiu.mutation.SetEquipmentID(id)
 	return eiu
 }
 
@@ -478,6 +478,12 @@ func (eiuo *EquipmentInfoUpdateOne) AddUpdatedAt(i int64) *EquipmentInfoUpdateOn
 	return eiuo
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (eiuo *EquipmentInfoUpdateOne) SetEquipmentID(d datasource.UUID) *EquipmentInfoUpdateOne {
+	eiuo.mutation.SetEquipmentID(d)
+	return eiuo
+}
+
 // SetEquipmentSn sets the "equipment_sn" field.
 func (eiuo *EquipmentInfoUpdateOne) SetEquipmentSn(s string) *EquipmentInfoUpdateOne {
 	eiuo.mutation.SetEquipmentSn(s)
@@ -577,12 +583,6 @@ func (eiuo *EquipmentInfoUpdateOne) AddRegisterDatetime(i int64) *EquipmentInfoU
 // SetRemoteAddress sets the "remote_address" field.
 func (eiuo *EquipmentInfoUpdateOne) SetRemoteAddress(s string) *EquipmentInfoUpdateOne {
 	eiuo.mutation.SetRemoteAddress(s)
-	return eiuo
-}
-
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by ID.
-func (eiuo *EquipmentInfoUpdateOne) SetEquipmentID(id datasource.UUID) *EquipmentInfoUpdateOne {
-	eiuo.mutation.SetEquipmentID(id)
 	return eiuo
 }
 

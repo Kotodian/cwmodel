@@ -45,7 +45,7 @@ type Equipment struct {
 // EquipmentEdges holds the relations/edges for other nodes in the graph.
 type EquipmentEdges struct {
 	// EquipmentInfo holds the value of the equipment_info edge.
-	EquipmentInfo *EquipmentInfo `json:"equipmentId"`
+	EquipmentInfo *EquipmentInfo `json:"equipment_info,omitempty"`
 	// Evse holds the value of the evse edge.
 	Evse []*Evse `json:"evse,omitempty"`
 	// Connector holds the value of the connector edge.

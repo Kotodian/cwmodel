@@ -6329,6 +6329,42 @@ func (m *EquipmentInfoMutation) ResetUpdatedAt() {
 	m.addupdated_at = nil
 }
 
+// SetEquipmentID sets the "equipment_id" field.
+func (m *EquipmentInfoMutation) SetEquipmentID(d datasource.UUID) {
+	m.equipment = &d
+}
+
+// EquipmentID returns the value of the "equipment_id" field in the mutation.
+func (m *EquipmentInfoMutation) EquipmentID() (r datasource.UUID, exists bool) {
+	v := m.equipment
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEquipmentID returns the old "equipment_id" field's value of the EquipmentInfo entity.
+// If the EquipmentInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentInfoMutation) OldEquipmentID(ctx context.Context) (v datasource.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEquipmentID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEquipmentID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEquipmentID: %w", err)
+	}
+	return oldValue.EquipmentID, nil
+}
+
+// ResetEquipmentID resets all changes to the "equipment_id" field.
+func (m *EquipmentInfoMutation) ResetEquipmentID() {
+	m.equipment = nil
+}
+
 // SetEquipmentSn sets the "equipment_sn" field.
 func (m *EquipmentInfoMutation) SetEquipmentSn(s string) {
 	m.equipment_sn = &s
@@ -6809,11 +6845,6 @@ func (m *EquipmentInfoMutation) ResetRemoteAddress() {
 	m.remote_address = nil
 }
 
-// SetEquipmentID sets the "equipment" edge to the Equipment entity by id.
-func (m *EquipmentInfoMutation) SetEquipmentID(id datasource.UUID) {
-	m.equipment = &id
-}
-
 // ClearEquipment clears the "equipment" edge to the Equipment entity.
 func (m *EquipmentInfoMutation) ClearEquipment() {
 	m.clearedequipment = true
@@ -6822,14 +6853,6 @@ func (m *EquipmentInfoMutation) ClearEquipment() {
 // EquipmentCleared reports if the "equipment" edge to the Equipment entity was cleared.
 func (m *EquipmentInfoMutation) EquipmentCleared() bool {
 	return m.clearedequipment
-}
-
-// EquipmentID returns the "equipment" edge ID in the mutation.
-func (m *EquipmentInfoMutation) EquipmentID() (id datasource.UUID, exists bool) {
-	if m.equipment != nil {
-		return *m.equipment, true
-	}
-	return
 }
 
 // EquipmentIDs returns the "equipment" edge IDs in the mutation.
@@ -6867,7 +6890,7 @@ func (m *EquipmentInfoMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EquipmentInfoMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
 	if m.version != nil {
 		fields = append(fields, equipmentinfo.FieldVersion)
 	}
@@ -6882,6 +6905,9 @@ func (m *EquipmentInfoMutation) Fields() []string {
 	}
 	if m.updated_at != nil {
 		fields = append(fields, equipmentinfo.FieldUpdatedAt)
+	}
+	if m.equipment != nil {
+		fields = append(fields, equipmentinfo.FieldEquipmentID)
 	}
 	if m.equipment_sn != nil {
 		fields = append(fields, equipmentinfo.FieldEquipmentSn)
@@ -6931,6 +6957,8 @@ func (m *EquipmentInfoMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedBy()
 	case equipmentinfo.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case equipmentinfo.FieldEquipmentID:
+		return m.EquipmentID()
 	case equipmentinfo.FieldEquipmentSn:
 		return m.EquipmentSn()
 	case equipmentinfo.FieldModelID:
@@ -6970,6 +6998,8 @@ func (m *EquipmentInfoMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldUpdatedBy(ctx)
 	case equipmentinfo.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case equipmentinfo.FieldEquipmentID:
+		return m.OldEquipmentID(ctx)
 	case equipmentinfo.FieldEquipmentSn:
 		return m.OldEquipmentSn(ctx)
 	case equipmentinfo.FieldModelID:
@@ -7033,6 +7063,13 @@ func (m *EquipmentInfoMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case equipmentinfo.FieldEquipmentID:
+		v, ok := value.(datasource.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEquipmentID(v)
 		return nil
 	case equipmentinfo.FieldEquipmentSn:
 		v, ok := value.(string)
@@ -7302,6 +7339,9 @@ func (m *EquipmentInfoMutation) ResetField(name string) error {
 		return nil
 	case equipmentinfo.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case equipmentinfo.FieldEquipmentID:
+		m.ResetEquipmentID()
 		return nil
 	case equipmentinfo.FieldEquipmentSn:
 		m.ResetEquipmentSn()
