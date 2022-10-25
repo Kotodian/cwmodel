@@ -412,7 +412,7 @@ func (scec *SmartChargingEffectCreate) createSpec() (*SmartChargingEffect, *sqlg
 	}
 	if value, ok := scec.mutation.OrderID(); ok {
 		_spec.SetField(smartchargingeffect.FieldOrderID, field.TypeUint64, value)
-		_node.OrderID = value
+		_node.OrderID = &value
 	}
 	if value, ok := scec.mutation.SmartID(); ok {
 		_spec.SetField(smartchargingeffect.FieldSmartID, field.TypeInt64, value)

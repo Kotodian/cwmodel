@@ -36,7 +36,7 @@ type SmartChargingEffect struct {
 	// 枪id
 	ConnectorID datasource.UUID `json:"connector_id,omitempty"`
 	// 订单id
-	OrderID datasource.UUID `json:"order_id,omitempty"`
+	OrderID *datasource.UUID `json:"order_id,omitempty"`
 	// 智慧id
 	SmartID int64 `json:"smart_id,omitempty"`
 	// 开始时间
@@ -173,7 +173,8 @@ func (sce *SmartChargingEffect) assignValues(columns []string, values []any) err
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field order_id", values[i])
 			} else if value.Valid {
-				sce.OrderID = datasource.UUID(value.Int64)
+				sce.OrderID = new(datasource.UUID)
+				*sce.OrderID = datasource.UUID(value.Int64)
 			}
 		case smartchargingeffect.FieldSmartID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -286,8 +287,10 @@ func (sce *SmartChargingEffect) String() string {
 	builder.WriteString("connector_id=")
 	builder.WriteString(fmt.Sprintf("%v", sce.ConnectorID))
 	builder.WriteString(", ")
-	builder.WriteString("order_id=")
-	builder.WriteString(fmt.Sprintf("%v", sce.OrderID))
+	if v := sce.OrderID; v != nil {
+		builder.WriteString("order_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("smart_id=")
 	builder.WriteString(fmt.Sprintf("%v", sce.SmartID))
