@@ -874,6 +874,20 @@ func TransactionIDHasSuffix(v string) predicate.OrderInfo {
 	})
 }
 
+// TransactionIDIsNil applies the IsNil predicate on the "transaction_id" field.
+func TransactionIDIsNil() predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldTransactionID)))
+	})
+}
+
+// TransactionIDNotNil applies the NotNil predicate on the "transaction_id" field.
+func TransactionIDNotNil() predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldTransactionID)))
+	})
+}
+
 // TransactionIDEqualFold applies the EqualFold predicate on the "transaction_id" field.
 func TransactionIDEqualFold(v string) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {

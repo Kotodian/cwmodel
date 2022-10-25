@@ -36,7 +36,7 @@ type OrderInfo struct {
 	// 远程启动id
 	RemoteStartID *int64 `json:"remote_start_id,omitempty"`
 	// 桩端订单id
-	TransactionID string `json:"transaction_id,omitempty"`
+	TransactionID *string `json:"transaction_id,omitempty"`
 	// 授权id
 	AuthorizationID *string `json:"authorization_id,omitempty"`
 	// 授权模式
@@ -221,7 +221,8 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field transaction_id", values[i])
 			} else if value.Valid {
-				oi.TransactionID = value.String
+				oi.TransactionID = new(string)
+				*oi.TransactionID = value.String
 			}
 		case orderinfo.FieldAuthorizationID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -443,8 +444,10 @@ func (oi *OrderInfo) String() string {
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
-	builder.WriteString("transaction_id=")
-	builder.WriteString(oi.TransactionID)
+	if v := oi.TransactionID; v != nil {
+		builder.WriteString("transaction_id=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
 	if v := oi.AuthorizationID; v != nil {
 		builder.WriteString("authorization_id=")

@@ -131,6 +131,20 @@ func (oiu *OrderInfoUpdate) SetTransactionID(s string) *OrderInfoUpdate {
 	return oiu
 }
 
+// SetNillableTransactionID sets the "transaction_id" field if the given value is not nil.
+func (oiu *OrderInfoUpdate) SetNillableTransactionID(s *string) *OrderInfoUpdate {
+	if s != nil {
+		oiu.SetTransactionID(*s)
+	}
+	return oiu
+}
+
+// ClearTransactionID clears the value of the "transaction_id" field.
+func (oiu *OrderInfoUpdate) ClearTransactionID() *OrderInfoUpdate {
+	oiu.mutation.ClearTransactionID()
+	return oiu
+}
+
 // SetAuthorizationID sets the "authorization_id" field.
 func (oiu *OrderInfoUpdate) SetAuthorizationID(s string) *OrderInfoUpdate {
 	oiu.mutation.SetAuthorizationID(s)
@@ -860,6 +874,9 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := oiu.mutation.TransactionID(); ok {
 		_spec.SetField(orderinfo.FieldTransactionID, field.TypeString, value)
 	}
+	if oiu.mutation.TransactionIDCleared() {
+		_spec.ClearField(orderinfo.FieldTransactionID, field.TypeString)
+	}
 	if value, ok := oiu.mutation.AuthorizationID(); ok {
 		_spec.SetField(orderinfo.FieldAuthorizationID, field.TypeString, value)
 	}
@@ -1280,6 +1297,20 @@ func (oiuo *OrderInfoUpdateOne) ClearRemoteStartID() *OrderInfoUpdateOne {
 // SetTransactionID sets the "transaction_id" field.
 func (oiuo *OrderInfoUpdateOne) SetTransactionID(s string) *OrderInfoUpdateOne {
 	oiuo.mutation.SetTransactionID(s)
+	return oiuo
+}
+
+// SetNillableTransactionID sets the "transaction_id" field if the given value is not nil.
+func (oiuo *OrderInfoUpdateOne) SetNillableTransactionID(s *string) *OrderInfoUpdateOne {
+	if s != nil {
+		oiuo.SetTransactionID(*s)
+	}
+	return oiuo
+}
+
+// ClearTransactionID clears the value of the "transaction_id" field.
+func (oiuo *OrderInfoUpdateOne) ClearTransactionID() *OrderInfoUpdateOne {
+	oiuo.mutation.ClearTransactionID()
 	return oiuo
 }
 
@@ -2041,6 +2072,9 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 	}
 	if value, ok := oiuo.mutation.TransactionID(); ok {
 		_spec.SetField(orderinfo.FieldTransactionID, field.TypeString, value)
+	}
+	if oiuo.mutation.TransactionIDCleared() {
+		_spec.ClearField(orderinfo.FieldTransactionID, field.TypeString)
 	}
 	if value, ok := oiuo.mutation.AuthorizationID(); ok {
 		_spec.SetField(orderinfo.FieldAuthorizationID, field.TypeString, value)

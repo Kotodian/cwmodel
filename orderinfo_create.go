@@ -125,6 +125,14 @@ func (oic *OrderInfoCreate) SetTransactionID(s string) *OrderInfoCreate {
 	return oic
 }
 
+// SetNillableTransactionID sets the "transaction_id" field if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillableTransactionID(s *string) *OrderInfoCreate {
+	if s != nil {
+		oic.SetTransactionID(*s)
+	}
+	return oic
+}
+
 // SetAuthorizationID sets the "authorization_id" field.
 func (oic *OrderInfoCreate) SetAuthorizationID(s string) *OrderInfoCreate {
 	oic.mutation.SetAuthorizationID(s)
@@ -582,9 +590,6 @@ func (oic *OrderInfoCreate) check() error {
 	if _, ok := oic.mutation.ConnectorID(); !ok {
 		return &ValidationError{Name: "connector_id", err: errors.New(`cwmodel: missing required field "OrderInfo.connector_id"`)}
 	}
-	if _, ok := oic.mutation.TransactionID(); !ok {
-		return &ValidationError{Name: "transaction_id", err: errors.New(`cwmodel: missing required field "OrderInfo.transaction_id"`)}
-	}
 	if _, ok := oic.mutation.Offline(); !ok {
 		return &ValidationError{Name: "offline", err: errors.New(`cwmodel: missing required field "OrderInfo.offline"`)}
 	}
@@ -656,7 +661,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := oic.mutation.TransactionID(); ok {
 		_spec.SetField(orderinfo.FieldTransactionID, field.TypeString, value)
-		_node.TransactionID = value
+		_node.TransactionID = &value
 	}
 	if value, ok := oic.mutation.AuthorizationID(); ok {
 		_spec.SetField(orderinfo.FieldAuthorizationID, field.TypeString, value)

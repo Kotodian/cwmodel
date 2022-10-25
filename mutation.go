@@ -15157,7 +15157,7 @@ func (m *OrderInfoMutation) TransactionID() (r string, exists bool) {
 // OldTransactionID returns the old "transaction_id" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldTransactionID(ctx context.Context) (v string, err error) {
+func (m *OrderInfoMutation) OldTransactionID(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTransactionID is only allowed on UpdateOne operations")
 	}
@@ -15171,9 +15171,22 @@ func (m *OrderInfoMutation) OldTransactionID(ctx context.Context) (v string, err
 	return oldValue.TransactionID, nil
 }
 
+// ClearTransactionID clears the value of the "transaction_id" field.
+func (m *OrderInfoMutation) ClearTransactionID() {
+	m.transaction_id = nil
+	m.clearedFields[orderinfo.FieldTransactionID] = struct{}{}
+}
+
+// TransactionIDCleared returns if the "transaction_id" field was cleared in this mutation.
+func (m *OrderInfoMutation) TransactionIDCleared() bool {
+	_, ok := m.clearedFields[orderinfo.FieldTransactionID]
+	return ok
+}
+
 // ResetTransactionID resets all changes to the "transaction_id" field.
 func (m *OrderInfoMutation) ResetTransactionID() {
 	m.transaction_id = nil
+	delete(m.clearedFields, orderinfo.FieldTransactionID)
 }
 
 // SetAuthorizationID sets the "authorization_id" field.
@@ -17515,6 +17528,9 @@ func (m *OrderInfoMutation) ClearedFields() []string {
 	if m.FieldCleared(orderinfo.FieldRemoteStartID) {
 		fields = append(fields, orderinfo.FieldRemoteStartID)
 	}
+	if m.FieldCleared(orderinfo.FieldTransactionID) {
+		fields = append(fields, orderinfo.FieldTransactionID)
+	}
 	if m.FieldCleared(orderinfo.FieldAuthorizationID) {
 		fields = append(fields, orderinfo.FieldAuthorizationID)
 	}
@@ -17591,6 +17607,9 @@ func (m *OrderInfoMutation) ClearField(name string) error {
 	switch name {
 	case orderinfo.FieldRemoteStartID:
 		m.ClearRemoteStartID()
+		return nil
+	case orderinfo.FieldTransactionID:
+		m.ClearTransactionID()
 		return nil
 	case orderinfo.FieldAuthorizationID:
 		m.ClearAuthorizationID()
