@@ -31,7 +31,7 @@ func (OrderInfo) Fields() []ent.Field {
 		field.Uint64("equipment_id").GoType(datasource.UUID(0)).Comment("桩id"),
 		field.Uint64("connector_id").GoType(datasource.UUID(0)).Comment("枪id"),
 		field.Int64("remote_start_id").Optional().Nillable().Comment("远程启动id"),
-		field.String("transaction_id").Comment("桩端订单id"),
+		field.String("transaction_id").Optional().Nillable().Comment("桩端订单id"),
 		field.String("authorization_id").Optional().Nillable().Comment("授权id"),
 		field.Int("authorization_mode").Optional().Nillable().Comment("授权模式"),
 		field.String("customer_id").Optional().Nillable().Comment("客户id"),

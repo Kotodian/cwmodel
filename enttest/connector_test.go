@@ -111,6 +111,7 @@ func TestUpdateConnector(t *testing.T) {
 		connector, err = connector.Update().
 			SetBeforeState(1).
 			SetCurrentState(1).
+			ClearOrderID().
 			Save(ctx)
 		assert.Nil(t, err)
 		assert.Equal(t, 1, connector.BeforeState)
