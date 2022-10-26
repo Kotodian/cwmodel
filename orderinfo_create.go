@@ -327,6 +327,14 @@ func (oic *OrderInfoCreate) SetPriceSchemeReleaseID(i int64) *OrderInfoCreate {
 	return oic
 }
 
+// SetNillablePriceSchemeReleaseID sets the "price_scheme_release_id" field if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillablePriceSchemeReleaseID(i *int64) *OrderInfoCreate {
+	if i != nil {
+		oic.SetPriceSchemeReleaseID(*i)
+	}
+	return oic
+}
+
 // SetOrderStartTime sets the "order_start_time" field.
 func (oic *OrderInfoCreate) SetOrderStartTime(i int64) *OrderInfoCreate {
 	oic.mutation.SetOrderStartTime(i)
@@ -593,9 +601,6 @@ func (oic *OrderInfoCreate) check() error {
 	if _, ok := oic.mutation.Offline(); !ok {
 		return &ValidationError{Name: "offline", err: errors.New(`cwmodel: missing required field "OrderInfo.offline"`)}
 	}
-	if _, ok := oic.mutation.PriceSchemeReleaseID(); !ok {
-		return &ValidationError{Name: "price_scheme_release_id", err: errors.New(`cwmodel: missing required field "OrderInfo.price_scheme_release_id"`)}
-	}
 	if _, ok := oic.mutation.ConnectorID(); !ok {
 		return &ValidationError{Name: "connector", err: errors.New(`cwmodel: missing required edge "OrderInfo.connector"`)}
 	}
@@ -721,7 +726,7 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := oic.mutation.PriceSchemeReleaseID(); ok {
 		_spec.SetField(orderinfo.FieldPriceSchemeReleaseID, field.TypeInt64, value)
-		_node.PriceSchemeReleaseID = value
+		_node.PriceSchemeReleaseID = &value
 	}
 	if value, ok := oic.mutation.OrderStartTime(); ok {
 		_spec.SetField(orderinfo.FieldOrderStartTime, field.TypeInt64, value)

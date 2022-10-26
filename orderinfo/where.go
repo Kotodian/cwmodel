@@ -2099,6 +2099,20 @@ func PriceSchemeReleaseIDLTE(v int64) predicate.OrderInfo {
 	})
 }
 
+// PriceSchemeReleaseIDIsNil applies the IsNil predicate on the "price_scheme_release_id" field.
+func PriceSchemeReleaseIDIsNil() predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldPriceSchemeReleaseID)))
+	})
+}
+
+// PriceSchemeReleaseIDNotNil applies the NotNil predicate on the "price_scheme_release_id" field.
+func PriceSchemeReleaseIDNotNil() predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldPriceSchemeReleaseID)))
+	})
+}
+
 // OrderStartTimeEQ applies the EQ predicate on the "order_start_time" field.
 func OrderStartTimeEQ(v int64) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {

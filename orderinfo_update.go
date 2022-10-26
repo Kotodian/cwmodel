@@ -488,9 +488,23 @@ func (oiu *OrderInfoUpdate) SetPriceSchemeReleaseID(i int64) *OrderInfoUpdate {
 	return oiu
 }
 
+// SetNillablePriceSchemeReleaseID sets the "price_scheme_release_id" field if the given value is not nil.
+func (oiu *OrderInfoUpdate) SetNillablePriceSchemeReleaseID(i *int64) *OrderInfoUpdate {
+	if i != nil {
+		oiu.SetPriceSchemeReleaseID(*i)
+	}
+	return oiu
+}
+
 // AddPriceSchemeReleaseID adds i to the "price_scheme_release_id" field.
 func (oiu *OrderInfoUpdate) AddPriceSchemeReleaseID(i int64) *OrderInfoUpdate {
 	oiu.mutation.AddPriceSchemeReleaseID(i)
+	return oiu
+}
+
+// ClearPriceSchemeReleaseID clears the value of the "price_scheme_release_id" field.
+func (oiu *OrderInfoUpdate) ClearPriceSchemeReleaseID() *OrderInfoUpdate {
+	oiu.mutation.ClearPriceSchemeReleaseID()
 	return oiu
 }
 
@@ -993,6 +1007,9 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := oiu.mutation.AddedPriceSchemeReleaseID(); ok {
 		_spec.AddField(orderinfo.FieldPriceSchemeReleaseID, field.TypeInt64, value)
+	}
+	if oiu.mutation.PriceSchemeReleaseIDCleared() {
+		_spec.ClearField(orderinfo.FieldPriceSchemeReleaseID, field.TypeInt64)
 	}
 	if value, ok := oiu.mutation.OrderStartTime(); ok {
 		_spec.SetField(orderinfo.FieldOrderStartTime, field.TypeInt64, value)
@@ -1657,9 +1674,23 @@ func (oiuo *OrderInfoUpdateOne) SetPriceSchemeReleaseID(i int64) *OrderInfoUpdat
 	return oiuo
 }
 
+// SetNillablePriceSchemeReleaseID sets the "price_scheme_release_id" field if the given value is not nil.
+func (oiuo *OrderInfoUpdateOne) SetNillablePriceSchemeReleaseID(i *int64) *OrderInfoUpdateOne {
+	if i != nil {
+		oiuo.SetPriceSchemeReleaseID(*i)
+	}
+	return oiuo
+}
+
 // AddPriceSchemeReleaseID adds i to the "price_scheme_release_id" field.
 func (oiuo *OrderInfoUpdateOne) AddPriceSchemeReleaseID(i int64) *OrderInfoUpdateOne {
 	oiuo.mutation.AddPriceSchemeReleaseID(i)
+	return oiuo
+}
+
+// ClearPriceSchemeReleaseID clears the value of the "price_scheme_release_id" field.
+func (oiuo *OrderInfoUpdateOne) ClearPriceSchemeReleaseID() *OrderInfoUpdateOne {
+	oiuo.mutation.ClearPriceSchemeReleaseID()
 	return oiuo
 }
 
@@ -2192,6 +2223,9 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 	}
 	if value, ok := oiuo.mutation.AddedPriceSchemeReleaseID(); ok {
 		_spec.AddField(orderinfo.FieldPriceSchemeReleaseID, field.TypeInt64, value)
+	}
+	if oiuo.mutation.PriceSchemeReleaseIDCleared() {
+		_spec.ClearField(orderinfo.FieldPriceSchemeReleaseID, field.TypeInt64)
 	}
 	if value, ok := oiuo.mutation.OrderStartTime(); ok {
 		_spec.SetField(orderinfo.FieldOrderStartTime, field.TypeInt64, value)

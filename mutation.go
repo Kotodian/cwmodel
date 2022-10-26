@@ -16090,7 +16090,7 @@ func (m *OrderInfoMutation) PriceSchemeReleaseID() (r int64, exists bool) {
 // OldPriceSchemeReleaseID returns the old "price_scheme_release_id" field's value of the OrderInfo entity.
 // If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderInfoMutation) OldPriceSchemeReleaseID(ctx context.Context) (v int64, err error) {
+func (m *OrderInfoMutation) OldPriceSchemeReleaseID(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPriceSchemeReleaseID is only allowed on UpdateOne operations")
 	}
@@ -16122,10 +16122,24 @@ func (m *OrderInfoMutation) AddedPriceSchemeReleaseID() (r int64, exists bool) {
 	return *v, true
 }
 
+// ClearPriceSchemeReleaseID clears the value of the "price_scheme_release_id" field.
+func (m *OrderInfoMutation) ClearPriceSchemeReleaseID() {
+	m.price_scheme_release_id = nil
+	m.addprice_scheme_release_id = nil
+	m.clearedFields[orderinfo.FieldPriceSchemeReleaseID] = struct{}{}
+}
+
+// PriceSchemeReleaseIDCleared returns if the "price_scheme_release_id" field was cleared in this mutation.
+func (m *OrderInfoMutation) PriceSchemeReleaseIDCleared() bool {
+	_, ok := m.clearedFields[orderinfo.FieldPriceSchemeReleaseID]
+	return ok
+}
+
 // ResetPriceSchemeReleaseID resets all changes to the "price_scheme_release_id" field.
 func (m *OrderInfoMutation) ResetPriceSchemeReleaseID() {
 	m.price_scheme_release_id = nil
 	m.addprice_scheme_release_id = nil
+	delete(m.clearedFields, orderinfo.FieldPriceSchemeReleaseID)
 }
 
 // SetOrderStartTime sets the "order_start_time" field.
@@ -17570,6 +17584,9 @@ func (m *OrderInfoMutation) ClearedFields() []string {
 	if m.FieldCleared(orderinfo.FieldState) {
 		fields = append(fields, orderinfo.FieldState)
 	}
+	if m.FieldCleared(orderinfo.FieldPriceSchemeReleaseID) {
+		fields = append(fields, orderinfo.FieldPriceSchemeReleaseID)
+	}
 	if m.FieldCleared(orderinfo.FieldOrderStartTime) {
 		fields = append(fields, orderinfo.FieldOrderStartTime)
 	}
@@ -17649,6 +17666,9 @@ func (m *OrderInfoMutation) ClearField(name string) error {
 		return nil
 	case orderinfo.FieldState:
 		m.ClearState()
+		return nil
+	case orderinfo.FieldPriceSchemeReleaseID:
+		m.ClearPriceSchemeReleaseID()
 		return nil
 	case orderinfo.FieldOrderStartTime:
 		m.ClearOrderStartTime()

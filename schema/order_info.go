@@ -46,7 +46,7 @@ func (OrderInfo) Fields() []ent.Field {
 		field.Int32("stop_reason_code").Optional().Nillable().Comment("停止原因代码"),
 		field.Int("state").Optional().Comment("订单状态"),
 		field.Bool("offline").Comment("是否为离线订单"),
-		field.Int64("price_scheme_release_id").Comment("计费模板id"),
+		field.Int64("price_scheme_release_id").Optional().Nillable().Comment("计费模板id"),
 		field.Int64("order_start_time").Optional().Nillable().Comment("订单开始时间"),
 		field.Int64("order_final_time").Optional().Nillable().Comment("订单结束时间"),
 		field.Int64("charge_start_time").Optional().Nillable().Comment("充电开始时间"),

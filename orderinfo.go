@@ -66,7 +66,7 @@ type OrderInfo struct {
 	// 是否为离线订单
 	Offline bool `json:"offline,omitempty"`
 	// 计费模板id
-	PriceSchemeReleaseID int64 `json:"price_scheme_release_id,omitempty"`
+	PriceSchemeReleaseID *int64 `json:"price_scheme_release_id,omitempty"`
 	// 订单开始时间
 	OrderStartTime *int64 `json:"order_start_time,omitempty"`
 	// 订单结束时间
@@ -324,7 +324,8 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field price_scheme_release_id", values[i])
 			} else if value.Valid {
-				oi.PriceSchemeReleaseID = value.Int64
+				oi.PriceSchemeReleaseID = new(int64)
+				*oi.PriceSchemeReleaseID = value.Int64
 			}
 		case orderinfo.FieldOrderStartTime:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -515,8 +516,10 @@ func (oi *OrderInfo) String() string {
 	builder.WriteString("offline=")
 	builder.WriteString(fmt.Sprintf("%v", oi.Offline))
 	builder.WriteString(", ")
-	builder.WriteString("price_scheme_release_id=")
-	builder.WriteString(fmt.Sprintf("%v", oi.PriceSchemeReleaseID))
+	if v := oi.PriceSchemeReleaseID; v != nil {
+		builder.WriteString("price_scheme_release_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	if v := oi.OrderStartTime; v != nil {
 		builder.WriteString("order_start_time=")
