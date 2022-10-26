@@ -44,7 +44,7 @@ type Connector struct {
 	// 之前状态
 	BeforeState int `json:"before_state"`
 	// 充电状态
-	ChargingState *int `json:"charging_state"`
+	ChargingState int `json:"charging_state"`
 	// 预约id
 	ReservationID *datasource.UUID `json:"reservation_id"`
 	// 订单id
@@ -237,8 +237,7 @@ func (c *Connector) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field charging_state", values[i])
 			} else if value.Valid {
-				c.ChargingState = new(int)
-				*c.ChargingState = int(value.Int64)
+				c.ChargingState = int(value.Int64)
 			}
 		case connector.FieldReservationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -349,10 +348,8 @@ func (c *Connector) String() string {
 	builder.WriteString("before_state=")
 	builder.WriteString(fmt.Sprintf("%v", c.BeforeState))
 	builder.WriteString(", ")
-	if v := c.ChargingState; v != nil {
-		builder.WriteString("charging_state=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
-	}
+	builder.WriteString("charging_state=")
+	builder.WriteString(fmt.Sprintf("%v", c.ChargingState))
 	builder.WriteString(", ")
 	if v := c.ReservationID; v != nil {
 		builder.WriteString("reservation_id=")

@@ -1095,20 +1095,6 @@ func ChargingStateLTE(v int) predicate.Connector {
 	})
 }
 
-// ChargingStateIsNil applies the IsNil predicate on the "charging_state" field.
-func ChargingStateIsNil() predicate.Connector {
-	return predicate.Connector(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldChargingState)))
-	})
-}
-
-// ChargingStateNotNil applies the NotNil predicate on the "charging_state" field.
-func ChargingStateNotNil() predicate.Connector {
-	return predicate.Connector(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldChargingState)))
-	})
-}
-
 // ReservationIDEQ applies the EQ predicate on the "reservation_id" field.
 func ReservationIDEQ(v datasource.UUID) predicate.Connector {
 	vc := uint64(v)

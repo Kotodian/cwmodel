@@ -151,23 +151,9 @@ func (cu *ConnectorUpdate) SetChargingState(i int) *ConnectorUpdate {
 	return cu
 }
 
-// SetNillableChargingState sets the "charging_state" field if the given value is not nil.
-func (cu *ConnectorUpdate) SetNillableChargingState(i *int) *ConnectorUpdate {
-	if i != nil {
-		cu.SetChargingState(*i)
-	}
-	return cu
-}
-
 // AddChargingState adds i to the "charging_state" field.
 func (cu *ConnectorUpdate) AddChargingState(i int) *ConnectorUpdate {
 	cu.mutation.AddChargingState(i)
-	return cu
-}
-
-// ClearChargingState clears the value of the "charging_state" field.
-func (cu *ConnectorUpdate) ClearChargingState() *ConnectorUpdate {
-	cu.mutation.ClearChargingState()
 	return cu
 }
 
@@ -516,9 +502,6 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := cu.mutation.AddedChargingState(); ok {
 		_spec.AddField(connector.FieldChargingState, field.TypeInt, value)
-	}
-	if cu.mutation.ChargingStateCleared() {
-		_spec.ClearField(connector.FieldChargingState, field.TypeInt)
 	}
 	if value, ok := cu.mutation.ReservationID(); ok {
 		_spec.SetField(connector.FieldReservationID, field.TypeUint64, value)
@@ -910,23 +893,9 @@ func (cuo *ConnectorUpdateOne) SetChargingState(i int) *ConnectorUpdateOne {
 	return cuo
 }
 
-// SetNillableChargingState sets the "charging_state" field if the given value is not nil.
-func (cuo *ConnectorUpdateOne) SetNillableChargingState(i *int) *ConnectorUpdateOne {
-	if i != nil {
-		cuo.SetChargingState(*i)
-	}
-	return cuo
-}
-
 // AddChargingState adds i to the "charging_state" field.
 func (cuo *ConnectorUpdateOne) AddChargingState(i int) *ConnectorUpdateOne {
 	cuo.mutation.AddChargingState(i)
-	return cuo
-}
-
-// ClearChargingState clears the value of the "charging_state" field.
-func (cuo *ConnectorUpdateOne) ClearChargingState() *ConnectorUpdateOne {
-	cuo.mutation.ClearChargingState()
 	return cuo
 }
 
@@ -1305,9 +1274,6 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 	}
 	if value, ok := cuo.mutation.AddedChargingState(); ok {
 		_spec.AddField(connector.FieldChargingState, field.TypeInt, value)
-	}
-	if cuo.mutation.ChargingStateCleared() {
-		_spec.ClearField(connector.FieldChargingState, field.TypeInt)
 	}
 	if value, ok := cuo.mutation.ReservationID(); ok {
 		_spec.SetField(connector.FieldReservationID, field.TypeUint64, value)

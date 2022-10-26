@@ -143,14 +143,6 @@ func (cc *ConnectorCreate) SetChargingState(i int) *ConnectorCreate {
 	return cc
 }
 
-// SetNillableChargingState sets the "charging_state" field if the given value is not nil.
-func (cc *ConnectorCreate) SetNillableChargingState(i *int) *ConnectorCreate {
-	if i != nil {
-		cc.SetChargingState(*i)
-	}
-	return cc
-}
-
 // SetReservationID sets the "reservation_id" field.
 func (cc *ConnectorCreate) SetReservationID(d datasource.UUID) *ConnectorCreate {
 	cc.mutation.SetReservationID(d)
@@ -407,6 +399,9 @@ func (cc *ConnectorCreate) check() error {
 	if _, ok := cc.mutation.BeforeState(); !ok {
 		return &ValidationError{Name: "before_state", err: errors.New(`cwmodel: missing required field "Connector.before_state"`)}
 	}
+	if _, ok := cc.mutation.ChargingState(); !ok {
+		return &ValidationError{Name: "charging_state", err: errors.New(`cwmodel: missing required field "Connector.charging_state"`)}
+	}
 	if _, ok := cc.mutation.ParkNo(); !ok {
 		return &ValidationError{Name: "park_no", err: errors.New(`cwmodel: missing required field "Connector.park_no"`)}
 	}
@@ -491,7 +486,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := cc.mutation.ChargingState(); ok {
 		_spec.SetField(connector.FieldChargingState, field.TypeInt, value)
-		_node.ChargingState = &value
+		_node.ChargingState = value
 	}
 	if value, ok := cc.mutation.ReservationID(); ok {
 		_spec.SetField(connector.FieldReservationID, field.TypeUint64, value)

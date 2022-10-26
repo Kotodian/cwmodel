@@ -1172,7 +1172,7 @@ func (m *ConnectorMutation) ChargingState() (r int, exists bool) {
 // OldChargingState returns the old "charging_state" field's value of the Connector entity.
 // If the Connector object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ConnectorMutation) OldChargingState(ctx context.Context) (v *int, err error) {
+func (m *ConnectorMutation) OldChargingState(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldChargingState is only allowed on UpdateOne operations")
 	}
@@ -1204,24 +1204,10 @@ func (m *ConnectorMutation) AddedChargingState() (r int, exists bool) {
 	return *v, true
 }
 
-// ClearChargingState clears the value of the "charging_state" field.
-func (m *ConnectorMutation) ClearChargingState() {
-	m.charging_state = nil
-	m.addcharging_state = nil
-	m.clearedFields[connector.FieldChargingState] = struct{}{}
-}
-
-// ChargingStateCleared returns if the "charging_state" field was cleared in this mutation.
-func (m *ConnectorMutation) ChargingStateCleared() bool {
-	_, ok := m.clearedFields[connector.FieldChargingState]
-	return ok
-}
-
 // ResetChargingState resets all changes to the "charging_state" field.
 func (m *ConnectorMutation) ResetChargingState() {
 	m.charging_state = nil
 	m.addcharging_state = nil
-	delete(m.clearedFields, connector.FieldChargingState)
 }
 
 // SetReservationID sets the "reservation_id" field.
@@ -2037,9 +2023,6 @@ func (m *ConnectorMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *ConnectorMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(connector.FieldChargingState) {
-		fields = append(fields, connector.FieldChargingState)
-	}
 	if m.FieldCleared(connector.FieldReservationID) {
 		fields = append(fields, connector.FieldReservationID)
 	}
@@ -2060,9 +2043,6 @@ func (m *ConnectorMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *ConnectorMutation) ClearField(name string) error {
 	switch name {
-	case connector.FieldChargingState:
-		m.ClearChargingState()
-		return nil
 	case connector.FieldReservationID:
 		m.ClearReservationID()
 		return nil
