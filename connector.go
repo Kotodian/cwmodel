@@ -30,27 +30,27 @@ type Connector struct {
 	// 修改时间
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// 桩id
-	EquipmentID datasource.UUID `json:"equipment_id,omitempty"`
+	EquipmentID datasource.UUID `json:"equipment_id"`
 	// 设备id
-	EvseID datasource.UUID `json:"evse_id,omitempty"`
+	EvseID datasource.UUID `json:"evse_id"`
 	// 桩序列号
-	EquipmentSn string `json:"equipment_sn,omitempty"`
+	EquipmentSn string `json:"equipment_sn"`
 	// 设备序列号
-	EvseSerial string `json:"evse_serial,omitempty"`
+	EvseSerial string `json:"evse_serial"`
 	// 枪序列号
-	Serial string `json:"serial,omitempty"`
+	Serial string `json:"serial"`
 	// 当前状态
-	CurrentState int `json:"current_state,omitempty"`
+	CurrentState int `json:"current_state"`
 	// 之前状态
-	BeforeState int `json:"before_state,omitempty"`
+	BeforeState int `json:"before_state"`
 	// 充电状态
-	ChargingState int `json:"charging_state,omitempty"`
+	ChargingState *int `json:"charging_state"`
 	// 预约id
-	ReservationID *datasource.UUID `json:"reservation_id,omitempty"`
+	ReservationID *datasource.UUID `json:"reservation_id"`
 	// 订单id
-	OrderID *datasource.UUID `json:"order_id,omitempty"`
+	OrderID *datasource.UUID `json:"order_id"`
 	// 停车编号
-	ParkNo string `json:"park_no,omitempty"`
+	ParkNo string `json:"park_no"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ConnectorQuery when eager-loading is set.
 	Edges ConnectorEdges `json:"-"`
@@ -237,7 +237,8 @@ func (c *Connector) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field charging_state", values[i])
 			} else if value.Valid {
-				c.ChargingState = int(value.Int64)
+				c.ChargingState = new(int)
+				*c.ChargingState = int(value.Int64)
 			}
 		case connector.FieldReservationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -348,8 +349,10 @@ func (c *Connector) String() string {
 	builder.WriteString("before_state=")
 	builder.WriteString(fmt.Sprintf("%v", c.BeforeState))
 	builder.WriteString(", ")
-	builder.WriteString("charging_state=")
-	builder.WriteString(fmt.Sprintf("%v", c.ChargingState))
+	if v := c.ChargingState; v != nil {
+		builder.WriteString("charging_state=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	if v := c.ReservationID; v != nil {
 		builder.WriteString("reservation_id=")

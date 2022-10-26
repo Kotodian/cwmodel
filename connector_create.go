@@ -491,7 +491,7 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := cc.mutation.ChargingState(); ok {
 		_spec.SetField(connector.FieldChargingState, field.TypeInt, value)
-		_node.ChargingState = value
+		_node.ChargingState = &value
 	}
 	if value, ok := cc.mutation.ReservationID(); ok {
 		_spec.SetField(connector.FieldReservationID, field.TypeUint64, value)
