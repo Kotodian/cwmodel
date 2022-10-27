@@ -290,7 +290,7 @@ func (eiq *EquipmentInfoQuery) WithEquipment(opts ...func(*EquipmentQuery)) *Equ
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -318,7 +318,7 @@ func (eiq *EquipmentInfoQuery) GroupBy(field string, fields ...string) *Equipmen
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //	}
 //
 //	client.EquipmentInfo.Query().

@@ -42,14 +42,6 @@ func (ec *EvseCreate) SetCreatedBy(d datasource.UUID) *EvseCreate {
 	return ec
 }
 
-// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (ec *EvseCreate) SetNillableCreatedBy(d *datasource.UUID) *EvseCreate {
-	if d != nil {
-		ec.SetCreatedBy(*d)
-	}
-	return ec
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (ec *EvseCreate) SetCreatedAt(i int64) *EvseCreate {
 	ec.mutation.SetCreatedAt(i)
@@ -67,14 +59,6 @@ func (ec *EvseCreate) SetNillableCreatedAt(i *int64) *EvseCreate {
 // SetUpdatedBy sets the "updated_by" field.
 func (ec *EvseCreate) SetUpdatedBy(d datasource.UUID) *EvseCreate {
 	ec.mutation.SetUpdatedBy(d)
-	return ec
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ec *EvseCreate) SetNillableUpdatedBy(d *datasource.UUID) *EvseCreate {
-	if d != nil {
-		ec.SetUpdatedBy(*d)
-	}
 	return ec
 }
 
@@ -225,17 +209,9 @@ func (ec *EvseCreate) defaults() {
 		v := evse.DefaultVersion
 		ec.mutation.SetVersion(v)
 	}
-	if _, ok := ec.mutation.CreatedBy(); !ok {
-		v := evse.DefaultCreatedBy
-		ec.mutation.SetCreatedBy(v)
-	}
 	if _, ok := ec.mutation.CreatedAt(); !ok {
 		v := evse.DefaultCreatedAt
 		ec.mutation.SetCreatedAt(v)
-	}
-	if _, ok := ec.mutation.UpdatedBy(); !ok {
-		v := evse.DefaultUpdatedBy
-		ec.mutation.SetUpdatedBy(v)
 	}
 	if _, ok := ec.mutation.UpdatedAt(); !ok {
 		v := evse.DefaultUpdatedAt

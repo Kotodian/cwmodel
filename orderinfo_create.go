@@ -43,14 +43,6 @@ func (oic *OrderInfoCreate) SetCreatedBy(d datasource.UUID) *OrderInfoCreate {
 	return oic
 }
 
-// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (oic *OrderInfoCreate) SetNillableCreatedBy(d *datasource.UUID) *OrderInfoCreate {
-	if d != nil {
-		oic.SetCreatedBy(*d)
-	}
-	return oic
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (oic *OrderInfoCreate) SetCreatedAt(i int64) *OrderInfoCreate {
 	oic.mutation.SetCreatedAt(i)
@@ -68,14 +60,6 @@ func (oic *OrderInfoCreate) SetNillableCreatedAt(i *int64) *OrderInfoCreate {
 // SetUpdatedBy sets the "updated_by" field.
 func (oic *OrderInfoCreate) SetUpdatedBy(d datasource.UUID) *OrderInfoCreate {
 	oic.mutation.SetUpdatedBy(d)
-	return oic
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (oic *OrderInfoCreate) SetNillableUpdatedBy(d *datasource.UUID) *OrderInfoCreate {
-	if d != nil {
-		oic.SetUpdatedBy(*d)
-	}
 	return oic
 }
 
@@ -553,17 +537,9 @@ func (oic *OrderInfoCreate) defaults() {
 		v := orderinfo.DefaultVersion
 		oic.mutation.SetVersion(v)
 	}
-	if _, ok := oic.mutation.CreatedBy(); !ok {
-		v := orderinfo.DefaultCreatedBy
-		oic.mutation.SetCreatedBy(v)
-	}
 	if _, ok := oic.mutation.CreatedAt(); !ok {
 		v := orderinfo.DefaultCreatedAt
 		oic.mutation.SetCreatedAt(v)
-	}
-	if _, ok := oic.mutation.UpdatedBy(); !ok {
-		v := orderinfo.DefaultUpdatedBy
-		oic.mutation.SetUpdatedBy(v)
 	}
 	if _, ok := oic.mutation.UpdatedAt(); !ok {
 		v := orderinfo.DefaultUpdatedAt

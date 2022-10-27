@@ -41,14 +41,6 @@ func (mc *ManufacturerCreate) SetCreatedBy(d datasource.UUID) *ManufacturerCreat
 	return mc
 }
 
-// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (mc *ManufacturerCreate) SetNillableCreatedBy(d *datasource.UUID) *ManufacturerCreate {
-	if d != nil {
-		mc.SetCreatedBy(*d)
-	}
-	return mc
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (mc *ManufacturerCreate) SetCreatedAt(i int64) *ManufacturerCreate {
 	mc.mutation.SetCreatedAt(i)
@@ -66,14 +58,6 @@ func (mc *ManufacturerCreate) SetNillableCreatedAt(i *int64) *ManufacturerCreate
 // SetUpdatedBy sets the "updated_by" field.
 func (mc *ManufacturerCreate) SetUpdatedBy(d datasource.UUID) *ManufacturerCreate {
 	mc.mutation.SetUpdatedBy(d)
-	return mc
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (mc *ManufacturerCreate) SetNillableUpdatedBy(d *datasource.UUID) *ManufacturerCreate {
-	if d != nil {
-		mc.SetUpdatedBy(*d)
-	}
 	return mc
 }
 
@@ -221,17 +205,9 @@ func (mc *ManufacturerCreate) defaults() {
 		v := manufacturer.DefaultVersion
 		mc.mutation.SetVersion(v)
 	}
-	if _, ok := mc.mutation.CreatedBy(); !ok {
-		v := manufacturer.DefaultCreatedBy
-		mc.mutation.SetCreatedBy(v)
-	}
 	if _, ok := mc.mutation.CreatedAt(); !ok {
 		v := manufacturer.DefaultCreatedAt
 		mc.mutation.SetCreatedAt(v)
-	}
-	if _, ok := mc.mutation.UpdatedBy(); !ok {
-		v := manufacturer.DefaultUpdatedBy
-		mc.mutation.SetUpdatedBy(v)
 	}
 	if _, ok := mc.mutation.UpdatedAt(); !ok {
 		v := manufacturer.DefaultUpdatedAt

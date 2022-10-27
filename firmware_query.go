@@ -363,7 +363,7 @@ func (fq *FirmwareQuery) WithManufacturer(opts ...func(*ManufacturerQuery)) *Fir
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -391,7 +391,7 @@ func (fq *FirmwareQuery) GroupBy(field string, fields ...string) *FirmwareGroupB
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //	}
 //
 //	client.Firmware.Query().

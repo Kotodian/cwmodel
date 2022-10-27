@@ -57,14 +57,6 @@ func (mu *ModelUpdate) SetUpdatedBy(d datasource.UUID) *ModelUpdate {
 	return mu
 }
 
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (mu *ModelUpdate) SetNillableUpdatedBy(d *datasource.UUID) *ModelUpdate {
-	if d != nil {
-		mu.SetUpdatedBy(*d)
-	}
-	return mu
-}
-
 // AddUpdatedBy adds d to the "updated_by" field.
 func (mu *ModelUpdate) AddUpdatedBy(d datasource.UUID) *ModelUpdate {
 	mu.mutation.AddUpdatedBy(d)
@@ -358,14 +350,6 @@ func (muo *ModelUpdateOne) AddVersion(i int64) *ModelUpdateOne {
 func (muo *ModelUpdateOne) SetUpdatedBy(d datasource.UUID) *ModelUpdateOne {
 	muo.mutation.ResetUpdatedBy()
 	muo.mutation.SetUpdatedBy(d)
-	return muo
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (muo *ModelUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *ModelUpdateOne {
-	if d != nil {
-		muo.SetUpdatedBy(*d)
-	}
 	return muo
 }
 

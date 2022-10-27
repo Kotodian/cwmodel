@@ -17,17 +17,17 @@ type EquipmentLog struct {
 	config `json:"-"`
 	// ID of the ent.
 	// 主键
-	ID datasource.UUID `json:"id,omitempty"`
+	ID datasource.UUID `json:"id"`
 	// 乐观锁
-	Version int64 `json:"version,omitempty"`
+	Version int64 `json:"version"`
 	// 创建者
-	CreatedBy datasource.UUID `json:"created_by,omitempty"`
+	CreatedBy datasource.UUID `json:"-"`
 	// 创建时间
-	CreatedAt int64 `json:"created_at,omitempty"`
+	CreatedAt int64 `json:"-"`
 	// 修改者
-	UpdatedBy datasource.UUID `json:"updated_by,omitempty"`
+	UpdatedBy datasource.UUID `json:"-"`
 	// 修改时间
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	UpdatedAt int64 `json:"-"`
 	// 桩id
 	EquipmentID datasource.UUID `json:"equipmentId"`
 	// 请求id

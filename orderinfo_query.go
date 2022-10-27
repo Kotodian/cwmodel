@@ -363,7 +363,7 @@ func (oiq *OrderInfoQuery) WithOrderEvent(opts ...func(*OrderEventQuery)) *Order
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -391,7 +391,7 @@ func (oiq *OrderInfoQuery) GroupBy(field string, fields ...string) *OrderInfoGro
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //	}
 //
 //	client.OrderInfo.Query().

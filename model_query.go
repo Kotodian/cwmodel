@@ -291,7 +291,7 @@ func (mq *ModelQuery) WithFirmware(opts ...func(*FirmwareQuery)) *ModelQuery {
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -319,7 +319,7 @@ func (mq *ModelQuery) GroupBy(field string, fields ...string) *ModelGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //	}
 //
 //	client.Model.Query().

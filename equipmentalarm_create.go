@@ -41,14 +41,6 @@ func (eac *EquipmentAlarmCreate) SetCreatedBy(d datasource.UUID) *EquipmentAlarm
 	return eac
 }
 
-// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (eac *EquipmentAlarmCreate) SetNillableCreatedBy(d *datasource.UUID) *EquipmentAlarmCreate {
-	if d != nil {
-		eac.SetCreatedBy(*d)
-	}
-	return eac
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (eac *EquipmentAlarmCreate) SetCreatedAt(i int64) *EquipmentAlarmCreate {
 	eac.mutation.SetCreatedAt(i)
@@ -66,14 +58,6 @@ func (eac *EquipmentAlarmCreate) SetNillableCreatedAt(i *int64) *EquipmentAlarmC
 // SetUpdatedBy sets the "updated_by" field.
 func (eac *EquipmentAlarmCreate) SetUpdatedBy(d datasource.UUID) *EquipmentAlarmCreate {
 	eac.mutation.SetUpdatedBy(d)
-	return eac
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (eac *EquipmentAlarmCreate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentAlarmCreate {
-	if d != nil {
-		eac.SetUpdatedBy(*d)
-	}
 	return eac
 }
 
@@ -251,17 +235,9 @@ func (eac *EquipmentAlarmCreate) defaults() {
 		v := equipmentalarm.DefaultVersion
 		eac.mutation.SetVersion(v)
 	}
-	if _, ok := eac.mutation.CreatedBy(); !ok {
-		v := equipmentalarm.DefaultCreatedBy
-		eac.mutation.SetCreatedBy(v)
-	}
 	if _, ok := eac.mutation.CreatedAt(); !ok {
 		v := equipmentalarm.DefaultCreatedAt
 		eac.mutation.SetCreatedAt(v)
-	}
-	if _, ok := eac.mutation.UpdatedBy(); !ok {
-		v := equipmentalarm.DefaultUpdatedBy
-		eac.mutation.SetUpdatedBy(v)
 	}
 	if _, ok := eac.mutation.UpdatedAt(); !ok {
 		v := equipmentalarm.DefaultUpdatedAt

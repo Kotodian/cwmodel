@@ -60,14 +60,6 @@ func (sceu *SmartChargingEffectUpdate) SetUpdatedBy(d datasource.UUID) *SmartCha
 	return sceu
 }
 
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (sceu *SmartChargingEffectUpdate) SetNillableUpdatedBy(d *datasource.UUID) *SmartChargingEffectUpdate {
-	if d != nil {
-		sceu.SetUpdatedBy(*d)
-	}
-	return sceu
-}
-
 // AddUpdatedBy adds d to the "updated_by" field.
 func (sceu *SmartChargingEffectUpdate) AddUpdatedBy(d datasource.UUID) *SmartChargingEffectUpdate {
 	sceu.mutation.AddUpdatedBy(d)
@@ -559,14 +551,6 @@ func (sceuo *SmartChargingEffectUpdateOne) AddVersion(i int64) *SmartChargingEff
 func (sceuo *SmartChargingEffectUpdateOne) SetUpdatedBy(d datasource.UUID) *SmartChargingEffectUpdateOne {
 	sceuo.mutation.ResetUpdatedBy()
 	sceuo.mutation.SetUpdatedBy(d)
-	return sceuo
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (sceuo *SmartChargingEffectUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *SmartChargingEffectUpdateOne {
-	if d != nil {
-		sceuo.SetUpdatedBy(*d)
-	}
 	return sceuo
 }
 

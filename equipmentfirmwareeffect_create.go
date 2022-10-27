@@ -42,14 +42,6 @@ func (efec *EquipmentFirmwareEffectCreate) SetCreatedBy(d datasource.UUID) *Equi
 	return efec
 }
 
-// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (efec *EquipmentFirmwareEffectCreate) SetNillableCreatedBy(d *datasource.UUID) *EquipmentFirmwareEffectCreate {
-	if d != nil {
-		efec.SetCreatedBy(*d)
-	}
-	return efec
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (efec *EquipmentFirmwareEffectCreate) SetCreatedAt(i int64) *EquipmentFirmwareEffectCreate {
 	efec.mutation.SetCreatedAt(i)
@@ -67,14 +59,6 @@ func (efec *EquipmentFirmwareEffectCreate) SetNillableCreatedAt(i *int64) *Equip
 // SetUpdatedBy sets the "updated_by" field.
 func (efec *EquipmentFirmwareEffectCreate) SetUpdatedBy(d datasource.UUID) *EquipmentFirmwareEffectCreate {
 	efec.mutation.SetUpdatedBy(d)
-	return efec
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (efec *EquipmentFirmwareEffectCreate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentFirmwareEffectCreate {
-	if d != nil {
-		efec.SetUpdatedBy(*d)
-	}
 	return efec
 }
 
@@ -221,17 +205,9 @@ func (efec *EquipmentFirmwareEffectCreate) defaults() {
 		v := equipmentfirmwareeffect.DefaultVersion
 		efec.mutation.SetVersion(v)
 	}
-	if _, ok := efec.mutation.CreatedBy(); !ok {
-		v := equipmentfirmwareeffect.DefaultCreatedBy
-		efec.mutation.SetCreatedBy(v)
-	}
 	if _, ok := efec.mutation.CreatedAt(); !ok {
 		v := equipmentfirmwareeffect.DefaultCreatedAt
 		efec.mutation.SetCreatedAt(v)
-	}
-	if _, ok := efec.mutation.UpdatedBy(); !ok {
-		v := equipmentfirmwareeffect.DefaultUpdatedBy
-		efec.mutation.SetUpdatedBy(v)
 	}
 	if _, ok := efec.mutation.UpdatedAt(); !ok {
 		v := equipmentfirmwareeffect.DefaultUpdatedAt

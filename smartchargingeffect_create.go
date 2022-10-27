@@ -43,14 +43,6 @@ func (scec *SmartChargingEffectCreate) SetCreatedBy(d datasource.UUID) *SmartCha
 	return scec
 }
 
-// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (scec *SmartChargingEffectCreate) SetNillableCreatedBy(d *datasource.UUID) *SmartChargingEffectCreate {
-	if d != nil {
-		scec.SetCreatedBy(*d)
-	}
-	return scec
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (scec *SmartChargingEffectCreate) SetCreatedAt(i int64) *SmartChargingEffectCreate {
 	scec.mutation.SetCreatedAt(i)
@@ -68,14 +60,6 @@ func (scec *SmartChargingEffectCreate) SetNillableCreatedAt(i *int64) *SmartChar
 // SetUpdatedBy sets the "updated_by" field.
 func (scec *SmartChargingEffectCreate) SetUpdatedBy(d datasource.UUID) *SmartChargingEffectCreate {
 	scec.mutation.SetUpdatedBy(d)
-	return scec
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (scec *SmartChargingEffectCreate) SetNillableUpdatedBy(d *datasource.UUID) *SmartChargingEffectCreate {
-	if d != nil {
-		scec.SetUpdatedBy(*d)
-	}
 	return scec
 }
 
@@ -288,17 +272,9 @@ func (scec *SmartChargingEffectCreate) defaults() {
 		v := smartchargingeffect.DefaultVersion
 		scec.mutation.SetVersion(v)
 	}
-	if _, ok := scec.mutation.CreatedBy(); !ok {
-		v := smartchargingeffect.DefaultCreatedBy
-		scec.mutation.SetCreatedBy(v)
-	}
 	if _, ok := scec.mutation.CreatedAt(); !ok {
 		v := smartchargingeffect.DefaultCreatedAt
 		scec.mutation.SetCreatedAt(v)
-	}
-	if _, ok := scec.mutation.UpdatedBy(); !ok {
-		v := smartchargingeffect.DefaultUpdatedBy
-		scec.mutation.SetUpdatedBy(v)
 	}
 	if _, ok := scec.mutation.UpdatedAt(); !ok {
 		v := smartchargingeffect.DefaultUpdatedAt

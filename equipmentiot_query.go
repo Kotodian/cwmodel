@@ -290,7 +290,7 @@ func (eiq *EquipmentIotQuery) WithEquipment(opts ...func(*EquipmentQuery)) *Equi
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -318,7 +318,7 @@ func (eiq *EquipmentIotQuery) GroupBy(field string, fields ...string) *Equipment
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //	}
 //
 //	client.EquipmentIot.Query().

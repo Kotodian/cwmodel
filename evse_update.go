@@ -58,14 +58,6 @@ func (eu *EvseUpdate) SetUpdatedBy(d datasource.UUID) *EvseUpdate {
 	return eu
 }
 
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (eu *EvseUpdate) SetNillableUpdatedBy(d *datasource.UUID) *EvseUpdate {
-	if d != nil {
-		eu.SetUpdatedBy(*d)
-	}
-	return eu
-}
-
 // AddUpdatedBy adds d to the "updated_by" field.
 func (eu *EvseUpdate) AddUpdatedBy(d datasource.UUID) *EvseUpdate {
 	eu.mutation.AddUpdatedBy(d)
@@ -417,14 +409,6 @@ func (euo *EvseUpdateOne) AddVersion(i int64) *EvseUpdateOne {
 func (euo *EvseUpdateOne) SetUpdatedBy(d datasource.UUID) *EvseUpdateOne {
 	euo.mutation.ResetUpdatedBy()
 	euo.mutation.SetUpdatedBy(d)
-	return euo
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (euo *EvseUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *EvseUpdateOne {
-	if d != nil {
-		euo.SetUpdatedBy(*d)
-	}
 	return euo
 }
 

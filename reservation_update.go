@@ -58,14 +58,6 @@ func (ru *ReservationUpdate) SetUpdatedBy(d datasource.UUID) *ReservationUpdate 
 	return ru
 }
 
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ru *ReservationUpdate) SetNillableUpdatedBy(d *datasource.UUID) *ReservationUpdate {
-	if d != nil {
-		ru.SetUpdatedBy(*d)
-	}
-	return ru
-}
-
 // AddUpdatedBy adds d to the "updated_by" field.
 func (ru *ReservationUpdate) AddUpdatedBy(d datasource.UUID) *ReservationUpdate {
 	ru.mutation.AddUpdatedBy(d)
@@ -491,14 +483,6 @@ func (ruo *ReservationUpdateOne) AddVersion(i int64) *ReservationUpdateOne {
 func (ruo *ReservationUpdateOne) SetUpdatedBy(d datasource.UUID) *ReservationUpdateOne {
 	ruo.mutation.ResetUpdatedBy()
 	ruo.mutation.SetUpdatedBy(d)
-	return ruo
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (ruo *ReservationUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *ReservationUpdateOne {
-	if d != nil {
-		ruo.SetUpdatedBy(*d)
-	}
 	return ruo
 }
 

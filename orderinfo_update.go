@@ -59,14 +59,6 @@ func (oiu *OrderInfoUpdate) SetUpdatedBy(d datasource.UUID) *OrderInfoUpdate {
 	return oiu
 }
 
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (oiu *OrderInfoUpdate) SetNillableUpdatedBy(d *datasource.UUID) *OrderInfoUpdate {
-	if d != nil {
-		oiu.SetUpdatedBy(*d)
-	}
-	return oiu
-}
-
 // AddUpdatedBy adds d to the "updated_by" field.
 func (oiu *OrderInfoUpdate) AddUpdatedBy(d datasource.UUID) *OrderInfoUpdate {
 	oiu.mutation.AddUpdatedBy(d)
@@ -1242,14 +1234,6 @@ func (oiuo *OrderInfoUpdateOne) AddVersion(i int64) *OrderInfoUpdateOne {
 func (oiuo *OrderInfoUpdateOne) SetUpdatedBy(d datasource.UUID) *OrderInfoUpdateOne {
 	oiuo.mutation.ResetUpdatedBy()
 	oiuo.mutation.SetUpdatedBy(d)
-	return oiuo
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (oiuo *OrderInfoUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *OrderInfoUpdateOne {
-	if d != nil {
-		oiuo.SetUpdatedBy(*d)
-	}
 	return oiuo
 }
 

@@ -327,7 +327,7 @@ func (eq *EvseQuery) WithConnector(opts ...func(*ConnectorQuery)) *EvseQuery {
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -355,7 +355,7 @@ func (eq *EvseQuery) GroupBy(field string, fields ...string) *EvseGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //	}
 //
 //	client.Evse.Query().

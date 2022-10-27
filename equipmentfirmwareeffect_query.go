@@ -326,7 +326,7 @@ func (efeq *EquipmentFirmwareEffectQuery) WithFirmware(opts ...func(*FirmwareQue
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -354,7 +354,7 @@ func (efeq *EquipmentFirmwareEffectQuery) GroupBy(field string, fields ...string
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //	}
 //
 //	client.EquipmentFirmwareEffect.Query().

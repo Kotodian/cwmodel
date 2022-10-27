@@ -57,14 +57,6 @@ func (elu *EquipmentLogUpdate) SetUpdatedBy(d datasource.UUID) *EquipmentLogUpda
 	return elu
 }
 
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (elu *EquipmentLogUpdate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentLogUpdate {
-	if d != nil {
-		elu.SetUpdatedBy(*d)
-	}
-	return elu
-}
-
 // AddUpdatedBy adds d to the "updated_by" field.
 func (elu *EquipmentLogUpdate) AddUpdatedBy(d datasource.UUID) *EquipmentLogUpdate {
 	elu.mutation.AddUpdatedBy(d)
@@ -355,14 +347,6 @@ func (eluo *EquipmentLogUpdateOne) AddVersion(i int64) *EquipmentLogUpdateOne {
 func (eluo *EquipmentLogUpdateOne) SetUpdatedBy(d datasource.UUID) *EquipmentLogUpdateOne {
 	eluo.mutation.ResetUpdatedBy()
 	eluo.mutation.SetUpdatedBy(d)
-	return eluo
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (eluo *EquipmentLogUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentLogUpdateOne {
-	if d != nil {
-		eluo.SetUpdatedBy(*d)
-	}
 	return eluo
 }
 

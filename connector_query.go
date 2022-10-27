@@ -435,7 +435,7 @@ func (cq *ConnectorQuery) WithSmartChargingEffect(opts ...func(*SmartChargingEff
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -463,7 +463,7 @@ func (cq *ConnectorQuery) GroupBy(field string, fields ...string) *ConnectorGrou
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //	}
 //
 //	client.Connector.Query().

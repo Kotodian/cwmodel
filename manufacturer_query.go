@@ -291,7 +291,7 @@ func (mq *ManufacturerQuery) WithFirmware(opts ...func(*FirmwareQuery)) *Manufac
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -319,7 +319,7 @@ func (mq *ManufacturerQuery) GroupBy(field string, fields ...string) *Manufactur
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //	}
 //
 //	client.Manufacturer.Query().

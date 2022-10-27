@@ -75,12 +75,8 @@ func ValidColumn(column string) bool {
 var (
 	// DefaultVersion holds the default value on creation for the "version" field.
 	DefaultVersion int64
-	// DefaultCreatedBy holds the default value on creation for the "created_by" field.
-	DefaultCreatedBy datasource.UUID
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt int64
-	// DefaultUpdatedBy holds the default value on creation for the "updated_by" field.
-	DefaultUpdatedBy datasource.UUID
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt int64
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.

@@ -59,14 +59,6 @@ func (fu *FirmwareUpdate) SetUpdatedBy(d datasource.UUID) *FirmwareUpdate {
 	return fu
 }
 
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (fu *FirmwareUpdate) SetNillableUpdatedBy(d *datasource.UUID) *FirmwareUpdate {
-	if d != nil {
-		fu.SetUpdatedBy(*d)
-	}
-	return fu
-}
-
 // AddUpdatedBy adds d to the "updated_by" field.
 func (fu *FirmwareUpdate) AddUpdatedBy(d datasource.UUID) *FirmwareUpdate {
 	fu.mutation.AddUpdatedBy(d)
@@ -454,14 +446,6 @@ func (fuo *FirmwareUpdateOne) AddVersion(i int64) *FirmwareUpdateOne {
 func (fuo *FirmwareUpdateOne) SetUpdatedBy(d datasource.UUID) *FirmwareUpdateOne {
 	fuo.mutation.ResetUpdatedBy()
 	fuo.mutation.SetUpdatedBy(d)
-	return fuo
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (fuo *FirmwareUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *FirmwareUpdateOne {
-	if d != nil {
-		fuo.SetUpdatedBy(*d)
-	}
 	return fuo
 }
 

@@ -42,14 +42,6 @@ func (rc *ReservationCreate) SetCreatedBy(d datasource.UUID) *ReservationCreate 
 	return rc
 }
 
-// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (rc *ReservationCreate) SetNillableCreatedBy(d *datasource.UUID) *ReservationCreate {
-	if d != nil {
-		rc.SetCreatedBy(*d)
-	}
-	return rc
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (rc *ReservationCreate) SetCreatedAt(i int64) *ReservationCreate {
 	rc.mutation.SetCreatedAt(i)
@@ -67,14 +59,6 @@ func (rc *ReservationCreate) SetNillableCreatedAt(i *int64) *ReservationCreate {
 // SetUpdatedBy sets the "updated_by" field.
 func (rc *ReservationCreate) SetUpdatedBy(d datasource.UUID) *ReservationCreate {
 	rc.mutation.SetUpdatedBy(d)
-	return rc
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (rc *ReservationCreate) SetNillableUpdatedBy(d *datasource.UUID) *ReservationCreate {
-	if d != nil {
-		rc.SetUpdatedBy(*d)
-	}
 	return rc
 }
 
@@ -267,17 +251,9 @@ func (rc *ReservationCreate) defaults() {
 		v := reservation.DefaultVersion
 		rc.mutation.SetVersion(v)
 	}
-	if _, ok := rc.mutation.CreatedBy(); !ok {
-		v := reservation.DefaultCreatedBy
-		rc.mutation.SetCreatedBy(v)
-	}
 	if _, ok := rc.mutation.CreatedAt(); !ok {
 		v := reservation.DefaultCreatedAt
 		rc.mutation.SetCreatedAt(v)
-	}
-	if _, ok := rc.mutation.UpdatedBy(); !ok {
-		v := reservation.DefaultUpdatedBy
-		rc.mutation.SetUpdatedBy(v)
 	}
 	if _, ok := rc.mutation.UpdatedAt(); !ok {
 		v := reservation.DefaultUpdatedAt

@@ -41,14 +41,6 @@ func (eic *EquipmentInfoCreate) SetCreatedBy(d datasource.UUID) *EquipmentInfoCr
 	return eic
 }
 
-// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (eic *EquipmentInfoCreate) SetNillableCreatedBy(d *datasource.UUID) *EquipmentInfoCreate {
-	if d != nil {
-		eic.SetCreatedBy(*d)
-	}
-	return eic
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (eic *EquipmentInfoCreate) SetCreatedAt(i int64) *EquipmentInfoCreate {
 	eic.mutation.SetCreatedAt(i)
@@ -66,14 +58,6 @@ func (eic *EquipmentInfoCreate) SetNillableCreatedAt(i *int64) *EquipmentInfoCre
 // SetUpdatedBy sets the "updated_by" field.
 func (eic *EquipmentInfoCreate) SetUpdatedBy(d datasource.UUID) *EquipmentInfoCreate {
 	eic.mutation.SetUpdatedBy(d)
-	return eic
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (eic *EquipmentInfoCreate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentInfoCreate {
-	if d != nil {
-		eic.SetUpdatedBy(*d)
-	}
 	return eic
 }
 
@@ -257,17 +241,9 @@ func (eic *EquipmentInfoCreate) defaults() {
 		v := equipmentinfo.DefaultVersion
 		eic.mutation.SetVersion(v)
 	}
-	if _, ok := eic.mutation.CreatedBy(); !ok {
-		v := equipmentinfo.DefaultCreatedBy
-		eic.mutation.SetCreatedBy(v)
-	}
 	if _, ok := eic.mutation.CreatedAt(); !ok {
 		v := equipmentinfo.DefaultCreatedAt
 		eic.mutation.SetCreatedAt(v)
-	}
-	if _, ok := eic.mutation.UpdatedBy(); !ok {
-		v := equipmentinfo.DefaultUpdatedBy
-		eic.mutation.SetUpdatedBy(v)
 	}
 	if _, ok := eic.mutation.UpdatedAt(); !ok {
 		v := equipmentinfo.DefaultUpdatedAt

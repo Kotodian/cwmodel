@@ -45,14 +45,6 @@ func (cc *ConnectorCreate) SetCreatedBy(d datasource.UUID) *ConnectorCreate {
 	return cc
 }
 
-// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (cc *ConnectorCreate) SetNillableCreatedBy(d *datasource.UUID) *ConnectorCreate {
-	if d != nil {
-		cc.SetCreatedBy(*d)
-	}
-	return cc
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (cc *ConnectorCreate) SetCreatedAt(i int64) *ConnectorCreate {
 	cc.mutation.SetCreatedAt(i)
@@ -70,14 +62,6 @@ func (cc *ConnectorCreate) SetNillableCreatedAt(i *int64) *ConnectorCreate {
 // SetUpdatedBy sets the "updated_by" field.
 func (cc *ConnectorCreate) SetUpdatedBy(d datasource.UUID) *ConnectorCreate {
 	cc.mutation.SetUpdatedBy(d)
-	return cc
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (cc *ConnectorCreate) SetNillableUpdatedBy(d *datasource.UUID) *ConnectorCreate {
-	if d != nil {
-		cc.SetUpdatedBy(*d)
-	}
 	return cc
 }
 
@@ -335,17 +319,9 @@ func (cc *ConnectorCreate) defaults() {
 		v := connector.DefaultVersion
 		cc.mutation.SetVersion(v)
 	}
-	if _, ok := cc.mutation.CreatedBy(); !ok {
-		v := connector.DefaultCreatedBy
-		cc.mutation.SetCreatedBy(v)
-	}
 	if _, ok := cc.mutation.CreatedAt(); !ok {
 		v := connector.DefaultCreatedAt
 		cc.mutation.SetCreatedAt(v)
-	}
-	if _, ok := cc.mutation.UpdatedBy(); !ok {
-		v := connector.DefaultUpdatedBy
-		cc.mutation.SetUpdatedBy(v)
 	}
 	if _, ok := cc.mutation.UpdatedAt(); !ok {
 		v := connector.DefaultUpdatedAt

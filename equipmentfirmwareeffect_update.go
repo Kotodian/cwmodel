@@ -58,14 +58,6 @@ func (efeu *EquipmentFirmwareEffectUpdate) SetUpdatedBy(d datasource.UUID) *Equi
 	return efeu
 }
 
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (efeu *EquipmentFirmwareEffectUpdate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentFirmwareEffectUpdate {
-	if d != nil {
-		efeu.SetUpdatedBy(*d)
-	}
-	return efeu
-}
-
 // AddUpdatedBy adds d to the "updated_by" field.
 func (efeu *EquipmentFirmwareEffectUpdate) AddUpdatedBy(d datasource.UUID) *EquipmentFirmwareEffectUpdate {
 	efeu.mutation.AddUpdatedBy(d)
@@ -392,14 +384,6 @@ func (efeuo *EquipmentFirmwareEffectUpdateOne) AddVersion(i int64) *EquipmentFir
 func (efeuo *EquipmentFirmwareEffectUpdateOne) SetUpdatedBy(d datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
 	efeuo.mutation.ResetUpdatedBy()
 	efeuo.mutation.SetUpdatedBy(d)
-	return efeuo
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (efeuo *EquipmentFirmwareEffectUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentFirmwareEffectUpdateOne {
-	if d != nil {
-		efeuo.SetUpdatedBy(*d)
-	}
 	return efeuo
 }
 

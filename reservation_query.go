@@ -326,7 +326,7 @@ func (rq *ReservationQuery) WithConnector(opts ...func(*ConnectorQuery)) *Reserv
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -354,7 +354,7 @@ func (rq *ReservationQuery) GroupBy(field string, fields ...string) *Reservation
 // Example:
 //
 //	var v []struct {
-//		Version int64 `json:"version,omitempty"`
+//		Version int64 `json:"version"`
 //	}
 //
 //	client.Reservation.Query().

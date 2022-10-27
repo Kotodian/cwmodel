@@ -57,14 +57,6 @@ func (eau *EquipmentAlarmUpdate) SetUpdatedBy(d datasource.UUID) *EquipmentAlarm
 	return eau
 }
 
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (eau *EquipmentAlarmUpdate) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentAlarmUpdate {
-	if d != nil {
-		eau.SetUpdatedBy(*d)
-	}
-	return eau
-}
-
 // AddUpdatedBy adds d to the "updated_by" field.
 func (eau *EquipmentAlarmUpdate) AddUpdatedBy(d datasource.UUID) *EquipmentAlarmUpdate {
 	eau.mutation.AddUpdatedBy(d)
@@ -425,14 +417,6 @@ func (eauo *EquipmentAlarmUpdateOne) AddVersion(i int64) *EquipmentAlarmUpdateOn
 func (eauo *EquipmentAlarmUpdateOne) SetUpdatedBy(d datasource.UUID) *EquipmentAlarmUpdateOne {
 	eauo.mutation.ResetUpdatedBy()
 	eauo.mutation.SetUpdatedBy(d)
-	return eauo
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (eauo *EquipmentAlarmUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *EquipmentAlarmUpdateOne {
-	if d != nil {
-		eauo.SetUpdatedBy(*d)
-	}
 	return eauo
 }
 

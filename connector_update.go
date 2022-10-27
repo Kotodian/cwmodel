@@ -61,14 +61,6 @@ func (cu *ConnectorUpdate) SetUpdatedBy(d datasource.UUID) *ConnectorUpdate {
 	return cu
 }
 
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (cu *ConnectorUpdate) SetNillableUpdatedBy(d *datasource.UUID) *ConnectorUpdate {
-	if d != nil {
-		cu.SetUpdatedBy(*d)
-	}
-	return cu
-}
-
 // AddUpdatedBy adds d to the "updated_by" field.
 func (cu *ConnectorUpdate) AddUpdatedBy(d datasource.UUID) *ConnectorUpdate {
 	cu.mutation.AddUpdatedBy(d)
@@ -800,14 +792,6 @@ func (cuo *ConnectorUpdateOne) AddVersion(i int64) *ConnectorUpdateOne {
 func (cuo *ConnectorUpdateOne) SetUpdatedBy(d datasource.UUID) *ConnectorUpdateOne {
 	cuo.mutation.ResetUpdatedBy()
 	cuo.mutation.SetUpdatedBy(d)
-	return cuo
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (cuo *ConnectorUpdateOne) SetNillableUpdatedBy(d *datasource.UUID) *ConnectorUpdateOne {
-	if d != nil {
-		cuo.SetUpdatedBy(*d)
-	}
 	return cuo
 }
 

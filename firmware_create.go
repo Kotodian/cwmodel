@@ -43,14 +43,6 @@ func (fc *FirmwareCreate) SetCreatedBy(d datasource.UUID) *FirmwareCreate {
 	return fc
 }
 
-// SetNillableCreatedBy sets the "created_by" field if the given value is not nil.
-func (fc *FirmwareCreate) SetNillableCreatedBy(d *datasource.UUID) *FirmwareCreate {
-	if d != nil {
-		fc.SetCreatedBy(*d)
-	}
-	return fc
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (fc *FirmwareCreate) SetCreatedAt(i int64) *FirmwareCreate {
 	fc.mutation.SetCreatedAt(i)
@@ -68,14 +60,6 @@ func (fc *FirmwareCreate) SetNillableCreatedAt(i *int64) *FirmwareCreate {
 // SetUpdatedBy sets the "updated_by" field.
 func (fc *FirmwareCreate) SetUpdatedBy(d datasource.UUID) *FirmwareCreate {
 	fc.mutation.SetUpdatedBy(d)
-	return fc
-}
-
-// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
-func (fc *FirmwareCreate) SetNillableUpdatedBy(d *datasource.UUID) *FirmwareCreate {
-	if d != nil {
-		fc.SetUpdatedBy(*d)
-	}
 	return fc
 }
 
@@ -231,17 +215,9 @@ func (fc *FirmwareCreate) defaults() {
 		v := firmware.DefaultVersion
 		fc.mutation.SetVersion(v)
 	}
-	if _, ok := fc.mutation.CreatedBy(); !ok {
-		v := firmware.DefaultCreatedBy
-		fc.mutation.SetCreatedBy(v)
-	}
 	if _, ok := fc.mutation.CreatedAt(); !ok {
 		v := firmware.DefaultCreatedAt
 		fc.mutation.SetCreatedAt(v)
-	}
-	if _, ok := fc.mutation.UpdatedBy(); !ok {
-		v := firmware.DefaultUpdatedBy
-		fc.mutation.SetUpdatedBy(v)
 	}
 	if _, ok := fc.mutation.UpdatedAt(); !ok {
 		v := firmware.DefaultUpdatedAt
