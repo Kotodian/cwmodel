@@ -657,6 +657,11 @@ func (eq *EquipmentQuery) Select(fields ...string) *EquipmentSelect {
 	return selbuild
 }
 
+// Aggregate returns a EquipmentSelect configured with the given aggregations.
+func (eq *EquipmentQuery) Aggregate(fns ...AggregateFunc) *EquipmentSelect {
+	return eq.Select().Aggregate(fns...)
+}
+
 func (eq *EquipmentQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range eq.fields {
 		if !equipment.ValidColumn(f) {
@@ -1200,8 +1205,6 @@ func (egb *EquipmentGroupBy) sqlQuery() *sql.Selector {
 	for _, fn := range egb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	// If no columns were selected in a custom aggregation function, the default
-	// selection is the fields used for "group-by", and the aggregation functions.
 	if len(selector.SelectedColumns()) == 0 {
 		columns := make([]string, 0, len(egb.fields)+len(egb.fns))
 		for _, f := range egb.fields {
@@ -1221,6 +1224,12 @@ type EquipmentSelect struct {
 	sql *sql.Selector
 }
 
+// Aggregate adds the given aggregation functions to the selector query.
+func (es *EquipmentSelect) Aggregate(fns ...AggregateFunc) *EquipmentSelect {
+	es.fns = append(es.fns, fns...)
+	return es
+}
+
 // Scan applies the selector query and scans the result into the given value.
 func (es *EquipmentSelect) Scan(ctx context.Context, v any) error {
 	if err := es.prepareQuery(ctx); err != nil {
@@ -1231,6 +1240,16 @@ func (es *EquipmentSelect) Scan(ctx context.Context, v any) error {
 }
 
 func (es *EquipmentSelect) sqlScan(ctx context.Context, v any) error {
+	aggregation := make([]string, 0, len(es.fns))
+	for _, fn := range es.fns {
+		aggregation = append(aggregation, fn(es.sql))
+	}
+	switch n := len(*es.selector.flds); {
+	case n == 0 && len(aggregation) > 0:
+		es.sql.Select(aggregation...)
+	case n != 0 && len(aggregation) > 0:
+		es.sql.AppendSelect(aggregation...)
+	}
 	rows := &sql.Rows{}
 	query, args := es.sql.Query()
 	if err := es.driver.Query(ctx, query, args, rows); err != nil {

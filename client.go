@@ -285,7 +285,7 @@ func (c *AppModuleInfoClient) DeleteOne(ami *AppModuleInfo) *AppModuleInfoDelete
 	return c.DeleteOneID(ami.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *AppModuleInfoClient) DeleteOneID(id datasource.UUID) *AppModuleInfoDeleteOne {
 	builder := c.Delete().Where(appmoduleinfo.ID(id))
 	builder.mutation.id = &id
@@ -375,7 +375,7 @@ func (c *ConnectorClient) DeleteOne(co *Connector) *ConnectorDeleteOne {
 	return c.DeleteOneID(co.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *ConnectorClient) DeleteOneID(id datasource.UUID) *ConnectorDeleteOne {
 	builder := c.Delete().Where(connector.ID(id))
 	builder.mutation.id = &id
@@ -545,7 +545,7 @@ func (c *EquipmentClient) DeleteOne(e *Equipment) *EquipmentDeleteOne {
 	return c.DeleteOneID(e.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *EquipmentClient) DeleteOneID(id datasource.UUID) *EquipmentDeleteOne {
 	builder := c.Delete().Where(equipment.ID(id))
 	builder.mutation.id = &id
@@ -795,7 +795,7 @@ func (c *EquipmentAlarmClient) DeleteOne(ea *EquipmentAlarm) *EquipmentAlarmDele
 	return c.DeleteOneID(ea.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *EquipmentAlarmClient) DeleteOneID(id datasource.UUID) *EquipmentAlarmDeleteOne {
 	builder := c.Delete().Where(equipmentalarm.ID(id))
 	builder.mutation.id = &id
@@ -901,7 +901,7 @@ func (c *EquipmentFirmwareEffectClient) DeleteOne(efe *EquipmentFirmwareEffect) 
 	return c.DeleteOneID(efe.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *EquipmentFirmwareEffectClient) DeleteOneID(id datasource.UUID) *EquipmentFirmwareEffectDeleteOne {
 	builder := c.Delete().Where(equipmentfirmwareeffect.ID(id))
 	builder.mutation.id = &id
@@ -1023,7 +1023,7 @@ func (c *EquipmentInfoClient) DeleteOne(ei *EquipmentInfo) *EquipmentInfoDeleteO
 	return c.DeleteOneID(ei.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *EquipmentInfoClient) DeleteOneID(id datasource.UUID) *EquipmentInfoDeleteOne {
 	builder := c.Delete().Where(equipmentinfo.ID(id))
 	builder.mutation.id = &id
@@ -1129,7 +1129,7 @@ func (c *EquipmentIotClient) DeleteOne(ei *EquipmentIot) *EquipmentIotDeleteOne 
 	return c.DeleteOneID(ei.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *EquipmentIotClient) DeleteOneID(id datasource.UUID) *EquipmentIotDeleteOne {
 	builder := c.Delete().Where(equipmentiot.ID(id))
 	builder.mutation.id = &id
@@ -1235,7 +1235,7 @@ func (c *EquipmentLogClient) DeleteOne(el *EquipmentLog) *EquipmentLogDeleteOne 
 	return c.DeleteOneID(el.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *EquipmentLogClient) DeleteOneID(id datasource.UUID) *EquipmentLogDeleteOne {
 	builder := c.Delete().Where(equipmentlog.ID(id))
 	builder.mutation.id = &id
@@ -1341,7 +1341,7 @@ func (c *EvseClient) DeleteOne(e *Evse) *EvseDeleteOne {
 	return c.DeleteOneID(e.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *EvseClient) DeleteOneID(id datasource.UUID) *EvseDeleteOne {
 	builder := c.Delete().Where(evse.ID(id))
 	builder.mutation.id = &id
@@ -1463,7 +1463,7 @@ func (c *FirmwareClient) DeleteOne(f *Firmware) *FirmwareDeleteOne {
 	return c.DeleteOneID(f.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *FirmwareClient) DeleteOneID(id datasource.UUID) *FirmwareDeleteOne {
 	builder := c.Delete().Where(firmware.ID(id))
 	builder.mutation.id = &id
@@ -1601,7 +1601,7 @@ func (c *ManufacturerClient) DeleteOne(m *Manufacturer) *ManufacturerDeleteOne {
 	return c.DeleteOneID(m.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *ManufacturerClient) DeleteOneID(id datasource.UUID) *ManufacturerDeleteOne {
 	builder := c.Delete().Where(manufacturer.ID(id))
 	builder.mutation.id = &id
@@ -1707,7 +1707,7 @@ func (c *ModelClient) DeleteOne(m *Model) *ModelDeleteOne {
 	return c.DeleteOneID(m.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *ModelClient) DeleteOneID(id datasource.UUID) *ModelDeleteOne {
 	builder := c.Delete().Where(model.ID(id))
 	builder.mutation.id = &id
@@ -1813,7 +1813,7 @@ func (c *OrderEventClient) DeleteOne(oe *OrderEvent) *OrderEventDeleteOne {
 	return c.DeleteOneID(oe.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *OrderEventClient) DeleteOneID(id datasource.UUID) *OrderEventDeleteOne {
 	builder := c.Delete().Where(orderevent.ID(id))
 	builder.mutation.id = &id
@@ -1919,7 +1919,7 @@ func (c *OrderInfoClient) DeleteOne(oi *OrderInfo) *OrderInfoDeleteOne {
 	return c.DeleteOneID(oi.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *OrderInfoClient) DeleteOneID(id datasource.UUID) *OrderInfoDeleteOne {
 	builder := c.Delete().Where(orderinfo.ID(id))
 	builder.mutation.id = &id
@@ -2057,7 +2057,7 @@ func (c *ReservationClient) DeleteOne(r *Reservation) *ReservationDeleteOne {
 	return c.DeleteOneID(r.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *ReservationClient) DeleteOneID(id datasource.UUID) *ReservationDeleteOne {
 	builder := c.Delete().Where(reservation.ID(id))
 	builder.mutation.id = &id
@@ -2179,7 +2179,7 @@ func (c *SmartChargingEffectClient) DeleteOne(sce *SmartChargingEffect) *SmartCh
 	return c.DeleteOneID(sce.ID)
 }
 
-// DeleteOne returns a builder for deleting the given entity by its id.
+// DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *SmartChargingEffectClient) DeleteOneID(id datasource.UUID) *SmartChargingEffectDeleteOne {
 	builder := c.Delete().Where(smartchargingeffect.ID(id))
 	builder.mutation.id = &id

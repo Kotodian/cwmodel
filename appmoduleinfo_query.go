@@ -296,6 +296,11 @@ func (amiq *AppModuleInfoQuery) Select(fields ...string) *AppModuleInfoSelect {
 	return selbuild
 }
 
+// Aggregate returns a AppModuleInfoSelect configured with the given aggregations.
+func (amiq *AppModuleInfoQuery) Aggregate(fns ...AggregateFunc) *AppModuleInfoSelect {
+	return amiq.Select().Aggregate(fns...)
+}
+
 func (amiq *AppModuleInfoQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range amiq.fields {
 		if !appmoduleinfo.ValidColumn(f) {
@@ -489,8 +494,6 @@ func (amigb *AppModuleInfoGroupBy) sqlQuery() *sql.Selector {
 	for _, fn := range amigb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	// If no columns were selected in a custom aggregation function, the default
-	// selection is the fields used for "group-by", and the aggregation functions.
 	if len(selector.SelectedColumns()) == 0 {
 		columns := make([]string, 0, len(amigb.fields)+len(amigb.fns))
 		for _, f := range amigb.fields {
@@ -510,6 +513,12 @@ type AppModuleInfoSelect struct {
 	sql *sql.Selector
 }
 
+// Aggregate adds the given aggregation functions to the selector query.
+func (amis *AppModuleInfoSelect) Aggregate(fns ...AggregateFunc) *AppModuleInfoSelect {
+	amis.fns = append(amis.fns, fns...)
+	return amis
+}
+
 // Scan applies the selector query and scans the result into the given value.
 func (amis *AppModuleInfoSelect) Scan(ctx context.Context, v any) error {
 	if err := amis.prepareQuery(ctx); err != nil {
@@ -520,6 +529,16 @@ func (amis *AppModuleInfoSelect) Scan(ctx context.Context, v any) error {
 }
 
 func (amis *AppModuleInfoSelect) sqlScan(ctx context.Context, v any) error {
+	aggregation := make([]string, 0, len(amis.fns))
+	for _, fn := range amis.fns {
+		aggregation = append(aggregation, fn(amis.sql))
+	}
+	switch n := len(*amis.selector.flds); {
+	case n == 0 && len(aggregation) > 0:
+		amis.sql.Select(aggregation...)
+	case n != 0 && len(aggregation) > 0:
+		amis.sql.AppendSelect(aggregation...)
+	}
 	rows := &sql.Rows{}
 	query, args := amis.sql.Query()
 	if err := amis.driver.Query(ctx, query, args, rows); err != nil {

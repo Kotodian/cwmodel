@@ -368,6 +368,11 @@ func (sceq *SmartChargingEffectQuery) Select(fields ...string) *SmartChargingEff
 	return selbuild
 }
 
+// Aggregate returns a SmartChargingEffectSelect configured with the given aggregations.
+func (sceq *SmartChargingEffectQuery) Aggregate(fns ...AggregateFunc) *SmartChargingEffectSelect {
+	return sceq.Select().Aggregate(fns...)
+}
+
 func (sceq *SmartChargingEffectQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range sceq.fields {
 		if !smartchargingeffect.ValidColumn(f) {
@@ -631,8 +636,6 @@ func (scegb *SmartChargingEffectGroupBy) sqlQuery() *sql.Selector {
 	for _, fn := range scegb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	// If no columns were selected in a custom aggregation function, the default
-	// selection is the fields used for "group-by", and the aggregation functions.
 	if len(selector.SelectedColumns()) == 0 {
 		columns := make([]string, 0, len(scegb.fields)+len(scegb.fns))
 		for _, f := range scegb.fields {
@@ -652,6 +655,12 @@ type SmartChargingEffectSelect struct {
 	sql *sql.Selector
 }
 
+// Aggregate adds the given aggregation functions to the selector query.
+func (sces *SmartChargingEffectSelect) Aggregate(fns ...AggregateFunc) *SmartChargingEffectSelect {
+	sces.fns = append(sces.fns, fns...)
+	return sces
+}
+
 // Scan applies the selector query and scans the result into the given value.
 func (sces *SmartChargingEffectSelect) Scan(ctx context.Context, v any) error {
 	if err := sces.prepareQuery(ctx); err != nil {
@@ -662,6 +671,16 @@ func (sces *SmartChargingEffectSelect) Scan(ctx context.Context, v any) error {
 }
 
 func (sces *SmartChargingEffectSelect) sqlScan(ctx context.Context, v any) error {
+	aggregation := make([]string, 0, len(sces.fns))
+	for _, fn := range sces.fns {
+		aggregation = append(aggregation, fn(sces.sql))
+	}
+	switch n := len(*sces.selector.flds); {
+	case n == 0 && len(aggregation) > 0:
+		sces.sql.Select(aggregation...)
+	case n != 0 && len(aggregation) > 0:
+		sces.sql.AppendSelect(aggregation...)
+	}
 	rows := &sql.Rows{}
 	query, args := sces.sql.Query()
 	if err := sces.driver.Query(ctx, query, args, rows); err != nil {

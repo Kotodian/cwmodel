@@ -368,6 +368,11 @@ func (efeq *EquipmentFirmwareEffectQuery) Select(fields ...string) *EquipmentFir
 	return selbuild
 }
 
+// Aggregate returns a EquipmentFirmwareEffectSelect configured with the given aggregations.
+func (efeq *EquipmentFirmwareEffectQuery) Aggregate(fns ...AggregateFunc) *EquipmentFirmwareEffectSelect {
+	return efeq.Select().Aggregate(fns...)
+}
+
 func (efeq *EquipmentFirmwareEffectQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range efeq.fields {
 		if !equipmentfirmwareeffect.ValidColumn(f) {
@@ -631,8 +636,6 @@ func (efegb *EquipmentFirmwareEffectGroupBy) sqlQuery() *sql.Selector {
 	for _, fn := range efegb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	// If no columns were selected in a custom aggregation function, the default
-	// selection is the fields used for "group-by", and the aggregation functions.
 	if len(selector.SelectedColumns()) == 0 {
 		columns := make([]string, 0, len(efegb.fields)+len(efegb.fns))
 		for _, f := range efegb.fields {
@@ -652,6 +655,12 @@ type EquipmentFirmwareEffectSelect struct {
 	sql *sql.Selector
 }
 
+// Aggregate adds the given aggregation functions to the selector query.
+func (efes *EquipmentFirmwareEffectSelect) Aggregate(fns ...AggregateFunc) *EquipmentFirmwareEffectSelect {
+	efes.fns = append(efes.fns, fns...)
+	return efes
+}
+
 // Scan applies the selector query and scans the result into the given value.
 func (efes *EquipmentFirmwareEffectSelect) Scan(ctx context.Context, v any) error {
 	if err := efes.prepareQuery(ctx); err != nil {
@@ -662,6 +671,16 @@ func (efes *EquipmentFirmwareEffectSelect) Scan(ctx context.Context, v any) erro
 }
 
 func (efes *EquipmentFirmwareEffectSelect) sqlScan(ctx context.Context, v any) error {
+	aggregation := make([]string, 0, len(efes.fns))
+	for _, fn := range efes.fns {
+		aggregation = append(aggregation, fn(efes.sql))
+	}
+	switch n := len(*efes.selector.flds); {
+	case n == 0 && len(aggregation) > 0:
+		efes.sql.Select(aggregation...)
+	case n != 0 && len(aggregation) > 0:
+		efes.sql.AppendSelect(aggregation...)
+	}
 	rows := &sql.Rows{}
 	query, args := efes.sql.Query()
 	if err := efes.driver.Query(ctx, query, args, rows); err != nil {

@@ -368,6 +368,11 @@ func (rq *ReservationQuery) Select(fields ...string) *ReservationSelect {
 	return selbuild
 }
 
+// Aggregate returns a ReservationSelect configured with the given aggregations.
+func (rq *ReservationQuery) Aggregate(fns ...AggregateFunc) *ReservationSelect {
+	return rq.Select().Aggregate(fns...)
+}
+
 func (rq *ReservationQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range rq.fields {
 		if !reservation.ValidColumn(f) {
@@ -631,8 +636,6 @@ func (rgb *ReservationGroupBy) sqlQuery() *sql.Selector {
 	for _, fn := range rgb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	// If no columns were selected in a custom aggregation function, the default
-	// selection is the fields used for "group-by", and the aggregation functions.
 	if len(selector.SelectedColumns()) == 0 {
 		columns := make([]string, 0, len(rgb.fields)+len(rgb.fns))
 		for _, f := range rgb.fields {
@@ -652,6 +655,12 @@ type ReservationSelect struct {
 	sql *sql.Selector
 }
 
+// Aggregate adds the given aggregation functions to the selector query.
+func (rs *ReservationSelect) Aggregate(fns ...AggregateFunc) *ReservationSelect {
+	rs.fns = append(rs.fns, fns...)
+	return rs
+}
+
 // Scan applies the selector query and scans the result into the given value.
 func (rs *ReservationSelect) Scan(ctx context.Context, v any) error {
 	if err := rs.prepareQuery(ctx); err != nil {
@@ -662,6 +671,16 @@ func (rs *ReservationSelect) Scan(ctx context.Context, v any) error {
 }
 
 func (rs *ReservationSelect) sqlScan(ctx context.Context, v any) error {
+	aggregation := make([]string, 0, len(rs.fns))
+	for _, fn := range rs.fns {
+		aggregation = append(aggregation, fn(rs.sql))
+	}
+	switch n := len(*rs.selector.flds); {
+	case n == 0 && len(aggregation) > 0:
+		rs.sql.Select(aggregation...)
+	case n != 0 && len(aggregation) > 0:
+		rs.sql.AppendSelect(aggregation...)
+	}
 	rows := &sql.Rows{}
 	query, args := rs.sql.Query()
 	if err := rs.driver.Query(ctx, query, args, rows); err != nil {

@@ -332,6 +332,11 @@ func (eaq *EquipmentAlarmQuery) Select(fields ...string) *EquipmentAlarmSelect {
 	return selbuild
 }
 
+// Aggregate returns a EquipmentAlarmSelect configured with the given aggregations.
+func (eaq *EquipmentAlarmQuery) Aggregate(fns ...AggregateFunc) *EquipmentAlarmSelect {
+	return eaq.Select().Aggregate(fns...)
+}
+
 func (eaq *EquipmentAlarmQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range eaq.fields {
 		if !equipmentalarm.ValidColumn(f) {
@@ -562,8 +567,6 @@ func (eagb *EquipmentAlarmGroupBy) sqlQuery() *sql.Selector {
 	for _, fn := range eagb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	// If no columns were selected in a custom aggregation function, the default
-	// selection is the fields used for "group-by", and the aggregation functions.
 	if len(selector.SelectedColumns()) == 0 {
 		columns := make([]string, 0, len(eagb.fields)+len(eagb.fns))
 		for _, f := range eagb.fields {
@@ -583,6 +586,12 @@ type EquipmentAlarmSelect struct {
 	sql *sql.Selector
 }
 
+// Aggregate adds the given aggregation functions to the selector query.
+func (eas *EquipmentAlarmSelect) Aggregate(fns ...AggregateFunc) *EquipmentAlarmSelect {
+	eas.fns = append(eas.fns, fns...)
+	return eas
+}
+
 // Scan applies the selector query and scans the result into the given value.
 func (eas *EquipmentAlarmSelect) Scan(ctx context.Context, v any) error {
 	if err := eas.prepareQuery(ctx); err != nil {
@@ -593,6 +602,16 @@ func (eas *EquipmentAlarmSelect) Scan(ctx context.Context, v any) error {
 }
 
 func (eas *EquipmentAlarmSelect) sqlScan(ctx context.Context, v any) error {
+	aggregation := make([]string, 0, len(eas.fns))
+	for _, fn := range eas.fns {
+		aggregation = append(aggregation, fn(eas.sql))
+	}
+	switch n := len(*eas.selector.flds); {
+	case n == 0 && len(aggregation) > 0:
+		eas.sql.Select(aggregation...)
+	case n != 0 && len(aggregation) > 0:
+		eas.sql.AppendSelect(aggregation...)
+	}
 	rows := &sql.Rows{}
 	query, args := eas.sql.Query()
 	if err := eas.driver.Query(ctx, query, args, rows); err != nil {

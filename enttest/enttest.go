@@ -60,7 +60,6 @@ func Open(t TestingT, driverName, dataSourceName string, opts ...Option) *cwmode
 		t.Error(err)
 		t.FailNow()
 	}
-	// migrateSchema(t, c, o)
 	return c
 }
 
@@ -68,7 +67,6 @@ func Open(t TestingT, driverName, dataSourceName string, opts ...Option) *cwmode
 func NewClient(t TestingT, opts ...Option) *cwmodel.Client {
 	o := newOptions(opts)
 	c := cwmodel.NewClient(o.opts...)
-	// migrateSchema(t, c, o)
 	return c
 }
 func migrateSchema(t TestingT, c *cwmodel.Client, o *options) {

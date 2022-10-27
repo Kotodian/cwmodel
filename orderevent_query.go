@@ -332,6 +332,11 @@ func (oeq *OrderEventQuery) Select(fields ...string) *OrderEventSelect {
 	return selbuild
 }
 
+// Aggregate returns a OrderEventSelect configured with the given aggregations.
+func (oeq *OrderEventQuery) Aggregate(fns ...AggregateFunc) *OrderEventSelect {
+	return oeq.Select().Aggregate(fns...)
+}
+
 func (oeq *OrderEventQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range oeq.fields {
 		if !orderevent.ValidColumn(f) {
@@ -562,8 +567,6 @@ func (oegb *OrderEventGroupBy) sqlQuery() *sql.Selector {
 	for _, fn := range oegb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	// If no columns were selected in a custom aggregation function, the default
-	// selection is the fields used for "group-by", and the aggregation functions.
 	if len(selector.SelectedColumns()) == 0 {
 		columns := make([]string, 0, len(oegb.fields)+len(oegb.fns))
 		for _, f := range oegb.fields {
@@ -583,6 +586,12 @@ type OrderEventSelect struct {
 	sql *sql.Selector
 }
 
+// Aggregate adds the given aggregation functions to the selector query.
+func (oes *OrderEventSelect) Aggregate(fns ...AggregateFunc) *OrderEventSelect {
+	oes.fns = append(oes.fns, fns...)
+	return oes
+}
+
 // Scan applies the selector query and scans the result into the given value.
 func (oes *OrderEventSelect) Scan(ctx context.Context, v any) error {
 	if err := oes.prepareQuery(ctx); err != nil {
@@ -593,6 +602,16 @@ func (oes *OrderEventSelect) Scan(ctx context.Context, v any) error {
 }
 
 func (oes *OrderEventSelect) sqlScan(ctx context.Context, v any) error {
+	aggregation := make([]string, 0, len(oes.fns))
+	for _, fn := range oes.fns {
+		aggregation = append(aggregation, fn(oes.sql))
+	}
+	switch n := len(*oes.selector.flds); {
+	case n == 0 && len(aggregation) > 0:
+		oes.sql.Select(aggregation...)
+	case n != 0 && len(aggregation) > 0:
+		oes.sql.AppendSelect(aggregation...)
+	}
 	rows := &sql.Rows{}
 	query, args := oes.sql.Query()
 	if err := oes.driver.Query(ctx, query, args, rows); err != nil {

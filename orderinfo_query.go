@@ -405,6 +405,11 @@ func (oiq *OrderInfoQuery) Select(fields ...string) *OrderInfoSelect {
 	return selbuild
 }
 
+// Aggregate returns a OrderInfoSelect configured with the given aggregations.
+func (oiq *OrderInfoQuery) Aggregate(fns ...AggregateFunc) *OrderInfoSelect {
+	return oiq.Select().Aggregate(fns...)
+}
+
 func (oiq *OrderInfoQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range oiq.fields {
 		if !orderinfo.ValidColumn(f) {
@@ -703,8 +708,6 @@ func (oigb *OrderInfoGroupBy) sqlQuery() *sql.Selector {
 	for _, fn := range oigb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	// If no columns were selected in a custom aggregation function, the default
-	// selection is the fields used for "group-by", and the aggregation functions.
 	if len(selector.SelectedColumns()) == 0 {
 		columns := make([]string, 0, len(oigb.fields)+len(oigb.fns))
 		for _, f := range oigb.fields {
@@ -724,6 +727,12 @@ type OrderInfoSelect struct {
 	sql *sql.Selector
 }
 
+// Aggregate adds the given aggregation functions to the selector query.
+func (ois *OrderInfoSelect) Aggregate(fns ...AggregateFunc) *OrderInfoSelect {
+	ois.fns = append(ois.fns, fns...)
+	return ois
+}
+
 // Scan applies the selector query and scans the result into the given value.
 func (ois *OrderInfoSelect) Scan(ctx context.Context, v any) error {
 	if err := ois.prepareQuery(ctx); err != nil {
@@ -734,6 +743,16 @@ func (ois *OrderInfoSelect) Scan(ctx context.Context, v any) error {
 }
 
 func (ois *OrderInfoSelect) sqlScan(ctx context.Context, v any) error {
+	aggregation := make([]string, 0, len(ois.fns))
+	for _, fn := range ois.fns {
+		aggregation = append(aggregation, fn(ois.sql))
+	}
+	switch n := len(*ois.selector.flds); {
+	case n == 0 && len(aggregation) > 0:
+		ois.sql.Select(aggregation...)
+	case n != 0 && len(aggregation) > 0:
+		ois.sql.AppendSelect(aggregation...)
+	}
 	rows := &sql.Rows{}
 	query, args := ois.sql.Query()
 	if err := ois.driver.Query(ctx, query, args, rows); err != nil {

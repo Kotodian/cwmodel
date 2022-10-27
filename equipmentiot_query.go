@@ -332,6 +332,11 @@ func (eiq *EquipmentIotQuery) Select(fields ...string) *EquipmentIotSelect {
 	return selbuild
 }
 
+// Aggregate returns a EquipmentIotSelect configured with the given aggregations.
+func (eiq *EquipmentIotQuery) Aggregate(fns ...AggregateFunc) *EquipmentIotSelect {
+	return eiq.Select().Aggregate(fns...)
+}
+
 func (eiq *EquipmentIotQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range eiq.fields {
 		if !equipmentiot.ValidColumn(f) {
@@ -562,8 +567,6 @@ func (eigb *EquipmentIotGroupBy) sqlQuery() *sql.Selector {
 	for _, fn := range eigb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	// If no columns were selected in a custom aggregation function, the default
-	// selection is the fields used for "group-by", and the aggregation functions.
 	if len(selector.SelectedColumns()) == 0 {
 		columns := make([]string, 0, len(eigb.fields)+len(eigb.fns))
 		for _, f := range eigb.fields {
@@ -583,6 +586,12 @@ type EquipmentIotSelect struct {
 	sql *sql.Selector
 }
 
+// Aggregate adds the given aggregation functions to the selector query.
+func (eis *EquipmentIotSelect) Aggregate(fns ...AggregateFunc) *EquipmentIotSelect {
+	eis.fns = append(eis.fns, fns...)
+	return eis
+}
+
 // Scan applies the selector query and scans the result into the given value.
 func (eis *EquipmentIotSelect) Scan(ctx context.Context, v any) error {
 	if err := eis.prepareQuery(ctx); err != nil {
@@ -593,6 +602,16 @@ func (eis *EquipmentIotSelect) Scan(ctx context.Context, v any) error {
 }
 
 func (eis *EquipmentIotSelect) sqlScan(ctx context.Context, v any) error {
+	aggregation := make([]string, 0, len(eis.fns))
+	for _, fn := range eis.fns {
+		aggregation = append(aggregation, fn(eis.sql))
+	}
+	switch n := len(*eis.selector.flds); {
+	case n == 0 && len(aggregation) > 0:
+		eis.sql.Select(aggregation...)
+	case n != 0 && len(aggregation) > 0:
+		eis.sql.AppendSelect(aggregation...)
+	}
 	rows := &sql.Rows{}
 	query, args := eis.sql.Query()
 	if err := eis.driver.Query(ctx, query, args, rows); err != nil {

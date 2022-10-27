@@ -2,21 +2,18 @@ module github.com/Kotodian/cwmodel
 
 go 1.19
 
-replace entgo.io/ent => github.com/Kotodian/ent v0.0.1
+replace entgo.io/ent => github.com/Kotodian/ent v0.0.4
 
 require (
 	entgo.io/ent v0.11.3
 	github.com/Kotodian/gokit v1.0.73
+	github.com/samber/lo v1.33.0
 )
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/kr/text v0.2.0 // indirect
-	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/samber/lo v1.33.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
-	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 

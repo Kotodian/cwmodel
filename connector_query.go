@@ -477,6 +477,11 @@ func (cq *ConnectorQuery) Select(fields ...string) *ConnectorSelect {
 	return selbuild
 }
 
+// Aggregate returns a ConnectorSelect configured with the given aggregations.
+func (cq *ConnectorQuery) Aggregate(fns ...AggregateFunc) *ConnectorSelect {
+	return cq.Select().Aggregate(fns...)
+}
+
 func (cq *ConnectorQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range cq.fields {
 		if !connector.ValidColumn(f) {
@@ -847,8 +852,6 @@ func (cgb *ConnectorGroupBy) sqlQuery() *sql.Selector {
 	for _, fn := range cgb.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	// If no columns were selected in a custom aggregation function, the default
-	// selection is the fields used for "group-by", and the aggregation functions.
 	if len(selector.SelectedColumns()) == 0 {
 		columns := make([]string, 0, len(cgb.fields)+len(cgb.fns))
 		for _, f := range cgb.fields {
@@ -868,6 +871,12 @@ type ConnectorSelect struct {
 	sql *sql.Selector
 }
 
+// Aggregate adds the given aggregation functions to the selector query.
+func (cs *ConnectorSelect) Aggregate(fns ...AggregateFunc) *ConnectorSelect {
+	cs.fns = append(cs.fns, fns...)
+	return cs
+}
+
 // Scan applies the selector query and scans the result into the given value.
 func (cs *ConnectorSelect) Scan(ctx context.Context, v any) error {
 	if err := cs.prepareQuery(ctx); err != nil {
@@ -878,6 +887,16 @@ func (cs *ConnectorSelect) Scan(ctx context.Context, v any) error {
 }
 
 func (cs *ConnectorSelect) sqlScan(ctx context.Context, v any) error {
+	aggregation := make([]string, 0, len(cs.fns))
+	for _, fn := range cs.fns {
+		aggregation = append(aggregation, fn(cs.sql))
+	}
+	switch n := len(*cs.selector.flds); {
+	case n == 0 && len(aggregation) > 0:
+		cs.sql.Select(aggregation...)
+	case n != 0 && len(aggregation) > 0:
+		cs.sql.AppendSelect(aggregation...)
+	}
 	rows := &sql.Rows{}
 	query, args := cs.sql.Query()
 	if err := cs.driver.Query(ctx, query, args, rows); err != nil {
