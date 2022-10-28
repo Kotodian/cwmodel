@@ -23,20 +23,28 @@ func TestCreateEquipmentLog(t *testing.T) {
 
 	cli.EquipmentLog.Use(func(next ent.Mutator) ent.Mutator {
 		type UpdateBy interface {
+			SetUpdatedAt(value int64)
 			SetUpdatedBy(value datasource.UUID)
 		}
 		type CreateBy interface {
+			SetCreatedAt(value int64)
 			SetCreatedBy(value datasource.UUID)
+		}
+		type ID interface {
+			SetID(value datasource.UUID)
 		}
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 			if m.Op() == ent.OpUpdate || m.Op() == ent.OpCreate || m.Op() == ent.OpUpdateOne {
 				if m.Op() == ent.OpCreate {
 					if cb, ok := m.(CreateBy); ok {
+						m.(ID).SetID(id.Next())
+						cb.SetCreatedAt(time.Now().Unix())
 						cb.SetCreatedBy(datasource.UUID(999999))
 					}
 				}
 				if ub, ok := m.(UpdateBy); ok {
 					ub.SetUpdatedBy(99999)
+					ub.SetUpdatedAt(time.Now().Unix())
 				}
 			}
 			return next.Mutate(ctx, m)
