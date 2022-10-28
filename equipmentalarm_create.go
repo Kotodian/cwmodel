@@ -47,14 +47,6 @@ func (eac *EquipmentAlarmCreate) SetCreatedAt(i int64) *EquipmentAlarmCreate {
 	return eac
 }
 
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (eac *EquipmentAlarmCreate) SetNillableCreatedAt(i *int64) *EquipmentAlarmCreate {
-	if i != nil {
-		eac.SetCreatedAt(*i)
-	}
-	return eac
-}
-
 // SetUpdatedBy sets the "updated_by" field.
 func (eac *EquipmentAlarmCreate) SetUpdatedBy(d datasource.UUID) *EquipmentAlarmCreate {
 	eac.mutation.SetUpdatedBy(d)
@@ -138,14 +130,6 @@ func (eac *EquipmentAlarmCreate) SetNillableCount(i *int) *EquipmentAlarmCreate 
 // SetID sets the "id" field.
 func (eac *EquipmentAlarmCreate) SetID(d datasource.UUID) *EquipmentAlarmCreate {
 	eac.mutation.SetID(d)
-	return eac
-}
-
-// SetNillableID sets the "id" field if the given value is not nil.
-func (eac *EquipmentAlarmCreate) SetNillableID(d *datasource.UUID) *EquipmentAlarmCreate {
-	if d != nil {
-		eac.SetID(*d)
-	}
 	return eac
 }
 
@@ -235,10 +219,6 @@ func (eac *EquipmentAlarmCreate) defaults() {
 		v := equipmentalarm.DefaultVersion
 		eac.mutation.SetVersion(v)
 	}
-	if _, ok := eac.mutation.CreatedAt(); !ok {
-		v := equipmentalarm.DefaultCreatedAt
-		eac.mutation.SetCreatedAt(v)
-	}
 	if _, ok := eac.mutation.UpdatedAt(); !ok {
 		v := equipmentalarm.DefaultUpdatedAt
 		eac.mutation.SetUpdatedAt(v)
@@ -246,10 +226,6 @@ func (eac *EquipmentAlarmCreate) defaults() {
 	if _, ok := eac.mutation.Count(); !ok {
 		v := equipmentalarm.DefaultCount
 		eac.mutation.SetCount(v)
-	}
-	if _, ok := eac.mutation.ID(); !ok {
-		v := equipmentalarm.DefaultID
-		eac.mutation.SetID(v)
 	}
 }
 

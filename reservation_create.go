@@ -48,14 +48,6 @@ func (rc *ReservationCreate) SetCreatedAt(i int64) *ReservationCreate {
 	return rc
 }
 
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (rc *ReservationCreate) SetNillableCreatedAt(i *int64) *ReservationCreate {
-	if i != nil {
-		rc.SetCreatedAt(*i)
-	}
-	return rc
-}
-
 // SetUpdatedBy sets the "updated_by" field.
 func (rc *ReservationCreate) SetUpdatedBy(d datasource.UUID) *ReservationCreate {
 	rc.mutation.SetUpdatedBy(d)
@@ -152,14 +144,6 @@ func (rc *ReservationCreate) SetID(d datasource.UUID) *ReservationCreate {
 	return rc
 }
 
-// SetNillableID sets the "id" field if the given value is not nil.
-func (rc *ReservationCreate) SetNillableID(d *datasource.UUID) *ReservationCreate {
-	if d != nil {
-		rc.SetID(*d)
-	}
-	return rc
-}
-
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (rc *ReservationCreate) SetEquipment(e *Equipment) *ReservationCreate {
 	return rc.SetEquipmentID(e.ID)
@@ -251,17 +235,9 @@ func (rc *ReservationCreate) defaults() {
 		v := reservation.DefaultVersion
 		rc.mutation.SetVersion(v)
 	}
-	if _, ok := rc.mutation.CreatedAt(); !ok {
-		v := reservation.DefaultCreatedAt
-		rc.mutation.SetCreatedAt(v)
-	}
 	if _, ok := rc.mutation.UpdatedAt(); !ok {
 		v := reservation.DefaultUpdatedAt
 		rc.mutation.SetUpdatedAt(v)
-	}
-	if _, ok := rc.mutation.ID(); !ok {
-		v := reservation.DefaultID
-		rc.mutation.SetID(v)
 	}
 }
 

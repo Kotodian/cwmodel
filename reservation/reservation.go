@@ -2,10 +2,6 @@
 
 package reservation
 
-import (
-	"github.com/Kotodian/gokit/datasource"
-)
-
 const (
 	// Label holds the string label denoting the reservation type in the database.
 	Label = "reservation"
@@ -93,12 +89,8 @@ func ValidColumn(column string) bool {
 var (
 	// DefaultVersion holds the default value on creation for the "version" field.
 	DefaultVersion int64
-	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
-	DefaultCreatedAt int64
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt int64
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() int64
-	// DefaultID holds the default value on creation for the "id" field.
-	DefaultID datasource.UUID
 )

@@ -47,14 +47,6 @@ func (mc *ModelCreate) SetCreatedAt(i int64) *ModelCreate {
 	return mc
 }
 
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (mc *ModelCreate) SetNillableCreatedAt(i *int64) *ModelCreate {
-	if i != nil {
-		mc.SetCreatedAt(*i)
-	}
-	return mc
-}
-
 // SetUpdatedBy sets the "updated_by" field.
 func (mc *ModelCreate) SetUpdatedBy(d datasource.UUID) *ModelCreate {
 	mc.mutation.SetUpdatedBy(d)
@@ -102,14 +94,6 @@ func (mc *ModelCreate) SetCurrentCategory(s string) *ModelCreate {
 // SetID sets the "id" field.
 func (mc *ModelCreate) SetID(d datasource.UUID) *ModelCreate {
 	mc.mutation.SetID(d)
-	return mc
-}
-
-// SetNillableID sets the "id" field if the given value is not nil.
-func (mc *ModelCreate) SetNillableID(d *datasource.UUID) *ModelCreate {
-	if d != nil {
-		mc.SetID(*d)
-	}
 	return mc
 }
 
@@ -209,17 +193,9 @@ func (mc *ModelCreate) defaults() {
 		v := model.DefaultVersion
 		mc.mutation.SetVersion(v)
 	}
-	if _, ok := mc.mutation.CreatedAt(); !ok {
-		v := model.DefaultCreatedAt
-		mc.mutation.SetCreatedAt(v)
-	}
 	if _, ok := mc.mutation.UpdatedAt(); !ok {
 		v := model.DefaultUpdatedAt
 		mc.mutation.SetUpdatedAt(v)
-	}
-	if _, ok := mc.mutation.ID(); !ok {
-		v := model.DefaultID
-		mc.mutation.SetID(v)
 	}
 }
 

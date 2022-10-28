@@ -47,14 +47,6 @@ func (eic *EquipmentInfoCreate) SetCreatedAt(i int64) *EquipmentInfoCreate {
 	return eic
 }
 
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (eic *EquipmentInfoCreate) SetNillableCreatedAt(i *int64) *EquipmentInfoCreate {
-	if i != nil {
-		eic.SetCreatedAt(*i)
-	}
-	return eic
-}
-
 // SetUpdatedBy sets the "updated_by" field.
 func (eic *EquipmentInfoCreate) SetUpdatedBy(d datasource.UUID) *EquipmentInfoCreate {
 	eic.mutation.SetUpdatedBy(d)
@@ -147,14 +139,6 @@ func (eic *EquipmentInfoCreate) SetID(d datasource.UUID) *EquipmentInfoCreate {
 	return eic
 }
 
-// SetNillableID sets the "id" field if the given value is not nil.
-func (eic *EquipmentInfoCreate) SetNillableID(d *datasource.UUID) *EquipmentInfoCreate {
-	if d != nil {
-		eic.SetID(*d)
-	}
-	return eic
-}
-
 // SetEquipment sets the "equipment" edge to the Equipment entity.
 func (eic *EquipmentInfoCreate) SetEquipment(e *Equipment) *EquipmentInfoCreate {
 	return eic.SetEquipmentID(e.ID)
@@ -241,17 +225,9 @@ func (eic *EquipmentInfoCreate) defaults() {
 		v := equipmentinfo.DefaultVersion
 		eic.mutation.SetVersion(v)
 	}
-	if _, ok := eic.mutation.CreatedAt(); !ok {
-		v := equipmentinfo.DefaultCreatedAt
-		eic.mutation.SetCreatedAt(v)
-	}
 	if _, ok := eic.mutation.UpdatedAt(); !ok {
 		v := equipmentinfo.DefaultUpdatedAt
 		eic.mutation.SetUpdatedAt(v)
-	}
-	if _, ok := eic.mutation.ID(); !ok {
-		v := equipmentinfo.DefaultID
-		eic.mutation.SetID(v)
 	}
 }
 

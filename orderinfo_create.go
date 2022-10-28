@@ -49,14 +49,6 @@ func (oic *OrderInfoCreate) SetCreatedAt(i int64) *OrderInfoCreate {
 	return oic
 }
 
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (oic *OrderInfoCreate) SetNillableCreatedAt(i *int64) *OrderInfoCreate {
-	if i != nil {
-		oic.SetCreatedAt(*i)
-	}
-	return oic
-}
-
 // SetUpdatedBy sets the "updated_by" field.
 func (oic *OrderInfoCreate) SetUpdatedBy(d datasource.UUID) *OrderInfoCreate {
 	oic.mutation.SetUpdatedBy(d)
@@ -423,14 +415,6 @@ func (oic *OrderInfoCreate) SetID(d datasource.UUID) *OrderInfoCreate {
 	return oic
 }
 
-// SetNillableID sets the "id" field if the given value is not nil.
-func (oic *OrderInfoCreate) SetNillableID(d *datasource.UUID) *OrderInfoCreate {
-	if d != nil {
-		oic.SetID(*d)
-	}
-	return oic
-}
-
 // SetConnector sets the "connector" edge to the Connector entity.
 func (oic *OrderInfoCreate) SetConnector(c *Connector) *OrderInfoCreate {
 	return oic.SetConnectorID(c.ID)
@@ -537,17 +521,9 @@ func (oic *OrderInfoCreate) defaults() {
 		v := orderinfo.DefaultVersion
 		oic.mutation.SetVersion(v)
 	}
-	if _, ok := oic.mutation.CreatedAt(); !ok {
-		v := orderinfo.DefaultCreatedAt
-		oic.mutation.SetCreatedAt(v)
-	}
 	if _, ok := oic.mutation.UpdatedAt(); !ok {
 		v := orderinfo.DefaultUpdatedAt
 		oic.mutation.SetUpdatedAt(v)
-	}
-	if _, ok := oic.mutation.ID(); !ok {
-		v := orderinfo.DefaultID
-		oic.mutation.SetID(v)
 	}
 }
 
