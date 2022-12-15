@@ -198,6 +198,13 @@ func ParkNo(v string) predicate.Connector {
 	})
 }
 
+// QrCode applies equality check predicate on the "qr_code" field. It's identical to QrCodeEQ.
+func QrCode(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldQrCode), v))
+	})
+}
+
 // VersionEQ applies the EQ predicate on the "version" field.
 func VersionEQ(v int64) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
@@ -1362,12 +1369,124 @@ func ParkNoContainsFold(v string) predicate.Connector {
 	})
 }
 
+// QrCodeEQ applies the EQ predicate on the "qr_code" field.
+func QrCodeEQ(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldQrCode), v))
+	})
+}
+
+// QrCodeNEQ applies the NEQ predicate on the "qr_code" field.
+func QrCodeNEQ(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldQrCode), v))
+	})
+}
+
+// QrCodeIn applies the In predicate on the "qr_code" field.
+func QrCodeIn(vs ...string) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldQrCode), v...))
+	})
+}
+
+// QrCodeNotIn applies the NotIn predicate on the "qr_code" field.
+func QrCodeNotIn(vs ...string) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldQrCode), v...))
+	})
+}
+
+// QrCodeGT applies the GT predicate on the "qr_code" field.
+func QrCodeGT(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldQrCode), v))
+	})
+}
+
+// QrCodeGTE applies the GTE predicate on the "qr_code" field.
+func QrCodeGTE(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldQrCode), v))
+	})
+}
+
+// QrCodeLT applies the LT predicate on the "qr_code" field.
+func QrCodeLT(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldQrCode), v))
+	})
+}
+
+// QrCodeLTE applies the LTE predicate on the "qr_code" field.
+func QrCodeLTE(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldQrCode), v))
+	})
+}
+
+// QrCodeContains applies the Contains predicate on the "qr_code" field.
+func QrCodeContains(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldQrCode), v))
+	})
+}
+
+// QrCodeHasPrefix applies the HasPrefix predicate on the "qr_code" field.
+func QrCodeHasPrefix(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldQrCode), v))
+	})
+}
+
+// QrCodeHasSuffix applies the HasSuffix predicate on the "qr_code" field.
+func QrCodeHasSuffix(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldQrCode), v))
+	})
+}
+
+// QrCodeIsNil applies the IsNil predicate on the "qr_code" field.
+func QrCodeIsNil() predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldQrCode)))
+	})
+}
+
+// QrCodeNotNil applies the NotNil predicate on the "qr_code" field.
+func QrCodeNotNil() predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldQrCode)))
+	})
+}
+
+// QrCodeEqualFold applies the EqualFold predicate on the "qr_code" field.
+func QrCodeEqualFold(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldQrCode), v))
+	})
+}
+
+// QrCodeContainsFold applies the ContainsFold predicate on the "qr_code" field.
+func QrCodeContainsFold(v string) predicate.Connector {
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldQrCode), v))
+	})
+}
+
 // HasEvse applies the HasEdge predicate on the "evse" edge.
 func HasEvse() predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EvseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, EvseTable, EvseColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -1395,7 +1514,6 @@ func HasEquipment() predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EquipmentTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, EquipmentTable, EquipmentColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -1423,7 +1541,6 @@ func HasOrderInfo() predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrderInfoTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, OrderInfoTable, OrderInfoColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -1451,7 +1568,6 @@ func HasReservation() predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ReservationTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, ReservationTable, ReservationColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -1479,7 +1595,6 @@ func HasSmartChargingEffect() predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(SmartChargingEffectTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, SmartChargingEffectTable, SmartChargingEffectColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)

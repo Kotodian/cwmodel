@@ -229,6 +229,46 @@ func (c *Client) Use(hooks ...Hook) {
 	c.SmartChargingEffect.Use(hooks...)
 }
 
+// Mutate implements the ent.Mutator interface.
+func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
+	switch m := m.(type) {
+	case *AppModuleInfoMutation:
+		return c.AppModuleInfo.mutate(ctx, m)
+	case *ConnectorMutation:
+		return c.Connector.mutate(ctx, m)
+	case *EquipmentMutation:
+		return c.Equipment.mutate(ctx, m)
+	case *EquipmentAlarmMutation:
+		return c.EquipmentAlarm.mutate(ctx, m)
+	case *EquipmentFirmwareEffectMutation:
+		return c.EquipmentFirmwareEffect.mutate(ctx, m)
+	case *EquipmentInfoMutation:
+		return c.EquipmentInfo.mutate(ctx, m)
+	case *EquipmentIotMutation:
+		return c.EquipmentIot.mutate(ctx, m)
+	case *EquipmentLogMutation:
+		return c.EquipmentLog.mutate(ctx, m)
+	case *EvseMutation:
+		return c.Evse.mutate(ctx, m)
+	case *FirmwareMutation:
+		return c.Firmware.mutate(ctx, m)
+	case *ManufacturerMutation:
+		return c.Manufacturer.mutate(ctx, m)
+	case *ModelMutation:
+		return c.Model.mutate(ctx, m)
+	case *OrderEventMutation:
+		return c.OrderEvent.mutate(ctx, m)
+	case *OrderInfoMutation:
+		return c.OrderInfo.mutate(ctx, m)
+	case *ReservationMutation:
+		return c.Reservation.mutate(ctx, m)
+	case *SmartChargingEffectMutation:
+		return c.SmartChargingEffect.mutate(ctx, m)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown mutation type %T", m)
+	}
+}
+
 // AppModuleInfoClient is a client for the AppModuleInfo schema.
 type AppModuleInfoClient struct {
 	config
@@ -317,6 +357,21 @@ func (c *AppModuleInfoClient) GetX(ctx context.Context, id datasource.UUID) *App
 // Hooks returns the client hooks.
 func (c *AppModuleInfoClient) Hooks() []Hook {
 	return c.hooks.AppModuleInfo
+}
+
+func (c *AppModuleInfoClient) mutate(ctx context.Context, m *AppModuleInfoMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AppModuleInfoCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AppModuleInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AppModuleInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AppModuleInfoDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown AppModuleInfo mutation op: %q", m.Op())
+	}
 }
 
 // ConnectorClient is a client for the Connector schema.
@@ -487,6 +542,21 @@ func (c *ConnectorClient) QuerySmartChargingEffect(co *Connector) *SmartCharging
 // Hooks returns the client hooks.
 func (c *ConnectorClient) Hooks() []Hook {
 	return c.hooks.Connector
+}
+
+func (c *ConnectorClient) mutate(ctx context.Context, m *ConnectorMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ConnectorCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ConnectorUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ConnectorUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ConnectorDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown Connector mutation op: %q", m.Op())
+	}
 }
 
 // EquipmentClient is a client for the Equipment schema.
@@ -739,6 +809,21 @@ func (c *EquipmentClient) Hooks() []Hook {
 	return c.hooks.Equipment
 }
 
+func (c *EquipmentClient) mutate(ctx context.Context, m *EquipmentMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&EquipmentCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&EquipmentUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&EquipmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&EquipmentDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown Equipment mutation op: %q", m.Op())
+	}
+}
+
 // EquipmentAlarmClient is a client for the EquipmentAlarm schema.
 type EquipmentAlarmClient struct {
 	config
@@ -843,6 +928,21 @@ func (c *EquipmentAlarmClient) QueryEquipment(ea *EquipmentAlarm) *EquipmentQuer
 // Hooks returns the client hooks.
 func (c *EquipmentAlarmClient) Hooks() []Hook {
 	return c.hooks.EquipmentAlarm
+}
+
+func (c *EquipmentAlarmClient) mutate(ctx context.Context, m *EquipmentAlarmMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&EquipmentAlarmCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&EquipmentAlarmUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&EquipmentAlarmUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&EquipmentAlarmDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown EquipmentAlarm mutation op: %q", m.Op())
+	}
 }
 
 // EquipmentFirmwareEffectClient is a client for the EquipmentFirmwareEffect schema.
@@ -967,6 +1067,21 @@ func (c *EquipmentFirmwareEffectClient) Hooks() []Hook {
 	return c.hooks.EquipmentFirmwareEffect
 }
 
+func (c *EquipmentFirmwareEffectClient) mutate(ctx context.Context, m *EquipmentFirmwareEffectMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&EquipmentFirmwareEffectCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&EquipmentFirmwareEffectUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&EquipmentFirmwareEffectUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&EquipmentFirmwareEffectDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown EquipmentFirmwareEffect mutation op: %q", m.Op())
+	}
+}
+
 // EquipmentInfoClient is a client for the EquipmentInfo schema.
 type EquipmentInfoClient struct {
 	config
@@ -1071,6 +1186,21 @@ func (c *EquipmentInfoClient) QueryEquipment(ei *EquipmentInfo) *EquipmentQuery 
 // Hooks returns the client hooks.
 func (c *EquipmentInfoClient) Hooks() []Hook {
 	return c.hooks.EquipmentInfo
+}
+
+func (c *EquipmentInfoClient) mutate(ctx context.Context, m *EquipmentInfoMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&EquipmentInfoCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&EquipmentInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&EquipmentInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&EquipmentInfoDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown EquipmentInfo mutation op: %q", m.Op())
+	}
 }
 
 // EquipmentIotClient is a client for the EquipmentIot schema.
@@ -1179,6 +1309,21 @@ func (c *EquipmentIotClient) Hooks() []Hook {
 	return c.hooks.EquipmentIot
 }
 
+func (c *EquipmentIotClient) mutate(ctx context.Context, m *EquipmentIotMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&EquipmentIotCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&EquipmentIotUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&EquipmentIotUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&EquipmentIotDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown EquipmentIot mutation op: %q", m.Op())
+	}
+}
+
 // EquipmentLogClient is a client for the EquipmentLog schema.
 type EquipmentLogClient struct {
 	config
@@ -1283,6 +1428,21 @@ func (c *EquipmentLogClient) QueryEquipment(el *EquipmentLog) *EquipmentQuery {
 // Hooks returns the client hooks.
 func (c *EquipmentLogClient) Hooks() []Hook {
 	return c.hooks.EquipmentLog
+}
+
+func (c *EquipmentLogClient) mutate(ctx context.Context, m *EquipmentLogMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&EquipmentLogCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&EquipmentLogUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&EquipmentLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&EquipmentLogDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown EquipmentLog mutation op: %q", m.Op())
+	}
 }
 
 // EvseClient is a client for the Evse schema.
@@ -1405,6 +1565,21 @@ func (c *EvseClient) QueryConnector(e *Evse) *ConnectorQuery {
 // Hooks returns the client hooks.
 func (c *EvseClient) Hooks() []Hook {
 	return c.hooks.Evse
+}
+
+func (c *EvseClient) mutate(ctx context.Context, m *EvseMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&EvseCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&EvseUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&EvseUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&EvseDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown Evse mutation op: %q", m.Op())
+	}
 }
 
 // FirmwareClient is a client for the Firmware schema.
@@ -1545,6 +1720,21 @@ func (c *FirmwareClient) Hooks() []Hook {
 	return c.hooks.Firmware
 }
 
+func (c *FirmwareClient) mutate(ctx context.Context, m *FirmwareMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FirmwareCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FirmwareUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FirmwareUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FirmwareDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown Firmware mutation op: %q", m.Op())
+	}
+}
+
 // ManufacturerClient is a client for the Manufacturer schema.
 type ManufacturerClient struct {
 	config
@@ -1649,6 +1839,21 @@ func (c *ManufacturerClient) QueryFirmware(m *Manufacturer) *FirmwareQuery {
 // Hooks returns the client hooks.
 func (c *ManufacturerClient) Hooks() []Hook {
 	return c.hooks.Manufacturer
+}
+
+func (c *ManufacturerClient) mutate(ctx context.Context, m *ManufacturerMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ManufacturerCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ManufacturerUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ManufacturerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ManufacturerDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown Manufacturer mutation op: %q", m.Op())
+	}
 }
 
 // ModelClient is a client for the Model schema.
@@ -1757,6 +1962,21 @@ func (c *ModelClient) Hooks() []Hook {
 	return c.hooks.Model
 }
 
+func (c *ModelClient) mutate(ctx context.Context, m *ModelMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ModelCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ModelUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ModelUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ModelDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown Model mutation op: %q", m.Op())
+	}
+}
+
 // OrderEventClient is a client for the OrderEvent schema.
 type OrderEventClient struct {
 	config
@@ -1861,6 +2081,21 @@ func (c *OrderEventClient) QueryOrderInfo(oe *OrderEvent) *OrderInfoQuery {
 // Hooks returns the client hooks.
 func (c *OrderEventClient) Hooks() []Hook {
 	return c.hooks.OrderEvent
+}
+
+func (c *OrderEventClient) mutate(ctx context.Context, m *OrderEventMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OrderEventCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OrderEventUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OrderEventUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OrderEventDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown OrderEvent mutation op: %q", m.Op())
+	}
 }
 
 // OrderInfoClient is a client for the OrderInfo schema.
@@ -2001,6 +2236,21 @@ func (c *OrderInfoClient) Hooks() []Hook {
 	return c.hooks.OrderInfo
 }
 
+func (c *OrderInfoClient) mutate(ctx context.Context, m *OrderInfoMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OrderInfoCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OrderInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OrderInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OrderInfoDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown OrderInfo mutation op: %q", m.Op())
+	}
+}
+
 // ReservationClient is a client for the Reservation schema.
 type ReservationClient struct {
 	config
@@ -2123,6 +2373,21 @@ func (c *ReservationClient) Hooks() []Hook {
 	return c.hooks.Reservation
 }
 
+func (c *ReservationClient) mutate(ctx context.Context, m *ReservationMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ReservationCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ReservationUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ReservationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ReservationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown Reservation mutation op: %q", m.Op())
+	}
+}
+
 // SmartChargingEffectClient is a client for the SmartChargingEffect schema.
 type SmartChargingEffectClient struct {
 	config
@@ -2243,4 +2508,19 @@ func (c *SmartChargingEffectClient) QueryConnector(sce *SmartChargingEffect) *Co
 // Hooks returns the client hooks.
 func (c *SmartChargingEffectClient) Hooks() []Hook {
 	return c.hooks.SmartChargingEffect
+}
+
+func (c *SmartChargingEffectClient) mutate(ctx context.Context, m *SmartChargingEffectMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&SmartChargingEffectCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&SmartChargingEffectUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&SmartChargingEffectUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&SmartChargingEffectDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("cwmodel: unknown SmartChargingEffect mutation op: %q", m.Op())
+	}
 }

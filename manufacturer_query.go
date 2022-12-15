@@ -239,10 +239,14 @@ func (mq *ManufacturerQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (mq *ManufacturerQuery) Exist(ctx context.Context) (bool, error) {
-	if err := mq.prepareQuery(ctx); err != nil {
-		return false, err
+	switch _, err := mq.FirstID(ctx); {
+	case IsNotFound(err):
+		return false, nil
+	case err != nil:
+		return false, fmt.Errorf("cwmodel: check existence: %w", err)
+	default:
+		return true, nil
 	}
-	return mq.sqlExist(ctx)
 }
 
 // ExistX is like Exist, but panics if an error occurs.
@@ -425,17 +429,6 @@ func (mq *ManufacturerQuery) sqlCount(ctx context.Context) (int, error) {
 		_spec.Unique = mq.unique != nil && *mq.unique
 	}
 	return sqlgraph.CountNodes(ctx, mq.driver, _spec)
-}
-
-func (mq *ManufacturerQuery) sqlExist(ctx context.Context) (bool, error) {
-	switch _, err := mq.FirstID(ctx); {
-	case IsNotFound(err):
-		return false, nil
-	case err != nil:
-		return false, fmt.Errorf("cwmodel: check existence: %w", err)
-	default:
-		return true, nil
-	}
 }
 
 func (mq *ManufacturerQuery) querySpec() *sqlgraph.QuerySpec {

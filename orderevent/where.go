@@ -308,7 +308,6 @@ func HasOrderInfo() predicate.OrderEvent {
 	return predicate.OrderEvent(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrderInfoTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, OrderInfoTable, OrderInfoColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)

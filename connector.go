@@ -51,6 +51,8 @@ type Connector struct {
 	OrderID *datasource.UUID `json:"order_id"`
 	// 停车编号
 	ParkNo string `json:"park_no"`
+	// 二维码
+	QrCode *string `json:"qr_code"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ConnectorQuery when eager-loading is set.
 	Edges ConnectorEdges `json:"-"`
@@ -138,7 +140,7 @@ func (*Connector) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case connector.FieldID, connector.FieldVersion, connector.FieldCreatedBy, connector.FieldCreatedAt, connector.FieldUpdatedBy, connector.FieldUpdatedAt, connector.FieldEquipmentID, connector.FieldEvseID, connector.FieldCurrentState, connector.FieldBeforeState, connector.FieldChargingState, connector.FieldReservationID, connector.FieldOrderID:
 			values[i] = new(sql.NullInt64)
-		case connector.FieldEquipmentSn, connector.FieldEvseSerial, connector.FieldSerial, connector.FieldParkNo:
+		case connector.FieldEquipmentSn, connector.FieldEvseSerial, connector.FieldSerial, connector.FieldParkNo, connector.FieldQrCode:
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Connector", columns[i])
@@ -259,6 +261,13 @@ func (c *Connector) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				c.ParkNo = value.String
 			}
+		case connector.FieldQrCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field qr_code", values[i])
+			} else if value.Valid {
+				c.QrCode = new(string)
+				*c.QrCode = value.String
+			}
 		}
 	}
 	return nil
@@ -363,6 +372,11 @@ func (c *Connector) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("park_no=")
 	builder.WriteString(c.ParkNo)
+	builder.WriteString(", ")
+	if v := c.QrCode; v != nil {
+		builder.WriteString("qr_code=")
+		builder.WriteString(*v)
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

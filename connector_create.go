@@ -161,6 +161,20 @@ func (cc *ConnectorCreate) SetNillableParkNo(s *string) *ConnectorCreate {
 	return cc
 }
 
+// SetQrCode sets the "qr_code" field.
+func (cc *ConnectorCreate) SetQrCode(s string) *ConnectorCreate {
+	cc.mutation.SetQrCode(s)
+	return cc
+}
+
+// SetNillableQrCode sets the "qr_code" field if the given value is not nil.
+func (cc *ConnectorCreate) SetNillableQrCode(s *string) *ConnectorCreate {
+	if s != nil {
+		cc.SetQrCode(*s)
+	}
+	return cc
+}
+
 // SetID sets the "id" field.
 func (cc *ConnectorCreate) SetID(d datasource.UUID) *ConnectorCreate {
 	cc.mutation.SetID(d)
@@ -451,6 +465,10 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.ParkNo(); ok {
 		_spec.SetField(connector.FieldParkNo, field.TypeString, value)
 		_node.ParkNo = value
+	}
+	if value, ok := cc.mutation.QrCode(); ok {
+		_spec.SetField(connector.FieldQrCode, field.TypeString, value)
+		_node.QrCode = &value
 	}
 	if nodes := cc.mutation.EvseIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

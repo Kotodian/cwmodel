@@ -262,10 +262,14 @@ func (sceq *SmartChargingEffectQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (sceq *SmartChargingEffectQuery) Exist(ctx context.Context) (bool, error) {
-	if err := sceq.prepareQuery(ctx); err != nil {
-		return false, err
+	switch _, err := sceq.FirstID(ctx); {
+	case IsNotFound(err):
+		return false, nil
+	case err != nil:
+		return false, fmt.Errorf("cwmodel: check existence: %w", err)
+	default:
+		return true, nil
 	}
-	return sceq.sqlExist(ctx)
 }
 
 // ExistX is like Exist, but panics if an error occurs.
@@ -491,17 +495,6 @@ func (sceq *SmartChargingEffectQuery) sqlCount(ctx context.Context) (int, error)
 		_spec.Unique = sceq.unique != nil && *sceq.unique
 	}
 	return sqlgraph.CountNodes(ctx, sceq.driver, _spec)
-}
-
-func (sceq *SmartChargingEffectQuery) sqlExist(ctx context.Context) (bool, error) {
-	switch _, err := sceq.FirstID(ctx); {
-	case IsNotFound(err):
-		return false, nil
-	case err != nil:
-		return false, fmt.Errorf("cwmodel: check existence: %w", err)
-	default:
-		return true, nil
-	}
 }
 
 func (sceq *SmartChargingEffectQuery) querySpec() *sqlgraph.QuerySpec {

@@ -41,6 +41,7 @@ func (Connector) Fields() []ent.Field {
 		field.Uint64("reservation_id").Optional().Nillable().StructTag(`json:"reservation_id"`).GoType(datasource.UUID(0)).Comment("预约id"),
 		field.Uint64("order_id").Optional().Nillable().GoType(datasource.UUID(0)).StructTag(`json:"order_id"`).Comment("订单id"),
 		field.String("park_no").Default("0001").StructTag(`json:"park_no"`).Comment("停车编号"),
+		field.String("qr_code").Optional().Nillable().StructTag(`json:"qr_code"`).Comment("二维码"),
 	}
 }
 

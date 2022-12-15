@@ -1176,7 +1176,6 @@ func HasEquipment() predicate.Reservation {
 	return predicate.Reservation(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EquipmentTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, EquipmentTable, EquipmentColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -1204,7 +1203,6 @@ func HasConnector() predicate.Reservation {
 	return predicate.Reservation(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ConnectorTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, ConnectorTable, ConnectorColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)

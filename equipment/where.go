@@ -716,7 +716,6 @@ func HasEquipmentInfo() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EquipmentInfoTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, EquipmentInfoTable, EquipmentInfoColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -744,7 +743,6 @@ func HasEvse() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EvseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, EvseTable, EvseColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -772,7 +770,6 @@ func HasConnector() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ConnectorTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, ConnectorTable, ConnectorColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -800,7 +797,6 @@ func HasEquipmentAlarm() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EquipmentAlarmTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, EquipmentAlarmTable, EquipmentAlarmColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -828,7 +824,6 @@ func HasEquipmentIot() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EquipmentIotTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, EquipmentIotTable, EquipmentIotColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -856,7 +851,6 @@ func HasEquipmentFirmwareEffect() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EquipmentFirmwareEffectTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, EquipmentFirmwareEffectTable, EquipmentFirmwareEffectColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -884,7 +878,6 @@ func HasOrderInfo() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrderInfoTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, OrderInfoTable, OrderInfoColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -912,7 +905,6 @@ func HasReservation() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ReservationTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, ReservationTable, ReservationColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -940,7 +932,6 @@ func HasEquipmentLog() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EquipmentLogTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, EquipmentLogTable, EquipmentLogColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -968,7 +959,6 @@ func HasSmartChargingEffect() predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(SmartChargingEffectTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, SmartChargingEffectTable, SmartChargingEffectColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)

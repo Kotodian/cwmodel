@@ -258,6 +258,11 @@ func (m *AppModuleInfoMutation) Op() Op {
 	return m.op
 }
 
+// SetOp allows setting the mutation operation.
+func (m *AppModuleInfoMutation) SetOp(op Op) {
+	m.op = op
+}
+
 // Type returns the node type of this mutation (AppModuleInfo).
 func (m *AppModuleInfoMutation) Type() string {
 	return m.typ
@@ -459,6 +464,7 @@ type ConnectorMutation struct {
 	order_id                     *datasource.UUID
 	addorder_id                  *datasource.UUID
 	park_no                      *string
+	qr_code                      *string
 	clearedFields                map[string]struct{}
 	evse                         *datasource.UUID
 	clearedevse                  bool
@@ -1386,6 +1392,55 @@ func (m *ConnectorMutation) ResetParkNo() {
 	m.park_no = nil
 }
 
+// SetQrCode sets the "qr_code" field.
+func (m *ConnectorMutation) SetQrCode(s string) {
+	m.qr_code = &s
+}
+
+// QrCode returns the value of the "qr_code" field in the mutation.
+func (m *ConnectorMutation) QrCode() (r string, exists bool) {
+	v := m.qr_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldQrCode returns the old "qr_code" field's value of the Connector entity.
+// If the Connector object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ConnectorMutation) OldQrCode(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldQrCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldQrCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldQrCode: %w", err)
+	}
+	return oldValue.QrCode, nil
+}
+
+// ClearQrCode clears the value of the "qr_code" field.
+func (m *ConnectorMutation) ClearQrCode() {
+	m.qr_code = nil
+	m.clearedFields[connector.FieldQrCode] = struct{}{}
+}
+
+// QrCodeCleared returns if the "qr_code" field was cleared in this mutation.
+func (m *ConnectorMutation) QrCodeCleared() bool {
+	_, ok := m.clearedFields[connector.FieldQrCode]
+	return ok
+}
+
+// ResetQrCode resets all changes to the "qr_code" field.
+func (m *ConnectorMutation) ResetQrCode() {
+	m.qr_code = nil
+	delete(m.clearedFields, connector.FieldQrCode)
+}
+
 // ClearEvse clears the "evse" edge to the Evse entity.
 func (m *ConnectorMutation) ClearEvse() {
 	m.clearedevse = true
@@ -1610,6 +1665,11 @@ func (m *ConnectorMutation) Op() Op {
 	return m.op
 }
 
+// SetOp allows setting the mutation operation.
+func (m *ConnectorMutation) SetOp(op Op) {
+	m.op = op
+}
+
 // Type returns the node type of this mutation (Connector).
 func (m *ConnectorMutation) Type() string {
 	return m.typ
@@ -1619,7 +1679,7 @@ func (m *ConnectorMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ConnectorMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 17)
 	if m.version != nil {
 		fields = append(fields, connector.FieldVersion)
 	}
@@ -1668,6 +1728,9 @@ func (m *ConnectorMutation) Fields() []string {
 	if m.park_no != nil {
 		fields = append(fields, connector.FieldParkNo)
 	}
+	if m.qr_code != nil {
+		fields = append(fields, connector.FieldQrCode)
+	}
 	return fields
 }
 
@@ -1708,6 +1771,8 @@ func (m *ConnectorMutation) Field(name string) (ent.Value, bool) {
 		return m.OrderID()
 	case connector.FieldParkNo:
 		return m.ParkNo()
+	case connector.FieldQrCode:
+		return m.QrCode()
 	}
 	return nil, false
 }
@@ -1749,6 +1814,8 @@ func (m *ConnectorMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldOrderID(ctx)
 	case connector.FieldParkNo:
 		return m.OldParkNo(ctx)
+	case connector.FieldQrCode:
+		return m.OldQrCode(ctx)
 	}
 	return nil, fmt.Errorf("unknown Connector field %s", name)
 }
@@ -1869,6 +1936,13 @@ func (m *ConnectorMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetParkNo(v)
+		return nil
+	case connector.FieldQrCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetQrCode(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Connector field %s", name)
@@ -2029,6 +2103,9 @@ func (m *ConnectorMutation) ClearedFields() []string {
 	if m.FieldCleared(connector.FieldOrderID) {
 		fields = append(fields, connector.FieldOrderID)
 	}
+	if m.FieldCleared(connector.FieldQrCode) {
+		fields = append(fields, connector.FieldQrCode)
+	}
 	return fields
 }
 
@@ -2048,6 +2125,9 @@ func (m *ConnectorMutation) ClearField(name string) error {
 		return nil
 	case connector.FieldOrderID:
 		m.ClearOrderID()
+		return nil
+	case connector.FieldQrCode:
+		m.ClearQrCode()
 		return nil
 	}
 	return fmt.Errorf("unknown Connector nullable field %s", name)
@@ -2104,6 +2184,9 @@ func (m *ConnectorMutation) ResetField(name string) error {
 		return nil
 	case connector.FieldParkNo:
 		m.ResetParkNo()
+		return nil
+	case connector.FieldQrCode:
+		m.ResetQrCode()
 		return nil
 	}
 	return fmt.Errorf("unknown Connector field %s", name)
@@ -3386,6 +3469,11 @@ func (m *EquipmentMutation) Where(ps ...predicate.Equipment) {
 // Op returns the operation name.
 func (m *EquipmentMutation) Op() Op {
 	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *EquipmentMutation) SetOp(op Op) {
+	m.op = op
 }
 
 // Type returns the node type of this mutation (Equipment).
@@ -4779,6 +4867,11 @@ func (m *EquipmentAlarmMutation) Op() Op {
 	return m.op
 }
 
+// SetOp allows setting the mutation operation.
+func (m *EquipmentAlarmMutation) SetOp(op Op) {
+	m.op = op
+}
+
 // Type returns the node type of this mutation (EquipmentAlarm).
 func (m *EquipmentAlarmMutation) Type() string {
 	return m.typ
@@ -5913,6 +6006,11 @@ func (m *EquipmentFirmwareEffectMutation) Where(ps ...predicate.EquipmentFirmwar
 // Op returns the operation name.
 func (m *EquipmentFirmwareEffectMutation) Op() Op {
 	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *EquipmentFirmwareEffectMutation) SetOp(op Op) {
+	m.op = op
 }
 
 // Type returns the node type of this mutation (EquipmentFirmwareEffect).
@@ -7312,6 +7410,11 @@ func (m *EquipmentInfoMutation) Op() Op {
 	return m.op
 }
 
+// SetOp allows setting the mutation operation.
+func (m *EquipmentInfoMutation) SetOp(op Op) {
+	m.op = op
+}
+
 // Type returns the node type of this mutation (EquipmentInfo).
 func (m *EquipmentInfoMutation) Type() string {
 	return m.typ
@@ -8512,6 +8615,11 @@ func (m *EquipmentIotMutation) Op() Op {
 	return m.op
 }
 
+// SetOp allows setting the mutation operation.
+func (m *EquipmentIotMutation) SetOp(op Op) {
+	m.op = op
+}
+
 // Type returns the node type of this mutation (EquipmentIot).
 func (m *EquipmentIotMutation) Type() string {
 	return m.typ
@@ -9566,6 +9674,11 @@ func (m *EquipmentLogMutation) Op() Op {
 	return m.op
 }
 
+// SetOp allows setting the mutation operation.
+func (m *EquipmentLogMutation) SetOp(op Op) {
+	m.op = op
+}
+
 // Type returns the node type of this mutation (EquipmentLog).
 func (m *EquipmentLogMutation) Type() string {
 	return m.typ
@@ -10613,6 +10726,11 @@ func (m *EvseMutation) Op() Op {
 	return m.op
 }
 
+// SetOp allows setting the mutation operation.
+func (m *EvseMutation) SetOp(op Op) {
+	m.op = op
+}
+
 // Type returns the node type of this mutation (Evse).
 func (m *EvseMutation) Type() string {
 	return m.typ
@@ -11653,6 +11771,11 @@ func (m *FirmwareMutation) Op() Op {
 	return m.op
 }
 
+// SetOp allows setting the mutation operation.
+func (m *FirmwareMutation) SetOp(op Op) {
+	m.op = op
+}
+
 // Type returns the node type of this mutation (Firmware).
 func (m *FirmwareMutation) Type() string {
 	return m.typ
@@ -12619,6 +12742,11 @@ func (m *ManufacturerMutation) Where(ps ...predicate.Manufacturer) {
 // Op returns the operation name.
 func (m *ManufacturerMutation) Op() Op {
 	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ManufacturerMutation) SetOp(op Op) {
+	m.op = op
 }
 
 // Type returns the node type of this mutation (Manufacturer).
@@ -13606,6 +13734,11 @@ func (m *ModelMutation) Op() Op {
 	return m.op
 }
 
+// SetOp allows setting the mutation operation.
+func (m *ModelMutation) SetOp(op Op) {
+	m.op = op
+}
+
 // Type returns the node type of this mutation (Model).
 func (m *ModelMutation) Type() string {
 	return m.typ
@@ -14291,6 +14424,11 @@ func (m *OrderEventMutation) Where(ps ...predicate.OrderEvent) {
 // Op returns the operation name.
 func (m *OrderEventMutation) Op() Op {
 	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *OrderEventMutation) SetOp(op Op) {
+	m.op = op
 }
 
 // Type returns the node type of this mutation (OrderEvent).
@@ -16728,6 +16866,11 @@ func (m *OrderInfoMutation) Op() Op {
 	return m.op
 }
 
+// SetOp allows setting the mutation operation.
+func (m *OrderInfoMutation) SetOp(op Op) {
+	m.op = op
+}
+
 // Type returns the node type of this mutation (OrderInfo).
 func (m *OrderInfoMutation) Type() string {
 	return m.typ
@@ -18809,6 +18952,11 @@ func (m *ReservationMutation) Op() Op {
 	return m.op
 }
 
+// SetOp allows setting the mutation operation.
+func (m *ReservationMutation) SetOp(op Op) {
+	m.op = op
+}
+
 // Type returns the node type of this mutation (Reservation).
 func (m *ReservationMutation) Type() string {
 	return m.typ
@@ -20413,6 +20561,11 @@ func (m *SmartChargingEffectMutation) Where(ps ...predicate.SmartChargingEffect)
 // Op returns the operation name.
 func (m *SmartChargingEffectMutation) Op() Op {
 	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *SmartChargingEffectMutation) SetOp(op Op) {
+	m.op = op
 }
 
 // Type returns the node type of this mutation (SmartChargingEffect).

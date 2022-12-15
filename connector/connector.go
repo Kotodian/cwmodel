@@ -39,6 +39,8 @@ const (
 	FieldOrderID = "order_id"
 	// FieldParkNo holds the string denoting the park_no field in the database.
 	FieldParkNo = "park_no"
+	// FieldQrCode holds the string denoting the qr_code field in the database.
+	FieldQrCode = "qr_code"
 	// EdgeEvse holds the string denoting the evse edge name in mutations.
 	EdgeEvse = "evse"
 	// EdgeEquipment holds the string denoting the equipment edge name in mutations.
@@ -107,6 +109,7 @@ var Columns = []string{
 	FieldReservationID,
 	FieldOrderID,
 	FieldParkNo,
+	FieldQrCode,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

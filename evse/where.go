@@ -677,7 +677,6 @@ func HasEquipment() predicate.Evse {
 	return predicate.Evse(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EquipmentTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, EquipmentTable, EquipmentColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -705,7 +704,6 @@ func HasConnector() predicate.Evse {
 	return predicate.Evse(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ConnectorTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, ConnectorTable, ConnectorColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)

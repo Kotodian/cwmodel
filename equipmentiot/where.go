@@ -860,7 +860,6 @@ func HasEquipment() predicate.EquipmentIot {
 	return predicate.EquipmentIot(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EquipmentTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, EquipmentTable, EquipmentColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)

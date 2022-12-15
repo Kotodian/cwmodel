@@ -455,10 +455,14 @@ func (eq *EquipmentQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (eq *EquipmentQuery) Exist(ctx context.Context) (bool, error) {
-	if err := eq.prepareQuery(ctx); err != nil {
-		return false, err
+	switch _, err := eq.FirstID(ctx); {
+	case IsNotFound(err):
+		return false, nil
+	case err != nil:
+		return false, fmt.Errorf("cwmodel: check existence: %w", err)
+	default:
+		return true, nil
 	}
-	return eq.sqlExist(ctx)
 }
 
 // ExistX is like Exist, but panics if an error occurs.
@@ -1060,17 +1064,6 @@ func (eq *EquipmentQuery) sqlCount(ctx context.Context) (int, error) {
 		_spec.Unique = eq.unique != nil && *eq.unique
 	}
 	return sqlgraph.CountNodes(ctx, eq.driver, _spec)
-}
-
-func (eq *EquipmentQuery) sqlExist(ctx context.Context) (bool, error) {
-	switch _, err := eq.FirstID(ctx); {
-	case IsNotFound(err):
-		return false, nil
-	case err != nil:
-		return false, fmt.Errorf("cwmodel: check existence: %w", err)
-	default:
-		return true, nil
-	}
 }
 
 func (eq *EquipmentQuery) querySpec() *sqlgraph.QuerySpec {

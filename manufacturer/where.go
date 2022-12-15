@@ -680,7 +680,6 @@ func HasFirmware() predicate.Manufacturer {
 	return predicate.Manufacturer(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(FirmwareTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, FirmwareTable, FirmwareColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)

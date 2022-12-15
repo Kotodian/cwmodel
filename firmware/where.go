@@ -652,7 +652,6 @@ func HasEquipmentFirmwareEffect() predicate.Firmware {
 	return predicate.Firmware(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(EquipmentFirmwareEffectTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, EquipmentFirmwareEffectTable, EquipmentFirmwareEffectColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -680,7 +679,6 @@ func HasModel() predicate.Firmware {
 	return predicate.Firmware(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ModelTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, ModelTable, ModelColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -708,7 +706,6 @@ func HasManufacturer() predicate.Firmware {
 	return predicate.Firmware(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ManufacturerTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, ManufacturerTable, ManufacturerColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)

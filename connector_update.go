@@ -217,6 +217,26 @@ func (cu *ConnectorUpdate) SetNillableParkNo(s *string) *ConnectorUpdate {
 	return cu
 }
 
+// SetQrCode sets the "qr_code" field.
+func (cu *ConnectorUpdate) SetQrCode(s string) *ConnectorUpdate {
+	cu.mutation.SetQrCode(s)
+	return cu
+}
+
+// SetNillableQrCode sets the "qr_code" field if the given value is not nil.
+func (cu *ConnectorUpdate) SetNillableQrCode(s *string) *ConnectorUpdate {
+	if s != nil {
+		cu.SetQrCode(*s)
+	}
+	return cu
+}
+
+// ClearQrCode clears the value of the "qr_code" field.
+func (cu *ConnectorUpdate) ClearQrCode() *ConnectorUpdate {
+	cu.mutation.ClearQrCode()
+	return cu
+}
+
 // SetEvse sets the "evse" edge to the Evse entity.
 func (cu *ConnectorUpdate) SetEvse(e *Evse) *ConnectorUpdate {
 	return cu.SetEvseID(e.ID)
@@ -515,6 +535,12 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := cu.mutation.ParkNo(); ok {
 		_spec.SetField(connector.FieldParkNo, field.TypeString, value)
+	}
+	if value, ok := cu.mutation.QrCode(); ok {
+		_spec.SetField(connector.FieldQrCode, field.TypeString, value)
+	}
+	if cu.mutation.QrCodeCleared() {
+		_spec.ClearField(connector.FieldQrCode, field.TypeString)
 	}
 	if cu.mutation.EvseCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -951,6 +977,26 @@ func (cuo *ConnectorUpdateOne) SetNillableParkNo(s *string) *ConnectorUpdateOne 
 	return cuo
 }
 
+// SetQrCode sets the "qr_code" field.
+func (cuo *ConnectorUpdateOne) SetQrCode(s string) *ConnectorUpdateOne {
+	cuo.mutation.SetQrCode(s)
+	return cuo
+}
+
+// SetNillableQrCode sets the "qr_code" field if the given value is not nil.
+func (cuo *ConnectorUpdateOne) SetNillableQrCode(s *string) *ConnectorUpdateOne {
+	if s != nil {
+		cuo.SetQrCode(*s)
+	}
+	return cuo
+}
+
+// ClearQrCode clears the value of the "qr_code" field.
+func (cuo *ConnectorUpdateOne) ClearQrCode() *ConnectorUpdateOne {
+	cuo.mutation.ClearQrCode()
+	return cuo
+}
+
 // SetEvse sets the "evse" edge to the Evse entity.
 func (cuo *ConnectorUpdateOne) SetEvse(e *Evse) *ConnectorUpdateOne {
 	return cuo.SetEvseID(e.ID)
@@ -1279,6 +1325,12 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 	}
 	if value, ok := cuo.mutation.ParkNo(); ok {
 		_spec.SetField(connector.FieldParkNo, field.TypeString, value)
+	}
+	if value, ok := cuo.mutation.QrCode(); ok {
+		_spec.SetField(connector.FieldQrCode, field.TypeString, value)
+	}
+	if cuo.mutation.QrCodeCleared() {
+		_spec.ClearField(connector.FieldQrCode, field.TypeString)
 	}
 	if cuo.mutation.EvseCleared() {
 		edge := &sqlgraph.EdgeSpec{
