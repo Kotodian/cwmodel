@@ -94,6 +94,18 @@ func (ec *EquipmentCreate) SetStationID(d datasource.UUID) *EquipmentCreate {
 	return ec
 }
 
+// SetProtocol sets the "protocol" field.
+func (ec *EquipmentCreate) SetProtocol(s string) *EquipmentCreate {
+	ec.mutation.SetProtocol(s)
+	return ec
+}
+
+// SetProtocolVersion sets the "protocol_version" field.
+func (ec *EquipmentCreate) SetProtocolVersion(s string) *EquipmentCreate {
+	ec.mutation.SetProtocolVersion(s)
+	return ec
+}
+
 // SetID sets the "id" field.
 func (ec *EquipmentCreate) SetID(d datasource.UUID) *EquipmentCreate {
 	ec.mutation.SetID(d)
@@ -376,6 +388,12 @@ func (ec *EquipmentCreate) check() error {
 	if _, ok := ec.mutation.StationID(); !ok {
 		return &ValidationError{Name: "station_id", err: errors.New(`cwmodel: missing required field "Equipment.station_id"`)}
 	}
+	if _, ok := ec.mutation.Protocol(); !ok {
+		return &ValidationError{Name: "protocol", err: errors.New(`cwmodel: missing required field "Equipment.protocol"`)}
+	}
+	if _, ok := ec.mutation.ProtocolVersion(); !ok {
+		return &ValidationError{Name: "protocol_version", err: errors.New(`cwmodel: missing required field "Equipment.protocol_version"`)}
+	}
 	return nil
 }
 
@@ -440,6 +458,14 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 	if value, ok := ec.mutation.StationID(); ok {
 		_spec.SetField(equipment.FieldStationID, field.TypeUint64, value)
 		_node.StationID = value
+	}
+	if value, ok := ec.mutation.Protocol(); ok {
+		_spec.SetField(equipment.FieldProtocol, field.TypeString, value)
+		_node.Protocol = value
+	}
+	if value, ok := ec.mutation.ProtocolVersion(); ok {
+		_spec.SetField(equipment.FieldProtocolVersion, field.TypeString, value)
+		_node.ProtocolVersion = value
 	}
 	if nodes := ec.mutation.EquipmentInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

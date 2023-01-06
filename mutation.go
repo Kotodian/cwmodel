@@ -2385,6 +2385,8 @@ type EquipmentMutation struct {
 	addoperator_id                   *datasource.UUID
 	station_id                       *datasource.UUID
 	addstation_id                    *datasource.UUID
+	protocol                         *string
+	protocol_version                 *string
 	clearedFields                    map[string]struct{}
 	equipment_info                   *datasource.UUID
 	clearedequipment_info            bool
@@ -2951,6 +2953,78 @@ func (m *EquipmentMutation) ResetStationID() {
 	m.addstation_id = nil
 }
 
+// SetProtocol sets the "protocol" field.
+func (m *EquipmentMutation) SetProtocol(s string) {
+	m.protocol = &s
+}
+
+// Protocol returns the value of the "protocol" field in the mutation.
+func (m *EquipmentMutation) Protocol() (r string, exists bool) {
+	v := m.protocol
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProtocol returns the old "protocol" field's value of the Equipment entity.
+// If the Equipment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentMutation) OldProtocol(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProtocol is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProtocol requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProtocol: %w", err)
+	}
+	return oldValue.Protocol, nil
+}
+
+// ResetProtocol resets all changes to the "protocol" field.
+func (m *EquipmentMutation) ResetProtocol() {
+	m.protocol = nil
+}
+
+// SetProtocolVersion sets the "protocol_version" field.
+func (m *EquipmentMutation) SetProtocolVersion(s string) {
+	m.protocol_version = &s
+}
+
+// ProtocolVersion returns the value of the "protocol_version" field in the mutation.
+func (m *EquipmentMutation) ProtocolVersion() (r string, exists bool) {
+	v := m.protocol_version
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProtocolVersion returns the old "protocol_version" field's value of the Equipment entity.
+// If the Equipment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentMutation) OldProtocolVersion(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProtocolVersion is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProtocolVersion requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProtocolVersion: %w", err)
+	}
+	return oldValue.ProtocolVersion, nil
+}
+
+// ResetProtocolVersion resets all changes to the "protocol_version" field.
+func (m *EquipmentMutation) ResetProtocolVersion() {
+	m.protocol_version = nil
+}
+
 // SetEquipmentInfoID sets the "equipment_info" edge to the EquipmentInfo entity by id.
 func (m *EquipmentMutation) SetEquipmentInfoID(id datasource.UUID) {
 	m.equipment_info = &id
@@ -3485,7 +3559,7 @@ func (m *EquipmentMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EquipmentMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 10)
 	if m.version != nil {
 		fields = append(fields, equipment.FieldVersion)
 	}
@@ -3509,6 +3583,12 @@ func (m *EquipmentMutation) Fields() []string {
 	}
 	if m.station_id != nil {
 		fields = append(fields, equipment.FieldStationID)
+	}
+	if m.protocol != nil {
+		fields = append(fields, equipment.FieldProtocol)
+	}
+	if m.protocol_version != nil {
+		fields = append(fields, equipment.FieldProtocolVersion)
 	}
 	return fields
 }
@@ -3534,6 +3614,10 @@ func (m *EquipmentMutation) Field(name string) (ent.Value, bool) {
 		return m.OperatorID()
 	case equipment.FieldStationID:
 		return m.StationID()
+	case equipment.FieldProtocol:
+		return m.Protocol()
+	case equipment.FieldProtocolVersion:
+		return m.ProtocolVersion()
 	}
 	return nil, false
 }
@@ -3559,6 +3643,10 @@ func (m *EquipmentMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldOperatorID(ctx)
 	case equipment.FieldStationID:
 		return m.OldStationID(ctx)
+	case equipment.FieldProtocol:
+		return m.OldProtocol(ctx)
+	case equipment.FieldProtocolVersion:
+		return m.OldProtocolVersion(ctx)
 	}
 	return nil, fmt.Errorf("unknown Equipment field %s", name)
 }
@@ -3623,6 +3711,20 @@ func (m *EquipmentMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStationID(v)
+		return nil
+	case equipment.FieldProtocol:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProtocol(v)
+		return nil
+	case equipment.FieldProtocolVersion:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProtocolVersion(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Equipment field %s", name)
@@ -3783,6 +3885,12 @@ func (m *EquipmentMutation) ResetField(name string) error {
 		return nil
 	case equipment.FieldStationID:
 		m.ResetStationID()
+		return nil
+	case equipment.FieldProtocol:
+		m.ResetProtocol()
+		return nil
+	case equipment.FieldProtocolVersion:
+		m.ResetProtocolVersion()
 		return nil
 	}
 	return fmt.Errorf("unknown Equipment field %s", name)

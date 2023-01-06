@@ -35,6 +35,10 @@ type Equipment struct {
 	OperatorID datasource.UUID `json:"operatorId"`
 	// 站点id
 	StationID datasource.UUID `json:"stationId"`
+	// 协议
+	Protocol string `json:"protocol"`
+	// 协议版本
+	ProtocolVersion string `json:"protocolVersion"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EquipmentQuery when eager-loading is set.
 	Edges EquipmentEdges `json:"-"`
@@ -174,7 +178,7 @@ func (*Equipment) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case equipment.FieldID, equipment.FieldVersion, equipment.FieldCreatedBy, equipment.FieldCreatedAt, equipment.FieldUpdatedBy, equipment.FieldUpdatedAt, equipment.FieldOperatorID, equipment.FieldStationID:
 			values[i] = new(sql.NullInt64)
-		case equipment.FieldSn:
+		case equipment.FieldSn, equipment.FieldProtocol, equipment.FieldProtocolVersion:
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Equipment", columns[i])
@@ -244,6 +248,18 @@ func (e *Equipment) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field station_id", values[i])
 			} else if value.Valid {
 				e.StationID = datasource.UUID(value.Int64)
+			}
+		case equipment.FieldProtocol:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field protocol", values[i])
+			} else if value.Valid {
+				e.Protocol = value.String
+			}
+		case equipment.FieldProtocolVersion:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field protocol_version", values[i])
+			} else if value.Valid {
+				e.ProtocolVersion = value.String
 			}
 		}
 	}
@@ -346,6 +362,12 @@ func (e *Equipment) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("station_id=")
 	builder.WriteString(fmt.Sprintf("%v", e.StationID))
+	builder.WriteString(", ")
+	builder.WriteString("protocol=")
+	builder.WriteString(e.Protocol)
+	builder.WriteString(", ")
+	builder.WriteString("protocol_version=")
+	builder.WriteString(e.ProtocolVersion)
 	builder.WriteByte(')')
 	return builder.String()
 }

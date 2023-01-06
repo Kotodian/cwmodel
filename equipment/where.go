@@ -140,6 +140,20 @@ func StationID(v datasource.UUID) predicate.Equipment {
 	})
 }
 
+// Protocol applies equality check predicate on the "protocol" field. It's identical to ProtocolEQ.
+func Protocol(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldProtocol), v))
+	})
+}
+
+// ProtocolVersion applies equality check predicate on the "protocol_version" field. It's identical to ProtocolVersionEQ.
+func ProtocolVersion(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldProtocolVersion), v))
+	})
+}
+
 // VersionEQ applies the EQ predicate on the "version" field.
 func VersionEQ(v int64) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
@@ -708,6 +722,204 @@ func StationIDLTE(v datasource.UUID) predicate.Equipment {
 	vc := uint64(v)
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldStationID), vc))
+	})
+}
+
+// ProtocolEQ applies the EQ predicate on the "protocol" field.
+func ProtocolEQ(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldProtocol), v))
+	})
+}
+
+// ProtocolNEQ applies the NEQ predicate on the "protocol" field.
+func ProtocolNEQ(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldProtocol), v))
+	})
+}
+
+// ProtocolIn applies the In predicate on the "protocol" field.
+func ProtocolIn(vs ...string) predicate.Equipment {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldProtocol), v...))
+	})
+}
+
+// ProtocolNotIn applies the NotIn predicate on the "protocol" field.
+func ProtocolNotIn(vs ...string) predicate.Equipment {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldProtocol), v...))
+	})
+}
+
+// ProtocolGT applies the GT predicate on the "protocol" field.
+func ProtocolGT(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldProtocol), v))
+	})
+}
+
+// ProtocolGTE applies the GTE predicate on the "protocol" field.
+func ProtocolGTE(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldProtocol), v))
+	})
+}
+
+// ProtocolLT applies the LT predicate on the "protocol" field.
+func ProtocolLT(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldProtocol), v))
+	})
+}
+
+// ProtocolLTE applies the LTE predicate on the "protocol" field.
+func ProtocolLTE(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldProtocol), v))
+	})
+}
+
+// ProtocolContains applies the Contains predicate on the "protocol" field.
+func ProtocolContains(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldProtocol), v))
+	})
+}
+
+// ProtocolHasPrefix applies the HasPrefix predicate on the "protocol" field.
+func ProtocolHasPrefix(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldProtocol), v))
+	})
+}
+
+// ProtocolHasSuffix applies the HasSuffix predicate on the "protocol" field.
+func ProtocolHasSuffix(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldProtocol), v))
+	})
+}
+
+// ProtocolEqualFold applies the EqualFold predicate on the "protocol" field.
+func ProtocolEqualFold(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldProtocol), v))
+	})
+}
+
+// ProtocolContainsFold applies the ContainsFold predicate on the "protocol" field.
+func ProtocolContainsFold(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldProtocol), v))
+	})
+}
+
+// ProtocolVersionEQ applies the EQ predicate on the "protocol_version" field.
+func ProtocolVersionEQ(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldProtocolVersion), v))
+	})
+}
+
+// ProtocolVersionNEQ applies the NEQ predicate on the "protocol_version" field.
+func ProtocolVersionNEQ(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldProtocolVersion), v))
+	})
+}
+
+// ProtocolVersionIn applies the In predicate on the "protocol_version" field.
+func ProtocolVersionIn(vs ...string) predicate.Equipment {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldProtocolVersion), v...))
+	})
+}
+
+// ProtocolVersionNotIn applies the NotIn predicate on the "protocol_version" field.
+func ProtocolVersionNotIn(vs ...string) predicate.Equipment {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldProtocolVersion), v...))
+	})
+}
+
+// ProtocolVersionGT applies the GT predicate on the "protocol_version" field.
+func ProtocolVersionGT(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldProtocolVersion), v))
+	})
+}
+
+// ProtocolVersionGTE applies the GTE predicate on the "protocol_version" field.
+func ProtocolVersionGTE(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldProtocolVersion), v))
+	})
+}
+
+// ProtocolVersionLT applies the LT predicate on the "protocol_version" field.
+func ProtocolVersionLT(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldProtocolVersion), v))
+	})
+}
+
+// ProtocolVersionLTE applies the LTE predicate on the "protocol_version" field.
+func ProtocolVersionLTE(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldProtocolVersion), v))
+	})
+}
+
+// ProtocolVersionContains applies the Contains predicate on the "protocol_version" field.
+func ProtocolVersionContains(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldProtocolVersion), v))
+	})
+}
+
+// ProtocolVersionHasPrefix applies the HasPrefix predicate on the "protocol_version" field.
+func ProtocolVersionHasPrefix(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldProtocolVersion), v))
+	})
+}
+
+// ProtocolVersionHasSuffix applies the HasSuffix predicate on the "protocol_version" field.
+func ProtocolVersionHasSuffix(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldProtocolVersion), v))
+	})
+}
+
+// ProtocolVersionEqualFold applies the EqualFold predicate on the "protocol_version" field.
+func ProtocolVersionEqualFold(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldProtocolVersion), v))
+	})
+}
+
+// ProtocolVersionContainsFold applies the ContainsFold predicate on the "protocol_version" field.
+func ProtocolVersionContainsFold(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldProtocolVersion), v))
 	})
 }
 

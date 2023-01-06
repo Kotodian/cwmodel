@@ -30,13 +30,11 @@ func (Equipment) Annotations() []schema.Annotation {
 // Fields of the Equipment.
 func (Equipment) Fields() []ent.Field {
 	return []ent.Field{
-
 		field.String("sn").NotEmpty().Comment("桩序列号").StructTag(`json:"sn"`),
 		field.Uint64("operator_id").GoType(datasource.UUID(0)).Comment("运营商id").StructTag(`json:"operatorId"`),
 		field.Uint64("station_id").GoType(datasource.UUID(0)).Comment("站点id").StructTag(`json:"stationId"`),
-		// field.String("sn").NotEmpty().Comment("桩序列号"),
-		// field.Uint64("operator_id").GoType(datasource.UUID(0)).Comment("运营商id"),
-		// field.Uint64("station_id").GoType(datasource.UUID(0)).Comment("站点id"),
+		field.String("protocol").Comment("协议").StructTag(`json:"protocol"`),
+		field.String("protocol_version").Comment("协议版本").StructTag(`json:"protocolVersion"`),
 	}
 }
 

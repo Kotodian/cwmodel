@@ -23,6 +23,10 @@ const (
 	FieldOperatorID = "operator_id"
 	// FieldStationID holds the string denoting the station_id field in the database.
 	FieldStationID = "station_id"
+	// FieldProtocol holds the string denoting the protocol field in the database.
+	FieldProtocol = "protocol"
+	// FieldProtocolVersion holds the string denoting the protocol_version field in the database.
+	FieldProtocolVersion = "protocol_version"
 	// EdgeEquipmentInfo holds the string denoting the equipment_info edge name in mutations.
 	EdgeEquipmentInfo = "equipment_info"
 	// EdgeEvse holds the string denoting the evse edge name in mutations.
@@ -128,6 +132,8 @@ var Columns = []string{
 	FieldSn,
 	FieldOperatorID,
 	FieldStationID,
+	FieldProtocol,
+	FieldProtocolVersion,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

@@ -117,6 +117,18 @@ func (eu *EquipmentUpdate) AddStationID(d datasource.UUID) *EquipmentUpdate {
 	return eu
 }
 
+// SetProtocol sets the "protocol" field.
+func (eu *EquipmentUpdate) SetProtocol(s string) *EquipmentUpdate {
+	eu.mutation.SetProtocol(s)
+	return eu
+}
+
+// SetProtocolVersion sets the "protocol_version" field.
+func (eu *EquipmentUpdate) SetProtocolVersion(s string) *EquipmentUpdate {
+	eu.mutation.SetProtocolVersion(s)
+	return eu
+}
+
 // SetEquipmentInfoID sets the "equipment_info" edge to the EquipmentInfo entity by ID.
 func (eu *EquipmentUpdate) SetEquipmentInfoID(id datasource.UUID) *EquipmentUpdate {
 	eu.mutation.SetEquipmentInfoID(id)
@@ -589,6 +601,12 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := eu.mutation.AddedStationID(); ok {
 		_spec.AddField(equipment.FieldStationID, field.TypeUint64, value)
+	}
+	if value, ok := eu.mutation.Protocol(); ok {
+		_spec.SetField(equipment.FieldProtocol, field.TypeString, value)
+	}
+	if value, ok := eu.mutation.ProtocolVersion(); ok {
+		_spec.SetField(equipment.FieldProtocolVersion, field.TypeString, value)
 	}
 	if eu.mutation.EquipmentInfoCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1190,6 +1208,18 @@ func (euo *EquipmentUpdateOne) AddStationID(d datasource.UUID) *EquipmentUpdateO
 	return euo
 }
 
+// SetProtocol sets the "protocol" field.
+func (euo *EquipmentUpdateOne) SetProtocol(s string) *EquipmentUpdateOne {
+	euo.mutation.SetProtocol(s)
+	return euo
+}
+
+// SetProtocolVersion sets the "protocol_version" field.
+func (euo *EquipmentUpdateOne) SetProtocolVersion(s string) *EquipmentUpdateOne {
+	euo.mutation.SetProtocolVersion(s)
+	return euo
+}
+
 // SetEquipmentInfoID sets the "equipment_info" edge to the EquipmentInfo entity by ID.
 func (euo *EquipmentUpdateOne) SetEquipmentInfoID(id datasource.UUID) *EquipmentUpdateOne {
 	euo.mutation.SetEquipmentInfoID(id)
@@ -1692,6 +1722,12 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 	}
 	if value, ok := euo.mutation.AddedStationID(); ok {
 		_spec.AddField(equipment.FieldStationID, field.TypeUint64, value)
+	}
+	if value, ok := euo.mutation.Protocol(); ok {
+		_spec.SetField(equipment.FieldProtocol, field.TypeString, value)
+	}
+	if value, ok := euo.mutation.ProtocolVersion(); ok {
+		_spec.SetField(equipment.FieldProtocolVersion, field.TypeString, value)
 	}
 	if euo.mutation.EquipmentInfoCleared() {
 		edge := &sqlgraph.EdgeSpec{
