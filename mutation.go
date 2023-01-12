@@ -14808,6 +14808,7 @@ type OrderInfoMutation struct {
 	addvalley_electricity       *float64
 	stop_reason_code            *int32
 	addstop_reason_code         *int32
+	_VIN                        *string
 	state                       *int
 	addstate                    *int
 	offline                     *bool
@@ -16192,6 +16193,55 @@ func (m *OrderInfoMutation) ResetStopReasonCode() {
 	delete(m.clearedFields, orderinfo.FieldStopReasonCode)
 }
 
+// SetVIN sets the "VIN" field.
+func (m *OrderInfoMutation) SetVIN(s string) {
+	m._VIN = &s
+}
+
+// VIN returns the value of the "VIN" field in the mutation.
+func (m *OrderInfoMutation) VIN() (r string, exists bool) {
+	v := m._VIN
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVIN returns the old "VIN" field's value of the OrderInfo entity.
+// If the OrderInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrderInfoMutation) OldVIN(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVIN is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVIN requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVIN: %w", err)
+	}
+	return oldValue.VIN, nil
+}
+
+// ClearVIN clears the value of the "VIN" field.
+func (m *OrderInfoMutation) ClearVIN() {
+	m._VIN = nil
+	m.clearedFields[orderinfo.FieldVIN] = struct{}{}
+}
+
+// VINCleared returns if the "VIN" field was cleared in this mutation.
+func (m *OrderInfoMutation) VINCleared() bool {
+	_, ok := m.clearedFields[orderinfo.FieldVIN]
+	return ok
+}
+
+// ResetVIN resets all changes to the "VIN" field.
+func (m *OrderInfoMutation) ResetVIN() {
+	m._VIN = nil
+	delete(m.clearedFields, orderinfo.FieldVIN)
+}
+
 // SetState sets the "state" field.
 func (m *OrderInfoMutation) SetState(i int) {
 	m.state = &i
@@ -16988,7 +17038,7 @@ func (m *OrderInfoMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrderInfoMutation) Fields() []string {
-	fields := make([]string, 0, 31)
+	fields := make([]string, 0, 32)
 	if m.version != nil {
 		fields = append(fields, orderinfo.FieldVersion)
 	}
@@ -17051,6 +17101,9 @@ func (m *OrderInfoMutation) Fields() []string {
 	}
 	if m.stop_reason_code != nil {
 		fields = append(fields, orderinfo.FieldStopReasonCode)
+	}
+	if m._VIN != nil {
+		fields = append(fields, orderinfo.FieldVIN)
 	}
 	if m.state != nil {
 		fields = append(fields, orderinfo.FieldState)
@@ -17132,6 +17185,8 @@ func (m *OrderInfoMutation) Field(name string) (ent.Value, bool) {
 		return m.ValleyElectricity()
 	case orderinfo.FieldStopReasonCode:
 		return m.StopReasonCode()
+	case orderinfo.FieldVIN:
+		return m.VIN()
 	case orderinfo.FieldState:
 		return m.State()
 	case orderinfo.FieldOffline:
@@ -17203,6 +17258,8 @@ func (m *OrderInfoMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldValleyElectricity(ctx)
 	case orderinfo.FieldStopReasonCode:
 		return m.OldStopReasonCode(ctx)
+	case orderinfo.FieldVIN:
+		return m.OldVIN(ctx)
 	case orderinfo.FieldState:
 		return m.OldState(ctx)
 	case orderinfo.FieldOffline:
@@ -17378,6 +17435,13 @@ func (m *OrderInfoMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStopReasonCode(v)
+		return nil
+	case orderinfo.FieldVIN:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVIN(v)
 		return nil
 	case orderinfo.FieldState:
 		v, ok := value.(int)
@@ -17812,6 +17876,9 @@ func (m *OrderInfoMutation) ClearedFields() []string {
 	if m.FieldCleared(orderinfo.FieldStopReasonCode) {
 		fields = append(fields, orderinfo.FieldStopReasonCode)
 	}
+	if m.FieldCleared(orderinfo.FieldVIN) {
+		fields = append(fields, orderinfo.FieldVIN)
+	}
 	if m.FieldCleared(orderinfo.FieldState) {
 		fields = append(fields, orderinfo.FieldState)
 	}
@@ -17894,6 +17961,9 @@ func (m *OrderInfoMutation) ClearField(name string) error {
 		return nil
 	case orderinfo.FieldStopReasonCode:
 		m.ClearStopReasonCode()
+		return nil
+	case orderinfo.FieldVIN:
+		m.ClearVIN()
 		return nil
 	case orderinfo.FieldState:
 		m.ClearState()
@@ -17992,6 +18062,9 @@ func (m *OrderInfoMutation) ResetField(name string) error {
 		return nil
 	case orderinfo.FieldStopReasonCode:
 		m.ResetStopReasonCode()
+		return nil
+	case orderinfo.FieldVIN:
+		m.ResetVIN()
 		return nil
 	case orderinfo.FieldState:
 		m.ResetState()

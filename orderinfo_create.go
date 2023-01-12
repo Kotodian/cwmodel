@@ -277,6 +277,20 @@ func (oic *OrderInfoCreate) SetNillableStopReasonCode(i *int32) *OrderInfoCreate
 	return oic
 }
 
+// SetVIN sets the "VIN" field.
+func (oic *OrderInfoCreate) SetVIN(s string) *OrderInfoCreate {
+	oic.mutation.SetVIN(s)
+	return oic
+}
+
+// SetNillableVIN sets the "VIN" field if the given value is not nil.
+func (oic *OrderInfoCreate) SetNillableVIN(s *string) *OrderInfoCreate {
+	if s != nil {
+		oic.SetVIN(*s)
+	}
+	return oic
+}
+
 // SetState sets the "state" field.
 func (oic *OrderInfoCreate) SetState(i int) *OrderInfoCreate {
 	oic.mutation.SetState(i)
@@ -667,6 +681,10 @@ func (oic *OrderInfoCreate) createSpec() (*OrderInfo, *sqlgraph.CreateSpec) {
 	if value, ok := oic.mutation.StopReasonCode(); ok {
 		_spec.SetField(orderinfo.FieldStopReasonCode, field.TypeInt32, value)
 		_node.StopReasonCode = &value
+	}
+	if value, ok := oic.mutation.VIN(); ok {
+		_spec.SetField(orderinfo.FieldVIN, field.TypeString, value)
+		_node.VIN = &value
 	}
 	if value, ok := oic.mutation.State(); ok {
 		_spec.SetField(orderinfo.FieldState, field.TypeInt, value)

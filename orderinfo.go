@@ -61,6 +61,8 @@ type OrderInfo struct {
 	ValleyElectricity *float64 `json:"valley_electricity,omitempty"`
 	// 停止原因代码
 	StopReasonCode *int32 `json:"stop_reason_code,omitempty"`
+	// 车辆VIN码
+	VIN *string `json:"VIN,omitempty"`
 	// 订单状态
 	State int `json:"state,omitempty"`
 	// 是否为离线订单
@@ -145,7 +147,7 @@ func (*OrderInfo) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullFloat64)
 		case orderinfo.FieldID, orderinfo.FieldVersion, orderinfo.FieldCreatedBy, orderinfo.FieldCreatedAt, orderinfo.FieldUpdatedBy, orderinfo.FieldUpdatedAt, orderinfo.FieldEquipmentID, orderinfo.FieldConnectorID, orderinfo.FieldRemoteStartID, orderinfo.FieldAuthorizationMode, orderinfo.FieldStopReasonCode, orderinfo.FieldState, orderinfo.FieldPriceSchemeReleaseID, orderinfo.FieldOrderStartTime, orderinfo.FieldOrderFinalTime, orderinfo.FieldChargeStartTime, orderinfo.FieldChargeFinalTime, orderinfo.FieldIntellectID, orderinfo.FieldStationID, orderinfo.FieldOperatorID:
 			values[i] = new(sql.NullInt64)
-		case orderinfo.FieldTransactionID, orderinfo.FieldAuthorizationID, orderinfo.FieldCustomerID, orderinfo.FieldCallerOrderID:
+		case orderinfo.FieldTransactionID, orderinfo.FieldAuthorizationID, orderinfo.FieldCustomerID, orderinfo.FieldCallerOrderID, orderinfo.FieldVIN:
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type OrderInfo", columns[i])
@@ -307,6 +309,13 @@ func (oi *OrderInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				oi.StopReasonCode = new(int32)
 				*oi.StopReasonCode = int32(value.Int64)
+			}
+		case orderinfo.FieldVIN:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field VIN", values[i])
+			} else if value.Valid {
+				oi.VIN = new(string)
+				*oi.VIN = value.String
 			}
 		case orderinfo.FieldState:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -508,6 +517,11 @@ func (oi *OrderInfo) String() string {
 	if v := oi.StopReasonCode; v != nil {
 		builder.WriteString("stop_reason_code=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := oi.VIN; v != nil {
+		builder.WriteString("VIN=")
+		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
 	builder.WriteString("state=")

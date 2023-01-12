@@ -440,6 +440,26 @@ func (oiu *OrderInfoUpdate) ClearStopReasonCode() *OrderInfoUpdate {
 	return oiu
 }
 
+// SetVIN sets the "VIN" field.
+func (oiu *OrderInfoUpdate) SetVIN(s string) *OrderInfoUpdate {
+	oiu.mutation.SetVIN(s)
+	return oiu
+}
+
+// SetNillableVIN sets the "VIN" field if the given value is not nil.
+func (oiu *OrderInfoUpdate) SetNillableVIN(s *string) *OrderInfoUpdate {
+	if s != nil {
+		oiu.SetVIN(*s)
+	}
+	return oiu
+}
+
+// ClearVIN clears the value of the "VIN" field.
+func (oiu *OrderInfoUpdate) ClearVIN() *OrderInfoUpdate {
+	oiu.mutation.ClearVIN()
+	return oiu
+}
+
 // SetState sets the "state" field.
 func (oiu *OrderInfoUpdate) SetState(i int) *OrderInfoUpdate {
 	oiu.mutation.ResetState()
@@ -981,6 +1001,12 @@ func (oiu *OrderInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if oiu.mutation.StopReasonCodeCleared() {
 		_spec.ClearField(orderinfo.FieldStopReasonCode, field.TypeInt32)
+	}
+	if value, ok := oiu.mutation.VIN(); ok {
+		_spec.SetField(orderinfo.FieldVIN, field.TypeString, value)
+	}
+	if oiu.mutation.VINCleared() {
+		_spec.ClearField(orderinfo.FieldVIN, field.TypeString)
 	}
 	if value, ok := oiu.mutation.State(); ok {
 		_spec.SetField(orderinfo.FieldState, field.TypeInt, value)
@@ -1618,6 +1644,26 @@ func (oiuo *OrderInfoUpdateOne) ClearStopReasonCode() *OrderInfoUpdateOne {
 	return oiuo
 }
 
+// SetVIN sets the "VIN" field.
+func (oiuo *OrderInfoUpdateOne) SetVIN(s string) *OrderInfoUpdateOne {
+	oiuo.mutation.SetVIN(s)
+	return oiuo
+}
+
+// SetNillableVIN sets the "VIN" field if the given value is not nil.
+func (oiuo *OrderInfoUpdateOne) SetNillableVIN(s *string) *OrderInfoUpdateOne {
+	if s != nil {
+		oiuo.SetVIN(*s)
+	}
+	return oiuo
+}
+
+// ClearVIN clears the value of the "VIN" field.
+func (oiuo *OrderInfoUpdateOne) ClearVIN() *OrderInfoUpdateOne {
+	oiuo.mutation.ClearVIN()
+	return oiuo
+}
+
 // SetState sets the "state" field.
 func (oiuo *OrderInfoUpdateOne) SetState(i int) *OrderInfoUpdateOne {
 	oiuo.mutation.ResetState()
@@ -2189,6 +2235,12 @@ func (oiuo *OrderInfoUpdateOne) sqlSave(ctx context.Context) (_node *OrderInfo, 
 	}
 	if oiuo.mutation.StopReasonCodeCleared() {
 		_spec.ClearField(orderinfo.FieldStopReasonCode, field.TypeInt32)
+	}
+	if value, ok := oiuo.mutation.VIN(); ok {
+		_spec.SetField(orderinfo.FieldVIN, field.TypeString, value)
+	}
+	if oiuo.mutation.VINCleared() {
+		_spec.ClearField(orderinfo.FieldVIN, field.TypeString)
 	}
 	if value, ok := oiuo.mutation.State(); ok {
 		_spec.SetField(orderinfo.FieldState, field.TypeInt, value)

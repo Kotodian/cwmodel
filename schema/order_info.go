@@ -44,6 +44,7 @@ func (OrderInfo) Fields() []ent.Field {
 		field.Float("flat_electricity").Optional().Nillable().Comment("平电量"),
 		field.Float("valley_electricity").Optional().Nillable().Comment("谷电量"),
 		field.Int32("stop_reason_code").Optional().Nillable().Comment("停止原因代码"),
+		field.String("VIN").Optional().Nillable().Comment("车辆VIN码"),
 		field.Int("state").Optional().Comment("订单状态"),
 		field.Bool("offline").Comment("是否为离线订单"),
 		field.Int64("price_scheme_release_id").Optional().Nillable().Comment("计费模板id"),

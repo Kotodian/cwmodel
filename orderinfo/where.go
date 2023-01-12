@@ -231,6 +231,13 @@ func StopReasonCode(v int32) predicate.OrderInfo {
 	})
 }
 
+// VIN applies equality check predicate on the "VIN" field. It's identical to VINEQ.
+func VIN(v string) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldVIN), v))
+	})
+}
+
 // State applies equality check predicate on the "state" field. It's identical to StateEQ.
 func State(v int) predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
@@ -1940,6 +1947,119 @@ func StopReasonCodeIsNil() predicate.OrderInfo {
 func StopReasonCodeNotNil() predicate.OrderInfo {
 	return predicate.OrderInfo(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldStopReasonCode)))
+	})
+}
+
+// VINEQ applies the EQ predicate on the "VIN" field.
+func VINEQ(v string) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldVIN), v))
+	})
+}
+
+// VINNEQ applies the NEQ predicate on the "VIN" field.
+func VINNEQ(v string) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldVIN), v))
+	})
+}
+
+// VINIn applies the In predicate on the "VIN" field.
+func VINIn(vs ...string) predicate.OrderInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldVIN), v...))
+	})
+}
+
+// VINNotIn applies the NotIn predicate on the "VIN" field.
+func VINNotIn(vs ...string) predicate.OrderInfo {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldVIN), v...))
+	})
+}
+
+// VINGT applies the GT predicate on the "VIN" field.
+func VINGT(v string) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldVIN), v))
+	})
+}
+
+// VINGTE applies the GTE predicate on the "VIN" field.
+func VINGTE(v string) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldVIN), v))
+	})
+}
+
+// VINLT applies the LT predicate on the "VIN" field.
+func VINLT(v string) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldVIN), v))
+	})
+}
+
+// VINLTE applies the LTE predicate on the "VIN" field.
+func VINLTE(v string) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldVIN), v))
+	})
+}
+
+// VINContains applies the Contains predicate on the "VIN" field.
+func VINContains(v string) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldVIN), v))
+	})
+}
+
+// VINHasPrefix applies the HasPrefix predicate on the "VIN" field.
+func VINHasPrefix(v string) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldVIN), v))
+	})
+}
+
+// VINHasSuffix applies the HasSuffix predicate on the "VIN" field.
+func VINHasSuffix(v string) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldVIN), v))
+	})
+}
+
+// VINIsNil applies the IsNil predicate on the "VIN" field.
+func VINIsNil() predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldVIN)))
+	})
+}
+
+// VINNotNil applies the NotNil predicate on the "VIN" field.
+func VINNotNil() predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldVIN)))
+	})
+}
+
+// VINEqualFold applies the EqualFold predicate on the "VIN" field.
+func VINEqualFold(v string) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldVIN), v))
+	})
+}
+
+// VINContainsFold applies the ContainsFold predicate on the "VIN" field.
+func VINContainsFold(v string) predicate.OrderInfo {
+	return predicate.OrderInfo(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldVIN), v))
 	})
 }
 
