@@ -13,6 +13,7 @@ import (
 	"github.com/Kotodian/cwmodel/firmware"
 	"github.com/Kotodian/cwmodel/model"
 	"github.com/Kotodian/cwmodel/predicate"
+	"github.com/Kotodian/cwmodel/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -97,6 +98,19 @@ func (mu *ModelUpdate) SetPhaseCategory(s string) *ModelUpdate {
 // SetCurrentCategory sets the "current_category" field.
 func (mu *ModelUpdate) SetCurrentCategory(s string) *ModelUpdate {
 	mu.mutation.SetCurrentCategory(s)
+	return mu
+}
+
+// SetConnectorCategory sets the "connector_category" field.
+func (mu *ModelUpdate) SetConnectorCategory(tt types.ConnectorType) *ModelUpdate {
+	mu.mutation.ResetConnectorCategory()
+	mu.mutation.SetConnectorCategory(tt)
+	return mu
+}
+
+// AddConnectorCategory adds tt to the "connector_category" field.
+func (mu *ModelUpdate) AddConnectorCategory(tt types.ConnectorType) *ModelUpdate {
+	mu.mutation.AddConnectorCategory(tt)
 	return mu
 }
 
@@ -252,6 +266,12 @@ func (mu *ModelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := mu.mutation.CurrentCategory(); ok {
 		_spec.SetField(model.FieldCurrentCategory, field.TypeString, value)
 	}
+	if value, ok := mu.mutation.ConnectorCategory(); ok {
+		_spec.SetField(model.FieldConnectorCategory, field.TypeInt, value)
+	}
+	if value, ok := mu.mutation.AddedConnectorCategory(); ok {
+		_spec.AddField(model.FieldConnectorCategory, field.TypeInt, value)
+	}
 	if mu.mutation.FirmwareCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -393,6 +413,19 @@ func (muo *ModelUpdateOne) SetPhaseCategory(s string) *ModelUpdateOne {
 // SetCurrentCategory sets the "current_category" field.
 func (muo *ModelUpdateOne) SetCurrentCategory(s string) *ModelUpdateOne {
 	muo.mutation.SetCurrentCategory(s)
+	return muo
+}
+
+// SetConnectorCategory sets the "connector_category" field.
+func (muo *ModelUpdateOne) SetConnectorCategory(tt types.ConnectorType) *ModelUpdateOne {
+	muo.mutation.ResetConnectorCategory()
+	muo.mutation.SetConnectorCategory(tt)
+	return muo
+}
+
+// AddConnectorCategory adds tt to the "connector_category" field.
+func (muo *ModelUpdateOne) AddConnectorCategory(tt types.ConnectorType) *ModelUpdateOne {
+	muo.mutation.AddConnectorCategory(tt)
 	return muo
 }
 
@@ -577,6 +610,12 @@ func (muo *ModelUpdateOne) sqlSave(ctx context.Context) (_node *Model, err error
 	}
 	if value, ok := muo.mutation.CurrentCategory(); ok {
 		_spec.SetField(model.FieldCurrentCategory, field.TypeString, value)
+	}
+	if value, ok := muo.mutation.ConnectorCategory(); ok {
+		_spec.SetField(model.FieldConnectorCategory, field.TypeInt, value)
+	}
+	if value, ok := muo.mutation.AddedConnectorCategory(); ok {
+		_spec.AddField(model.FieldConnectorCategory, field.TypeInt, value)
 	}
 	if muo.mutation.FirmwareCleared() {
 		edge := &sqlgraph.EdgeSpec{

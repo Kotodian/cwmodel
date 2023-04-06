@@ -10,6 +10,7 @@ import (
 	"github.com/Kotodian/cwmodel/connector"
 	"github.com/Kotodian/cwmodel/equipment"
 	"github.com/Kotodian/cwmodel/evse"
+	"github.com/Kotodian/cwmodel/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -53,6 +54,8 @@ type Connector struct {
 	ParkNo string `json:"park_no"`
 	// 二维码
 	QrCode *string `json:"qr_code"`
+	// 充电接口类型
+	Category types.ConnectorType `json:"category"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ConnectorQuery when eager-loading is set.
 	Edges ConnectorEdges `json:"-"`
@@ -138,7 +141,7 @@ func (*Connector) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case connector.FieldID, connector.FieldVersion, connector.FieldCreatedBy, connector.FieldCreatedAt, connector.FieldUpdatedBy, connector.FieldUpdatedAt, connector.FieldEquipmentID, connector.FieldEvseID, connector.FieldCurrentState, connector.FieldBeforeState, connector.FieldChargingState, connector.FieldReservationID, connector.FieldOrderID:
+		case connector.FieldID, connector.FieldVersion, connector.FieldCreatedBy, connector.FieldCreatedAt, connector.FieldUpdatedBy, connector.FieldUpdatedAt, connector.FieldEquipmentID, connector.FieldEvseID, connector.FieldCurrentState, connector.FieldBeforeState, connector.FieldChargingState, connector.FieldReservationID, connector.FieldOrderID, connector.FieldCategory:
 			values[i] = new(sql.NullInt64)
 		case connector.FieldEquipmentSn, connector.FieldEvseSerial, connector.FieldSerial, connector.FieldParkNo, connector.FieldQrCode:
 			values[i] = new(sql.NullString)
@@ -268,6 +271,12 @@ func (c *Connector) assignValues(columns []string, values []any) error {
 				c.QrCode = new(string)
 				*c.QrCode = value.String
 			}
+		case connector.FieldCategory:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field category", values[i])
+			} else if value.Valid {
+				c.Category = types.ConnectorType(value.Int64)
+			}
 		}
 	}
 	return nil
@@ -377,6 +386,9 @@ func (c *Connector) String() string {
 		builder.WriteString("qr_code=")
 		builder.WriteString(*v)
 	}
+	builder.WriteString(", ")
+	builder.WriteString("category=")
+	builder.WriteString(fmt.Sprintf("%v", c.Category))
 	builder.WriteByte(')')
 	return builder.String()
 }

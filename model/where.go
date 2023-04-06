@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/Kotodian/cwmodel/predicate"
+	"github.com/Kotodian/cwmodel/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -142,6 +143,14 @@ func PhaseCategory(v string) predicate.Model {
 func CurrentCategory(v string) predicate.Model {
 	return predicate.Model(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldCurrentCategory), v))
+	})
+}
+
+// ConnectorCategory applies equality check predicate on the "connector_category" field. It's identical to ConnectorCategoryEQ.
+func ConnectorCategory(v types.ConnectorType) predicate.Model {
+	vc := int(v)
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldConnectorCategory), vc))
 	})
 }
 
@@ -870,6 +879,76 @@ func CurrentCategoryEqualFold(v string) predicate.Model {
 func CurrentCategoryContainsFold(v string) predicate.Model {
 	return predicate.Model(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldCurrentCategory), v))
+	})
+}
+
+// ConnectorCategoryEQ applies the EQ predicate on the "connector_category" field.
+func ConnectorCategoryEQ(v types.ConnectorType) predicate.Model {
+	vc := int(v)
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldConnectorCategory), vc))
+	})
+}
+
+// ConnectorCategoryNEQ applies the NEQ predicate on the "connector_category" field.
+func ConnectorCategoryNEQ(v types.ConnectorType) predicate.Model {
+	vc := int(v)
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldConnectorCategory), vc))
+	})
+}
+
+// ConnectorCategoryIn applies the In predicate on the "connector_category" field.
+func ConnectorCategoryIn(vs ...types.ConnectorType) predicate.Model {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int(vs[i])
+	}
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldConnectorCategory), v...))
+	})
+}
+
+// ConnectorCategoryNotIn applies the NotIn predicate on the "connector_category" field.
+func ConnectorCategoryNotIn(vs ...types.ConnectorType) predicate.Model {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int(vs[i])
+	}
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldConnectorCategory), v...))
+	})
+}
+
+// ConnectorCategoryGT applies the GT predicate on the "connector_category" field.
+func ConnectorCategoryGT(v types.ConnectorType) predicate.Model {
+	vc := int(v)
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldConnectorCategory), vc))
+	})
+}
+
+// ConnectorCategoryGTE applies the GTE predicate on the "connector_category" field.
+func ConnectorCategoryGTE(v types.ConnectorType) predicate.Model {
+	vc := int(v)
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldConnectorCategory), vc))
+	})
+}
+
+// ConnectorCategoryLT applies the LT predicate on the "connector_category" field.
+func ConnectorCategoryLT(v types.ConnectorType) predicate.Model {
+	vc := int(v)
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldConnectorCategory), vc))
+	})
+}
+
+// ConnectorCategoryLTE applies the LTE predicate on the "connector_category" field.
+func ConnectorCategoryLTE(v types.ConnectorType) predicate.Model {
+	vc := int(v)
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldConnectorCategory), vc))
 	})
 }
 

@@ -17,6 +17,7 @@ import (
 	"github.com/Kotodian/cwmodel/predicate"
 	"github.com/Kotodian/cwmodel/reservation"
 	"github.com/Kotodian/cwmodel/smartchargingeffect"
+	"github.com/Kotodian/cwmodel/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -234,6 +235,19 @@ func (cu *ConnectorUpdate) SetNillableQrCode(s *string) *ConnectorUpdate {
 // ClearQrCode clears the value of the "qr_code" field.
 func (cu *ConnectorUpdate) ClearQrCode() *ConnectorUpdate {
 	cu.mutation.ClearQrCode()
+	return cu
+}
+
+// SetCategory sets the "category" field.
+func (cu *ConnectorUpdate) SetCategory(tt types.ConnectorType) *ConnectorUpdate {
+	cu.mutation.ResetCategory()
+	cu.mutation.SetCategory(tt)
+	return cu
+}
+
+// AddCategory adds tt to the "category" field.
+func (cu *ConnectorUpdate) AddCategory(tt types.ConnectorType) *ConnectorUpdate {
+	cu.mutation.AddCategory(tt)
 	return cu
 }
 
@@ -541,6 +555,12 @@ func (cu *ConnectorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if cu.mutation.QrCodeCleared() {
 		_spec.ClearField(connector.FieldQrCode, field.TypeString)
+	}
+	if value, ok := cu.mutation.Category(); ok {
+		_spec.SetField(connector.FieldCategory, field.TypeInt, value)
+	}
+	if value, ok := cu.mutation.AddedCategory(); ok {
+		_spec.AddField(connector.FieldCategory, field.TypeInt, value)
 	}
 	if cu.mutation.EvseCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -997,6 +1017,19 @@ func (cuo *ConnectorUpdateOne) ClearQrCode() *ConnectorUpdateOne {
 	return cuo
 }
 
+// SetCategory sets the "category" field.
+func (cuo *ConnectorUpdateOne) SetCategory(tt types.ConnectorType) *ConnectorUpdateOne {
+	cuo.mutation.ResetCategory()
+	cuo.mutation.SetCategory(tt)
+	return cuo
+}
+
+// AddCategory adds tt to the "category" field.
+func (cuo *ConnectorUpdateOne) AddCategory(tt types.ConnectorType) *ConnectorUpdateOne {
+	cuo.mutation.AddCategory(tt)
+	return cuo
+}
+
 // SetEvse sets the "evse" edge to the Evse entity.
 func (cuo *ConnectorUpdateOne) SetEvse(e *Evse) *ConnectorUpdateOne {
 	return cuo.SetEvseID(e.ID)
@@ -1331,6 +1364,12 @@ func (cuo *ConnectorUpdateOne) sqlSave(ctx context.Context) (_node *Connector, e
 	}
 	if cuo.mutation.QrCodeCleared() {
 		_spec.ClearField(connector.FieldQrCode, field.TypeString)
+	}
+	if value, ok := cuo.mutation.Category(); ok {
+		_spec.SetField(connector.FieldCategory, field.TypeInt, value)
+	}
+	if value, ok := cuo.mutation.AddedCategory(); ok {
+		_spec.AddField(connector.FieldCategory, field.TypeInt, value)
 	}
 	if cuo.mutation.EvseCleared() {
 		edge := &sqlgraph.EdgeSpec{

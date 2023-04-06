@@ -465,6 +465,8 @@ type ConnectorMutation struct {
 	addorder_id                  *datasource.UUID
 	park_no                      *string
 	qr_code                      *string
+	category                     *types.ConnectorType
+	addcategory                  *types.ConnectorType
 	clearedFields                map[string]struct{}
 	evse                         *datasource.UUID
 	clearedevse                  bool
@@ -1441,6 +1443,62 @@ func (m *ConnectorMutation) ResetQrCode() {
 	delete(m.clearedFields, connector.FieldQrCode)
 }
 
+// SetCategory sets the "category" field.
+func (m *ConnectorMutation) SetCategory(tt types.ConnectorType) {
+	m.category = &tt
+	m.addcategory = nil
+}
+
+// Category returns the value of the "category" field in the mutation.
+func (m *ConnectorMutation) Category() (r types.ConnectorType, exists bool) {
+	v := m.category
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCategory returns the old "category" field's value of the Connector entity.
+// If the Connector object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ConnectorMutation) OldCategory(ctx context.Context) (v types.ConnectorType, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCategory is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCategory requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCategory: %w", err)
+	}
+	return oldValue.Category, nil
+}
+
+// AddCategory adds tt to the "category" field.
+func (m *ConnectorMutation) AddCategory(tt types.ConnectorType) {
+	if m.addcategory != nil {
+		*m.addcategory += tt
+	} else {
+		m.addcategory = &tt
+	}
+}
+
+// AddedCategory returns the value that was added to the "category" field in this mutation.
+func (m *ConnectorMutation) AddedCategory() (r types.ConnectorType, exists bool) {
+	v := m.addcategory
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCategory resets all changes to the "category" field.
+func (m *ConnectorMutation) ResetCategory() {
+	m.category = nil
+	m.addcategory = nil
+}
+
 // ClearEvse clears the "evse" edge to the Evse entity.
 func (m *ConnectorMutation) ClearEvse() {
 	m.clearedevse = true
@@ -1679,7 +1737,7 @@ func (m *ConnectorMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ConnectorMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 18)
 	if m.version != nil {
 		fields = append(fields, connector.FieldVersion)
 	}
@@ -1731,6 +1789,9 @@ func (m *ConnectorMutation) Fields() []string {
 	if m.qr_code != nil {
 		fields = append(fields, connector.FieldQrCode)
 	}
+	if m.category != nil {
+		fields = append(fields, connector.FieldCategory)
+	}
 	return fields
 }
 
@@ -1773,6 +1834,8 @@ func (m *ConnectorMutation) Field(name string) (ent.Value, bool) {
 		return m.ParkNo()
 	case connector.FieldQrCode:
 		return m.QrCode()
+	case connector.FieldCategory:
+		return m.Category()
 	}
 	return nil, false
 }
@@ -1816,6 +1879,8 @@ func (m *ConnectorMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldParkNo(ctx)
 	case connector.FieldQrCode:
 		return m.OldQrCode(ctx)
+	case connector.FieldCategory:
+		return m.OldCategory(ctx)
 	}
 	return nil, fmt.Errorf("unknown Connector field %s", name)
 }
@@ -1944,6 +2009,13 @@ func (m *ConnectorMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetQrCode(v)
 		return nil
+	case connector.FieldCategory:
+		v, ok := value.(types.ConnectorType)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCategory(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Connector field %s", name)
 }
@@ -1982,6 +2054,9 @@ func (m *ConnectorMutation) AddedFields() []string {
 	if m.addorder_id != nil {
 		fields = append(fields, connector.FieldOrderID)
 	}
+	if m.addcategory != nil {
+		fields = append(fields, connector.FieldCategory)
+	}
 	return fields
 }
 
@@ -2010,6 +2085,8 @@ func (m *ConnectorMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedReservationID()
 	case connector.FieldOrderID:
 		return m.AddedOrderID()
+	case connector.FieldCategory:
+		return m.AddedCategory()
 	}
 	return nil, false
 }
@@ -2088,6 +2165,13 @@ func (m *ConnectorMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddOrderID(v)
+		return nil
+	case connector.FieldCategory:
+		v, ok := value.(types.ConnectorType)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCategory(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Connector numeric field %s", name)
@@ -2187,6 +2271,9 @@ func (m *ConnectorMutation) ResetField(name string) error {
 		return nil
 	case connector.FieldQrCode:
 		m.ResetQrCode()
+		return nil
+	case connector.FieldCategory:
+		m.ResetCategory()
 		return nil
 	}
 	return fmt.Errorf("unknown Connector field %s", name)
@@ -13224,30 +13311,32 @@ func (m *ManufacturerMutation) ResetEdge(name string) error {
 // ModelMutation represents an operation that mutates the Model nodes in the graph.
 type ModelMutation struct {
 	config
-	op               Op
-	typ              string
-	id               *datasource.UUID
-	version          *int64
-	addversion       *int64
-	created_by       *datasource.UUID
-	addcreated_by    *datasource.UUID
-	created_at       *int64
-	addcreated_at    *int64
-	updated_by       *datasource.UUID
-	addupdated_by    *datasource.UUID
-	updated_at       *int64
-	addupdated_at    *int64
-	code             *string
-	name             *string
-	phase_category   *string
-	current_category *string
-	clearedFields    map[string]struct{}
-	firmware         map[datasource.UUID]struct{}
-	removedfirmware  map[datasource.UUID]struct{}
-	clearedfirmware  bool
-	done             bool
-	oldValue         func(context.Context) (*Model, error)
-	predicates       []predicate.Model
+	op                    Op
+	typ                   string
+	id                    *datasource.UUID
+	version               *int64
+	addversion            *int64
+	created_by            *datasource.UUID
+	addcreated_by         *datasource.UUID
+	created_at            *int64
+	addcreated_at         *int64
+	updated_by            *datasource.UUID
+	addupdated_by         *datasource.UUID
+	updated_at            *int64
+	addupdated_at         *int64
+	code                  *string
+	name                  *string
+	phase_category        *string
+	current_category      *string
+	connector_category    *types.ConnectorType
+	addconnector_category *types.ConnectorType
+	clearedFields         map[string]struct{}
+	firmware              map[datasource.UUID]struct{}
+	removedfirmware       map[datasource.UUID]struct{}
+	clearedfirmware       bool
+	done                  bool
+	oldValue              func(context.Context) (*Model, error)
+	predicates            []predicate.Model
 }
 
 var _ ent.Mutation = (*ModelMutation)(nil)
@@ -13778,6 +13867,62 @@ func (m *ModelMutation) ResetCurrentCategory() {
 	m.current_category = nil
 }
 
+// SetConnectorCategory sets the "connector_category" field.
+func (m *ModelMutation) SetConnectorCategory(tt types.ConnectorType) {
+	m.connector_category = &tt
+	m.addconnector_category = nil
+}
+
+// ConnectorCategory returns the value of the "connector_category" field in the mutation.
+func (m *ModelMutation) ConnectorCategory() (r types.ConnectorType, exists bool) {
+	v := m.connector_category
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConnectorCategory returns the old "connector_category" field's value of the Model entity.
+// If the Model object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ModelMutation) OldConnectorCategory(ctx context.Context) (v types.ConnectorType, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConnectorCategory is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConnectorCategory requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConnectorCategory: %w", err)
+	}
+	return oldValue.ConnectorCategory, nil
+}
+
+// AddConnectorCategory adds tt to the "connector_category" field.
+func (m *ModelMutation) AddConnectorCategory(tt types.ConnectorType) {
+	if m.addconnector_category != nil {
+		*m.addconnector_category += tt
+	} else {
+		m.addconnector_category = &tt
+	}
+}
+
+// AddedConnectorCategory returns the value that was added to the "connector_category" field in this mutation.
+func (m *ModelMutation) AddedConnectorCategory() (r types.ConnectorType, exists bool) {
+	v := m.addconnector_category
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetConnectorCategory resets all changes to the "connector_category" field.
+func (m *ModelMutation) ResetConnectorCategory() {
+	m.connector_category = nil
+	m.addconnector_category = nil
+}
+
 // AddFirmwareIDs adds the "firmware" edge to the Firmware entity by ids.
 func (m *ModelMutation) AddFirmwareIDs(ids ...datasource.UUID) {
 	if m.firmware == nil {
@@ -13856,7 +14001,7 @@ func (m *ModelMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ModelMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.version != nil {
 		fields = append(fields, model.FieldVersion)
 	}
@@ -13884,6 +14029,9 @@ func (m *ModelMutation) Fields() []string {
 	if m.current_category != nil {
 		fields = append(fields, model.FieldCurrentCategory)
 	}
+	if m.connector_category != nil {
+		fields = append(fields, model.FieldConnectorCategory)
+	}
 	return fields
 }
 
@@ -13910,6 +14058,8 @@ func (m *ModelMutation) Field(name string) (ent.Value, bool) {
 		return m.PhaseCategory()
 	case model.FieldCurrentCategory:
 		return m.CurrentCategory()
+	case model.FieldConnectorCategory:
+		return m.ConnectorCategory()
 	}
 	return nil, false
 }
@@ -13937,6 +14087,8 @@ func (m *ModelMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldPhaseCategory(ctx)
 	case model.FieldCurrentCategory:
 		return m.OldCurrentCategory(ctx)
+	case model.FieldConnectorCategory:
+		return m.OldConnectorCategory(ctx)
 	}
 	return nil, fmt.Errorf("unknown Model field %s", name)
 }
@@ -14009,6 +14161,13 @@ func (m *ModelMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCurrentCategory(v)
 		return nil
+	case model.FieldConnectorCategory:
+		v, ok := value.(types.ConnectorType)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConnectorCategory(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Model field %s", name)
 }
@@ -14032,6 +14191,9 @@ func (m *ModelMutation) AddedFields() []string {
 	if m.addupdated_at != nil {
 		fields = append(fields, model.FieldUpdatedAt)
 	}
+	if m.addconnector_category != nil {
+		fields = append(fields, model.FieldConnectorCategory)
+	}
 	return fields
 }
 
@@ -14050,6 +14212,8 @@ func (m *ModelMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedBy()
 	case model.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
+	case model.FieldConnectorCategory:
+		return m.AddedConnectorCategory()
 	}
 	return nil, false
 }
@@ -14093,6 +14257,13 @@ func (m *ModelMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedAt(v)
+		return nil
+	case model.FieldConnectorCategory:
+		v, ok := value.(types.ConnectorType)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddConnectorCategory(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Model numeric field %s", name)
@@ -14147,6 +14318,9 @@ func (m *ModelMutation) ResetField(name string) error {
 		return nil
 	case model.FieldCurrentCategory:
 		m.ResetCurrentCategory()
+		return nil
+	case model.FieldConnectorCategory:
+		m.ResetConnectorCategory()
 		return nil
 	}
 	return fmt.Errorf("unknown Model field %s", name)

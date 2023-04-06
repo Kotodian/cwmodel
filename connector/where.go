@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/Kotodian/cwmodel/predicate"
+	"github.com/Kotodian/cwmodel/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -202,6 +203,14 @@ func ParkNo(v string) predicate.Connector {
 func QrCode(v string) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldQrCode), v))
+	})
+}
+
+// Category applies equality check predicate on the "category" field. It's identical to CategoryEQ.
+func Category(v types.ConnectorType) predicate.Connector {
+	vc := int(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCategory), vc))
 	})
 }
 
@@ -1479,6 +1488,76 @@ func QrCodeEqualFold(v string) predicate.Connector {
 func QrCodeContainsFold(v string) predicate.Connector {
 	return predicate.Connector(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldQrCode), v))
+	})
+}
+
+// CategoryEQ applies the EQ predicate on the "category" field.
+func CategoryEQ(v types.ConnectorType) predicate.Connector {
+	vc := int(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCategory), vc))
+	})
+}
+
+// CategoryNEQ applies the NEQ predicate on the "category" field.
+func CategoryNEQ(v types.ConnectorType) predicate.Connector {
+	vc := int(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldCategory), vc))
+	})
+}
+
+// CategoryIn applies the In predicate on the "category" field.
+func CategoryIn(vs ...types.ConnectorType) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int(vs[i])
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldCategory), v...))
+	})
+}
+
+// CategoryNotIn applies the NotIn predicate on the "category" field.
+func CategoryNotIn(vs ...types.ConnectorType) predicate.Connector {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int(vs[i])
+	}
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldCategory), v...))
+	})
+}
+
+// CategoryGT applies the GT predicate on the "category" field.
+func CategoryGT(v types.ConnectorType) predicate.Connector {
+	vc := int(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCategory), vc))
+	})
+}
+
+// CategoryGTE applies the GTE predicate on the "category" field.
+func CategoryGTE(v types.ConnectorType) predicate.Connector {
+	vc := int(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCategory), vc))
+	})
+}
+
+// CategoryLT applies the LT predicate on the "category" field.
+func CategoryLT(v types.ConnectorType) predicate.Connector {
+	vc := int(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCategory), vc))
+	})
+}
+
+// CategoryLTE applies the LTE predicate on the "category" field.
+func CategoryLTE(v types.ConnectorType) predicate.Connector {
+	vc := int(v)
+	return predicate.Connector(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCategory), vc))
 	})
 }
 

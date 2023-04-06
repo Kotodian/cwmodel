@@ -15,6 +15,7 @@ import (
 	"github.com/Kotodian/cwmodel/orderinfo"
 	"github.com/Kotodian/cwmodel/reservation"
 	"github.com/Kotodian/cwmodel/smartchargingeffect"
+	"github.com/Kotodian/cwmodel/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -172,6 +173,12 @@ func (cc *ConnectorCreate) SetNillableQrCode(s *string) *ConnectorCreate {
 	if s != nil {
 		cc.SetQrCode(*s)
 	}
+	return cc
+}
+
+// SetCategory sets the "category" field.
+func (cc *ConnectorCreate) SetCategory(tt types.ConnectorType) *ConnectorCreate {
+	cc.mutation.SetCategory(tt)
 	return cc
 }
 
@@ -371,6 +378,9 @@ func (cc *ConnectorCreate) check() error {
 	if _, ok := cc.mutation.ParkNo(); !ok {
 		return &ValidationError{Name: "park_no", err: errors.New(`cwmodel: missing required field "Connector.park_no"`)}
 	}
+	if _, ok := cc.mutation.Category(); !ok {
+		return &ValidationError{Name: "category", err: errors.New(`cwmodel: missing required field "Connector.category"`)}
+	}
 	if _, ok := cc.mutation.EvseID(); !ok {
 		return &ValidationError{Name: "evse", err: errors.New(`cwmodel: missing required edge "Connector.evse"`)}
 	}
@@ -469,6 +479,10 @@ func (cc *ConnectorCreate) createSpec() (*Connector, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.QrCode(); ok {
 		_spec.SetField(connector.FieldQrCode, field.TypeString, value)
 		_node.QrCode = &value
+	}
+	if value, ok := cc.mutation.Category(); ok {
+		_spec.SetField(connector.FieldCategory, field.TypeInt, value)
+		_node.Category = value
 	}
 	if nodes := cc.mutation.EvseIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

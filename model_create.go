@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/cwmodel/firmware"
 	"github.com/Kotodian/cwmodel/model"
+	"github.com/Kotodian/cwmodel/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -88,6 +89,12 @@ func (mc *ModelCreate) SetPhaseCategory(s string) *ModelCreate {
 // SetCurrentCategory sets the "current_category" field.
 func (mc *ModelCreate) SetCurrentCategory(s string) *ModelCreate {
 	mc.mutation.SetCurrentCategory(s)
+	return mc
+}
+
+// SetConnectorCategory sets the "connector_category" field.
+func (mc *ModelCreate) SetConnectorCategory(tt types.ConnectorType) *ModelCreate {
+	mc.mutation.SetConnectorCategory(tt)
 	return mc
 }
 
@@ -228,6 +235,9 @@ func (mc *ModelCreate) check() error {
 	if _, ok := mc.mutation.CurrentCategory(); !ok {
 		return &ValidationError{Name: "current_category", err: errors.New(`cwmodel: missing required field "Model.current_category"`)}
 	}
+	if _, ok := mc.mutation.ConnectorCategory(); !ok {
+		return &ValidationError{Name: "connector_category", err: errors.New(`cwmodel: missing required field "Model.connector_category"`)}
+	}
 	return nil
 }
 
@@ -296,6 +306,10 @@ func (mc *ModelCreate) createSpec() (*Model, *sqlgraph.CreateSpec) {
 	if value, ok := mc.mutation.CurrentCategory(); ok {
 		_spec.SetField(model.FieldCurrentCategory, field.TypeString, value)
 		_node.CurrentCategory = value
+	}
+	if value, ok := mc.mutation.ConnectorCategory(); ok {
+		_spec.SetField(model.FieldConnectorCategory, field.TypeInt, value)
+		_node.ConnectorCategory = value
 	}
 	if nodes := mc.mutation.FirmwareIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

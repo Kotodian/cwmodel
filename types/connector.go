@@ -2,6 +2,17 @@ package types
 
 import "database/sql/driver"
 
+type ConnectorType int
+
+const (
+	ConnectorTypeHouseholdSocket        ConnectorType = 1 // 家用插座
+	ConnectorTypeACInterfaceSocket      ConnectorType = 2 // 交流接口插座
+	ConnectorTypeACConnectorPlug        ConnectorType = 3 // 交流接口插头
+	ConnectorTypeDCConnectorPlug        ConnectorType = 4 // 直流接口枪头
+	ConnectorTypeWirelessChargingSocket ConnectorType = 5 // 无线充电插座
+	ConnectorTypeOther                  ConnectorType = 6 // 其他
+)
+
 type ConnectorState int
 
 const (

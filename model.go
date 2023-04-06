@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/Kotodian/cwmodel/model"
+	"github.com/Kotodian/cwmodel/types"
 	"github.com/Kotodian/gokit/datasource"
 )
 
@@ -35,6 +36,8 @@ type Model struct {
 	PhaseCategory string `json:"phase_category,omitempty"`
 	// 电流类型
 	CurrentCategory string `json:"current_category,omitempty"`
+	// 充电设备接口类型
+	ConnectorCategory types.ConnectorType `json:"connector_category,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ModelQuery when eager-loading is set.
 	Edges ModelEdges `json:"-"`
@@ -63,7 +66,7 @@ func (*Model) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case model.FieldID, model.FieldVersion, model.FieldCreatedBy, model.FieldCreatedAt, model.FieldUpdatedBy, model.FieldUpdatedAt:
+		case model.FieldID, model.FieldVersion, model.FieldCreatedBy, model.FieldCreatedAt, model.FieldUpdatedBy, model.FieldUpdatedAt, model.FieldConnectorCategory:
 			values[i] = new(sql.NullInt64)
 		case model.FieldCode, model.FieldName, model.FieldPhaseCategory, model.FieldCurrentCategory:
 			values[i] = new(sql.NullString)
@@ -142,6 +145,12 @@ func (m *Model) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				m.CurrentCategory = value.String
 			}
+		case model.FieldConnectorCategory:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field connector_category", values[i])
+			} else if value.Valid {
+				m.ConnectorCategory = types.ConnectorType(value.Int64)
+			}
 		}
 	}
 	return nil
@@ -201,6 +210,9 @@ func (m *Model) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("current_category=")
 	builder.WriteString(m.CurrentCategory)
+	builder.WriteString(", ")
+	builder.WriteString("connector_category=")
+	builder.WriteString(fmt.Sprintf("%v", m.ConnectorCategory))
 	builder.WriteByte(')')
 	return builder.String()
 }

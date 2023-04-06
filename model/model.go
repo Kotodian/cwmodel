@@ -25,6 +25,8 @@ const (
 	FieldPhaseCategory = "phase_category"
 	// FieldCurrentCategory holds the string denoting the current_category field in the database.
 	FieldCurrentCategory = "current_category"
+	// FieldConnectorCategory holds the string denoting the connector_category field in the database.
+	FieldConnectorCategory = "connector_category"
 	// EdgeFirmware holds the string denoting the firmware edge name in mutations.
 	EdgeFirmware = "firmware"
 	// Table holds the table name of the model in the database.
@@ -50,6 +52,7 @@ var Columns = []string{
 	FieldName,
 	FieldPhaseCategory,
 	FieldCurrentCategory,
+	FieldConnectorCategory,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

@@ -6,6 +6,8 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+
+	"github.com/Kotodian/cwmodel/types"
 )
 
 type Model struct {
@@ -31,11 +33,12 @@ func (Model) Fields() []ent.Field {
 		field.String("name").Comment("型号名称"),
 		field.String("phase_category").Comment("相位类型"),
 		field.String("current_category").Comment("电流类型"),
+		field.Int("connector_category").GoType(types.ConnectorType(0)).Comment("充电设备接口类型"),
 	}
 }
 
 func (Model) Edges() []ent.Edge {
-	return []ent.Edge {
+	return []ent.Edge{
 		edge.To("firmware", Firmware.Type),
 	}
 }

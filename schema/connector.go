@@ -7,6 +7,8 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/Kotodian/gokit/datasource"
+
+	"github.com/Kotodian/cwmodel/types"
 )
 
 // Connector holds the schema definition for the Connector entity.
@@ -42,6 +44,7 @@ func (Connector) Fields() []ent.Field {
 		field.Uint64("order_id").Optional().Nillable().GoType(datasource.UUID(0)).StructTag(`json:"order_id"`).Comment("订单id"),
 		field.String("park_no").Default("0001").StructTag(`json:"park_no"`).Comment("停车编号"),
 		field.String("qr_code").Optional().Nillable().StructTag(`json:"qr_code"`).Comment("二维码"),
+		field.Int("category").GoType(types.ConnectorType(0)).StructTag(`json:"category"`).Comment("充电接口类型"),
 	}
 }
 
