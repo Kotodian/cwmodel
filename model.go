@@ -29,15 +29,15 @@ type Model struct {
 	// 修改时间
 	UpdatedAt int64 `json:"-"`
 	// 型号代码
-	Code string `json:"code,omitempty"`
+	Code string `json:"code"`
 	// 型号名称
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// 相位类型
-	PhaseCategory string `json:"phase_category,omitempty"`
+	PhaseCategory string `json:"phaseCategory"`
 	// 电流类型
-	CurrentCategory string `json:"current_category,omitempty"`
+	CurrentCategory string `json:"currentCategory"`
 	// 充电设备接口类型
-	ConnectorCategory types.ConnectorType `json:"connector_category,omitempty"`
+	ConnectorCategory types.ConnectorType `json:"connectorCategory"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ModelQuery when eager-loading is set.
 	Edges ModelEdges `json:"-"`
