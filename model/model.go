@@ -21,6 +21,8 @@ const (
 	FieldCode = "code"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldConnectorNumber holds the string denoting the connector_number field in the database.
+	FieldConnectorNumber = "connector_number"
 	// FieldPhaseCategory holds the string denoting the phase_category field in the database.
 	FieldPhaseCategory = "phase_category"
 	// FieldCurrentCategory holds the string denoting the current_category field in the database.
@@ -50,6 +52,7 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldCode,
 	FieldName,
+	FieldConnectorNumber,
 	FieldPhaseCategory,
 	FieldCurrentCategory,
 	FieldConnectorCategory,

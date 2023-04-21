@@ -13326,6 +13326,8 @@ type ModelMutation struct {
 	addupdated_at         *int64
 	code                  *string
 	name                  *string
+	connector_number      *int
+	addconnector_number   *int
 	phase_category        *string
 	current_category      *string
 	connector_category    *types.ConnectorType
@@ -13795,6 +13797,62 @@ func (m *ModelMutation) ResetName() {
 	m.name = nil
 }
 
+// SetConnectorNumber sets the "connector_number" field.
+func (m *ModelMutation) SetConnectorNumber(i int) {
+	m.connector_number = &i
+	m.addconnector_number = nil
+}
+
+// ConnectorNumber returns the value of the "connector_number" field in the mutation.
+func (m *ModelMutation) ConnectorNumber() (r int, exists bool) {
+	v := m.connector_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConnectorNumber returns the old "connector_number" field's value of the Model entity.
+// If the Model object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ModelMutation) OldConnectorNumber(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConnectorNumber is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConnectorNumber requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConnectorNumber: %w", err)
+	}
+	return oldValue.ConnectorNumber, nil
+}
+
+// AddConnectorNumber adds i to the "connector_number" field.
+func (m *ModelMutation) AddConnectorNumber(i int) {
+	if m.addconnector_number != nil {
+		*m.addconnector_number += i
+	} else {
+		m.addconnector_number = &i
+	}
+}
+
+// AddedConnectorNumber returns the value that was added to the "connector_number" field in this mutation.
+func (m *ModelMutation) AddedConnectorNumber() (r int, exists bool) {
+	v := m.addconnector_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetConnectorNumber resets all changes to the "connector_number" field.
+func (m *ModelMutation) ResetConnectorNumber() {
+	m.connector_number = nil
+	m.addconnector_number = nil
+}
+
 // SetPhaseCategory sets the "phase_category" field.
 func (m *ModelMutation) SetPhaseCategory(s string) {
 	m.phase_category = &s
@@ -14001,7 +14059,7 @@ func (m *ModelMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ModelMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.version != nil {
 		fields = append(fields, model.FieldVersion)
 	}
@@ -14022,6 +14080,9 @@ func (m *ModelMutation) Fields() []string {
 	}
 	if m.name != nil {
 		fields = append(fields, model.FieldName)
+	}
+	if m.connector_number != nil {
+		fields = append(fields, model.FieldConnectorNumber)
 	}
 	if m.phase_category != nil {
 		fields = append(fields, model.FieldPhaseCategory)
@@ -14054,6 +14115,8 @@ func (m *ModelMutation) Field(name string) (ent.Value, bool) {
 		return m.Code()
 	case model.FieldName:
 		return m.Name()
+	case model.FieldConnectorNumber:
+		return m.ConnectorNumber()
 	case model.FieldPhaseCategory:
 		return m.PhaseCategory()
 	case model.FieldCurrentCategory:
@@ -14083,6 +14146,8 @@ func (m *ModelMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldCode(ctx)
 	case model.FieldName:
 		return m.OldName(ctx)
+	case model.FieldConnectorNumber:
+		return m.OldConnectorNumber(ctx)
 	case model.FieldPhaseCategory:
 		return m.OldPhaseCategory(ctx)
 	case model.FieldCurrentCategory:
@@ -14147,6 +14212,13 @@ func (m *ModelMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
+	case model.FieldConnectorNumber:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConnectorNumber(v)
+		return nil
 	case model.FieldPhaseCategory:
 		v, ok := value.(string)
 		if !ok {
@@ -14191,6 +14263,9 @@ func (m *ModelMutation) AddedFields() []string {
 	if m.addupdated_at != nil {
 		fields = append(fields, model.FieldUpdatedAt)
 	}
+	if m.addconnector_number != nil {
+		fields = append(fields, model.FieldConnectorNumber)
+	}
 	if m.addconnector_category != nil {
 		fields = append(fields, model.FieldConnectorCategory)
 	}
@@ -14212,6 +14287,8 @@ func (m *ModelMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedBy()
 	case model.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
+	case model.FieldConnectorNumber:
+		return m.AddedConnectorNumber()
 	case model.FieldConnectorCategory:
 		return m.AddedConnectorCategory()
 	}
@@ -14257,6 +14334,13 @@ func (m *ModelMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedAt(v)
+		return nil
+	case model.FieldConnectorNumber:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddConnectorNumber(v)
 		return nil
 	case model.FieldConnectorCategory:
 		v, ok := value.(types.ConnectorType)
@@ -14312,6 +14396,9 @@ func (m *ModelMutation) ResetField(name string) error {
 		return nil
 	case model.FieldName:
 		m.ResetName()
+		return nil
+	case model.FieldConnectorNumber:
+		m.ResetConnectorNumber()
 		return nil
 	case model.FieldPhaseCategory:
 		m.ResetPhaseCategory()

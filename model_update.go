@@ -89,6 +89,19 @@ func (mu *ModelUpdate) SetName(s string) *ModelUpdate {
 	return mu
 }
 
+// SetConnectorNumber sets the "connector_number" field.
+func (mu *ModelUpdate) SetConnectorNumber(i int) *ModelUpdate {
+	mu.mutation.ResetConnectorNumber()
+	mu.mutation.SetConnectorNumber(i)
+	return mu
+}
+
+// AddConnectorNumber adds i to the "connector_number" field.
+func (mu *ModelUpdate) AddConnectorNumber(i int) *ModelUpdate {
+	mu.mutation.AddConnectorNumber(i)
+	return mu
+}
+
 // SetPhaseCategory sets the "phase_category" field.
 func (mu *ModelUpdate) SetPhaseCategory(s string) *ModelUpdate {
 	mu.mutation.SetPhaseCategory(s)
@@ -260,6 +273,12 @@ func (mu *ModelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := mu.mutation.Name(); ok {
 		_spec.SetField(model.FieldName, field.TypeString, value)
 	}
+	if value, ok := mu.mutation.ConnectorNumber(); ok {
+		_spec.SetField(model.FieldConnectorNumber, field.TypeInt, value)
+	}
+	if value, ok := mu.mutation.AddedConnectorNumber(); ok {
+		_spec.AddField(model.FieldConnectorNumber, field.TypeInt, value)
+	}
 	if value, ok := mu.mutation.PhaseCategory(); ok {
 		_spec.SetField(model.FieldPhaseCategory, field.TypeString, value)
 	}
@@ -401,6 +420,19 @@ func (muo *ModelUpdateOne) SetCode(s string) *ModelUpdateOne {
 // SetName sets the "name" field.
 func (muo *ModelUpdateOne) SetName(s string) *ModelUpdateOne {
 	muo.mutation.SetName(s)
+	return muo
+}
+
+// SetConnectorNumber sets the "connector_number" field.
+func (muo *ModelUpdateOne) SetConnectorNumber(i int) *ModelUpdateOne {
+	muo.mutation.ResetConnectorNumber()
+	muo.mutation.SetConnectorNumber(i)
+	return muo
+}
+
+// AddConnectorNumber adds i to the "connector_number" field.
+func (muo *ModelUpdateOne) AddConnectorNumber(i int) *ModelUpdateOne {
+	muo.mutation.AddConnectorNumber(i)
 	return muo
 }
 
@@ -604,6 +636,12 @@ func (muo *ModelUpdateOne) sqlSave(ctx context.Context) (_node *Model, err error
 	}
 	if value, ok := muo.mutation.Name(); ok {
 		_spec.SetField(model.FieldName, field.TypeString, value)
+	}
+	if value, ok := muo.mutation.ConnectorNumber(); ok {
+		_spec.SetField(model.FieldConnectorNumber, field.TypeInt, value)
+	}
+	if value, ok := muo.mutation.AddedConnectorNumber(); ok {
+		_spec.AddField(model.FieldConnectorNumber, field.TypeInt, value)
 	}
 	if value, ok := muo.mutation.PhaseCategory(); ok {
 		_spec.SetField(model.FieldPhaseCategory, field.TypeString, value)

@@ -80,6 +80,12 @@ func (mc *ModelCreate) SetName(s string) *ModelCreate {
 	return mc
 }
 
+// SetConnectorNumber sets the "connector_number" field.
+func (mc *ModelCreate) SetConnectorNumber(i int) *ModelCreate {
+	mc.mutation.SetConnectorNumber(i)
+	return mc
+}
+
 // SetPhaseCategory sets the "phase_category" field.
 func (mc *ModelCreate) SetPhaseCategory(s string) *ModelCreate {
 	mc.mutation.SetPhaseCategory(s)
@@ -229,6 +235,9 @@ func (mc *ModelCreate) check() error {
 	if _, ok := mc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`cwmodel: missing required field "Model.name"`)}
 	}
+	if _, ok := mc.mutation.ConnectorNumber(); !ok {
+		return &ValidationError{Name: "connector_number", err: errors.New(`cwmodel: missing required field "Model.connector_number"`)}
+	}
 	if _, ok := mc.mutation.PhaseCategory(); !ok {
 		return &ValidationError{Name: "phase_category", err: errors.New(`cwmodel: missing required field "Model.phase_category"`)}
 	}
@@ -298,6 +307,10 @@ func (mc *ModelCreate) createSpec() (*Model, *sqlgraph.CreateSpec) {
 	if value, ok := mc.mutation.Name(); ok {
 		_spec.SetField(model.FieldName, field.TypeString, value)
 		_node.Name = value
+	}
+	if value, ok := mc.mutation.ConnectorNumber(); ok {
+		_spec.SetField(model.FieldConnectorNumber, field.TypeInt, value)
+		_node.ConnectorNumber = value
 	}
 	if value, ok := mc.mutation.PhaseCategory(); ok {
 		_spec.SetField(model.FieldPhaseCategory, field.TypeString, value)

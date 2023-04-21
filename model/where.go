@@ -132,6 +132,13 @@ func Name(v string) predicate.Model {
 	})
 }
 
+// ConnectorNumber applies equality check predicate on the "connector_number" field. It's identical to ConnectorNumberEQ.
+func ConnectorNumber(v int) predicate.Model {
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldConnectorNumber), v))
+	})
+}
+
 // PhaseCategory applies equality check predicate on the "phase_category" field. It's identical to PhaseCategoryEQ.
 func PhaseCategory(v string) predicate.Model {
 	return predicate.Model(func(s *sql.Selector) {
@@ -681,6 +688,70 @@ func NameEqualFold(v string) predicate.Model {
 func NameContainsFold(v string) predicate.Model {
 	return predicate.Model(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldName), v))
+	})
+}
+
+// ConnectorNumberEQ applies the EQ predicate on the "connector_number" field.
+func ConnectorNumberEQ(v int) predicate.Model {
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldConnectorNumber), v))
+	})
+}
+
+// ConnectorNumberNEQ applies the NEQ predicate on the "connector_number" field.
+func ConnectorNumberNEQ(v int) predicate.Model {
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldConnectorNumber), v))
+	})
+}
+
+// ConnectorNumberIn applies the In predicate on the "connector_number" field.
+func ConnectorNumberIn(vs ...int) predicate.Model {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldConnectorNumber), v...))
+	})
+}
+
+// ConnectorNumberNotIn applies the NotIn predicate on the "connector_number" field.
+func ConnectorNumberNotIn(vs ...int) predicate.Model {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldConnectorNumber), v...))
+	})
+}
+
+// ConnectorNumberGT applies the GT predicate on the "connector_number" field.
+func ConnectorNumberGT(v int) predicate.Model {
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldConnectorNumber), v))
+	})
+}
+
+// ConnectorNumberGTE applies the GTE predicate on the "connector_number" field.
+func ConnectorNumberGTE(v int) predicate.Model {
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldConnectorNumber), v))
+	})
+}
+
+// ConnectorNumberLT applies the LT predicate on the "connector_number" field.
+func ConnectorNumberLT(v int) predicate.Model {
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldConnectorNumber), v))
+	})
+}
+
+// ConnectorNumberLTE applies the LTE predicate on the "connector_number" field.
+func ConnectorNumberLTE(v int) predicate.Model {
+	return predicate.Model(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldConnectorNumber), v))
 	})
 }
 

@@ -32,6 +32,8 @@ type Model struct {
 	Code string `json:"code"`
 	// 型号名称
 	Name string `json:"name"`
+	// 充电设备接口数
+	ConnectorNumber int `json:"connectorNumber"`
 	// 相位类型
 	PhaseCategory string `json:"phaseCategory"`
 	// 电流类型
@@ -66,7 +68,7 @@ func (*Model) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case model.FieldID, model.FieldVersion, model.FieldCreatedBy, model.FieldCreatedAt, model.FieldUpdatedBy, model.FieldUpdatedAt, model.FieldConnectorCategory:
+		case model.FieldID, model.FieldVersion, model.FieldCreatedBy, model.FieldCreatedAt, model.FieldUpdatedBy, model.FieldUpdatedAt, model.FieldConnectorNumber, model.FieldConnectorCategory:
 			values[i] = new(sql.NullInt64)
 		case model.FieldCode, model.FieldName, model.FieldPhaseCategory, model.FieldCurrentCategory:
 			values[i] = new(sql.NullString)
@@ -132,6 +134,12 @@ func (m *Model) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				m.Name = value.String
+			}
+		case model.FieldConnectorNumber:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field connector_number", values[i])
+			} else if value.Valid {
+				m.ConnectorNumber = int(value.Int64)
 			}
 		case model.FieldPhaseCategory:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -204,6 +212,9 @@ func (m *Model) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(m.Name)
+	builder.WriteString(", ")
+	builder.WriteString("connector_number=")
+	builder.WriteString(fmt.Sprintf("%v", m.ConnectorNumber))
 	builder.WriteString(", ")
 	builder.WriteString("phase_category=")
 	builder.WriteString(m.PhaseCategory)

@@ -31,6 +31,7 @@ func (Model) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("code").StructTag(`json:"code"`).Comment("型号代码"),
 		field.String("name").StructTag(`json:"name"`).Comment("型号名称"),
+		field.Int("connector_number").StructTag(`json:"connectorNumber"`).Comment("充电设备接口数"),
 		field.String("phase_category").StructTag(`json:"phaseCategory"`).Comment("相位类型"),
 		field.String("current_category").StructTag(`json:"currentCategory"`).Comment("电流类型"),
 		field.Int("connector_category").StructTag(`json:"connectorCategory"`).GoType(types.ConnectorType(0)).Comment("充电设备接口类型"),
